@@ -17,7 +17,7 @@ import SeparatorComp from "./SeparatorComp";
 import EditPostModal from "./EditPostModal";
 import { usePosts } from "../config/PostContext";
 
-function PostMenu({ isVisible, onClose, isMine }) {
+function PostMenu({ isVisible, onClose, isMine, postId }) {
   const styles = useThemedStyles(getStyles);
   const { toggleTheme } = useTheme();
   const [reportMenu, setReportMenu] = useState(false);
@@ -54,6 +54,7 @@ function PostMenu({ isVisible, onClose, isMine }) {
                     text={"Delete post"}
                     icon={"delete"}
                     color={"red"}
+                    onPress={()=>deletePost(postId)}
                   />
                 ) : (
                   <MenuOption

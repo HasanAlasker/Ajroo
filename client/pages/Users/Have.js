@@ -24,8 +24,8 @@ function Have(props) {
       <Post
         id={item.id}
         profilePic={item.userImageUri}
-        name={"Hasan Alasker"}
-        userId={1}
+        name={"Hasan Alasker"}  // change when you have a useContext
+        userId={1}  // change when you have a useContext
         image={item.image}
         itemCat={getCategoryLabel(item.category)}
         itemName={getItemLabel(item.item)} 
@@ -34,7 +34,7 @@ function Have(props) {
         area={getAreaLabel(item.area)} 
         condition={getConditionLabel(item.condition)}
         status={item.status}
-        isMine={false}
+        isMine={true}
         rating={item.rating}
         date={item.createdAt}
       />

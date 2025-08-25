@@ -88,6 +88,7 @@ function Post({
         isMine={isMine}
         isVisible={isPostMenu}
         onClose={() => setIsPostMenu(false)}
+        postId={id}
       ></PostMenu>
     </>
   );
