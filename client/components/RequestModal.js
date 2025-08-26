@@ -8,6 +8,7 @@ import {
 import useThemedStyles from "../hooks/useThemedStyles";
 import AppText from "../config/AppText";
 import PlusMinusBtn from "./PlusMinusBtn";
+import CardModal from "./CardModal";
 import RequestBtn from "./RequestBtn";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useTheme } from "../config/ThemeContext";
@@ -55,11 +56,14 @@ function RequestModal({ isVisibile, onClose, pricePerDay }) {
   };
   const showPrice = () => {
     if (baseUnit === "hours") {
-      return pricePerDay <= 25 ? pricePerDay : Math.round((pricePerDay / 24) * duration);
-    } 
-    else if (baseUnit === "days") return Math.round(pricePerDay * duration);
-    else if (baseUnit === "weeks") return Math.round(pricePerDay * duration * 7);
-    else if (baseUnit === "months") return Math.round(pricePerDay * duration * 30);
+      return pricePerDay <= 25
+        ? pricePerDay
+        : Math.round((pricePerDay / 24) * duration);
+    } else if (baseUnit === "days") return Math.round(pricePerDay * duration);
+    else if (baseUnit === "weeks")
+      return Math.round(pricePerDay * duration * 7);
+    else if (baseUnit === "months")
+      return Math.round(pricePerDay * duration * 30);
     else return "Invalid";
   };
 
@@ -71,101 +75,96 @@ function RequestModal({ isVisibile, onClose, pricePerDay }) {
     : "";
 
   return (
-    <Modal transparent={true} visible={isVisibile}>
-      <View style={styles.container}>
-        <AppText style={styles.text}>Duration</AppText>
-        <View style={styles.addMinus}>
-          <PlusMinusBtn icon={"minus"} onPress={decrease}></PlusMinusBtn>
-          <AppText style={styles.number}>{duration}</AppText>
-          <PlusMinusBtn
-            icon={"plus"}
-            onPress={increase}
-            disabled={disableIncrease()}
-            style={{ opacity: disabledButton() }}
-          ></PlusMinusBtn>
-        </View>
-        <AppText style={styles.text}>Time unit</AppText>
+    <CardModal isVisibile={isVisibile} onClose={onClose}>
+      <AppText style={styles.text}>Duration</AppText>
+      <View style={styles.addMinus}>
+        <PlusMinusBtn icon={"minus"} onPress={decrease}></PlusMinusBtn>
+        <AppText style={styles.number}>{duration}</AppText>
+        <PlusMinusBtn
+          icon={"plus"}
+          onPress={increase}
+          disabled={disableIncrease()}
+          style={{ opacity: disabledButton() }}
+        ></PlusMinusBtn>
+      </View>
+      <AppText style={styles.text}>Time unit</AppText>
+      <View style={styles.buttons}>
         <View style={styles.buttons}>
-          <View style={styles.buttons}>
-            <RequestBtn
-              title={"Hours"}
-              isActive={active === "hours"}
-              onPress={() => handleUnit("hours")}
-            ></RequestBtn>
-            <RequestBtn
-              title={"Days"}
-              isActive={active === "days"}
-              onPress={() => handleUnit("days")}
-            ></RequestBtn>
-            <RequestBtn
-              title={"Weeks"}
-              isActive={active === "weeks"}
-              onPress={() => handleUnit("weeks")}
-            ></RequestBtn>
-            <RequestBtn
-              title={"Months"}
-              isActive={active === "months"}
-              onPress={() => handleUnit("months")}
-            ></RequestBtn>
-          </View>
+          <RequestBtn
+            title={"Hours"}
+            isActive={active === "hours"}
+            onPress={() => handleUnit("hours")}
+          ></RequestBtn>
+          <RequestBtn
+            title={"Days"}
+            isActive={active === "days"}
+            onPress={() => handleUnit("days")}
+          ></RequestBtn>
+          <RequestBtn
+            title={"Weeks"}
+            isActive={active === "weeks"}
+            onPress={() => handleUnit("weeks")}
+          ></RequestBtn>
+          <RequestBtn
+            title={"Months"}
+            isActive={active === "months"}
+            onPress={() => handleUnit("months")}
+          ></RequestBtn>
         </View>
-        {duration > 0 && displayUnit != "" && (
-          <View style={styles.display}>
-            <View style={styles.row}>
-              <AppText style={styles.faded}>Requesting for:</AppText>
+      </View>
+      {duration > 0 && displayUnit != "" && (
+        <View style={styles.display}>
+          <View style={styles.row}>
+            <AppText style={styles.faded}>Requesting for:</AppText>
+            <AppText style={styles.text}>
+              {duration} {displayUnit}
+            </AppText>
+          </View>
+          <View style={styles.row}>
+            <AppText style={styles.faded}>Total cost:</AppText>
+            {pricePerDay ? (
               <AppText style={styles.text}>
-                {duration} {displayUnit}
+                {showPrice()}
+                {" JD"}
               </AppText>
-            </View>
-            <View style={styles.row}>
-              <AppText style={styles.faded}>Total cost:</AppText>
-              {pricePerDay ? (
-                <AppText style={styles.text}>
-                  {showPrice()}
-                  {" JD"}
-                </AppText>
-              ) : (
-                <AppText style={styles.text}>Free</AppText>
-              )}
-            </View>
-            {baseUnit === "hours" && (pricePerDay > 0 && pricePerDay <=25) && (
-              <View style={styles.row}>
-                <FontAwesome6
-                  name="circle-exclamation"
-                  color={theme.darker_gray}
-                ></FontAwesome6>
-                <AppText style={[styles.faded, styles.small]}>
-                  Items ≤ 25 JD are charged for a full day
-                </AppText>
-              </View>
+            ) : (
+              <AppText style={styles.text}>Free</AppText>
             )}
           </View>
-        )}
-        {duration > 0 && displayUnit != "" && (
-          <View style={styles.buttons}>
-            <View style={styles.buttons}>
-              <RequestBtn title={"Request"} isGreen={true}></RequestBtn>
-              <RequestBtn
-                title={"Cancel"}
-                isRed={true}
-                onPress={onClose}
-              ></RequestBtn>
+          {baseUnit === "hours" && pricePerDay > 0 && pricePerDay <= 25 && (
+            <View style={styles.row}>
+              <FontAwesome6
+                name="circle-exclamation"
+                color={theme.darker_gray}
+              ></FontAwesome6>
+              <AppText style={[styles.faded, styles.small]}>
+                Items ≤ 25 JD are charged for a full day
+              </AppText>
             </View>
+          )}
+        </View>
+      )}
+      {duration > 0 && displayUnit != "" && (
+        <View style={styles.buttons}>
+          <View style={styles.buttons}>
+            <RequestBtn title={"Request"} isGreen={true}></RequestBtn>
+            <RequestBtn
+              title={"Cancel"}
+              isRed={true}
+              onPress={onClose}
+            ></RequestBtn>
           </View>
-        )}
-        {(duration === 0 || displayUnit === "") && (
-          <RequestBtn
-            style={styles.fullBtn}
-            title={"Cancel"}
-            isRed={true}
-            onPress={onClose}
-          ></RequestBtn>
-        )}
-      </View>
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.overlay}></View>
-      </TouchableWithoutFeedback>
-    </Modal>
+        </View>
+      )}
+      {(duration === 0 || displayUnit === "") && (
+        <RequestBtn
+          style={styles.fullBtn}
+          title={"Cancel"}
+          isRed={true}
+          onPress={onClose}
+        ></RequestBtn>
+      )}
+    </CardModal>
   );
 }
 
