@@ -51,7 +51,7 @@ function Book(props) {
               name={"Fadi Hajarat"}
               date={"12/ 1/ 2026"}
               profilePic={require('../../assets/Pics/u2.png')}
-              image={require("../../assets/Pics/lm.png")}
+              // image={require("../../assets/Pics/lm.png")}
               itemName={"Electric saw"}
               itemCat={"Tools"}
               area={"Dabouq"}
