@@ -61,7 +61,9 @@ const getStyles = (theme) =>
     },
     btn:{
         padding:2,
-        borderRadius:10
+        borderRadius:10,
+        width:'100%',
+        marginTop:5
     }
   });
 
