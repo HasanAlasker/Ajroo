@@ -7,19 +7,35 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import AppText from "../config/AppText";
 import RequestBtn from "./RequestBtn";
 
-function OfferCard({ icon, title, children, btnText, startNow, startsAt, color }) {
+function OfferCard({
+  icon,
+  title,
+  children,
+  btnText,
+  startNow,
+  startsAt,
+  backColor,
+  color,
+  size
+}) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
 
   return (
-    <PostComponent style={[styles.container, {backgroundColor: theme[color]}]}>
+    <PostComponent
+      style={[styles.container, { backgroundColor: theme[backColor] }]}
+    >
       <View style={styles.iconAndTitle}>
-        <MaterialIcons name={icon} size={23} color={theme.always_white}></MaterialIcons>
-        <AppText style={[styles.text, styles.title]}>{title}</AppText>
+        <MaterialIcons
+          name={icon}
+          size={size ? size : 23}
+          color={theme[color]}
+        ></MaterialIcons>
+        <AppText style={[styles.text, styles.title, { color : theme[color]}]}>{title}</AppText>
       </View>
-      <AppText style={styles.text}>{children}</AppText>
+      <AppText style={[styles.text , { color : theme[color]}]}>{children}</AppText>
       {startNow && (
-        <AppText style={styles.text}>
+        <AppText style={[styles.text, { color : theme[color]}]}>
           Start now for just {startNow} JD/month!
         </AppText>
       )}
@@ -28,13 +44,15 @@ function OfferCard({ icon, title, children, btnText, startNow, startsAt, color }
           Plans for businesses start at {startsAt} JD/month!
         </AppText>
       )}
-      <RequestBtn
-        title={btnText}
-        arrow={true}
-        color={color}
-        backColor={"always_white"}
-        style={styles.btn}
-      />
+      {btnText && (
+        <RequestBtn
+          title={btnText}
+          arrow={true}
+          color={backColor}
+          backColor={"always_white"}
+          style={styles.btn}
+        />
+      )}
     </PostComponent>
   );
 }
@@ -42,29 +60,28 @@ function OfferCard({ icon, title, children, btnText, startNow, startsAt, color }
 const getStyles = (theme) =>
   StyleSheet.create({
     container: {
-      marginVertical:20
+      marginVertical: 20,
     },
     iconAndTitle: {
       flexDirection: "row",
-      alignItems:'center',
-      gap:5
+      alignItems: "center",
+      gap: 5,
     },
     text: {
       color: theme.always_white,
       fontSize: 18,
-      fontWeight:'bold'
-
+      fontWeight: "bold",
     },
     title: {
       fontSize: 22,
       fontWeight: "bold",
     },
-    btn:{
-        padding:2,
-        borderRadius:10,
-        width:'100%',
-        marginTop:5
-    }
+    btn: {
+      padding: 2,
+      borderRadius: 10,
+      width: "100%",
+      marginTop: 5,
+    },
   });
 
 export default OfferCard;

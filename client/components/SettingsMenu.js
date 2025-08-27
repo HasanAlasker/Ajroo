@@ -7,10 +7,12 @@ import BackContainer from "../components/BackContainer";
 import MenuBackBtn from "./MenuBackBtn";
 import MenuOption from "./MenuOption";
 import SeparatorComp from "./SeparatorComp";
+import { useNavigation } from "@react-navigation/native";
 
 function SettingsMenu({ isVisible, onClose }) {
   const styles = useThemedStyles(getStyles);
   const {toggleTheme, isDarkMode} = useTheme()
+  const navigation = useNavigation()
   
   if (!isVisible) return null;
   return (
@@ -35,6 +37,7 @@ function SettingsMenu({ isVisible, onClose }) {
             text={"Subscription"}
             icon={"card-account-details-star-outline"}
             color={'purple'}
+            onPress={()=> navigation.navigate('Subscription')}
           />
           <SeparatorComp style={styles.sep} />
           <MenuOption text={"Help"} icon={"headphones"} color={"green"} />

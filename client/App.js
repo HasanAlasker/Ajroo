@@ -15,6 +15,8 @@ import Profile from "./pages/Users/Profile";
 import Requests from "./pages/Users/Requests";
 import EditProfile from "./pages/Users/EditProfile";
 import { AuthProvider } from "./config/AuthContext";
+import Promo from "./pages/Users/Promo";
+import Subscription from "./pages/Users/Subscription";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +32,8 @@ const StackNavigator = () => (
     <Stack.Screen name="Profile" component={Profile}></Stack.Screen>
     <Stack.Screen name="Requests" component={Requests}></Stack.Screen>
     <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
+    <Stack.Screen name="Promo" component={Promo}></Stack.Screen>
+    <Stack.Screen name="Subscription" component={Subscription}></Stack.Screen>
   </Stack.Navigator>
 );
 

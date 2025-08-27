@@ -18,6 +18,7 @@ import SeparatorComp from "./SeparatorComp";
 import EditPostModal from "./EditPostModal";
 import { usePosts } from "../config/PostContext";
 import ScrollScreen from "./ScrollScreen";
+import { useNavigation } from "@react-navigation/native";
 
 const { height: screenHeight } = Dimensions.get('window');
 
@@ -27,6 +28,7 @@ function PostMenu({ isVisible, onClose, isMine, postId }) {
   const { toggleTheme } = useTheme();
   const [reportMenu, setReportMenu] = useState(false);
   const { deletePost } = usePosts();
+  
 
   const handleReportMenu = () => {
     setReportMenu(!reportMenu);

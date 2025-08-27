@@ -9,7 +9,8 @@ function BuisnessPromo(props) {
       title={"Own a Hardware or Gear Store?"}
       btnText={"Learn more"}
       startsAt={25}
-      color={"gold"}
+      backColor={'gold'}
+      color={"always_white"}
     >
       Earn 1 JD to 300 JD per day by renting out what you already own.
     </OfferCard>

@@ -9,7 +9,8 @@ function IndivisualPromo(props) {
       title={"Want Passive Income?"}
       btnText={"Learn more"}
       startNow={6}
-      color={"purple"}
+      backColor={"purple"}
+      color={'always_white'}
     >
       Earn 1 JD to 300 JD per day by renting out what you already own.
     </OfferCard>
