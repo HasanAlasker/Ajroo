@@ -6,16 +6,28 @@ import TopChunkProfile from "../../components/TopChunkProfile";
 import Post from "../../components/Post";
 import SettingsMenu from "../../components/SettingsMenu";
 import { useState } from "react";
+import OfferCard from "../../components/OfferCard";
+import IndivisualPromo from "../../components/IndivisualPromo";
+import BuisnessPromo from "../../components/BuisnessPromo";
 
-function Profile({userName, isNotification, myProfile=true, userPic, userRate, sep}) {
-  const [isMenu, setIsMenu]= useState(false)
-
- 
-
+function Profile({
+  userName,
+  isNotification,
+  myProfile = true,
+  userPic,
+  userRate,
+  sep,
+}) {
+  const [isMenu, setIsMenu] = useState(false);
 
   return (
     <SafeScreen>
-      <SettingsMenu isVisible={isMenu} onClose={()=>{setIsMenu(false)}}></SettingsMenu>
+      <SettingsMenu
+        isVisible={isMenu}
+        onClose={() => {
+          setIsMenu(false);
+        }}
+      ></SettingsMenu>
       <ScrollScreen>
         <TopChunkProfile
           isNotification={true}
@@ -23,8 +35,12 @@ function Profile({userName, isNotification, myProfile=true, userPic, userRate, s
           userName={"Hasan Alasker"}
           userRate={"5"}
           sep={"Items"}
-          settingsPress={()=>{setIsMenu(true)}}
+          settingsPress={() => {
+            setIsMenu(true);
+          }}
         ></TopChunkProfile>
+        <IndivisualPromo></IndivisualPromo>
+        <BuisnessPromo></BuisnessPromo>
         <Post
           area={"Al Jandaweel"}
           condition={"Brand new"}

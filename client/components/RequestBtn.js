@@ -3,8 +3,9 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import AppText from "../config/AppText";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-function RequestBtn({ title, isActive, onPress, isGreen, isRed, style, disabled=false }) {
+function RequestBtn({ title, isActive, onPress, isGreen, isRed, style, disabled=false, arrow=false, color, backColor }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
 
@@ -26,8 +27,9 @@ function RequestBtn({ title, isActive, onPress, isGreen, isRed, style, disabled=
   }
 
   return (
-    <TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.container, {backgroundColor: buttonColor(), borderColor: borderColor()}, style]}>
-      <AppText style={[styles.text, {color: textColor()}]}>{title}</AppText>
+    <TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.container, {backgroundColor: backColor? theme[backColor] : buttonColor(), borderColor: backColor? theme[backColor] : borderColor()}, style]}>
+      <AppText style={[styles.text, {color: color ? theme[color] : textColor()}]}>{title}</AppText>
+      {arrow && <MaterialCommunityIcons name="chevron-right-circle-outline" color={theme[color]} size={20}></MaterialCommunityIcons>}
     </TouchableOpacity>
   );
 }
@@ -40,9 +42,12 @@ const getStyles = (theme) =>
       justifyContent: "center",
       alignItems: "center",
       padding: 5,
-      borderRadius: 10,
+      borderRadius: 14,
       borderWidth:2,
-      borderColor:theme.purple
+      borderColor:theme.purple,
+      flexDirection:'row',
+      gap:5,
+      textAlignVertical:'center'
     },
     text: {
       fontSize: 18,

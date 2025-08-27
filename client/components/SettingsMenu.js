@@ -31,6 +31,12 @@ function SettingsMenu({ isVisible, onClose }) {
             icon={"newspaper-variant-outline"}
           />
           <SeparatorComp style={styles.sep} />
+          <MenuOption
+            text={"Subscription"}
+            icon={"card-account-details-star-outline"}
+            color={'purple'}
+          />
+          <SeparatorComp style={styles.sep} />
           <MenuOption text={"Help"} icon={"headphones"} color={"green"} />
           <SeparatorComp style={styles.sep} />
           <MenuOption text={"Log out"} icon={"logout"} color={"red"} />

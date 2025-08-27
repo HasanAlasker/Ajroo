@@ -5,12 +5,12 @@ import {
   Modal,
   TouchableWithoutFeedback,
 } from "react-native";
-import useThemedStyles from "../hooks/useThemedStyles";
 import AppText from "../config/AppText";
 import PlusMinusBtn from "./PlusMinusBtn";
 import CardModal from "./CardModal";
 import RequestBtn from "./RequestBtn";
 import { FontAwesome6 } from "@expo/vector-icons";
+import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 
 function RequestModal({ isVisibile, onClose, pricePerDay }) {

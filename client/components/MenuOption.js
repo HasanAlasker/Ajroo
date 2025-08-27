@@ -9,25 +9,14 @@ function MenuOption({ text, icon, color, onPress }) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
 
-  const renderColor = () => {
-    switch (color) {
-      case "red":
-        return theme.red;
-      case "green":
-        return theme.green;
-      default:
-        return theme.main_text;
-    }
-  };
-
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <AppText style={[styles.text, { color: renderColor() }]}>{text}</AppText>
+      <AppText style={[styles.text, { color: color ? theme[color] : theme['main_text']}]}>{text}</AppText>
       {icon && (
         <MaterialCommunityIcons
           name={icon}
           size={26}
-          color={renderColor()}
+          color={color ? theme[color] : theme['main_text']}
         ></MaterialCommunityIcons>
       )}
     </TouchableOpacity>
