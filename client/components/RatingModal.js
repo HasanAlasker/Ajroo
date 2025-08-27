@@ -1,38 +1,86 @@
 import {useState} from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import CardModal from "./CardModal";
 import RequestBtn from "./RequestBtn";
 import RatingStars from "./RatingStars";
+import AppText from "../config/AppText";
 
 function RatingModal({ isVisible, onClose, isOwner }) {
-  const [currentRating, setCurrentRating] = useState(0);
+  const [itemRating, setItemRating] = useState(0);
+  const [userRating, setUserRating] = useState(0);
 
-  const handleRatingChange = (newRating) => {
-    setCurrentRating(newRating);
-  };
-
-  const handleConfirm = () => {
-    // Only proceed if rating is greater than 0
-    if (currentRating > 0) {
-      // You can pass the rating to parent component if needed
-      // onClose(currentRating);
-      onClose();
+  const handleRatingChange = (ratingType, newRating) => {
+    if (ratingType === 'item') {
+      setItemRating(newRating);
+    } else if (ratingType === 'user') {
+      setUserRating(newRating);
     }
   };
 
-  const isDisabled = currentRating === 0;
+  const handleConfirm = () => {
+    if (isOwner) {
+      // Owner only needs to rate the borrower
+      if (userRating > 0) {
+        // Send userRating to backend
+        onClose({ userRating });
+      }
+    } else {
+      // Borrower needs to rate both item and owner
+      if (itemRating > 0 && userRating > 0) {
+        // Send both ratings to backend
+        onClose({ itemRating, userRating });
+      }
+    }
+  };
+
+  const isDisabled = () => {
+    if (isOwner) {
+      return userRating === 0;
+    } else {
+      return itemRating === 0 || userRating === 0;
+    }
+  };
 
   return (
     <CardModal isVisibile={isVisible}>
-      <RatingStars onRatingChange={handleRatingChange}></RatingStars>
-      <RatingStars onRatingChange={handleRatingChange}></RatingStars>
-      <RequestBtn
-        isActive={true}
-        style={[styles.btn, {opacity: isDisabled ? 0.5 : 1}]}
-        title={"Confirm"}
-        onPress={handleConfirm}
-        disabled={isDisabled}
-      ></RequestBtn>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        
+        {isOwner ? (
+          // Owner only rates the borrower
+          <RatingStars
+            onRatingChange={handleRatingChange}
+            ratingType="user"
+            title="Rate the borrower"
+            subtitle="How was your experience with the person who borrowed your item?"
+          />
+        ) : (
+          // Borrower rates both item and owner
+          <>
+            <RatingStars
+              onRatingChange={handleRatingChange}
+              ratingType="item"
+              title="Rate the item"
+              subtitle="How would you rate the quality and condition of this item?"
+            />
+            
+            <RatingStars
+              onRatingChange={handleRatingChange}
+              ratingType="user"
+              title="Rate the owner"
+              subtitle="How was your experience with the item owner?"
+            />
+          </>
+        )}
+
+        <RequestBtn
+          isActive={!isDisabled()}
+          style={[styles.btn, {opacity: isDisabled() ? 0.5 : 1}]}
+          title={"Submit Rating" + (isOwner ? "" : "s")}
+          onPress={handleConfirm}
+          disabled={isDisabled()}
+        />
+        
+      </ScrollView>
     </CardModal>
   );
 }
@@ -41,7 +89,7 @@ const styles = StyleSheet.create({
   container: {},
   btn: {
     width: "100%",
-    marginTop:15
+    marginTop: 15,
   },
 });
 

@@ -5,7 +5,7 @@ import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import AppText from "../config/AppText";
 
-function RatingStars(props) {
+function RatingStars({ onRatingChange, ratingType, title, subtitle }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
 
@@ -13,9 +13,9 @@ function RatingStars(props) {
 
   const handleStarPress = (starNumber) => {
     setRating(starNumber);
-    // Optional: call props callback if parent needs to know about rating change
-    if (props.onRatingChange) {
-      props.onRatingChange(starNumber);
+    // Call parent callback with rating type and value
+    if (onRatingChange) {
+      onRatingChange(ratingType, starNumber);
     }
   };
 
@@ -32,8 +32,10 @@ function RatingStars(props) {
   };
 
   return (
-    <>
-      <AppText style={styles.text}>Rate item</AppText>
+    <View style={styles.ratingSection}>
+      <AppText style={styles.text}>{title}</AppText>
+      {subtitle && <AppText style={styles.subtext}>{subtitle}</AppText>}
+      
       <View style={styles.container}>
         {[1, 2, 3, 4, 5].map((starNumber) => (
           <TouchableOpacity 
@@ -48,6 +50,7 @@ function RatingStars(props) {
           </TouchableOpacity>
         ))}
       </View>
+      
       <View style={styles.display}>
         <View style={styles.row}>
           <AppText style={styles.faded}>Rating: </AppText>
@@ -56,12 +59,15 @@ function RatingStars(props) {
           </AppText>
         </View>
       </View>
-    </>
+    </View>
   );
 }
 
 const getStyles = (theme) =>
   StyleSheet.create({
+    ratingSection: {
+      marginBottom: 20,
+    },
     container: {
       flexDirection: "row",
       justifyContent: "space-between",
@@ -75,6 +81,12 @@ const getStyles = (theme) =>
     text: {
       fontSize: 20,
       color: theme.main_text,
+    },
+    subtext: {
+      fontSize: 16,
+      color: theme.darker_gray,
+      marginTop: 10,
+      
     },
     display: {
       width: "100%",
@@ -91,7 +103,7 @@ const getStyles = (theme) =>
       fontSize: 20,
     },
     bold:{
-        fontWeight:'bold'
+      fontWeight:'bold'
     }
   });
 
