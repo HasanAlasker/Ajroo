@@ -35,7 +35,7 @@ function Subscription(props) {
         <OfferCard
           backColor={"green"}
           color={"always_white"}
-          title={"Individual - Pro"}
+          title={"Business - Starter"}
           icon={"museum"}
           btnText={"Subscribe now"}
           startNow={25}
@@ -48,18 +48,16 @@ function Subscription(props) {
         <OfferCard
           backColor={"gold"}
           color={"always_white"}
-          title={"Individual - Pro"}
+          title={"Business - Premium"}
           icon={"warehouse"}
           btnText={"Subscribe now"}
           startNow={50}
         >
-            List unlimited items and max out your profit every month.{"\n\n"}
-
-Get a store badge - Displayed next to your user name.{"\n\n"}
-
-Priority search ranking - Your listings show on top to increase your earning.{"\n\n"}
-
-Get analytics to keep up with your business and maximize your wining.
+          List unlimited items and max out your profit every month.{"\n\n"}
+          Get a store badge - Displayed next to your user name.{"\n\n"}
+          Priority search ranking - Your listings show on top to increase your
+          earning.{"\n\n"}
+          Get analytics to keep up with your business and maximize your wining.
         </OfferCard>
       </ScrollScreen>
       <Navbar></Navbar>
