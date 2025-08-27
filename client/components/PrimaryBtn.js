@@ -5,6 +5,7 @@ import { useTheme } from "../config/ThemeContext";
 import { useRoute } from "@react-navigation/native";
 import RequestModal from "./RequestModal";
 import { useState } from "react";
+import RatingModal from "./RatingModal";
 
 function PrimaryBtn({
   title,
@@ -67,9 +68,10 @@ function PrimaryBtn({
   }
 
   const [visibleRequest, setVisibileRequest] = useState(false)
+  const [visibleRating, setVisibileRating] = useState(false)
   const handlePress = () => {
     if(renderBtnText() === 'Request') setVisibileRequest(true)
-    
+    if(renderBtnText()==='Got it back' || renderBtnText() === 'Mark Returned') setVisibileRating(true)
   }
 
 
@@ -83,6 +85,7 @@ function PrimaryBtn({
         <AppText style={styles.text}>{renderBtnText()}</AppText>
       </TouchableOpacity>
       <RequestModal isVisibile={visibleRequest} onClose={()=> {setVisibileRequest(false)}} pricePerDay={pricePerDay}></RequestModal>
+      <RatingModal isVisible={visibleRating} onClose={()=>setVisibileRating(false)}></RatingModal>
     </>
   );
 }

@@ -14,6 +14,7 @@ import {
   getConditionLabel,
   getPriceLabel,
 } from "../../constants/DropOptions";
+import RatingModal from "../../components/RatingModal";
 
 function Have(props) {
   const styles = useThemedStyles(getStyles);

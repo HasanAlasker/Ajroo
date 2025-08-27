@@ -66,6 +66,22 @@ export const PostProvider = ({ children }) => {
     }
   };
 
+  // Update post
+  const updatePost = async (postId, newPostData) => {
+    try {
+      const updatedPosts = posts.map((post) =>
+        post.id === postId
+          ? { ...post, ...newPostData, updatedAt: new Date().toISOString() }
+          : post
+      );
+      setPosts(updatedPosts);
+      await savePosts(updatedPosts);
+    } catch (error) {
+      console.error("Error updating post status:", error);
+      throw error;
+    }
+  };
+
   // Update post status
   const updatePostStatus = async (postId, newStatus) => {
     try {
@@ -125,6 +141,7 @@ export const PostProvider = ({ children }) => {
     posts,
     loading,
     addPost,
+    updatePost,
     updatePostStatus,
     deletePost,
     getPostsByUser,

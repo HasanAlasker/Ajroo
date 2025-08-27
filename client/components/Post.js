@@ -64,8 +64,8 @@ function Post({
             <ItemStatus status={status} time={time}></ItemStatus>
           </RowLableCont>
           <RowLableCont>
-            {rating && <ItemRating rating={rating}></ItemRating>}
             {condition && <ItemCondition condition={condition}></ItemCondition>}
+            {rating && <ItemRating rating={rating}></ItemRating>}
           </RowLableCont>
           {
             <PrimaryBtn
