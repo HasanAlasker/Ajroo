@@ -94,7 +94,6 @@ function EditPostModal({
   
   // If no post found, return null or show error
   if (!existingPost) {
-    console.error(`Post with id ${postId} not found`);
     return null;
   }
 
@@ -135,7 +134,7 @@ function EditPostModal({
           onClose(); // Close the modal
         }
         setSubmitting(false);
-      }, 1000);
+      }, 500);
 
     } catch (error) {
       console.error('Error updating post:', error);
