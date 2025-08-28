@@ -6,12 +6,54 @@ import Navbar from "../../components/Navbar";
 import IndivisualPromo from "../../components/IndivisualPromo";
 import OfferCard from "../../components/OfferCard";
 import PostComponent from "../../components/PostComponent";
+import useThemedStyles from "../../hooks/useThemedStyles";
+import { useTheme } from "../../config/ThemeContext";
+import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import AppText from "../../config/AppText";
 
 function Subscription(props) {
+  const styles = useThemedStyles(getStyles);
+  const { theme } = useTheme();
+
   return (
     <SafeScreen>
       <ScrollScreen>
-        <PostComponent></PostComponent>
+        <PostComponent style={styles.container}>
+          <View style={styles.iconAndTitle}>
+            <MaterialIcons
+              name={"paid"}
+              size={28}
+              color={theme.purple}
+            ></MaterialIcons>
+            <AppText style={[styles.text, styles.title]}>
+              Start Earning with LendYard
+            </AppText>
+          </View>
+          <AppText style={[styles.text, styles.faded]}>
+            Whether you're an individual or a business, LendYard helps you turn
+            idle items into income.
+          </AppText>
+          <AppText style={[styles.text]}>Why Join LendYard?</AppText>
+          <AppText style={[styles.text, styles.faded, styles.height]}>
+            - Turn unused items into cash.{"\n"}- Earn 1 JD/day up to 300
+            JD/day.{"\n"}- Control your pricing and availability.{"\n"}
+          </AppText>
+          <AppText style={[styles.text]}>How It Works?</AppText>
+          <AppText style={[styles.text, styles.faded, styles.height]}>
+            1- Subscirbe - Choose a plan that fits you.{"\n"}
+            2- List items - Add photos, details and prices.{"\n"}
+            3- Start earning - Accept rental requests and make money.{"\n"}
+          </AppText>
+          <View style={styles.iconAndTitle}>
+            <FontAwesome6
+              name="circle-exclamation"
+              color={theme.darker_gray}
+            ></FontAwesome6>
+            <AppText style={[styles.note, styles.small]}>
+              Note: Businesses must choose a business plan. Misuse may lead to account suspension.
+            </AppText>
+          </View>
+        </PostComponent>
         <OfferCard
           backColor={"post"}
           color={"purple"}
@@ -65,8 +107,38 @@ function Subscription(props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {},
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      marginVertical: 15,
+    },
+    iconAndTitle: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 5,
+    },
+    text: {
+      color: theme.purple,
+      fontSize: 18,
+      fontWeight: "bold",
+      textAlignVertical:'center'
+    },
+    title: {
+      fontSize: 22,
+      fontWeight: "bold",
+    },
+    faded: {
+      color: theme.main_text,
+      fontWeight: "regular",
+    },
+    height: {
+      lineHeight: 25,
+    },
+    small: {
+      fontSize: 15,
+      color:theme.darker_gray,
+      fontWeight:'bold'
+    },
+  });
 
 export default Subscription;

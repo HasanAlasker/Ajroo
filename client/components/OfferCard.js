@@ -16,7 +16,8 @@ function OfferCard({
   startsAt,
   backColor,
   color,
-  size
+  size,
+  onPress
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
@@ -51,6 +52,7 @@ function OfferCard({
           color={backColor}
           backColor={"always_white"}
           style={styles.btn}
+          onPress={onPress}
         />
       )}
     </PostComponent>
@@ -60,7 +62,7 @@ function OfferCard({
 const getStyles = (theme) =>
   StyleSheet.create({
     container: {
-      marginVertical: 20,
+      marginVertical: 15,
     },
     iconAndTitle: {
       flexDirection: "row",
