@@ -35,7 +35,7 @@ function Have(props) {
         area={getAreaLabel(item.area)} 
         condition={getConditionLabel(item.condition)}
         status={item.status}
-        isMine={false}
+        isMine={true}
         rating={item.rating}
         date={item.createdAt}
       />

@@ -77,9 +77,14 @@ export const PostProvider = ({ children }) => {
       setPosts(updatedPosts);
       await savePosts(updatedPosts);
     } catch (error) {
-      console.error("Error updating post status:", error);
+      console.error("Error updating post:", error);
       throw error;
     }
+  };
+
+  // editPost function (alias for updatePost for consistency)
+  const editPost = async (postId, newPostData) => {
+    return await updatePost(postId, newPostData);
   };
 
   // Update post status
@@ -108,6 +113,11 @@ export const PostProvider = ({ children }) => {
       console.error("Error deleting post:", error);
       throw error;
     }
+  };
+
+  // getPostById function
+  const getPostById = (postId) => {
+    return posts.find((post) => post.id === postId);
   };
 
   // Get posts by user
@@ -142,8 +152,10 @@ export const PostProvider = ({ children }) => {
     loading,
     addPost,
     updatePost,
+    editPost, 
     updatePostStatus,
     deletePost,
+    getPostById, 
     getPostsByUser,
     getPostsByStatus,
     getPostsByCategory,

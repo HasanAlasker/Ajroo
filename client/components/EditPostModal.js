@@ -18,6 +18,8 @@ import { usePosts } from "../config/PostContext";
 import useThemedStyles from "../hooks/useThemedStyles";
 
 import * as Yup from "yup";
+import { Formik } from "formik";
+import FormBtn from "./FormBtn";
 
 const validationSchema = Yup.object().shape({
   category: Yup.string()
@@ -80,14 +82,15 @@ const validationSchema = Yup.object().shape({
 });
 
 function EditPostModal({
-  postId, // This is what you need to identify which post to edit
-  visible = true,
+  postId,
+  visible,
   onClose,
 }) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
-  const { editPost, Posts } = usePosts();
-  const styles = useThemedStyles(getStyles)
-  const existingPost = Posts(postId);
+  const { editPost, getPostById } = usePosts(); 
+  const styles = useThemedStyles(getStyles);
+
+  const existingPost = getPostById(postId);
   
   // If no post found, return null or show error
   if (!existingPost) {
@@ -98,46 +101,41 @@ function EditPostModal({
   const initialValues = {
     category: existingPost.category || "",
     item: existingPost.item || "",
-    price: existingPost.pricePerDay || "", // Note: using pricePerDay from context
+    price: existingPost.price || "", 
     city: existingPost.city || "",
     area: existingPost.area || "",
     condition: existingPost.condition || "",
-    image: existingPost.imageUri || null, // Note: using imageUri from context
+    image: existingPost.image || null, 
   };
 
-  const handleSubmit = (values, { setSubmitting, setStatus, resetForm }) => {
+  const handleSubmit = async (values, { setSubmitting, setStatus, resetForm }) => {
     console.log("Edit form values:", values);
 
     try {
-      // Update the post using editPost function
+      setSubmitting(true);
+  
       const updatedData = {
         category: values.category,
         item: values.item,
-        pricePerDay: values.price, // Map back to pricePerDay
+        price: values.price, 
         city: values.city,
         area: values.area,
         condition: values.condition,
-        imageUri: values.image, // Map back to imageUri
+        image: values.image, 
       };
 
-      editPost(postId, updatedData);
+      await editPost(postId, updatedData);
       setHasBeenSubmitted(true);
 
-      // Simulate API call
+      // Simulate API call success
       setTimeout(() => {
-        try {
-          setStatus({ type: "success", message: "Item updated successfully!" });
-          setHasBeenSubmitted(false);
-          onClose && onClose();
-        } catch (error) {
-          setStatus({
-            type: "error",
-            message: "Failed to update item. Please try again.",
-          });
-        } finally {
-          setSubmitting(false);
+        setStatus({ type: "success", message: "Item updated successfully!" });
+        setHasBeenSubmitted(false);
+        if (onClose) {
+          onClose(); // Close the modal
         }
-      }, 1000); // Shorter timeout for better UX
+        setSubmitting(false);
+      }, 1000);
 
     } catch (error) {
       console.error('Error updating post:', error);
@@ -152,7 +150,7 @@ function EditPostModal({
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <ScrollView contentContainerStyle={styles.scroll}>
-        <AppForm
+        <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
@@ -202,7 +200,7 @@ function EditPostModal({
             }, [values.city]);
 
             return (
-              <>
+              <ScrollView contentContainerStyle={styles.scroll}>
                 <AddImageBtn
                   image={values.image}
                   onImageChange={(image) => {
@@ -259,12 +257,15 @@ function EditPostModal({
 
                 <SubmitBtn
                   setHasBeenSubmitted={setHasBeenSubmitted}
-                  title="Update Post"
+                  defaultText="Update Post"
+                  submittingText="Updating..."
+
                 />
-              </>
+                <FormBtn title={'Cancel'} onPress={onClose} style={styles.cancel}></FormBtn>
+              </ScrollView>
             );
           }}
-        </AppForm>
+        </Formik>
       </ScrollView>
     </Modal>
   );
@@ -274,8 +275,17 @@ const getStyles = (theme) => StyleSheet.create({
   container: {},
   scroll: {
     flex: 1,
-    
+    backgroundColor: theme.background,
   },
+  cancel:{
+    backgroundColor:theme.red,
+    borderColor:theme.red,
+    marginTop:20
+  },
+  scroll:{
+    paddingBottom:30,
+    backgroundColor:theme.background
+  }
 });
 
 export default EditPostModal;

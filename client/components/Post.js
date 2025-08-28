@@ -16,6 +16,7 @@ import { useRoute } from "@react-navigation/native";
 import PostMenu from "./PostMenu";
 import { useState } from "react";
 import ItemPricing from "./ItemPricing";
+import EditPostModal from "./EditPostModal"; // Import the EditPostModal here
 
 function Post({
   id,
@@ -43,8 +44,19 @@ function Post({
   const route = useRoute();
 
   const [isPostMenu, setIsPostMenu] = useState(false);
+  const [isEditModal, setIsEditModal] = useState(false); // Add edit modal state
+
   const handelMenu = () => {
     setIsPostMenu(!isPostMenu);
+  };
+
+  const handleEditPost = () => {
+    setIsEditModal(true);
+    setIsPostMenu(false); 
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModal(false);
   };
 
   return (
@@ -55,17 +67,17 @@ function Post({
           name={name}
           date={date}
           onPressThree={handelMenu}
-        ></TopOfPost>
-        <ItmeImage source={image}></ItmeImage>
-        <ItemNameAndCat itemName={itemName} itemCat={itemCat} pricePerDay={pricePerDay}></ItemNameAndCat>
+        />
+        <ItmeImage source={image} />
+        <ItemNameAndCat itemName={itemName} itemCat={itemCat} pricePerDay={pricePerDay} />
         <LableContainer>
-          {area && <Location city={city} area={area}></Location>}
+          {area && <Location city={city} area={area} />}
           <RowLableCont>
-            <ItemStatus status={status} time={time}></ItemStatus>
+            <ItemStatus status={status} time={time} />
           </RowLableCont>
           <RowLableCont>
-            {condition && <ItemCondition condition={condition}></ItemCondition>}
-            {rating && <ItemRating rating={rating}></ItemRating>}
+            {condition && <ItemCondition condition={condition} />}
+            {rating && <ItemRating rating={rating} />}
           </RowLableCont>
           {
             <PrimaryBtn
@@ -76,10 +88,10 @@ function Post({
               iBorrowed={iBorrowed}
               iRequested={iRequested}
               pricePerDay={pricePerDay}
-            ></PrimaryBtn>
+            />
           }
           {route.name === "Requests" && status === "requested" && (
-            <AcceptRejectBtn></AcceptRejectBtn>
+            <AcceptRejectBtn />
           )}
         </LableContainer>
       </PostComponent>
@@ -89,7 +101,14 @@ function Post({
         isVisible={isPostMenu}
         onClose={() => setIsPostMenu(false)}
         postId={id}
-      ></PostMenu>
+        onEditPress={handleEditPost} // Pass the edit handler
+      />
+
+      <EditPostModal 
+        postId={id}
+        visible={isEditModal}
+        onClose={handleCloseEditModal}
+      />
     </>
   );
 }

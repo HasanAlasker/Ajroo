@@ -46,7 +46,7 @@ function AddImageBtn({
       const imageUri = await selectImageFromLibrary({
         quality: 0.7,
         allowsEditing: true,
-        aspect: [4, 3], // Better aspect ratio for general images
+        aspect: [4, 3.8], // Better aspect ratio for general images
       });
 
       console.log("Selected image URI:", imageUri); // Debug log
@@ -66,7 +66,7 @@ function AddImageBtn({
       const imageUri = await selectImageFromCamera({
         quality: 0.7,
         allowsEditing: true,
-        aspect: [4, 3], // Better aspect ratio for general images
+        aspect: [4, 3.8], // Better aspect ratio for general images
       });
 
       console.log("Camera image URI:", imageUri); // Debug log
