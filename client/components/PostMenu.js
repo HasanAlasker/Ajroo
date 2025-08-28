@@ -31,7 +31,7 @@ function PostMenu({ isVisible, onClose, isMine, postId, onEditPress }) {
 
   const handleEditPost = () => {
     if (onEditPress) {
-      onEditPress(); // Call the handler passed from Post component
+      onEditPress(); 
     }
   };
 
@@ -63,7 +63,7 @@ function PostMenu({ isVisible, onClose, isMine, postId, onEditPress }) {
                 <MenuOption 
                   text={"Edit post"} 
                   icon={"pencil"} 
-                  onPress={handleEditPost} // FIXED: Add onPress handler
+                  onPress={handleEditPost} 
                 />
               )}
               {isMine && <SeparatorComp style={styles.sep} />}
@@ -72,7 +72,7 @@ function PostMenu({ isVisible, onClose, isMine, postId, onEditPress }) {
                   text={"Delete post"}
                   icon={"delete"}
                   color={"red"}
-                  onPress={handleDeletePost} // FIXED: Use the handler function
+                  onPress={handleDeletePost} 
                 />
               ) : (
                 <MenuOption

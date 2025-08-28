@@ -90,7 +90,7 @@ function Post({
               pricePerDay={pricePerDay}
             />
           }
-          {route.name === "Requests" && status === "requested" && (
+          {route.name === "Requests" && status === "requested" && isMine===true && (
             <AcceptRejectBtn />
           )}
         </LableContainer>
