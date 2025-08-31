@@ -50,6 +50,9 @@ function Login(props) {
         setSubmitting(false);
       }
     }, 1500);
+
+    navigation.navigate('Home') // remove later when you are usin userContext and database
+
   };
   return (
     <SafeScreen>

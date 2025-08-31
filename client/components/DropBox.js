@@ -15,20 +15,21 @@ import MenuBackBtn from "../components/MenuBackBtn";
 import MenuOption from "../components/MenuOption";
 import SeparatorComp from "../components/SeparatorComp";
 
-function DropBox({ 
-  placeholder, 
-  penOn, 
-  items, 
-  onSelectItem, 
-  selectedValue, 
+function DropBox({
+  placeholder,
+  penOn,
+  items,
+  onSelectItem,
+  selectedValue,
   disabled,
+  icon,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
 
   const [modal, setModal] = useState(false);
 
-  const selectedItem = items.find(item => item.value === selectedValue);
+  const selectedItem = items.find((item) => item.value === selectedValue);
   const displayText = selectedItem ? selectedItem.label : placeholder;
 
   const handlePress = () => {
@@ -47,33 +48,25 @@ function DropBox({
       <View>
         <TouchableOpacity
           onPress={handlePress}
-          style={[
-            styles.container,
-            disabled && styles.disabled,
-          ]}
+          style={[styles.container, disabled && styles.disabled]}
           disabled={disabled}
         >
           <View style={styles.left}>
-            {penOn && (
-              <Feather 
-                name="edit-3" 
-                size={24} 
-                color={theme.purple}
-              />
+            {penOn && <Feather name="edit-3" size={24} color={theme.purple} />}
+            {icon && (
+              <Feather name={icon} size={24} color={theme.purple}></Feather>
             )}
-            <AppText style={[
-              styles.text,
-              disabled && styles.disabledText,
-              !selectedItem && styles.placeholderText
-            ]}>
+            <AppText
+              style={[
+                styles.text,
+                disabled && styles.disabledText,
+                !selectedItem && styles.placeholderText,
+              ]}
+            >
               {displayText}
             </AppText>
           </View>
-          <Feather 
-            name="chevron-down" 
-            size={26} 
-            color={theme.purple}
-          />
+          <Feather name="chevron-down" size={26} color={theme.purple} />
         </TouchableOpacity>
       </View>
 
@@ -96,9 +89,7 @@ function DropBox({
                 onPress={() => handleSelectItem(item)}
               />
             )}
-            ItemSeparatorComponent={() => 
-              <SeparatorComp style={styles.sep} />
-            }
+            ItemSeparatorComponent={() => <SeparatorComp style={styles.sep} />}
             contentContainerStyle={styles.list}
           />
         </View>
@@ -151,9 +142,9 @@ const getStyles = (theme) =>
       marginTop: 5,
       marginBottom: 5,
     },
-    disabled:{
-      opacity:.6
-    }
+    disabled: {
+      opacity: 0.6,
+    },
   });
 
 export default DropBox;

@@ -224,6 +224,11 @@ export const condition = [
   { label: "Needs Repair", value: "needs_repair" }
 ];
 
+export const gender = [
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+];
+
 export const price = [
   { label: "Free", value: "0" },
   { label: "1 JD", value: "1" },

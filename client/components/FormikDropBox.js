@@ -4,7 +4,7 @@ import { useFormikContext } from 'formik';
 import DropBox from './DropBox';
 import ErrorMessage from './ErrorMessage';
 
-function FormikDropBox({name, placeholder, items, disabled=false, penOn=false, hasBeenSubmitted=false}) {
+function FormikDropBox({name, placeholder, items, disabled=false, penOn=false, hasBeenSubmitted=false, ...other}) {
   
   const {values, errors, touched, setFieldTouched, setFieldValue, setStatus} = useFormikContext()
   const shouldShowError = hasBeenSubmitted && errors[name];
@@ -24,6 +24,7 @@ function FormikDropBox({name, placeholder, items, disabled=false, penOn=false, h
           }
         }}
         disabled={disabled}
+        {...other}
       />
       {shouldShowError && <ErrorMessage error={errors[name]}></ErrorMessage>}
     </>
