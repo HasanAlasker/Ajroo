@@ -21,7 +21,73 @@ const validationSchema = Yup.object().shape({
     .email("Please enter a valid email address")
     .required("Email is required")
     .trim(),
-  password: Yup.string().required("Password is required").trim(),
+
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters long")
+    .max(128, "Password must not exceed 128 characters")
+    .matches(
+      /^(?=.*[a-z])/,
+      "Password must contain at least one lowercase letter"
+    )
+    .matches(
+      /^(?=.*[A-Z])/,
+      "Password must contain at least one uppercase letter"
+    )
+    .matches(/^(?=.*\d)/, "Password must contain at least one number")
+    .matches(
+      /^(?=.*[@$!%*?&])/,
+      "Password must contain at least one special character (@$!%*?&)"
+    )
+    .matches(/^[A-Za-z\d@$!%*?&]+$/, "Password contains invalid characters")
+    .test(
+      "no-common-patterns",
+      "Password cannot contain common patterns",
+      function (value) {
+        if (!value) return true;
+
+        // Check for common weak patterns
+        const weakPatterns = [
+          /(.)\1{2,}/, // 3+ repeated characters (aaa, 111)
+          /123|234|345|456|567|678|789|890/, // Sequential numbers
+          /abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz/i, // Sequential letters
+          /qwer|asdf|zxcv|1234|admin|pass/i, // Common keyboard patterns and words
+        ];
+
+        return !weakPatterns.some((pattern) => pattern.test(value));
+      }
+    )
+    .test(
+      "no-personal-info",
+      "Password should not contain personal information",
+      function (value) {
+        if (!value) return true;
+
+        // Get other form values to check against
+        const { name, email } = this.parent;
+
+        if (
+          name &&
+          value.toLowerCase().includes(name.toLowerCase().split(" ")[0])
+        ) {
+          return false;
+        }
+
+        if (
+          email &&
+          value.toLowerCase().includes(email.toLowerCase().split("@")[0])
+        ) {
+          return false;
+        }
+
+        return true;
+      }
+    )
+    .trim(),
+
+  confirmPassword: Yup.string()
+    .required("Please confirm your password")
+    .oneOf([Yup.ref("password")], "Passwords must match"),
 
   name: Yup.string()
     .min(2, "Name must be at least 2 characters long")
@@ -54,6 +120,7 @@ const initialValues = {
   phone: "",
   name: "",
   gender: "",
+  confirmPassword: "",
 };
 
 function Signin(props) {
@@ -79,7 +146,7 @@ function Signin(props) {
       }
     }, 1500);
 
-    navigation.navigate('Home') // remove later when you are usin userContext and database
+    navigation.navigate("Home"); // remove later when you are usin userContext and database
   };
   return (
     <SafeScreen>
@@ -96,7 +163,7 @@ function Signin(props) {
               placeholder={"Name"}
               autoCapitalize={false}
               icon={"user"}
-              hasBeenSubmitted={handleSubmit}
+              hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
 
             <FormikInput
@@ -104,7 +171,7 @@ function Signin(props) {
               placeholder={"Email"}
               autoCapitalize={false}
               icon={"mail"}
-              hasBeenSubmitted={handleSubmit}
+              hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
 
             <FormikInput
@@ -112,8 +179,16 @@ function Signin(props) {
               placeholder={"Phone"}
               autoCapitalize={false}
               icon={"phone"}
-              hasBeenSubmitted={handleSubmit}
+              hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
+
+            <FormikDropBox
+              name={"gender"}
+              placeholder={"Gender"}
+              hasBeenSubmitted={hasBeenSubmitted}
+              items={gender}
+              icon={"divide"}
+            ></FormikDropBox>
 
             <FormikInput
               name={"password"}
@@ -121,16 +196,17 @@ function Signin(props) {
               autoCapitalize={false}
               icon={"lock"}
               secureTextEntry={true}
-              hasBeenSubmitted={handleSubmit}
+              hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
 
-            <FormikDropBox
-              name={'gender'}
-              placeholder={'Gender'}
-              hasBeenSubmitted={handleSubmit}
-              items={gender}
-              icon={'divide'}
-            ></FormikDropBox>
+            <FormikInput
+              name={"confirmPassword"}
+              placeholder={"Confirm password"}
+              autoCapitalize={false}
+              icon={"lock"}
+              secureTextEntry={true}
+              hasBeenSubmitted={hasBeenSubmitted}
+            ></FormikInput>
 
             <SubmitBtn
               defaultText="Register"

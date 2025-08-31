@@ -19,9 +19,7 @@ const validationSchema = Yup.object().shape({
     .email("Please enter a valid email address")
     .required("Email is required")
     .trim(),
-  password: Yup.string()
-    .required("Password is required")
-    .trim(),
+  password: Yup.string().required("Password is required").trim(),
 });
 const initialValues = {
   password: "",
@@ -51,8 +49,7 @@ function Login(props) {
       }
     }, 1500);
 
-    navigation.navigate('Home') // remove later when you are usin userContext and database
-
+    navigation.navigate("Home"); // remove later when you are usin userContext and database
   };
   return (
     <SafeScreen>
@@ -69,7 +66,7 @@ function Login(props) {
               placeholder={"Email"}
               autoCapitalize={false}
               icon={"mail"}
-              hasBeenSubmitted={handleSubmit}
+              hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
 
             <FormikInput
@@ -78,7 +75,7 @@ function Login(props) {
               autoCapitalize={false}
               icon={"lock"}
               secureTextEntry={true}
-              hasBeenSubmitted={handleSubmit}
+              hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
 
             <SubmitBtn
@@ -86,18 +83,21 @@ function Login(props) {
               submittingText="Logging in..."
               setHasBeenSubmitted={setHasBeenSubmitted}
             ></SubmitBtn>
+
+            {/* Add forgot password logic later when clear */}
             <TouchableOpacity>
-                <AppText style={styles.forgot}>Forgot password?</AppText>
+              <AppText style={styles.forgot}>Forgot password?</AppText>
             </TouchableOpacity>
+
             <SeparatorComp style={styles.sep}>Or</SeparatorComp>
 
             <RequestBtn
-            style={[styles.btn, styles.border]}
-            backColor={"post"}
-            color={"purple"}
-            title={"Create account"}
-            onPress={()=>navigation.navigate('Signin')}
-          ></RequestBtn>
+              style={[styles.btn, styles.border]}
+              backColor={"post"}
+              color={"purple"}
+              title={"Create account"}
+              onPress={() => navigation.navigate("Signin")}
+            ></RequestBtn>
 
           </AppForm>
         </View>
@@ -115,19 +115,19 @@ const getStyles = (theme) =>
       width: "90%",
       marginHorizontal: "auto",
       borderRadius: 18,
-      marginTop:10
+      marginTop: 10,
     },
     border: { borderColor: theme.purple },
-    forgot:{
-        color:theme.purple,
-        fontSize:16,
-        fontWeight:'bold',
-        textAlign:'center',
-        marginVertical:18
+    forgot: {
+      color: theme.purple,
+      fontSize: 16,
+      fontWeight: "bold",
+      textAlign: "center",
+      marginVertical: 18,
     },
-    sep:{
-        marginTop:0
-    }
+    sep: {
+      marginTop: 0,
+    },
   });
 
 export default Login;
