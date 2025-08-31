@@ -17,6 +17,9 @@ import EditProfile from "./pages/Users/EditProfile";
 import { AuthProvider } from "./config/AuthContext";
 import Promo from "./pages/Users/Promo";
 import Subscription from "./pages/Users/Subscription";
+import Welcome from "./pages/Welcome/Welcome";
+import Login from "./pages/Welcome/Login";
+import Signin from "./pages/Welcome/Signin";
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +37,9 @@ const StackNavigator = () => (
     <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
     <Stack.Screen name="Promo" component={Promo}></Stack.Screen>
     <Stack.Screen name="Subscription" component={Subscription}></Stack.Screen>
+    <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
+    <Stack.Screen name="Login" component={Login}></Stack.Screen>
+    <Stack.Screen name="Signin" component={Signin}></Stack.Screen>
   </Stack.Navigator>
 );
 

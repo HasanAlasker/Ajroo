@@ -42,7 +42,7 @@ function SettingsMenu({ isVisible, onClose }) {
           <SeparatorComp style={styles.sep} />
           <MenuOption text={"Help"} icon={"headphones"} color={"green"} />
           <SeparatorComp style={styles.sep} />
-          <MenuOption text={"Log out"} icon={"logout"} color={"red"} />
+          <MenuOption text={"Log out"} icon={"logout"} color={"red"} onPress={()=>navigation.navigate('Welcome')}/>
         </BackContainer>
       </View>
     </>

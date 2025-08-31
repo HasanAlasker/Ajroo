@@ -3,7 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 
-function InputBox({ placeholder, penOn, icon, value, ...rest }) {
+function InputBox({ placeholder, penOn, icon, value, secureTextEntry, ...rest }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
 
@@ -16,6 +16,7 @@ function InputBox({ placeholder, penOn, icon, value, ...rest }) {
         placeholder={placeholder}
         placeholderTextColor={theme.purple}
         value={value}
+        secureTextEntry={secureTextEntry}
         {...rest}
       />
     </View>
