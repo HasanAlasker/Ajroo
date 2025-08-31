@@ -26,6 +26,8 @@ function SettingsMenu({ isVisible, onClose }) {
           <MenuBackBtn onClose={onClose} />
           <MenuOption text={isDarkMode ? 'Light mode': 'Dark mode'} icon={"circle-half-full"} onPress={toggleTheme}/>
           <SeparatorComp style={styles.sep} />
+          <MenuOption text={"Change language"} icon={"earth"} />
+          <SeparatorComp style={styles.sep} />
           <MenuOption text={"Privacy policy"} icon={"shield-check-outline"} />
           <SeparatorComp style={styles.sep} />
           <MenuOption
@@ -40,7 +42,7 @@ function SettingsMenu({ isVisible, onClose }) {
             onPress={()=> navigation.navigate('Subscription')}
           />
           <SeparatorComp style={styles.sep} />
-          <MenuOption text={"Help"} icon={"headphones"} color={"green"} />
+          <MenuOption text={"Support"} icon={"headphones"} color={"green"} />
           <SeparatorComp style={styles.sep} />
           <MenuOption text={"Log out"} icon={"logout"} color={"red"} onPress={()=>navigation.navigate('Welcome')}/>
         </BackContainer>
