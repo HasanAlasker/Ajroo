@@ -10,6 +10,7 @@ import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import AppText from "../../config/AppText";
+import Logo from "../../components/Logo";
 
 function Subscription(props) {
   const styles = useThemedStyles(getStyles);
@@ -18,6 +19,7 @@ function Subscription(props) {
   return (
     <SafeScreen>
       <ScrollScreen>
+        <Logo slogan style={styles.logo}/>
         <PostComponent style={styles.container}>
           <View style={styles.iconAndTitle}>
             <MaterialIcons
@@ -139,6 +141,9 @@ const getStyles = (theme) =>
       color:theme.darker_gray,
       fontWeight:'bold'
     },
+    logo:{
+      marginVertical:20
+    }
   });
 
 export default Subscription;
