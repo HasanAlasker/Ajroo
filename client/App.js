@@ -14,7 +14,7 @@ import Book from "./pages/Users/Book";
 import Profile from "./pages/Users/Profile";
 import Requests from "./pages/Users/Requests";
 import EditProfile from "./pages/Users/EditProfile";
-import { AuthProvider } from "./config/AuthContext";
+import { UserProvider } from "./config/UserContext";
 import Promo from "./pages/Users/Promo";
 import Subscription from "./pages/Users/Subscription";
 import Welcome from "./pages/Welcome/Welcome";
@@ -61,11 +61,11 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <AuthProvider>
+        <UserProvider>
           <PostProvider>
             <AppContent />
           </PostProvider>
-        </AuthProvider>
+        </UserProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

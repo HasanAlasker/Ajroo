@@ -70,6 +70,7 @@ function EditProfile({ userName, image, number, email, rating, sep }) {
   return (
     <SafeScreen>
       <KeyboardScrollScreen>
+        
         <TopChunkProfile
           userName={userName || "Hasan Alasker"}
           userRate={rating || 5}
@@ -112,6 +113,7 @@ function EditProfile({ userName, image, number, email, rating, sep }) {
             submittingText="Saving..."
             setHasBeenSubmitted={setHasBeenSubmitted}
           ></SubmitBtn>
+
         </AppForm>
       </KeyboardScrollScreen>
     </SafeScreen>
