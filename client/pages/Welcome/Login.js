@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import SafeScreen from "../../components/SafeScreen";
-import ScrollScreen from "../../components/ScrollScreen";
 import AppForm from "../../components/AppForm";
 import Logo from "../../components/Logo";
 import RequestBtn from "../../components/RequestBtn";
@@ -9,11 +8,12 @@ import useThemedStyles from "../../hooks/useThemedStyles";
 import { useNavigation } from "@react-navigation/native";
 import * as Yup from "yup";
 import FormikInput from "../../components/FormikInput";
-import FormBtn from "../../components/FormBtn";
 import SubmitBtn from "../../components/SubmitBtn";
 import SeparatorComp from "../../components/SeparatorComp";
 import AppText from "../../config/AppText";
 import KeyboardScrollScreen from "../../components/KeyboardScrollScreen";
+
+import { useUser } from "../../config/UserContext";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -30,27 +30,41 @@ const initialValues = {
 function Login(props) {
   const styles = useThemedStyles(getStyles);
   const navigation = useNavigation();
-
+  const { login, error, isLoading, clearError } = useUser();
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
 
-  const handleSubmit = (values, { setSubmitting, setStatus }) => {
+  useEffect(() => {
+    // clear errors when component mounts
+    clearError();
+  }, []);
+
+  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
     console.log("Login values:", values);
     setHasBeenSubmitted(true);
 
-    setTimeout(() => {
-      try {
+    try {
+      const result = await login(values.email, values.password);
+
+      if (result.success) {
         setStatus({
           type: "success",
           message: "Logged in successfully!",
         });
-      } catch (error) {
-        setStatus({ type: "error", message: "Failed to Log in." });
-      } finally {
-        setSubmitting(false);
+        // Navigation will happen automatically via UserContext state change
+      } else {
+        setStatus({
+          type: "error",
+          message: result.error || "Failed to log in.",
+        });
       }
-    }, 1500);
-
-    navigation.navigate("Home"); // remove later when you are usin userContext and database
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: error.message || "An unexpected error occurred.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
   return (
     <SafeScreen>
@@ -79,6 +93,11 @@ function Login(props) {
               hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
 
+            {/* Display context error if exists */}
+            {error && (
+              <AppText style={styles.errorText}>{error}</AppText>
+            )}
+
             <SubmitBtn
               defaultText="Login"
               submittingText="Logging in..."
@@ -99,7 +118,6 @@ function Login(props) {
               title={"Create account"}
               onPress={() => navigation.navigate("Signin")}
             ></RequestBtn>
-
           </AppForm>
         </View>
       </KeyboardScrollScreen>

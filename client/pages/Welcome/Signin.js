@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet } from "react-native";
 import SafeScreen from "../../components/SafeScreen";
-import ScrollScreen from "../../components/ScrollScreen";
 import AppForm from "../../components/AppForm";
 import Logo from "../../components/Logo";
 import RequestBtn from "../../components/RequestBtn";
@@ -9,14 +8,15 @@ import useThemedStyles from "../../hooks/useThemedStyles";
 import { useNavigation } from "@react-navigation/native";
 import * as Yup from "yup";
 import FormikInput from "../../components/FormikInput";
-import FormBtn from "../../components/FormBtn";
 import SubmitBtn from "../../components/SubmitBtn";
 import SeparatorComp from "../../components/SeparatorComp";
-import AppText from "../../config/AppText";
 import FormikDropBox from "../../components/FormikDropBox";
 import { gender } from "../../constants/DropOptions";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import KeyboardScrollScreen from "../../components/KeyboardScrollScreen";
+
+
+import { useUser } from "../../config/UserContext";
+import AppText from "../../config/AppText";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -128,28 +128,46 @@ const initialValues = {
 function Signin(props) {
   const styles = useThemedStyles(getStyles);
   const navigation = useNavigation();
-
+  const { register, error, isLoading, clearError } = useUser();
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
 
-  const handleSubmit = (values, { setSubmitting, setStatus }) => {
-    console.log("Login values:", values);
+  // Clear any previous errors when component mounts
+  useEffect(() => {
+    clearError();
+  }, []);
+
+  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
+    console.log("Register values:", values);
     setHasBeenSubmitted(true);
 
-    setTimeout(() => {
-      try {
+    // Remove confirmPassword before sending to API
+    const { confirmPassword, ...userData } = values;
+
+    try {
+      const result = await register(userData);
+
+      if (result.success) {
         setStatus({
           type: "success",
-          message: "Logged in successfully!",
+          message: "Registered successfully!",
         });
-      } catch (error) {
-        setStatus({ type: "error", message: "Failed to Log in." });
-      } finally {
-        setSubmitting(false);
+        // Navigation will happen automatically via UserContext state change
+      } else {
+        setStatus({
+          type: "error",
+          message: result.error || "Failed to register.",
+        });
       }
-    }, 1500);
-
-    navigation.navigate("Home"); // remove later when you are usin userContext and database
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: error.message || "An unexpected error occurred.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
+
   return (
     <SafeScreen>
       <KeyboardScrollScreen>
@@ -209,6 +227,11 @@ function Signin(props) {
               secureTextEntry={true}
               hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
+
+            {/* Display context error if exists */}
+            {error && (
+              <AppText style={styles.errorText}>{error}</AppText>
+            )}
 
             <SubmitBtn
               defaultText="Register"

@@ -7,6 +7,9 @@ import { StyleSheet } from "react-native";
 
 import { ThemeProvider, useTheme } from "./config/ThemeContext";
 import { PostProvider } from "./config/PostContext";
+import { UserProvider } from "./config/UserContext";
+import { useUser } from "./config/UserContext";
+
 import Home from "./pages/Users/Home";
 import Have from "./pages/Users/Have";
 import Post from "./pages/Users/Post";
@@ -14,47 +17,79 @@ import Book from "./pages/Users/Book";
 import Profile from "./pages/Users/Profile";
 import Requests from "./pages/Users/Requests";
 import EditProfile from "./pages/Users/EditProfile";
-import { UserProvider } from "./config/UserContext";
 import Promo from "./pages/Users/Promo";
 import Subscription from "./pages/Users/Subscription";
+
 import Welcome from "./pages/Welcome/Welcome";
 import Login from "./pages/Welcome/Login";
 import Signin from "./pages/Welcome/Signin";
+import { View, ActivityIndicator } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
-const StackNavigator = () => (
+// Authenticated user navigation stack
+const AuthenticatedStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{ headerShown: false, animation: "none" }}
+    >
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Have" component={Have} />
+      <Stack.Screen name="Post" component={Post} />
+      <Stack.Screen name="Book" component={Book} />
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Requests" component={Requests} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="Promo" component={Promo} />
+      <Stack.Screen name="Subscription" component={Subscription} />
+    </Stack.Navigator>
+  );
+};
+// Non-authenticated user navigation stack
+const AuthStack = () => (
   <Stack.Navigator
-    initialRouteName="Home"
+    initialRouteName="Welcome"
     screenOptions={{ headerShown: false, animation: "none" }}
   >
-    <Stack.Screen name="Home" component={Home}></Stack.Screen>
-    <Stack.Screen name="Have" component={Have}></Stack.Screen>
-    <Stack.Screen name="Post" component={Post}></Stack.Screen>
-    <Stack.Screen name="Book" component={Book}></Stack.Screen>
-    <Stack.Screen name="Profile" component={Profile}></Stack.Screen>
-    <Stack.Screen name="Requests" component={Requests}></Stack.Screen>
-    <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
-    <Stack.Screen name="Promo" component={Promo}></Stack.Screen>
-    <Stack.Screen name="Subscription" component={Subscription}></Stack.Screen>
-    <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
-    <Stack.Screen name="Login" component={Login}></Stack.Screen>
-    <Stack.Screen name="Signin" component={Signin}></Stack.Screen>
+    <Stack.Screen name="Welcome" component={Welcome} />
+    <Stack.Screen name="Login" component={Login} />
+    <Stack.Screen name="Signin" component={Signin} />
   </Stack.Navigator>
 );
 
-const AppContent = () => {
-  const { isDarkMode } = useTheme(); // I put it here because it needs to be inside
-  // the theme provider to work other wise it will say "isDarkMode undefined"
+// Main navigation component that switches based on auth state
+const AppNavigator = () => {
+  const { isAuthenticated, isLoading } = useUser();
+  const { isDarkMode } = useTheme();
+
+  // Show loading screen while checking authentication
+  if (isLoading) {
+    return (
+      <View
+        style={[
+          styles.loadingContainer,
+          { backgroundColor: isDarkMode ? "#262626" : "#ECECEC" },
+        ]}
+      >
+        <ActivityIndicator size="large" color={"#AC2FFF"} />
+      </View>
+    );
+  }
 
   return (
     <>
       <StatusBar style={isDarkMode ? "light" : "dark"} />
       <NavigationContainer>
-        <StackNavigator />
+        {isAuthenticated ? <AuthenticatedStack /> : <AuthStack />}
       </NavigationContainer>
     </>
   );
+};
+
+// App content wrapper
+const AppContent = () => {
+  return <AppNavigator />;
 };
 
 export default function App() {
@@ -72,5 +107,9 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
