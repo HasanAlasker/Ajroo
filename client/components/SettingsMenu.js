@@ -8,11 +8,13 @@ import MenuBackBtn from "./MenuBackBtn";
 import MenuOption from "./MenuOption";
 import SeparatorComp from "./SeparatorComp";
 import { useNavigation } from "@react-navigation/native";
+import { useUser } from "../config/UserContext";
 
 function SettingsMenu({ isVisible, onClose }) {
   const styles = useThemedStyles(getStyles);
   const {toggleTheme, isDarkMode} = useTheme()
   const navigation = useNavigation()
+  const {logout} = useUser()
   
   if (!isVisible) return null;
   return (
@@ -44,7 +46,7 @@ function SettingsMenu({ isVisible, onClose }) {
           <SeparatorComp style={styles.sep} />
           <MenuOption text={"Support"} icon={"headphones"} color={"green"} />
           <SeparatorComp style={styles.sep} />
-          <MenuOption text={"Log out"} icon={"logout"} color={"red"} onPress={()=>navigation.navigate('Welcome')}/>
+          <MenuOption text={"Log out"} icon={"logout"} color={"red"} onPress={logout}/>
         </BackContainer>
       </View>
     </>
