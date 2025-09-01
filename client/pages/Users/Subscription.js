@@ -26,14 +26,14 @@ function Subscription(props) {
               color={theme.purple}
             ></MaterialIcons>
             <AppText style={[styles.text, styles.title]}>
-              Start Earning with LendYard
+              Start Earning with Ajroo
             </AppText>
           </View>
           <AppText style={[styles.text, styles.faded]}>
-            Whether you're an individual or a business, LendYard helps you turn
+            Whether you're an individual or a business, Ajroo helps you turn
             idle items into income.
           </AppText>
-          <AppText style={[styles.text]}>Why Join LendYard?</AppText>
+          <AppText style={[styles.text]}>Why Join Ajroo?</AppText>
           <AppText style={[styles.text, styles.faded, styles.height]}>
             - Turn unused items into cash.{"\n"}- Earn 1 JD/day up to 300
             JD/day.{"\n"}- Control your pricing and availability.{"\n"}
