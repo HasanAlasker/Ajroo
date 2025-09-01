@@ -1,16 +1,52 @@
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import AppText from "../config/AppText";
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import useThemedStyles from "../hooks/useThemedStyles";
 
 function TopOfPost({ name, date, image, onPressThree, onPressProfile }) {
   const styles = useThemedStyles(getStyles);
 
+  const renderProfileImage = () => {
+    // Check if image is a valid URI string
+    if (image && typeof image === 'string' && image.trim() !== '') {
+      return (
+        <Image 
+          source={{ uri: image }}
+          style={styles.pic}
+          onError={(error) => {
+            console.log("Error loading profile image:", error.nativeEvent.error);
+          }}
+        />
+      );
+    } 
+    // Check if image is a require() statement (local image)
+    else if (image && typeof image === 'number') {
+      return (
+        <Image 
+          source={image}
+          style={styles.pic}
+        />
+      );
+    }
+    // Default placeholder when no valid image
+    else {
+      return (
+        <View style={styles.placeholderContainer}>
+          <MaterialCommunityIcons 
+            name="account" 
+            size={25} 
+            color="#666" 
+          />
+        </View>
+      );
+    }
+  };
+
   return (
     <View style={styles.topPart}>
       <View style={styles.picAndNameAndDate}>
         <View style={styles.imageHolder}>
-          <Image source={image} style={styles.pic}></Image>
+          {renderProfileImage()}
         </View>
         <View style={styles.nameAndDate}>
           <AppText style={styles.name}>{name}</AppText>
@@ -64,6 +100,13 @@ const getStyles = (theme) =>
       width: "100%",
       height: 40,
       resizeMode: "cover",
+    },
+    placeholderContainer: {
+      width: "100%",
+      height: 40,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: theme.sec_text,
     },
   });
 

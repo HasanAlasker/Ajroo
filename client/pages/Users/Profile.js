@@ -15,9 +15,6 @@ function Profile({
   userName,
   isNotification,
   myProfile = true,
-  userPic,
-  userRate,
-  sep,
 }) {
   const [isMenu, setIsMenu] = useState(false);
   const { user } = useUser();
@@ -48,7 +45,7 @@ function Profile({
           condition={"Brand new"}
           date={"12/ 1/ 2024"}
           name={user.name}
-          profilePic={require("../../assets/Pics/hasan.png")}
+          profilePic={user.avatar}
           // image={require('../../assets/Pics/tv.png')}
           itemName={"Television"}
           itemCat={"Electronics"}
@@ -63,7 +60,7 @@ function Profile({
           condition={"Brand new"}
           date={"12/ 1/ 2024"}
           name={user.name}
-          profilePic={require("../../assets/Pics/hasan.png")}
+          profilePic={user.avatar}
           // image={require('../../assets/Pics/tv.png')}
           itemName={"Television"}
           itemCat={"Electronics"}
@@ -78,7 +75,7 @@ function Profile({
           condition={"Brand new"}
           date={"12/ 1/ 2024"}
           name={user.name}
-          profilePic={require("../../assets/Pics/hasan.png")}
+          profilePic={user.avatar}
           // image={require('../../assets/Pics/tv.png')}
           itemName={"Television"}
           itemCat={"Electronics"}
@@ -93,7 +90,7 @@ function Profile({
           condition={"Brand new"}
           date={"12/ 1/ 2024"}
           name={user.name}
-          profilePic={require("../../assets/Pics/hasan.png")}
+          profilePic={user.avatar}
           // image={require('../../assets/Pics/tv.png')}
           itemName={"Television"}
           itemCat={"Electronics"}

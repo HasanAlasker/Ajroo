@@ -6,9 +6,10 @@ import {
   selectImageFromLibrary,
   selectImageFromCamera,
 } from "../functions/addImage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "../config/ThemeContext";
+import { useUser } from "../config/UserContext";
 
 function BigPicAndUsername({
   userName,
@@ -16,12 +17,19 @@ function BigPicAndUsername({
   isEdit,
   isPicDisabled = true,
   onImageChange, // Optional callback to inform parent of changes
-  allowCamera = true
+  allowCamera = true,
 }) {
   const styles = useThemedStyles(getStyles);
-  const {theme} = useTheme()
+  const { theme } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(initialImage);
+  const { user, updateProfile } = useUser();
+
+  useEffect(() => {
+    if (user?.avatar && !selectedImage) {
+      setSelectedImage(user.avatar);
+    }
+  }, [user?.avatar]);
 
   const handleImageSelection = () => {
     if (allowCamera) {
@@ -56,6 +64,9 @@ function BigPicAndUsername({
       console.log("Selected image URI:", imageUri);
       if (imageUri) {
         setSelectedImage(imageUri); // Set local state
+
+        await updateProfile({ avatar: imageUri });
+
         if (onImageChange) {
           onImageChange(imageUri); // Notify parent if callback exists
         }
@@ -79,6 +90,9 @@ function BigPicAndUsername({
       console.log("Camera image URI:", imageUri);
       if (imageUri) {
         setSelectedImage(imageUri); // Set local state
+
+        await updateProfile({ avatar: imageUri });
+
         if (onImageChange) {
           onImageChange(imageUri); // Notify parent if callback exists
         }
@@ -99,10 +113,14 @@ function BigPicAndUsername({
         },
         {
           text: "Remove Image",
-          onPress: () => {
-            setSelectedImage(null); // Clear local state
+          onPress: async () => {
+            setSelectedImage(null);
+            
+            await updateProfile({ avatar: null });
+            
+            // Notify parent if callback exists
             if (onImageChange) {
-              onImageChange(null); // Notify parent
+              onImageChange(null);
             }
           },
           style: "destructive",
@@ -117,6 +135,9 @@ function BigPicAndUsername({
     }
   };
 
+  const imageToShow = selectedImage || user?.avatar;
+
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -125,14 +146,18 @@ function BigPicAndUsername({
         activeOpacity={0.7}
         style={styles.imagePlaceholder}
       >
-        <Image 
-          style={styles.image} 
-          source={selectedImage ? {uri: selectedImage} : require('../assets/Pics/defaultAvatar.png')}
+        <Image
+          style={styles.image}
+          source={selectedImage ? { uri: selectedImage } : user.avatar}
         />
         {isEdit && <EditBtn />}
         {isLoading && (
           <View style={styles.loadingOverlay}>
-            <MaterialCommunityIcons name="loading" color={theme.purple} size={80}></MaterialCommunityIcons>
+            <MaterialCommunityIcons
+              name="loading"
+              color={theme.purple}
+              size={80}
+            ></MaterialCommunityIcons>
           </View>
         )}
       </TouchableOpacity>
@@ -154,7 +179,7 @@ const getStyles = (theme) =>
       height: 150,
       backgroundColor: theme.sec_text,
       borderRadius: 75,
-      position: 'relative', // For loading overlay
+      position: "relative", // For loading overlay
     },
     image: {
       width: 150,
@@ -169,18 +194,18 @@ const getStyles = (theme) =>
       color: theme.main_text,
     },
     loadingOverlay: {
-      position: 'absolute',
+      position: "absolute",
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
+      backgroundColor: "rgba(0,0,0,0.5)",
       borderRadius: 75,
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: "center",
+      alignItems: "center",
     },
     loadingText: {
-      color: 'white',
+      color: "white",
       fontSize: 12,
     },
   });

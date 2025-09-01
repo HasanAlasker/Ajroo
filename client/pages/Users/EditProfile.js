@@ -9,6 +9,7 @@ import SubmitBtn from "../../components/SubmitBtn";
 import * as Yup from "yup";
 import KeyboardScrollScreen from "../../components/KeyboardScrollScreen";
 import { useUser } from "../../config/UserContext";
+import { Formik } from "formik";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -49,11 +50,13 @@ function EditProfile({ userName, image, number, email, rating, sep }) {
     name: user.name || "",
     phone: user.phone || "",
     email: user.email || "",
+    image: user.avatar || null,
   };
 
   const handleSubmit = (values, { setSubmitting, setStatus }) => {
     console.log("Profile form values:", values);
     setHasBeenSubmitted(true);
+    updateProfile(values);
 
     setTimeout(() => {
       try {
@@ -72,49 +75,56 @@ function EditProfile({ userName, image, number, email, rating, sep }) {
   return (
     <SafeScreen>
       <KeyboardScrollScreen>
-        <TopChunkProfile
-          userName={user.name}
-          userRate={rating || 5}
-          isPicDisabled={false}
-          onPressPic={() => console.log("Profile pic pressed")}
-          sep={sep || "Edit Info"}
-        />
-
-        <AppForm
+        <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          <FormikInput
-            name="name"
-            placeholder="Name"
-            hasBeenSubmitted={hasBeenSubmitted}
-            penOn={true}
-          />
+          {({ setFieldValue, setStatus }) => (
+            <>
+              <TopChunkProfile
+                userName={user.name}
+                userRate={rating || "Unrated"}
+                isPicDisabled={false}
+                sep={sep || "Edit Info"}
+                onImageChange={(imageUri) => {
+                  setFieldValue("image", imageUri);
+                  setStatus(null);
+                }}
+              />
 
-          <FormikInput
-            name="phone"
-            placeholder="Phone"
-            hasBeenSubmitted={hasBeenSubmitted}
-            penOn={true}
-            keyboardType="phone-pad"
-          />
+              <FormikInput
+                name="name"
+                placeholder="Name"
+                hasBeenSubmitted={hasBeenSubmitted}
+                penOn={true}
+              />
 
-          <FormikInput
-            name="email"
-            placeholder="Email"
-            hasBeenSubmitted={hasBeenSubmitted}
-            penOn={true}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
+              <FormikInput
+                name="phone"
+                placeholder="Phone"
+                hasBeenSubmitted={hasBeenSubmitted}
+                penOn={true}
+                keyboardType="phone-pad"
+              />
 
-          <SubmitBtn
-            defaultText="Save"
-            submittingText="Saving..."
-            setHasBeenSubmitted={setHasBeenSubmitted}
-          ></SubmitBtn>
-        </AppForm>
+              <FormikInput
+                name="email"
+                placeholder="Email"
+                hasBeenSubmitted={hasBeenSubmitted}
+                penOn={true}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+
+              <SubmitBtn
+                defaultText="Save"
+                submittingText="Saving..."
+                setHasBeenSubmitted={setHasBeenSubmitted}
+              ></SubmitBtn>
+            </>
+          )}
+        </Formik>
       </KeyboardScrollScreen>
     </SafeScreen>
   );

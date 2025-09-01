@@ -17,6 +17,7 @@ import PostMenu from "./PostMenu";
 import { useState } from "react";
 import ItemPricing from "./ItemPricing";
 import EditPostModal from "./EditPostModal"; // Import the EditPostModal here
+import { useUser } from "../config/UserContext";
 
 function Post({
   id,
@@ -42,6 +43,7 @@ function Post({
 }) {
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
+  const {user} = useUser()
 
   const [isPostMenu, setIsPostMenu] = useState(false);
   const [isEditModal, setIsEditModal] = useState(false); // Add edit modal state

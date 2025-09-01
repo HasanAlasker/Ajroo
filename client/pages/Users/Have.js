@@ -20,15 +20,15 @@ import { useUser } from "../../config/UserContext";
 function Have(props) {
   const styles = useThemedStyles(getStyles);
   const { posts } = usePosts();
-  const {getUserDisplayName, getUserId} = useUser();
+  const { user} = useUser();
 
   const renderPost = ({ item }) => {
     return (
       <Post
         id={item.id}
-        profilePic={item.userImageUri}
-        name={getUserDisplayName()}  // change when you have a useContext
-        userId={getUserId()}  // change when you have a useContext
+        profilePic={user.avatar}
+        name={user.name}  
+        userId={user.id} 
         image={item.image}
         itemCat={getCategoryLabel(item.category)}
         itemName={getItemLabel(item.item)} 
@@ -52,37 +52,6 @@ function Have(props) {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderPost}
       ></FlatList>
-      {/* <ScrollScreen>
-        <Post
-          profilePic={require("../../assets/Pics/hasan.png")}
-          name={"Hasan Alasker"}
-          date={"12/ 1/ 2026"}
-          itemName={"Lawn mower"}
-          itemCat={"Garden"}
-          city={"Amman"}
-          area={"Jabal al kursi"}
-          status={"taken"}
-          rating={4.9}
-          condition={"Slightly used"}
-          time={""}
-          isDisabled={false}
-          pricePerDay={300}
-        ></Post>
-        <Post
-          name={"Yazan Nabas"}
-          date={"12/ 1/ 2026"}
-          profilePic={require("../../assets/Pics/u1.png")}
-          itemName={"Electric saw"}
-          itemCat={"Tools"}
-          city={"Amman"}
-          area={"Al madinah al munawara Street"}
-          status={"available"}
-          rating={"Unrated"}
-          condition={"Heavily used"}
-          time={""}
-          isDisabled={false}
-        ></Post>
-      </ScrollScreen> */}
       <Navbar></Navbar>
     </SafeScreen>
   );
