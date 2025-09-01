@@ -7,6 +7,7 @@ import AppForm from "../../components/AppForm";
 import SubmitBtn from "../../components/SubmitBtn";
 
 import * as Yup from "yup";
+import KeyboardScrollScreen from "../../components/KeyboardScrollScreen";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -19,17 +20,19 @@ const validationSchema = Yup.object().shape({
     .trim()
     .required("Name is required"),
 
-  phone: Yup.string().required().test(
-    "phone-validation",
-    "Please enter a valid phone number",
-    function (value) {
-      if (!value || value.trim() === "") return true;
-      const phoneRegex = /^\+?[\d\s\-\(\)]+$/;
-      const isValidFormat = phoneRegex.test(value);
-      const isValidLength = value.length >= 10 && value.length <= 15;
-      return isValidFormat && isValidLength;
-    }
-  ),
+  phone: Yup.string()
+    .required()
+    .test(
+      "phone-validation",
+      "Please enter a valid phone number",
+      function (value) {
+        if (!value || value.trim() === "") return true;
+        const phoneRegex = /^\+?[\d\s\-\(\)]+$/;
+        const isValidFormat = phoneRegex.test(value);
+        const isValidLength = value.length >= 10 && value.length <= 15;
+        return isValidFormat && isValidLength;
+      }
+    ),
 
   email: Yup.string()
     .email("Please enter a valid email address")
@@ -66,50 +69,51 @@ function EditProfile({ userName, image, number, email, rating, sep }) {
 
   return (
     <SafeScreen>
-      <TopChunkProfile
-        userName={userName || "Hasan Alasker"}
-        userRate={rating || 5}
-        isPicDisabled={false}
-        onPressPic={() => console.log("Profile pic pressed")}
-        sep={sep || "Edit Info"}
-      />
-
-      <AppForm
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        <FormikInput
-          name="name"
-          placeholder="Name"
-          hasBeenSubmitted={hasBeenSubmitted}
-          penOn={true}
+      <KeyboardScrollScreen>
+        <TopChunkProfile
+          userName={userName || "Hasan Alasker"}
+          userRate={rating || 5}
+          isPicDisabled={false}
+          onPressPic={() => console.log("Profile pic pressed")}
+          sep={sep || "Edit Info"}
         />
 
-        <FormikInput
-          name="phone"
-          placeholder="Phone"
-          hasBeenSubmitted={hasBeenSubmitted}
-          penOn={true}
-          keyboardType="phone-pad"
-        />
+        <AppForm
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          <FormikInput
+            name="name"
+            placeholder="Name"
+            hasBeenSubmitted={hasBeenSubmitted}
+            penOn={true}
+          />
 
-        <FormikInput
-          name="email"
-          placeholder="Email"
-          hasBeenSubmitted={hasBeenSubmitted}
-          penOn={true}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
+          <FormikInput
+            name="phone"
+            placeholder="Phone"
+            hasBeenSubmitted={hasBeenSubmitted}
+            penOn={true}
+            keyboardType="phone-pad"
+          />
 
-        <SubmitBtn
-          defaultText="Save"
-          submittingText="Saving..."
-          setHasBeenSubmitted={setHasBeenSubmitted}
-        ></SubmitBtn>
-        
-      </AppForm>
+          <FormikInput
+            name="email"
+            placeholder="Email"
+            hasBeenSubmitted={hasBeenSubmitted}
+            penOn={true}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+
+          <SubmitBtn
+            defaultText="Save"
+            submittingText="Saving..."
+            setHasBeenSubmitted={setHasBeenSubmitted}
+          ></SubmitBtn>
+        </AppForm>
+      </KeyboardScrollScreen>
     </SafeScreen>
   );
 }

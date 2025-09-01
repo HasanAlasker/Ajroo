@@ -16,6 +16,7 @@ import AppText from "../../config/AppText";
 import FormikDropBox from "../../components/FormikDropBox";
 import { gender } from "../../constants/DropOptions";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import KeyboardScrollScreen from "../../components/KeyboardScrollScreen";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -151,11 +152,7 @@ function Signin(props) {
   };
   return (
     <SafeScreen>
-      <KeyboardAwareScrollView
-        contentContainerStyle={{ flexGrow: 1, paddingBottom:40 }}
-        enableOnAndroid={true}
-        extraScrollHeight={60}
-      >
+      <KeyboardScrollScreen>
         <Logo style={styles.logo}></Logo>
         <View style={styles.cont}>
           <AppForm
@@ -230,7 +227,7 @@ function Signin(props) {
             ></RequestBtn>
           </AppForm>
         </View>
-      </KeyboardAwareScrollView>
+      </KeyboardScrollScreen>
     </SafeScreen>
   );
 }

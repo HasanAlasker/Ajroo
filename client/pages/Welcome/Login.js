@@ -13,6 +13,7 @@ import FormBtn from "../../components/FormBtn";
 import SubmitBtn from "../../components/SubmitBtn";
 import SeparatorComp from "../../components/SeparatorComp";
 import AppText from "../../config/AppText";
+import KeyboardScrollScreen from "../../components/KeyboardScrollScreen";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -53,7 +54,7 @@ function Login(props) {
   };
   return (
     <SafeScreen>
-      <ScrollScreen>
+      <KeyboardScrollScreen>
         <Logo style={styles.logo}></Logo>
         <View style={styles.cont}>
           <AppForm
@@ -101,7 +102,7 @@ function Login(props) {
 
           </AppForm>
         </View>
-      </ScrollScreen>
+      </KeyboardScrollScreen>
     </SafeScreen>
   );
 }
