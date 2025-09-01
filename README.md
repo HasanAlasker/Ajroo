@@ -13,7 +13,7 @@
 
 ## 📱 What is Ajroo?
 
-**LendYard** is a mobile-first platform that allows everyday people to **lend and borrow household items** — from tools and sports equipment to books and electronics. It's designed to encourage **community trust**, **reduce waste**, and **save money** through item-sharing.
+**Ajroo** is a mobile-first platform that allows everyday people to **lend and borrow household items** — from tools and sports equipment to books and electronics. It's designed to encourage **community trust**, **reduce waste**, and **save money** through item-sharing.
 
 ---
 
