@@ -1,4 +1,4 @@
-# 🌿 LendYard
+# 🌿 Ajroo
 
 > **Give what you can. Borrow what you need.**  
 > Empowering local communities through smarter sharing.
@@ -11,7 +11,7 @@
 
 ---
 
-## 📱 What is LendYard?
+## 📱 What is Ajroo?
 
 **LendYard** is a mobile-first platform that allows everyday people to **lend and borrow household items** — from tools and sports equipment to books and electronics. It's designed to encourage **community trust**, **reduce waste**, and **save money** through item-sharing.
 
@@ -66,7 +66,7 @@
 
 ## 🔒 Licensing & Usage
 
-> **LendYard is a private, closed-source project.**  
+> **Ajroo is a private, closed-source project.**  
 > Redistribution, reuse, or copying of code and design elements is **strictly prohibited**.  
 > Created as a graduation project by **Hasan Alasker**.
 
@@ -81,4 +81,4 @@ Front-End Engineer | UI/UX Designer | Mobile Developer
 
 ---
 
-> *Building trust. Sharing smarter. Welcome to LendYard.*
+> *Building trust. Sharing smarter. Welcome to Ajroo.*
