@@ -9,6 +9,7 @@ import { useState } from "react";
 import OfferCard from "../../components/OfferCard";
 import IndivisualPromo from "../../components/IndivisualPromo";
 import BuisnessPromo from "../../components/BuisnessPromo";
+import { useUser } from "../../config/UserContext";
 
 function Profile({
   userName,
@@ -19,6 +20,7 @@ function Profile({
   sep,
 }) {
   const [isMenu, setIsMenu] = useState(false);
+  const { user } = useUser();
 
   return (
     <SafeScreen>
@@ -32,7 +34,7 @@ function Profile({
         <TopChunkProfile
           isNotification={true}
           myProfile={myProfile}
-          userName={"Hasan Alasker"}
+          userName={user.name}
           userRate={"5"}
           sep={"Items"}
           settingsPress={() => {
@@ -45,7 +47,7 @@ function Profile({
           area={"Al Jandaweel"}
           condition={"Brand new"}
           date={"12/ 1/ 2024"}
-          name={"Hasan Alasker"}
+          name={user.name}
           profilePic={require("../../assets/Pics/hasan.png")}
           // image={require('../../assets/Pics/tv.png')}
           itemName={"Television"}
@@ -60,7 +62,7 @@ function Profile({
           area={"Al Jandaweel"}
           condition={"Brand new"}
           date={"12/ 1/ 2024"}
-          name={"Hasan Alasker"}
+          name={user.name}
           profilePic={require("../../assets/Pics/hasan.png")}
           // image={require('../../assets/Pics/tv.png')}
           itemName={"Television"}
@@ -75,7 +77,7 @@ function Profile({
           area={"Al Jandaweel"}
           condition={"Brand new"}
           date={"12/ 1/ 2024"}
-          name={"Hasan Alasker"}
+          name={user.name}
           profilePic={require("../../assets/Pics/hasan.png")}
           // image={require('../../assets/Pics/tv.png')}
           itemName={"Television"}
@@ -90,7 +92,7 @@ function Profile({
           area={"Al Jandaweel"}
           condition={"Brand new"}
           date={"12/ 1/ 2024"}
-          name={"Hasan Alasker"}
+          name={user.name}
           profilePic={require("../../assets/Pics/hasan.png")}
           // image={require('../../assets/Pics/tv.png')}
           itemName={"Television"}

@@ -8,6 +8,7 @@ import SubmitBtn from "../../components/SubmitBtn";
 
 import * as Yup from "yup";
 import KeyboardScrollScreen from "../../components/KeyboardScrollScreen";
+import { useUser } from "../../config/UserContext";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -42,11 +43,12 @@ const validationSchema = Yup.object().shape({
 
 function EditProfile({ userName, image, number, email, rating, sep }) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
+  const { updateProfile, user } = useUser();
 
   const initialValues = {
-    name: userName || "",
-    phone: number || "",
-    email: email || "",
+    name: user.name || "",
+    phone: user.phone || "",
+    email: user.email || "",
   };
 
   const handleSubmit = (values, { setSubmitting, setStatus }) => {
@@ -70,9 +72,8 @@ function EditProfile({ userName, image, number, email, rating, sep }) {
   return (
     <SafeScreen>
       <KeyboardScrollScreen>
-        
         <TopChunkProfile
-          userName={userName || "Hasan Alasker"}
+          userName={user.name}
           userRate={rating || 5}
           isPicDisabled={false}
           onPressPic={() => console.log("Profile pic pressed")}
@@ -113,7 +114,6 @@ function EditProfile({ userName, image, number, email, rating, sep }) {
             submittingText="Saving..."
             setHasBeenSubmitted={setHasBeenSubmitted}
           ></SubmitBtn>
-
         </AppForm>
       </KeyboardScrollScreen>
     </SafeScreen>

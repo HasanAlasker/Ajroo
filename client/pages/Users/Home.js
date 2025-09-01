@@ -9,15 +9,17 @@ import WelcomeCard from '../../components/WelcomeCard';
 import SquareCard from '../../components/SquareCard';
 import Navbar from '../../components/Navbar';
 import SafeScreen from '../../components/SafeScreen';
+import { useUser } from '../../config/UserContext';
 
 function Home(props) {
   const styles = useThemedStyles(getStyles);
+  const {getUserDisplayName} = useUser()
 
   return (
     <SafeScreen>
       <SearchBar></SearchBar>
       <ScrollView >
-        <WelcomeCard name={'Hasan'}></WelcomeCard>
+        <WelcomeCard name={getUserDisplayName()}></WelcomeCard>
         <AppText style={styles.text}>
           What kind of item are you looking for?
         </AppText>

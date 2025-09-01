@@ -15,18 +15,20 @@ import {
   getPriceLabel,
 } from "../../constants/DropOptions";
 import RatingModal from "../../components/RatingModal";
+import { useUser } from "../../config/UserContext";
 
 function Have(props) {
   const styles = useThemedStyles(getStyles);
   const { posts } = usePosts();
+  const {getUserDisplayName, getUserId} = useUser();
 
   const renderPost = ({ item }) => {
     return (
       <Post
         id={item.id}
         profilePic={item.userImageUri}
-        name={"Hasan Alasker"}  // change when you have a useContext
-        userId={1}  // change when you have a useContext
+        name={getUserDisplayName()}  // change when you have a useContext
+        userId={getUserId()}  // change when you have a useContext
         image={item.image}
         itemCat={getCategoryLabel(item.category)}
         itemName={getItemLabel(item.item)} 

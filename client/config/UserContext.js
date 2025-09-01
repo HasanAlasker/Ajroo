@@ -190,7 +190,7 @@ export const UserProvider = ({ children }) => {
         success: true,
         user: {
           id: '1',
-          name: 'Hasan Alasker',
+          name: 'Default user',
           email: email,
           phone: '0776252987',
           gender: 'male',
@@ -348,6 +348,11 @@ export const UserProvider = ({ children }) => {
     return state.user?.name || 'User';
   };
 
+  // Get user's id
+  const getUserId = () => {
+    return state.user?.id;
+  };
+
   // Check if user has completed profile
   const isProfileComplete = () => {
     if (!state.user) return false;
@@ -379,6 +384,7 @@ export const UserProvider = ({ children }) => {
     // Utilities
     isUserAuthenticated,
     getUserDisplayName,
+    getUserId,
     isProfileComplete,
   };
 
