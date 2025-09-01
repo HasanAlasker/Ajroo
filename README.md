@@ -1,4 +1,4 @@
-# 🌿 Ajroo
+# <img src='./client/assets/logo.png' width="45"> Ajroo
 
 > **Give what you can. Borrow what you need.**  
 > Empowering local communities through smarter sharing.
