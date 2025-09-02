@@ -23,6 +23,7 @@ const getStyles = (theme) =>
       width: "90%",
       backgroundColor: theme.purple,
       marginHorizontal: "auto",
+      marginTop:30,
       paddingVertical: 25,
       paddingHorizontal: 20,
       gap: 10,

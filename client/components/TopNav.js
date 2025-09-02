@@ -48,7 +48,7 @@ const getStyles = (theme) =>
   StyleSheet.create({
     container: {
       width: "100%",
-      paddingTop: 5,
+      paddingTop: 15,
       borderBottomRightRadius: 30,
       borderBottomLeftRadius: 30,
       zIndex: 88,

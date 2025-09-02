@@ -1,19 +1,19 @@
 // contexts/UserContext.js
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useReducer, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Define action types for the reducer
 const USER_ACTION_TYPES = {
-  SET_LOADING: 'SET_LOADING',
-  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
-  LOGIN_FAILURE: 'LOGIN_FAILURE',
-  LOGOUT: 'LOGOUT',
-  REGISTER_SUCCESS: 'REGISTER_SUCCESS',
-  REGISTER_FAILURE: 'REGISTER_FAILURE',
-  UPDATE_PROFILE: 'UPDATE_PROFILE',
-  SET_ERROR: 'SET_ERROR',
-  CLEAR_ERROR: 'CLEAR_ERROR',
-  RESTORE_USER: 'RESTORE_USER',
+  SET_LOADING: "SET_LOADING",
+  LOGIN_SUCCESS: "LOGIN_SUCCESS",
+  LOGIN_FAILURE: "LOGIN_FAILURE",
+  LOGOUT: "LOGOUT",
+  REGISTER_SUCCESS: "REGISTER_SUCCESS",
+  REGISTER_FAILURE: "REGISTER_FAILURE",
+  UPDATE_PROFILE: "UPDATE_PROFILE",
+  SET_ERROR: "SET_ERROR",
+  CLEAR_ERROR: "CLEAR_ERROR",
+  RESTORE_USER: "RESTORE_USER",
 };
 
 // Initial state for the user context
@@ -118,8 +118,8 @@ export const UserProvider = ({ children }) => {
 
   // Storage keys
   const STORAGE_KEYS = {
-    USER: '@ajroo_user',
-    TOKEN: '@ajroo_token',
+    USER: "@ajroo_user",
+    TOKEN: "@ajroo_token",
   };
 
   // Helper function to store user data
@@ -128,7 +128,7 @@ export const UserProvider = ({ children }) => {
       await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
       await AsyncStorage.setItem(STORAGE_KEYS.TOKEN, token);
     } catch (error) {
-      console.error('Error storing user data:', error);
+      console.error("Error storing user data:", error);
     }
   };
 
@@ -137,14 +137,14 @@ export const UserProvider = ({ children }) => {
     try {
       await AsyncStorage.multiRemove([STORAGE_KEYS.USER, STORAGE_KEYS.TOKEN]);
     } catch (error) {
-      console.error('Error clearing user data:', error);
+      console.error("Error clearing user data:", error);
     }
   };
 
   // Function to restore user session on app start
   const restoreUser = async () => {
     dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: true });
-    
+
     try {
       const [storedUser, storedToken] = await AsyncStorage.multiGet([
         STORAGE_KEYS.USER,
@@ -165,7 +165,7 @@ export const UserProvider = ({ children }) => {
         dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: false });
       }
     } catch (error) {
-      console.error('Error restoring user:', error);
+      console.error("Error restoring user:", error);
       dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: false });
     }
   };
@@ -173,7 +173,7 @@ export const UserProvider = ({ children }) => {
   // Login function
   const login = async (email, password) => {
     dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: true });
-    
+
     try {
       // TODO: Replace with actual API call
       // const response = await fetch('your-api-endpoint/login', {
@@ -189,19 +189,20 @@ export const UserProvider = ({ children }) => {
       const mockResponse = {
         success: true,
         user: {
-          id: '1',
-          name: 'Default user',
+          id: "1",
+          name: "Default user",
           email: email,
-          phone: '0776252987',
-          gender: 'male',
+          phone: "0776252987",
+          gender: "male",
           avatar: null,
+          rating: 5,
           createdAt: new Date().toISOString(),
         },
-        token: 'mock-jwt-token-' + Date.now(),
+        token: "mock-jwt-token-" + Date.now(),
       };
 
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (mockResponse.success) {
         await storeUserData(mockResponse.user, mockResponse.token);
@@ -216,14 +217,14 @@ export const UserProvider = ({ children }) => {
       } else {
         dispatch({
           type: USER_ACTION_TYPES.LOGIN_FAILURE,
-          payload: mockResponse.message || 'Login failed',
+          payload: mockResponse.message || "Login failed",
         });
         return { success: false, error: mockResponse.message };
       }
     } catch (error) {
       dispatch({
         type: USER_ACTION_TYPES.LOGIN_FAILURE,
-        payload: error.message || 'Network error occurred',
+        payload: error.message || "Network error occurred",
       });
       return { success: false, error: error.message };
     }
@@ -232,7 +233,7 @@ export const UserProvider = ({ children }) => {
   // Register function
   const register = async (userData) => {
     dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: true });
-    
+
     try {
       // TODO: Replace with actual API call
       // const response = await fetch('your-api-endpoint/register', {
@@ -254,13 +255,14 @@ export const UserProvider = ({ children }) => {
           phone: userData.phone,
           gender: userData.gender,
           avatar: null,
+          rating: null,
           createdAt: new Date().toISOString(),
         },
-        token: 'mock-jwt-token-' + Date.now(),
+        token: "mock-jwt-token-" + Date.now(),
       };
 
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       if (mockResponse.success) {
         await storeUserData(mockResponse.user, mockResponse.token);
@@ -275,14 +277,14 @@ export const UserProvider = ({ children }) => {
       } else {
         dispatch({
           type: USER_ACTION_TYPES.REGISTER_FAILURE,
-          payload: mockResponse.message || 'Registration failed',
+          payload: mockResponse.message || "Registration failed",
         });
         return { success: false, error: mockResponse.message };
       }
     } catch (error) {
       dispatch({
         type: USER_ACTION_TYPES.REGISTER_FAILURE,
-        payload: error.message || 'Network error occurred',
+        payload: error.message || "Network error occurred",
       });
       return { success: false, error: error.message };
     }
@@ -294,14 +296,14 @@ export const UserProvider = ({ children }) => {
       await clearUserData();
       dispatch({ type: USER_ACTION_TYPES.LOGOUT });
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error("Error during logout:", error);
     }
   };
 
   // Update profile function
   const updateProfile = async (updatedData) => {
     dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: true });
-    
+
     try {
       // TODO: Replace with actual API call
       // const response = await fetch('your-api-endpoint/profile', {
@@ -316,18 +318,18 @@ export const UserProvider = ({ children }) => {
       // Mock successful update
       const updatedUser = { ...state.user, ...updatedData };
       await storeUserData(updatedUser, state.token);
-      
+
       dispatch({
         type: USER_ACTION_TYPES.UPDATE_PROFILE,
         payload: updatedData,
       });
-      
+
       dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: false });
       return { success: true };
     } catch (error) {
       dispatch({
         type: USER_ACTION_TYPES.SET_ERROR,
-        payload: error.message || 'Failed to update profile',
+        payload: error.message || "Failed to update profile",
       });
       return { success: false, error: error.message };
     }
@@ -345,7 +347,7 @@ export const UserProvider = ({ children }) => {
 
   // Get user's full name
   const getUserDisplayName = () => {
-    return state.user?.name || 'User';
+    return state.user?.name || "User";
   };
 
   // Get user's id
@@ -356,8 +358,8 @@ export const UserProvider = ({ children }) => {
   // Check if user has completed profile
   const isProfileComplete = () => {
     if (!state.user) return false;
-    const requiredFields = ['name', 'email', 'phone', 'gender'];
-    return requiredFields.every(field => state.user[field]);
+    const requiredFields = ["name", "email", "phone", "gender"];
+    return requiredFields.every((field) => state.user[field]);
   };
 
   // Restore user session when component mounts
@@ -373,14 +375,14 @@ export const UserProvider = ({ children }) => {
     isLoading: state.isLoading,
     error: state.error,
     token: state.token,
-    
+
     // Actions
     login,
     register,
     logout,
     updateProfile,
     clearError,
-    
+
     // Utilities
     isUserAuthenticated,
     getUserDisplayName,
@@ -388,18 +390,14 @@ export const UserProvider = ({ children }) => {
     isProfileComplete,
   };
 
-  return (
-    <UserContext.Provider value={value}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
 // Custom hook to use the UserContext
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error("useUser must be used within a UserProvider");
   }
   return context;
 };
