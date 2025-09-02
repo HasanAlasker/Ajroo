@@ -160,6 +160,15 @@ function BigPicAndUsername({
             ></MaterialCommunityIcons>
           </View>
         )}
+        {!selectedImage && !user.avatar && (
+          <View style={styles.default}>
+            <MaterialCommunityIcons
+              name="account"
+              color={theme.light_gray}
+              size={80}
+            ></MaterialCommunityIcons>
+          </View>
+        )}
       </TouchableOpacity>
       <AppText style={styles.text}>{userName}</AppText>
     </View>
@@ -204,6 +213,14 @@ const getStyles = (theme) =>
       justifyContent: "center",
       alignItems: "center",
     },
+    default: {
+      position: "absolute",
+      inset: 0,
+      borderRadius: 75,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    
     loadingText: {
       color: "white",
       fontSize: 12,

@@ -39,7 +39,7 @@ function Profile({
           }}
         ></TopChunkProfile>
         <IndivisualPromo></IndivisualPromo>
-        <BuisnessPromo></BuisnessPromo>
+        {/* <BuisnessPromo></BuisnessPromo> */}
         <Post
           area={"Al Jandaweel"}
           condition={"Brand new"}

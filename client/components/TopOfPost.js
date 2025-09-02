@@ -2,10 +2,11 @@ import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import AppText from "../config/AppText";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import useThemedStyles from "../hooks/useThemedStyles";
+import { useTheme } from "../config/ThemeContext";
 
 function TopOfPost({ name, date, image, onPressThree, onPressProfile }) {
   const styles = useThemedStyles(getStyles);
-
+  const {theme} = useTheme();
   const renderProfileImage = () => {
     // Check if image is a valid URI string
     if (image && typeof image === 'string' && image.trim() !== '') {
@@ -35,7 +36,7 @@ function TopOfPost({ name, date, image, onPressThree, onPressProfile }) {
           <MaterialCommunityIcons 
             name="account" 
             size={25} 
-            color="#666" 
+            color={theme.light_gray} 
           />
         </View>
       );
