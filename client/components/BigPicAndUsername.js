@@ -170,7 +170,7 @@ function BigPicAndUsername({
           </View>
         )}
       </TouchableOpacity>
-      <AppText style={styles.text}>{userName}</AppText>
+      <AppText numberOfLines={2} style={styles.text}>{userName}</AppText>
     </View>
   );
 }
@@ -201,6 +201,7 @@ const getStyles = (theme) =>
       fontWeight: "bold",
       textAlign: "center",
       color: theme.main_text,
+      
     },
     loadingOverlay: {
       position: "absolute",
