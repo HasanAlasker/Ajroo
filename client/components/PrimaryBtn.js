@@ -76,6 +76,7 @@ function PrimaryBtn({
 
     if(renderBtnText() === 'Request') setVisibileRequest(true)
     if(renderBtnText()==='Got it back' || renderBtnText() === 'Mark Returned') setVisibileRating(true)
+    if(renderBtnText()==='Got it back') updatePost(postId, {status: 'available'})
     if(renderBtnText()==='Disable') updatePost(postId, {status: 'disabled'})
     if(renderBtnText()==='Enable') updatePost(postId, {status: 'available'})
     

@@ -12,7 +12,6 @@ import BuisnessPromo from "../../components/BuisnessPromo";
 import { useUser } from "../../config/UserContext";
 
 function Profile({
-  userName,
   isNotification,
   myProfile = true,
 }) {
@@ -28,18 +27,21 @@ function Profile({
         }}
       ></SettingsMenu>
       <ScrollScreen>
+
         <TopChunkProfile
-          isNotification={true}
+          isNotification={true}  // change dynamicly
           myProfile={myProfile}
           userName={user.name}
-          userRate={"5"}
+          userRate={null}
           sep={"Items"}
           settingsPress={() => {
             setIsMenu(true);
           }}
         ></TopChunkProfile>
+
         <IndivisualPromo></IndivisualPromo>
         {/* <BuisnessPromo></BuisnessPromo> */}
+
         <Post
           area={"Al Jandaweel"}
           condition={"Brand new"}

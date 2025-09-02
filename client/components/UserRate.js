@@ -11,7 +11,7 @@ function UserRate({ userRating }) {
   return (
     <View style={styles.container}>
       <Octicons name="star-fill" color={theme.always_white} size={20}></Octicons>
-      <AppText style={styles.text}>{userRating}</AppText>
+      <AppText style={styles.text}>{userRating ? userRating : 'Unrated'}</AppText>
     </View>
   );
 }

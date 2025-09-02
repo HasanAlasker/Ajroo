@@ -57,12 +57,12 @@ function PostMenu({ isVisible, onClose, isMine, postId, onEditPress }) {
           <MenuBackBtn onClose={onClose} />
           {!reportMenu && (
             <>
-              <MenuOption text={"Share post"} icon={"share"} />
+              <MenuOption text={"Share post"} icon={"share-outline"} />
               <SeparatorComp style={styles.sep} />
               {isMine && (
                 <MenuOption 
                   text={"Edit post"} 
-                  icon={"pencil"} 
+                  icon={"pencil-outline"} 
                   onPress={handleEditPost} 
                 />
               )}
@@ -70,7 +70,7 @@ function PostMenu({ isVisible, onClose, isMine, postId, onEditPress }) {
               {isMine ? (
                 <MenuOption
                   text={"Delete post"}
-                  icon={"delete"}
+                  icon={"delete-outline"}
                   color={"red"}
                   onPress={handleDeletePost} 
                 />
