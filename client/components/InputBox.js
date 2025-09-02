@@ -7,7 +7,7 @@ import { useState } from "react";
 function InputBox({ placeholder, penOn, icon, value, isPassword, ...rest }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
-  const [isHidden, setIsHidden] = useState(true)
+  const [isHidden, setIsHidden] = useState( isPassword? true : false)
 
   const handleHidden = () => {
     setIsHidden(!isHidden)
