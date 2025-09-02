@@ -1,6 +1,6 @@
 # <img src='./client/assets/logo.png' width="45"> Ajroo
 
-> **Give what you can. Borrow what you need.**  
+> **Share more, waste less, earn together.**  
 > Empowering local communities through smarter sharing.
 
 <p align="center">
@@ -82,3 +82,5 @@ Front-End Engineer | UI/UX Designer | Mobile Developer
 ---
 
 > *Building trust. Sharing smarter. Welcome to Ajroo.*
+>
+> <img src='./client/assets/icon.png' width="120">
