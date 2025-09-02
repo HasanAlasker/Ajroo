@@ -48,11 +48,11 @@ const getStyles = (theme) =>
   StyleSheet.create({
     container: {
       width: "100%",
-      paddingTop: 20,
+      paddingTop: 5,
       borderBottomRightRadius: 30,
       borderBottomLeftRadius: 30,
       zIndex: 88,
-      paddingBottom: 25,
+      paddingBottom: 10,
       backgroundColor: theme.backgroundColor,
     },
     row: {
