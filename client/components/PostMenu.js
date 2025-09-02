@@ -5,7 +5,8 @@ import {
   TouchableWithoutFeedback,
   Modal,
   ScrollView,
-  Dimensions
+  Dimensions,
+  Share,
 } from "react-native";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
@@ -16,22 +17,54 @@ import MenuOption from "./MenuOption";
 import SeparatorComp from "./SeparatorComp";
 import { usePosts } from "../config/PostContext";
 
+const { height: screenHeight } = Dimensions.get("window");
 
-const { height: screenHeight } = Dimensions.get('window');
-
-function PostMenu({ isVisible, onClose, isMine, postId, onEditPress }) {
+function PostMenu({
+  isVisible,
+  onClose,
+  isMine,
+  postId,
+  onEditPress,
+  shareContent,
+}) {
   const styles = useThemedStyles(getStyles);
   const { toggleTheme } = useTheme();
   const [reportMenu, setReportMenu] = useState(false);
   const { deletePost } = usePosts();
-  
+
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: shareContent?.message || "Check this out!",
+        url: shareContent?.url || "",
+        title: shareContent?.title || "Share",
+      });
+
+      if (result.action === Share.sharedAction) {
+        // User shared
+        onClose(); // Close AFTER sharing
+      } else if (result.action === Share.dismissedAction) {
+        // User dismissed
+        onClose(); // Still close if dismissed
+      }
+    } catch (error) {
+      Alert.alert("Error", "Something went wrong while sharing");
+    }
+  };
+
   const handleReportMenu = () => {
     setReportMenu(!reportMenu);
   };
 
+  const handleReporReason = () => {
+    setReportMenu(!reportMenu);
+    onClose()
+    // send the reason with API
+  };
+
   const handleEditPost = () => {
     if (onEditPress) {
-      onEditPress(); 
+      onEditPress();
     }
   };
 
@@ -45,25 +78,34 @@ function PostMenu({ isVisible, onClose, isMine, postId, onEditPress }) {
   };
 
   if (!isVisible) return null;
-  
+
   return (
-    <Modal transparent>
+    <Modal
+      transparent
+      visible={isVisible}
+      animationType="slide" 
+      onRequestClose={onClose}
+    >
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay} />
       </TouchableWithoutFeedback>
 
       <View style={styles.container}>
         <BackContainer>
-          <MenuBackBtn onClose={onClose} />
+          <MenuBackBtn onClose={!reportMenu ? onClose : ()=> setReportMenu(!reportMenu)} />
           {!reportMenu && (
             <>
-              <MenuOption text={"Share post"} icon={"share-outline"} />
+              <MenuOption
+                text={"Share post"}
+                icon={"share-outline"}
+                onPress={handleShare}
+              />
               <SeparatorComp style={styles.sep} />
               {isMine && (
-                <MenuOption 
-                  text={"Edit post"} 
-                  icon={"pencil-outline"} 
-                  onPress={handleEditPost} 
+                <MenuOption
+                  text={"Edit post"}
+                  icon={"pencil-outline"}
+                  onPress={handleEditPost}
                 />
               )}
               {isMine && <SeparatorComp style={styles.sep} />}
@@ -72,12 +114,12 @@ function PostMenu({ isVisible, onClose, isMine, postId, onEditPress }) {
                   text={"Delete post"}
                   icon={"delete-outline"}
                   color={"red"}
-                  onPress={handleDeletePost} 
+                  onPress={handleDeletePost}
                 />
               ) : (
                 <MenuOption
                   text={"Report post"}
-                  icon={"bullhorn-variant"}
+                  icon={"bullhorn-variant-outline"}
                   color={"red"}
                   onPress={handleReportMenu}
                 />
@@ -95,61 +137,61 @@ function PostMenu({ isVisible, onClose, isMine, postId, onEditPress }) {
                 <MenuOption
                   text={"Item doesn't exist/fake listing"}
                   icon={"alert-circle-outline"}
-                  // onPress={() => handleReport("Item doesn't exist/fake listing")}
+                  onPress={handleReporReason}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Misleading item description"}
                   icon={"information-off-outline"}
-                  // onPress={() => handleReport("Misleading item description")}
+                  onPress={handleReporReason}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Unsafe or damaged item"}
                   icon={"shield-alert-outline"}
-                  // onPress={() => handleReport("Unsafe or damaged item")}
+                  onPress={handleReporReason}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Spam or duplicate listing"}
                   icon={"content-copy"}
-                  // onPress={() => handleReport("Spam or duplicate listing")}
+                  onPress={handleReporReason}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Unreasonable pricing"}
                   icon={"currency-usd-off"}
-                  // onPress={() => handleReport("Unreasonable pricing")}
+                  onPress={handleReporReason}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Price doesn't match listing"}
                   icon={"currency-usd"}
-                  // onPress={() => handleReport("Price doesn't match listing")}
+                  onPress={handleReporReason}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Prohibited item"}
                   icon={"cancel"}
-                  // onPress={() => handleReport("Prohibited item")}
+                  onPress={handleReporReason}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Harassment or rude behavior"}
                   icon={"account-alert-outline"}
-                  // onPress={() => handleReport("Harassment or rude behavior")}
+                  onPress={handleReporReason}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Suspicious activity"}
                   icon={"eye-off-outline"}
-                  // onPress={() => handleReport("Suspicious activity")}
+                  onPress={handleReporReason}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Other"}
                   icon={"dots-horizontal"}
-                  // onPress={() => handleReport("Other")}
+                  onPress={handleReporReason}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
@@ -196,7 +238,7 @@ const getStyles = (theme) =>
     },
     scrollContent: {
       paddingBottom: 10, // Add some padding at the bottom
-    }
+    },
   });
 
 export default PostMenu;
