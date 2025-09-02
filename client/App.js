@@ -24,6 +24,7 @@ import Welcome from "./pages/Welcome/Welcome";
 import Login from "./pages/Welcome/Login";
 import Signin from "./pages/Welcome/Signin";
 import { View, ActivityIndicator } from "react-native";
+import OfflineModal from "./components/OfflineModal";
 
 const Stack = createNativeStackNavigator();
 
@@ -101,6 +102,7 @@ export default function App() {
             <AppContent />
           </PostProvider>
         </UserProvider>
+        <OfflineModal />
       </ThemeProvider>
     </SafeAreaProvider>
   );
