@@ -215,7 +215,7 @@ function Signin(props) {
               placeholder={"Password"}
               autoCapitalize={false}
               icon={"lock"}
-              secureTextEntry={true}
+              isPassword
               hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
 
@@ -224,7 +224,7 @@ function Signin(props) {
               placeholder={"Confirm password"}
               autoCapitalize={false}
               icon={"lock"}
-              secureTextEntry={true}
+              isPassword
               hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
 

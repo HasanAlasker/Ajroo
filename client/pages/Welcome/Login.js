@@ -89,7 +89,7 @@ function Login(props) {
               placeholder={"Password"}
               autoCapitalize={false}
               icon={"lock"}
-              secureTextEntry={true}
+              isPassword
               hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
 

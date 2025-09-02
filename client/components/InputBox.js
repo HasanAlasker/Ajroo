@@ -1,11 +1,18 @@
-import { View, StyleSheet, TextInput } from "react-native";
+import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
+import { useState } from "react";
 
-function InputBox({ placeholder, penOn, icon, value, secureTextEntry, ...rest }) {
+function InputBox({ placeholder, penOn, icon, value, isPassword, ...rest }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
+  const [isHidden, setIsHidden] = useState(true)
+
+  const handleHidden = () => {
+    setIsHidden(!isHidden)
+
+  }
 
   return (
     <View style={styles.container}>
@@ -16,13 +23,15 @@ function InputBox({ placeholder, penOn, icon, value, secureTextEntry, ...rest })
         placeholder={placeholder}
         placeholderTextColor={theme.purple}
         value={value}
-        secureTextEntry={secureTextEntry}
+        secureTextEntry={isHidden}
         {...rest}
       />
+      {isPassword && <TouchableOpacity onPress={handleHidden}>
+        <Feather name={isHidden ? "eye" : 'eye-off'} size={24} color={theme.purple} />
+      </TouchableOpacity>}
     </View>
   );
 }
-
 
 const getStyles = (theme) =>
   StyleSheet.create({
@@ -44,10 +53,10 @@ const getStyles = (theme) =>
       color: theme.purple,
       fontWeight: "bold",
       fontSize: 16,
-      flex:1,
-      padding:0,
-      margin:0,
-      textAlignVertical:'center'
+      flex: 1,
+      padding: 0,
+      margin: 0,
+      textAlignVertical: "center",
     },
   });
 
