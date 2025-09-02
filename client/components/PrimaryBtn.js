@@ -6,6 +6,7 @@ import { useRoute } from "@react-navigation/native";
 import RequestModal from "./RequestModal";
 import { useState } from "react";
 import RatingModal from "./RatingModal";
+import { usePosts } from "../config/PostContext";
 
 function PrimaryBtn({
   title,
@@ -14,11 +15,13 @@ function PrimaryBtn({
   iBorrowed,
   iRequested,
   status,
-  pricePerDay
+  pricePerDay,
+  postId
 }) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
+  const {updatePost} = usePosts()
 
   const shouldBeDisabled = () => {
     if (isDisabled) return true;
@@ -70,8 +73,12 @@ function PrimaryBtn({
   const [visibleRequest, setVisibileRequest] = useState(false)
   const [visibleRating, setVisibileRating] = useState(false)
   const handlePress = () => {
+
     if(renderBtnText() === 'Request') setVisibileRequest(true)
     if(renderBtnText()==='Got it back' || renderBtnText() === 'Mark Returned') setVisibileRating(true)
+    if(renderBtnText()==='Disable') updatePost(postId, {status: 'disabled'})
+    if(renderBtnText()==='Enable') updatePost(postId, {status: 'available'})
+    
   }
 
 
@@ -80,7 +87,7 @@ function PrimaryBtn({
       <TouchableOpacity
         disabled={shouldBeDisabled()}
         style={[styles.container, { backgroundColor: disableButton() }]}
-        onPress={handlePress} // don't forget this!
+        onPress={handlePress}
       >
         <AppText style={styles.text}>{renderBtnText()}</AppText>
       </TouchableOpacity>

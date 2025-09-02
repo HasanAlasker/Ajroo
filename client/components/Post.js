@@ -90,6 +90,7 @@ function Post({
               iBorrowed={iBorrowed}
               iRequested={iRequested}
               pricePerDay={pricePerDay}
+              postId={id}
             />
           }
           {route.name === "Requests" && status === "requested" && isMine===true && (

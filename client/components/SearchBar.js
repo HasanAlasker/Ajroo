@@ -43,11 +43,11 @@ const getStyles = (theme) =>
   StyleSheet.create({
     searchbar: {
       width: "100%",
-      paddingTop: 5,
+      paddingTop: 3,
       borderBottomRightRadius: 30,
       borderBottomLeftRadius: 30,
       zIndex: 100,
-      paddingBottom: 25,
+      paddingBottom: 10,
       backgroundColor: theme.backgroundColor,
     },
     bigBox: {
