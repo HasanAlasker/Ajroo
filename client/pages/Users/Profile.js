@@ -10,6 +10,7 @@ import OfferCard from "../../components/OfferCard";
 import IndivisualPromo from "../../components/IndivisualPromo";
 import BuisnessPromo from "../../components/BuisnessPromo";
 import { useUser } from "../../config/UserContext";
+import PostRenderer from "../../components/PostRenderer";
 
 function Profile({
   isNotification,
