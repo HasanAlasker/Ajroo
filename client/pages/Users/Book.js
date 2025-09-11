@@ -3,22 +3,28 @@ import { View, StyleSheet } from "react-native";
 import SafeScreen from "../../components/SafeScreen";
 import Navbar from "../../components/Navbar";
 import TopNav from "../../components/TopNav";
-import ScrollScreen from "../../components/ScrollScreen";
-import Post from "../../components/Post";
-
+import { useUser } from "../../config/UserContext";
+import PostRenderer from "../../components/PostRenderer";
 
 function Book(props) {
   const [activeTab, setActiveTab] = useState("Given");
+  const { user } = useUser();
 
   const renderContent = () => {
     switch (activeTab) {
       case "Given":
         return (
           <>
-            <Post
+            <PostRenderer
+              currentUserId={user.id}
+              filterType={"myBorrowed"}
+              emptyMessage="You haven't lent out any items yet"
+            ></PostRenderer>
+
+            {/* <Post
               name={"Adam Ishak"}
               date={"12/ 1/ 2026"}
-              profilePic={require('../../assets/Pics/u1.png')}
+              profilePic={require("../../assets/Pics/u1.png")}
               // image={require("../../assets/Pics/image.png")}
               itemName={"Electric saw"}
               itemCat={"Tools"}
@@ -31,7 +37,7 @@ function Book(props) {
             <Post
               name={"Momtaz Hamdan"}
               date={"12/ 1/ 2026"}
-              profilePic={require('../../assets/Pics/u2.png')}
+              profilePic={require("../../assets/Pics/u2.png")}
               // image={require("../../assets/Pics/tv.png")}
               itemName={"Television"}
               itemCat={"Electronics"}
@@ -40,17 +46,23 @@ function Book(props) {
               isMine={true}
               onPressBtn={""}
               isDisabled={false}
-            ></Post>
+            ></Post> */}
           </>
         );
 
       case "Taken":
         return (
           <>
-            <Post
+            <PostRenderer
+              currentUserId={user.id}
+              filterType={"iBorrowed"}
+              emptyMessage="You haven't borrowed any items yet"
+            ></PostRenderer>
+
+            {/* <Post
               name={"Fadi Hajarat"}
               date={"12/ 1/ 2026"}
-              profilePic={require('../../assets/Pics/u2.png')}
+              profilePic={require("../../assets/Pics/u2.png")}
               // image={require("../../assets/Pics/lm.png")}
               itemName={"Electric saw"}
               itemCat={"Tools"}
@@ -64,7 +76,7 @@ function Book(props) {
               isMine={false}
               iBorrowed={true}
               isDisabled={false}
-            ></Post>
+            ></Post> */}
           </>
         );
       default:
@@ -75,7 +87,7 @@ function Book(props) {
   return (
     <SafeScreen>
       <TopNav activeTab={activeTab} onTabChange={setActiveTab} />
-      <ScrollScreen>{renderContent()}</ScrollScreen>
+      {renderContent()}
       <Navbar />
     </SafeScreen>
   );

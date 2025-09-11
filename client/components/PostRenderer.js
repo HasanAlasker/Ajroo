@@ -28,12 +28,12 @@ const POST_FILTERS = {
     posts.filter(post => post.userId === currentUserId && ['available'].includes(post.status)),
   
   // My posts that someone else borrowed
-  myLentOut: (posts, currentUserId) => 
+  myBorrowed: (posts, currentUserId) => 
     posts.filter(post => post.userId === currentUserId && ['taken', 'early', 'late'].includes(post.status)),
   
   // My posts with pending requests
   myRequested: (posts, currentUserId) => 
-    posts.filter(post => post.userId === currentUserId && post.status === 'requested'),
+    posts.filter(post => post.userId === currentUserId && post.status === 'requested'), // you might need to recheck the status in PrimaryBtn because i once put it pending and its confusing now
   
   // Posts I requested from others
   iRequested: (posts, currentUserId) => 
@@ -119,7 +119,7 @@ function PostRenderer({
 
 // Simple empty state component
 const EmptyState = ({ message }) => (
-  <View style={{ padding: 20, alignItems: 'center' }}>
+  <View style={{ paddingHorizontal: 20, paddingVertical: 50, alignItems: 'center',}}>
     <AppText style={{ fontSize: 16, color: '#999' }}>{message}</AppText>
   </View>
 );

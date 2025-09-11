@@ -5,19 +5,28 @@ import TopNav from "../../components/TopNav";
 import Navbar from "../../components/Navbar";
 import ScrollScreen from "../../components/ScrollScreen";
 import Post from "../../components/Post";
+import { useUser } from "../../config/UserContext";
+import PostRenderer from "../../components/PostRenderer";
 
 function Requests(props) {
   const [activeTab, setActiveTab] = useState("Got");
+  const { user } = useUser();
 
   const renderContent = () => {
     switch (activeTab) {
       case "Sent":
         return (
           <>
-            <Post
+            <PostRenderer
+              currentUserId={user.id}
+              filterType={"myRequested"}
+              emptyMessage="You haven't received any requests yet"
+            ></PostRenderer>
+
+            {/* <Post
               name={"Ibrahim Mosa"}
               date={"12/ 1/ 2026"}
-              profilePic={require('../../assets/Pics/u1.png')}
+              profilePic={require("../../assets/Pics/u1.png")}
               // image={require("../../assets/Pics/hd.png")}
               itemName={"Hair Dryer"}
               itemCat={"Household"}
@@ -29,16 +38,22 @@ function Requests(props) {
               isMine={false}
               iRequested={true}
               isDisabled={false}
-            ></Post>
+            ></Post> */}
           </>
         );
       case "Got":
         return (
           <>
-            <Post
+            <PostRenderer
+              currentUserId={user.id}
+              filterType={"iRequested"}
+              emptyMessage="You haven't requested items yet"
+            ></PostRenderer>
+
+            {/* <Post
               name={"Mohammad Issa"}
               date={"12/ 1/ 2026"}
-              profilePic={require('../../assets/Pics/u2.png')}
+              profilePic={require("../../assets/Pics/u2.png")}
               // image={require("../../assets/Pics/vc.png")}
               itemName={"Vacuum Cleaner"}
               itemCat={"Tools"}
@@ -49,7 +64,7 @@ function Requests(props) {
               time={""}
               isMine={true}
               isDisabled={false}
-            ></Post>
+            ></Post> */}
           </>
         );
       default:
@@ -60,7 +75,7 @@ function Requests(props) {
   return (
     <SafeScreen>
       <TopNav activeTab={activeTab} onTabChange={setActiveTab} />
-      <ScrollScreen>{renderContent()}</ScrollScreen>
+      {renderContent()}
       <Navbar></Navbar>
     </SafeScreen>
   );
