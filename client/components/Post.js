@@ -79,7 +79,7 @@ function Post({
           </RowLableCont>
           <RowLableCont>
             {condition && <ItemCondition condition={condition} />}
-            {rating && <ItemRating rating={rating} />}
+            <ItemRating rating={rating ? rating : 'Unrated Yet'} />
           </RowLableCont>
           {
             <PrimaryBtn

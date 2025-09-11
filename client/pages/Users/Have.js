@@ -36,10 +36,12 @@ function Have(props) {
         city={getCityLabel(item.city)} 
         area={getAreaLabel(item.area)} 
         condition={getConditionLabel(item.condition)}
-        status={item.status}
-        isMine={false}
         rating={item.rating}
         date={item.createdAt}
+        status={item.status}
+        isMine={false}
+        iRequested={false}
+        iBorrowed={false}
       />
     );
   };
