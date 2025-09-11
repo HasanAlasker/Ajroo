@@ -1,36 +1,31 @@
 import { StyleSheet } from "react-native";
 import SafeScreen from "../../components/SafeScreen";
 import Navbar from "../../components/Navbar";
-import ScrollScreen from "../../components/ScrollScreen";
 import TopChunkProfile from "../../components/TopChunkProfile";
-import Post from "../../components/Post";
 import SettingsMenu from "../../components/SettingsMenu";
 import { useState } from "react";
-import OfferCard from "../../components/OfferCard";
 import IndivisualPromo from "../../components/IndivisualPromo";
 import BuisnessPromo from "../../components/BuisnessPromo";
 import { useUser } from "../../config/UserContext";
 import PostRenderer from "../../components/PostRenderer";
 
-function Profile({
-  isNotification,
-  myProfile = true,
-}) {
+
+function Profile({ isNotification, myProfile = true }) {
   const [isMenu, setIsMenu] = useState(false);
   const { user } = useUser();
 
   return (
     <SafeScreen>
-      <SettingsMenu
-        isVisible={isMenu}
-        onClose={() => {
-          setIsMenu(false);
-        }}
-      ></SettingsMenu>
-      <ScrollScreen>
+      <PostRenderer filterType={"allMine"} currentUserId={user.id} emptyMessage="You haven't posted yet">
+        <SettingsMenu
+          isVisible={isMenu}
+          onClose={() => {
+            setIsMenu(false);
+          }}
+        ></SettingsMenu>
 
         <TopChunkProfile
-          isNotification={true}  // change dynamicly
+          isNotification={true} // change dynamicly
           myProfile={myProfile}
           userName={user.name}
           userRate={null}
@@ -43,7 +38,7 @@ function Profile({
         <IndivisualPromo></IndivisualPromo>
         {/* <BuisnessPromo></BuisnessPromo> */}
 
-        <Post
+        {/* <Post
           area={"Al Jandaweel"}
           condition={"Brand new"}
           date={"12/ 1/ 2024"}
@@ -102,8 +97,8 @@ function Profile({
           rating={"4.3"}
           iBorrowed={false}
           iRequested={false}
-        ></Post>
-      </ScrollScreen>
+        ></Post> */}
+      </PostRenderer>
       <Navbar></Navbar>
     </SafeScreen>
   );

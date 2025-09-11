@@ -1,14 +1,31 @@
 import React from 'react';
-import { FlatList } from 'react-native';
-import { usePosts } from '../config/PostContext';
+import { FlatList, View } from 'react-native';
+import AppText from '../config/AppText';
+import { usePosts } from '../config/PostContext'
+import { useUser } from '../config/UserContext'
 import Post from './Post';
 import useThemedStyles from '../hooks/useThemedStyles';
 import { useTheme } from '../config/ThemeContext';
+import {
+  getCategoryLabel,
+  getItemLabel,
+  getCityLabel,
+  getAreaLabel,
+  getConditionLabel,
+} from "../constants/DropOptions";
 
 const POST_FILTERS = {
   // My posts that are available/disabled
   myAvailable: (posts, currentUserId) => 
     posts.filter(post => post.userId === currentUserId && ['available', 'disabled'].includes(post.status)),
+
+  // All my posts
+  allMine: (posts, currentUserId) => 
+    posts.filter(post => post.userId === currentUserId ),
+
+  // Others posts that are available (figure out how to get the current profile owner userId)
+  others: (posts, currentUserId) => 
+    posts.filter(post => post.userId === currentUserId && ['available'].includes(post.status)),
   
   // My posts that someone else borrowed
   myLentOut: (posts, currentUserId) => 
@@ -36,9 +53,11 @@ function PostRenderer({
   currentUserId, 
   emptyMessage = "No posts found",
   onRefresh,
-  refreshing = false 
+  refreshing = false ,
+  children
 }) {
   const { posts } = usePosts();
+  const { user } = useUser();
   
   // Get the filter function
   const filterFunction = POST_FILTERS[filterType];
@@ -65,19 +84,20 @@ function PostRenderer({
     
     return (
       <Post
-        key={post.id}
-        postId={post.id}
-        name={post.ownerName}
-        date={post.date}
-        profilePic={post.profilePic}
+        id={post.id}
+        profilePic={user.avatar}
+        name={user.name}  
+        userId={user.id} 
         image={post.image}
-        itemName={post.itemName}
-        itemCat={post.category}
-        area={post.area}
-        status={post.status}
+        itemCat={getCategoryLabel(post.category)}
+        itemName={getItemLabel(post.item)} 
+        pricePerDay={post.price}
+        city={getCityLabel(post.city)} 
+        area={getAreaLabel(post.area)} 
+        condition={getConditionLabel(post.condition)}
         rating={post.rating}
-        condition={post.condition}
-        pricePerDay={post.pricePerDay}
+        date={post.createdAt}
+        status={post.status}
         {...flags}
       />
     );
@@ -91,6 +111,7 @@ function PostRenderer({
       onRefresh={onRefresh}
       refreshing={refreshing}
       ListEmptyComponent={() => <EmptyState message={emptyMessage} />}
+      ListHeaderComponent={children ? () => children : null}
       showsVerticalScrollIndicator={false}
     />
   );

@@ -60,7 +60,7 @@ const getStyles = (theme) =>
       backgroundColor: theme.post,
       position: "absolute",
       zIndex: 120,
-      paddingTop: Constants.statusBarHeight,
+      // paddingTop: Constants.statusBarHeight,
       borderBottomRightRadius: 22,
       borderBottomLeftRadius: 22,
       paddingBottom: 20,

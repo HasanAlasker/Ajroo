@@ -21,6 +21,7 @@ import {
 } from "../../constants/DropOptions";
 import SubmitBtn from "../../components/SubmitBtn";
 import { usePosts } from "../../config/PostContext";
+import {useUser} from '../../config/UserContext'
 
 const validationSchema = Yup.object().shape({
   category: Yup.string()
@@ -87,6 +88,7 @@ const validationSchema = Yup.object().shape({
 function Post(props) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const { addPost } = usePosts();
+  const {user} = useUser()
   const initialValues = {
     category: "",
     item: "",
@@ -100,14 +102,16 @@ function Post(props) {
   const handleSubmit = (values, { setSubmitting, setStatus, resetForm }) => {
     console.log("Post form values:", values);
 
-    const userImageUri = ""; // Get from user context
-    const username = ""; // Get from user context
-    const status = "available"; // Default status
-    const rating = null; // Default rating
+    const userImageUri = user.avatar
+    const userId = user.id
+    const username = user.id
+    const status = "available";
+    const rating = null; 
 
     addPost({
-      userImageUri: "../../assets/Pics/hasan.png", // hardcode for now
-      username: "Hasan Alasker", // hardcode for now
+      userImageUri,
+      username,
+      userId,
       image: values.image,
       category: values.category,
       item: values.item,
