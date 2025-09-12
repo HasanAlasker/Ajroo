@@ -52,6 +52,8 @@ export const PostProvider = ({ children }) => {
         condition: postData.condition,
         status: postData.status || "available",
         rating: postData.rating || null,
+        requesterId: postData.requesterId || null,
+        borrowerId: postData.borrowerId || null,
         createdAt: new Date().toLocaleDateString(),
         updatedAt: new Date().toISOString(),
       };

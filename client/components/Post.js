@@ -22,6 +22,8 @@ import { useUser } from "../config/UserContext";
 function Post({
   id,
   userId,
+  requesterId,
+  borrowerId,
   profilePic,
   name,
   date,
@@ -32,7 +34,6 @@ function Post({
   area,
   isMine,
   iBorrowed,
-  iRequested,
   status,
   rating,
   time,
@@ -69,6 +70,9 @@ function Post({
           name={name}
           date={date}
           onPressThree={handelMenu}
+          postId={id}
+          status={status}
+          isMine={isMine}
         />
         <ItmeImage source={image} />
         <ItemNameAndCat itemName={itemName} itemCat={itemCat} pricePerDay={pricePerDay} />
@@ -88,7 +92,6 @@ function Post({
               status={status}
               isMine={isMine}
               iBorrowed={iBorrowed}
-      
               pricePerDay={pricePerDay}
               postId={id}
             />

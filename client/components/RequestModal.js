@@ -13,10 +13,19 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import { usePosts } from "../config/PostContext";
+import { useUser } from "../config/UserContext";
+import { useRoute } from "@react-navigation/native";
 
-function RequestModal({ isVisibile, onClose, pricePerDay, onRequestSubmit, postId }) {
+function RequestModal({
+  isVisibile,
+  onClose,
+  pricePerDay,
+  onRequestSubmit,
+  postId,
+}) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
+  const { user } = useUser();
   const { updatePost } = usePosts();
 
   const [duration, setDuration] = useState(0);
@@ -77,9 +86,12 @@ function RequestModal({ isVisibile, onClose, pricePerDay, onRequestSubmit, postI
     : "";
 
   const handleRequest = () => {
-    updatePost(postId, {status : 'pending'})
-    onRequestSubmit()
-    onClose()
+    updatePost(postId, {
+      status: "pending",
+      requesterId: user.id,
+    });
+    onRequestSubmit();
+    onClose();
   };
 
   return (

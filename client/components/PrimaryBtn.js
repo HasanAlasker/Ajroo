@@ -7,6 +7,7 @@ import RequestModal from "./RequestModal";
 import { useState } from "react";
 import RatingModal from "./RatingModal";
 import { usePosts } from "../config/PostContext";
+import { useUser } from "../config/UserContext";
 
 function PrimaryBtn({
   title,
@@ -20,12 +21,16 @@ function PrimaryBtn({
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
-  const { updatePost } = usePosts();
+  const { updatePost, getPostById } = usePosts();
+  const { user } = useUser();
 
-  const [iRequested, setIrequested] = useState(false);
   const [visibleRequest, setVisibileRequest] = useState(false);
   const [visibleRating, setVisibileRating] = useState(false);
   const [pendingStatusUpdate, setPendingStatusUpdate] = useState(null);
+  
+  // Get the actual post data to check request status
+  const currentPost = getPostById(postId);
+  const iRequested = currentPost?.requesterId === user.id;
   
   const shouldBeDisabled = () => {
     if (isDisabled) return true;
@@ -103,6 +108,7 @@ function PrimaryBtn({
     }
     
     if (buttonText === "Disable") {
+      console.log('Disabling post');
       updatePost(postId, { status: "disabled" });
     }
     
@@ -111,8 +117,11 @@ function PrimaryBtn({
     }
     
     if (buttonText === "Cancel Request") {
-      setIrequested(false);
-      updatePost(postId, { status: "available" });
+      // Remove the requesterId and change status back to available
+      updatePost(postId, { 
+        status: "available", 
+        requesterId: null 
+      });
     }
   };
 
@@ -133,7 +142,7 @@ function PrimaryBtn({
         }}
         pricePerDay={pricePerDay}
         onRequestSubmit={() => {
-          setIrequested(true);
+          // The component will re-render automatically when post data changes
         }}
         postId={postId}
       />
@@ -141,7 +150,7 @@ function PrimaryBtn({
       <RatingModal
         isOwner={isMine}
         isVisible={visibleRating}
-        onClose={handleRatingModalClose} // Use custom close handler
+        onClose={handleRatingModalClose}
       />
     </>
   );

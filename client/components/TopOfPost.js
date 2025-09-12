@@ -3,10 +3,13 @@ import AppText from "../config/AppText";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
+import { usePosts } from "../config/PostContext";
 
-function TopOfPost({ name, date, image, onPressThree, onPressProfile }) {
+function TopOfPost({ name, date, image, onPressThree, onPressProfile, postId, status, isMine }) {
   const styles = useThemedStyles(getStyles);
   const {theme} = useTheme();
+  const {posts} = usePosts()
+  
   const renderProfileImage = () => {
     // Check if image is a valid URI string
     if (image && typeof image === 'string' && image.trim() !== '') {
@@ -54,9 +57,9 @@ function TopOfPost({ name, date, image, onPressThree, onPressProfile }) {
           <AppText style={styles.date}>{date}</AppText>
         </View>
       </View>
-      <TouchableOpacity onPress={onPressThree}>
+      {(((status === 'available' || status === 'disabled') && isMine) || (!isMine)) &&<TouchableOpacity onPress={onPressThree}>
         <Feather name="more-vertical" size={30} style={styles.more}></Feather>
-      </TouchableOpacity>
+      </TouchableOpacity>}
     </View>
   );
 }
