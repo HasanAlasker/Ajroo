@@ -5,18 +5,30 @@ import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import { usePosts } from "../config/PostContext";
 
-function AcceptRejectBtn({postId}) {
+function AcceptRejectBtn({ postId }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
-  const { updatePost } = usePosts();
+  const { updatePost, getPostById } = usePosts();
+
+  const currentPost = getPostById(postId);
 
   const handleAccept = () => {
-    updatePost(postId, {status:'taken'})
-  }
+    // When accepting, move the requester to borrower and change status to taken
+    updatePost(postId, {
+      status: "taken",
+      borrowerId: currentPost?.requesterId, // Move requester to borrower
+      requesterId: null, // Clear the request
+    });
+  };
 
   const handleReject = () => {
-    updatePost(postId, {status:'available'})
-  }
+    // When rejecting, clear the request and return to available
+    updatePost(postId, {
+      status: "available",
+      requesterId: null, // Clear the request
+    });
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={[styles.accept]} onPress={handleAccept}>
