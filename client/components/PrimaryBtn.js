@@ -13,7 +13,6 @@ function PrimaryBtn({
   isDisabled,
   isMine,
   iBorrowed,
-  
   status,
   pricePerDay,
   postId,
@@ -23,13 +22,15 @@ function PrimaryBtn({
   const route = useRoute();
   const { updatePost } = usePosts();
 
-  const [iRequested, setIrequested] = useState(false)
-
+  const [iRequested, setIrequested] = useState(false);
+  const [visibleRequest, setVisibileRequest] = useState(false);
+  const [visibleRating, setVisibileRating] = useState(false);
+  const [pendingStatusUpdate, setPendingStatusUpdate] = useState(null);
+  
   const shouldBeDisabled = () => {
     if (isDisabled) return true;
     if (!isMine && status === "disabled") return true;
-    if (isMine && status === "pending" && route.name === "Profile")
-      return true;
+    if (isMine && status === "pending" && route.name === "Profile") return true;
     return false;
   };
 
@@ -72,21 +73,47 @@ function PrimaryBtn({
     return null;
   }
 
-  const [visibleRequest, setVisibileRequest] = useState(false);
-  const [visibleRating, setVisibileRating] = useState(false);
+  const handleRatingModalClose = () => {
+    setVisibileRating(false);
+    
+    // Apply pending status update after modal closes
+    if (pendingStatusUpdate) {
+      updatePost(postId, { status: pendingStatusUpdate });
+      setPendingStatusUpdate(null);
+    }
+  };
+
   const handlePress = () => {
-    if (renderBtnText() === "Request") setVisibileRequest(true);
-    if (
-      renderBtnText() === "Got it back" ||
-      renderBtnText() === "Mark Returned"
-    )
+    const buttonText = renderBtnText();
+    
+    if (buttonText === "Request") {
+      setVisibileRequest(true);
+    }
+    
+    if (buttonText === "Mark Returned") {
       setVisibileRating(true);
-    if (renderBtnText() === "Got it back")
-      updatePost(postId, { status: "available" });
-    if (renderBtnText() === "Disable")
+      // Store the status update for later (after modal closes)
+      setPendingStatusUpdate("available");
+    }
+    
+    if (buttonText === "Got it back") {
+      setVisibileRating(true);
+      // Store the status update for later (after modal closes)
+      setPendingStatusUpdate("available");
+    }
+    
+    if (buttonText === "Disable") {
       updatePost(postId, { status: "disabled" });
-    if (renderBtnText() === "Enable")
+    }
+    
+    if (buttonText === "Enable") {
       updatePost(postId, { status: "available" });
+    }
+    
+    if (buttonText === "Cancel Request") {
+      setIrequested(false);
+      updatePost(postId, { status: "available" });
+    }
   };
 
   return (
@@ -98,20 +125,24 @@ function PrimaryBtn({
       >
         <AppText style={styles.text}>{renderBtnText()}</AppText>
       </TouchableOpacity>
+      
       <RequestModal
         isVisibile={visibleRequest}
         onClose={() => {
           setVisibileRequest(false);
         }}
         pricePerDay={pricePerDay}
-        onRequestSubmit={()=>{setIrequested(true)}}
+        onRequestSubmit={() => {
+          setIrequested(true);
+        }}
         postId={postId}
-      ></RequestModal>
+      />
+      
       <RatingModal
         isOwner={isMine}
         isVisible={visibleRating}
-        onClose={() => setVisibileRating(false)}
-      ></RatingModal>
+        onClose={handleRatingModalClose} // Use custom close handler
+      />
     </>
   );
 }

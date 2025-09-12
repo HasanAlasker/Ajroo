@@ -88,13 +88,13 @@ function Post({
               status={status}
               isMine={isMine}
               iBorrowed={iBorrowed}
-              iRequested={iRequested}
+      
               pricePerDay={pricePerDay}
               postId={id}
             />
           }
           {route.name === "Requests" && status === "pending" && isMine===true && (
-            <AcceptRejectBtn />
+            <AcceptRejectBtn postId={id}/>
           )}
         </LableContainer>
       </PostComponent>

@@ -3,18 +3,27 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import AppText from "../config/AppText";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
+import { usePosts } from "../config/PostContext";
 
-function AcceptRejectBtn(props) {
+function AcceptRejectBtn({postId}) {
   const styles = useThemedStyles(getStyles);
-  const {theme} = useTheme()
+  const { theme } = useTheme();
+  const { updatePost } = usePosts();
 
+  const handleAccept = () => {
+    updatePost(postId, {status:'taken'})
+  }
+
+  const handleReject = () => {
+    updatePost(postId, {status:'available'})
+  }
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={[styles.accept]}>
+      <TouchableOpacity style={[styles.accept]} onPress={handleAccept}>
         <AppText style={styles.text}>Accept</AppText>
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.reject]}>
-        <AppText style={[styles.text, {color:theme.purple}]}>Reject</AppText>
+      <TouchableOpacity style={[styles.reject]} onPress={handleReject}>
+        <AppText style={[styles.text, { color: theme.purple }]}>Reject</AppText>
       </TouchableOpacity>
     </View>
   );
@@ -48,8 +57,8 @@ const getStyles = (theme) =>
       alignItems: "center",
       marginTop: 20,
       width: "48%",
-      borderWidth:2,
-      borderColor:theme.purple
+      borderWidth: 2,
+      borderColor: theme.purple,
     },
     text: {
       color: theme.always_white,
