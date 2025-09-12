@@ -12,8 +12,6 @@ import { useUser } from "../config/UserContext";
 function PrimaryBtn({
   title,
   isDisabled,
-  isMine,
-  iBorrowed,
   status,
   pricePerDay,
   postId,
@@ -30,7 +28,9 @@ function PrimaryBtn({
   
   // Get the actual post data to check request status
   const currentPost = getPostById(postId);
+  const isMine = currentPost.userId === user.id
   const iRequested = currentPost?.requesterId === user.id;
+  const iBorrowed = currentPost?.borrowerId === user.id
   
   const shouldBeDisabled = () => {
     if (isDisabled) return true;
