@@ -25,11 +25,11 @@ function Home(props) {
         </AppText>
         <View style={styles.grid}>
           <SquareCard icon={'home'} name={'Household'} cardnum={1}></SquareCard>
-          <SquareCard icon={'fridge'} name={'Electronics'} cardnum={2}></SquareCard>
           <SquareCard icon={'flower'} name={'Garden'} cardnum={3}></SquareCard>
+          <SquareCard icon={'pliers'} name={'Tools'} cardnum={6}></SquareCard>
           <SquareCard icon={'bicycle'} name={'Sports'} cardnum={4}></SquareCard>
           <SquareCard icon={'tshirt-crew'} name={'Clothes'} cardnum={5}></SquareCard>
-          <SquareCard icon={'pliers'} name={'Tools'} cardnum={6}></SquareCard>
+          <SquareCard icon={'fridge'} name={'Electronics'} cardnum={2}></SquareCard>
           <SquareCard icon={'calendar'} name={'Events'} cardnum={7}></SquareCard>
           <SquareCard icon={'book'} name={'Books'} cardnum={8}></SquareCard>
         </View>

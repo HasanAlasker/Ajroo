@@ -17,7 +17,7 @@ import {
 const POST_FILTERS = {
   // My posts that are available/disabled
   myAvailable: (posts, currentUserId) => 
-    posts.filter(post => post.userId === currentUserId && ['available', 'disabled'].includes(post.status)),
+    posts.filter(post => post.userId === currentUserId && ['available', ].includes(post.status)),
 
   // All my posts
   allMine: (posts, currentUserId) => 
@@ -33,7 +33,7 @@ const POST_FILTERS = {
   
   // My posts with pending requests
   myRequested: (posts, currentUserId) => 
-    posts.filter(post => post.userId === currentUserId && post.status === 'requested'), // you might need to recheck the status in PrimaryBtn because i once put it pending and its confusing now
+    posts.filter(post => post.userId === currentUserId && post.status === 'pending'), // you might need to recheck the status in PrimaryBtn because i once put it pending and its confusing now
   
   // Posts I requested from others
   iRequested: (posts, currentUserId) => 
@@ -45,7 +45,7 @@ const POST_FILTERS = {
   
   // All available posts from others (for browsing)
   browsable: (posts, currentUserId) => 
-    posts.filter(post => post.userId !== currentUserId && post.status === 'available'),
+    posts.filter(post => post.userId !== currentUserId && ['available', 'pending'].includes(post.status)),
 };
 
 function PostRenderer({ 

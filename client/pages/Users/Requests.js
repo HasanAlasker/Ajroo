@@ -19,8 +19,8 @@ function Requests(props) {
           <>
             <PostRenderer
               currentUserId={user.id}
-              filterType={"myRequested"}
-              emptyMessage="You haven't received any requests yet"
+              filterType={"iRequested"}
+              emptyMessage="You haven't requested items yet"
             ></PostRenderer>
 
             {/* <Post
@@ -46,10 +46,9 @@ function Requests(props) {
           <>
             <PostRenderer
               currentUserId={user.id}
-              filterType={"iRequested"}
-              emptyMessage="You haven't requested items yet"
+              filterType={"myRequested"}
+              emptyMessage="You haven't received any requests yet"
             ></PostRenderer>
-
             {/* <Post
               name={"Mohammad Issa"}
               date={"12/ 1/ 2026"}

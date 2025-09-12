@@ -12,10 +12,12 @@ import RequestBtn from "./RequestBtn";
 import { FontAwesome6 } from "@expo/vector-icons";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
+import { usePosts } from "../config/PostContext";
 
-function RequestModal({ isVisibile, onClose, pricePerDay }) {
+function RequestModal({ isVisibile, onClose, pricePerDay, onRequestSubmit, postId }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
+  const { updatePost } = usePosts();
 
   const [duration, setDuration] = useState(0);
   const [baseUnit, setBaseUnit] = useState(""); // Store base unit
@@ -73,6 +75,12 @@ function RequestModal({ isVisibile, onClose, pricePerDay }) {
       ? baseUnit.slice(0, -1)
       : baseUnit
     : "";
+
+  const handleRequest = () => {
+    updatePost(postId, {status : 'pending'})
+    onRequestSubmit()
+    onClose()
+  };
 
   return (
     <CardModal isVisibile={isVisibile} onClose={onClose}>
@@ -147,7 +155,11 @@ function RequestModal({ isVisibile, onClose, pricePerDay }) {
       {duration > 0 && displayUnit != "" && (
         <View style={styles.buttons}>
           <View style={styles.buttons}>
-            <RequestBtn title={"Request"} isGreen={true}></RequestBtn>
+            <RequestBtn
+              title={"Request"}
+              isGreen={true}
+              onPress={handleRequest}
+            ></RequestBtn>
             <RequestBtn
               title={"Cancel"}
               isRed={true}

@@ -93,7 +93,7 @@ function Post({
               postId={id}
             />
           }
-          {route.name === "Requests" && status === "requested" && isMine===true && (
+          {route.name === "Requests" && status === "pending" && isMine===true && (
             <AcceptRejectBtn />
           )}
         </LableContainer>

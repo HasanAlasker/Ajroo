@@ -13,20 +13,22 @@ function PrimaryBtn({
   isDisabled,
   isMine,
   iBorrowed,
-  iRequested,
+  
   status,
   pricePerDay,
-  postId
+  postId,
 }) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
-  const {updatePost} = usePosts()
+  const { updatePost } = usePosts();
+
+  const [iRequested, setIrequested] = useState(false)
 
   const shouldBeDisabled = () => {
     if (isDisabled) return true;
     if (!isMine && status === "disabled") return true;
-    if (isMine && status === "requested" && route.name === "Profile")
+    if (isMine && status === "pending" && route.name === "Profile")
       return true;
     return false;
   };
@@ -46,7 +48,7 @@ function PrimaryBtn({
           return "Got it back";
         case "disabled":
           return "Enable";
-        case "requested":
+        case "pending":
           if (route.name === "Profile") return "Pending...";
           if (route.name === "Requests") return "show_accept_reject";
           break;
@@ -70,18 +72,22 @@ function PrimaryBtn({
     return null;
   }
 
-  const [visibleRequest, setVisibileRequest] = useState(false)
-  const [visibleRating, setVisibileRating] = useState(false)
+  const [visibleRequest, setVisibileRequest] = useState(false);
+  const [visibleRating, setVisibileRating] = useState(false);
   const handlePress = () => {
-
-    if(renderBtnText() === 'Request') setVisibileRequest(true)
-    if(renderBtnText()==='Got it back' || renderBtnText() === 'Mark Returned') setVisibileRating(true)
-    if(renderBtnText()==='Got it back') updatePost(postId, {status: 'available'})
-    if(renderBtnText()==='Disable') updatePost(postId, {status: 'disabled'})
-    if(renderBtnText()==='Enable') updatePost(postId, {status: 'available'})
-    
-  }
-
+    if (renderBtnText() === "Request") setVisibileRequest(true);
+    if (
+      renderBtnText() === "Got it back" ||
+      renderBtnText() === "Mark Returned"
+    )
+      setVisibileRating(true);
+    if (renderBtnText() === "Got it back")
+      updatePost(postId, { status: "available" });
+    if (renderBtnText() === "Disable")
+      updatePost(postId, { status: "disabled" });
+    if (renderBtnText() === "Enable")
+      updatePost(postId, { status: "available" });
+  };
 
   return (
     <>
@@ -92,8 +98,20 @@ function PrimaryBtn({
       >
         <AppText style={styles.text}>{renderBtnText()}</AppText>
       </TouchableOpacity>
-      <RequestModal isVisibile={visibleRequest} onClose={()=> {setVisibileRequest(false)}} pricePerDay={pricePerDay}></RequestModal>
-      <RatingModal isOwner={isMine} isVisible={visibleRating} onClose={()=>setVisibileRating(false)}></RatingModal>
+      <RequestModal
+        isVisibile={visibleRequest}
+        onClose={() => {
+          setVisibileRequest(false);
+        }}
+        pricePerDay={pricePerDay}
+        onRequestSubmit={()=>{setIrequested(true)}}
+        postId={postId}
+      ></RequestModal>
+      <RatingModal
+        isOwner={isMine}
+        isVisible={visibleRating}
+        onClose={() => setVisibileRating(false)}
+      ></RatingModal>
     </>
   );
 }

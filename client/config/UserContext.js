@@ -195,7 +195,7 @@ export const UserProvider = ({ children }) => {
           phone: "0776252987",
           gender: "male",
           avatar: null,
-          rating: 5,
+          rating: null,
           createdAt: new Date().toISOString(),
         },
         token: "mock-jwt-token-" + Date.now(),
