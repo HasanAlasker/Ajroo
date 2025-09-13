@@ -11,6 +11,7 @@ import KeyboardScrollScreen from "../../components/KeyboardScrollScreen";
 import { useUser } from "../../config/UserContext";
 import { Formik } from "formik";
 
+
 const validationSchema = Yup.object().shape({
   name: Yup.string()
     .min(2, "Name must be at least 2 characters long")
@@ -57,6 +58,7 @@ function EditProfile({ userName, image, number, email, rating, sep }) {
     console.log("Profile form values:", values);
     setHasBeenSubmitted(true);
     updateProfile(values);
+    
 
     setTimeout(() => {
       try {

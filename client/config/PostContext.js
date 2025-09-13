@@ -42,7 +42,7 @@ export const PostProvider = ({ children }) => {
         id: Date.now().toString(),
         userImageUri: postData.userImageUri,
         username: postData.username,
-        userId: postData.userId || "Unknown User", // Add default if not provided
+        userId: postData.userId || "UnknownUser", // Add default if not provided
         image: postData.image,
         category: postData.category,
         item: postData.item,
