@@ -1,13 +1,13 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
-import AppText from "../config/AppText";
-import useThemedStyles from "../hooks/useThemedStyles";
-import { useTheme } from "../config/ThemeContext";
+import AppText from "../../config/AppText";
+import useThemedStyles from "../../hooks/useThemedStyles";
+import { useTheme } from "../../config/ThemeContext";
 import { useRoute } from "@react-navigation/native";
-import RequestModal from "./RequestModal";
+import RequestModal from "../RequestModal";
 import { useState } from "react";
-import RatingModal from "./RatingModal";
-import { usePosts } from "../config/PostContext";
-import { useUser } from "../config/UserContext";
+import RatingModal from "../RatingModal";
+import { usePosts } from "../../config/PostContext";
+import { useUser } from "../../config/UserContext";
 
 function PrimaryBtn({
   title,

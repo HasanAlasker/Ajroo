@@ -8,7 +8,7 @@ import LableContainer from "../LableContainer";
 import ItemRating from "./ItemRating";
 import ItemCondition from "./ItemCondition";
 import RowLableCont from "../RowLableCont";
-import PrimaryBtn from "../PrimaryBtn";
+import PrimaryBtn from "./PrimaryBtn";
 import PostComponent from "./PostComponent";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import AcceptRejectBtn from "../AcceptRejectBtn";
