@@ -108,7 +108,6 @@ function PrimaryBtn({
     }
     
     if (buttonText === "Disable") {
-      console.log('Disabling post');
       updatePost(postId, { status: "disabled" });
     }
     

@@ -54,6 +54,9 @@ export const PostProvider = ({ children }) => {
         rating: postData.rating || null,
         requesterId: postData.requesterId || null,
         borrowerId: postData.borrowerId || null,
+        requestDuration: postData.requestDuration || null,
+        requestUnit: postData.requestUnit || null,
+        requestPrice: postData.requestPrice || null,
         createdAt: new Date().toLocaleDateString(),
         updatedAt: new Date().toISOString(),
       };

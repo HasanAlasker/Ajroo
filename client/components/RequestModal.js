@@ -89,6 +89,9 @@ function RequestModal({
     updatePost(postId, {
       status: "pending",
       requesterId: user.id,
+      requestDuration: duration,
+      requestUnit: displayUnit,
+      requestPrice: showPrice(),
     });
     onRequestSubmit();
     onClose();

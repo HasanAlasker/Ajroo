@@ -18,6 +18,7 @@ import { useState } from "react";
 import ItemPricing from "./ItemPricing";
 import EditPostModal from "../EditPostModal"; // Import the EditPostModal here
 import { useUser } from "../../config/UserContext";
+import ItemBill from "./ItemBill";
 
 function Post({
   id,
@@ -75,11 +76,12 @@ function Post({
           isMine={isMine}
         />
         <ItmeImage source={image} />
-        <ItemNameAndCat
+        {((route.name != 'Requests') && (route.name != 'Book'))  ? <ItemNameAndCat
           itemName={itemName}
           itemCat={itemCat}
           pricePerDay={pricePerDay}
-        />
+        /> : <ItemBill postId={id}></ItemBill>}
+
         <LableContainer>
           {area && <Location city={city} area={area} />}
           <RowLableCont>

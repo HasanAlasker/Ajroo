@@ -3,17 +3,20 @@ import { View, StyleSheet } from "react-native";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
 import AppText from "../../config/AppText";
+import { usePosts } from "../../config/PostContext";
 
-function ItemPricing({ pricePerDay }) {
+function ItemBill({ postId }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
+  const {getPostById} = usePosts()
+  const currentPost = getPostById(postId)
 
   return (
     <View style={styles.container}>
-      {pricePerDay && pricePerDay >= 1 ? (
-        <AppText style={styles.text}>{pricePerDay} JD/ Day</AppText>
+      { currentPost.price >= 1 ? (
+        <AppText style={styles.text}>Requested {currentPost.requestDuration} {currentPost.requestUnit} for {currentPost.requestPrice} JD</AppText>
       ) : (
-        <AppText style={styles.text}>Free</AppText>
+        <AppText style={styles.text}>Requested {currentPost.requestDuration} {currentPost.requestUnit} for Free</AppText>
       )}
     </View>
   );
@@ -32,4 +35,4 @@ const getStyles = (theme) =>
     },
   });
 
-export default ItemPricing;
+export default ItemBill;
