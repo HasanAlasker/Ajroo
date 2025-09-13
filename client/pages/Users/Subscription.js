@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import ScrollScreen from "../../components/ScrollScreen";
+import ScrollScreen from "../../components/general/ScrollScreen";
 import SafeScreen from "../../components/general/SafeScreen";
 import Navbar from "../../components/general/Navbar";
 import IndivisualPromo from "../../components/IndivisualPromo";

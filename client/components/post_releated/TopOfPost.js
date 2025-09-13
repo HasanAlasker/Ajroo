@@ -1,9 +1,9 @@
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
-import AppText from "../config/AppText";
+import AppText from "../../config/AppText";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import useThemedStyles from "../hooks/useThemedStyles";
-import { useTheme } from "../config/ThemeContext";
-import { usePosts } from "../config/PostContext";
+import useThemedStyles from "../../hooks/useThemedStyles";
+import { useTheme } from "../../config/ThemeContext";
+import { usePosts } from "../../config/PostContext";
 
 function TopOfPost({ name, date, image, onPressThree, onPressProfile, postId, status, isMine }) {
   const styles = useThemedStyles(getStyles);

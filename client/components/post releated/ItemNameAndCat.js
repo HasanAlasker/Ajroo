@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import AppText from "../../config/AppText";
-import RowLableCont from "./RowLableCont";
+import RowLableCont from "../post_releated/RowLableCont";
 import ItemPricing from "./ItemPricing";
 import { Octicons } from "@expo/vector-icons";
 import { useTheme } from "../../config/ThemeContext";

@@ -4,13 +4,12 @@ import SafeScreen from "../../components/general/SafeScreen";
 import TopChunkProfile from "../../components/TopChunkProfile";
 import FormikInput from "../../components/form/FormikInput";
 import AppForm from "../../components/form/AppForm";
-import SubmitBtn from "../../components/SubmitBtn";
+import SubmitBtn from "../../components/form/SubmitBtn";
 
 import * as Yup from "yup";
-import KeyboardScrollScreen from "../../components/KeyboardScrollScreen";
+import KeyboardScrollScreen from "../../components/general/KeyboardScrollScreen";
 import { useUser } from "../../config/UserContext";
 import { Formik } from "formik";
-
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -58,7 +57,6 @@ function EditProfile({ userName, image, number, email, rating, sep }) {
     console.log("Profile form values:", values);
     setHasBeenSubmitted(true);
     updateProfile(values);
-    
 
     setTimeout(() => {
       try {

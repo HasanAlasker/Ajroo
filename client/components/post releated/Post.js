@@ -1,24 +1,23 @@
 import { StyleSheet } from "react-native";
-import TopOfPost from "./TopOfPost";
+import TopOfPost from "../TopOfPost";
 import ItmeImage from "./ItmeImage";
 import ItemNameAndCat from "./ItemNameAndCat";
 import Location from "./Location";
 import ItemStatus from "./ItemStatus";
-import LableContainer from "./LableContainer";
+import LableContainer from "../post_releated/LableContainer";
 import ItemRating from "./ItemRating";
 import ItemCondition from "./ItemCondition";
-import RowLableCont from "./RowLableCont";
-import PrimaryBtn from "./PrimaryBtn";
+import RowLableCont from "../post_releated/RowLableCont";
+import PrimaryBtn from "../PrimaryBtn";
 import PostComponent from "./PostComponent";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import AcceptRejectBtn from "../AcceptRejectBtn";
 import { useRoute } from "@react-navigation/native";
-import PostMenu from "./PostMenu";
+import PostMenu from "../PostMenu";
 import { useState } from "react";
 import ItemPricing from "./ItemPricing";
 import EditPostModal from "../EditPostModal"; // Import the EditPostModal here
 import { useUser } from "../../config/UserContext";
-import ItemBill from "./ItemBill";
 
 function Post({
   id,
@@ -76,16 +75,11 @@ function Post({
           isMine={isMine}
         />
         <ItmeImage source={image} />
-        {route.name != "Requests" && route.name != "Book" ? (
-          <ItemNameAndCat
-            itemName={itemName}
-            itemCat={itemCat}
-            pricePerDay={pricePerDay}
-          />
-        ) : (
-          <ItemBill postId={id}></ItemBill>
-        )}
-
+        <ItemNameAndCat
+          itemName={itemName}
+          itemCat={itemCat}
+          pricePerDay={pricePerDay}
+        />
         <LableContainer>
           {area && <Location city={city} area={area} />}
           <RowLableCont>

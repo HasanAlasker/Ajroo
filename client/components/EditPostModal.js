@@ -13,7 +13,7 @@ import {
   getAreasByCity,
   getItemsByCategory,
 } from "../constants/DropOptions";
-import SubmitBtn from "./SubmitBtn";
+import SubmitBtn from "./form/SubmitBtn";
 import { usePosts } from "../config/PostContext";
 import useThemedStyles from "../hooks/useThemedStyles";
 

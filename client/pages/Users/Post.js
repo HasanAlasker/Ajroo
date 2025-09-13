@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
-import ScrollScreen from "../../components/ScrollScreen";
+import ScrollScreen from "../../components/general/ScrollScreen";
 import Navbar from "../../components/general/Navbar";
 import AddImageBtn from "../../components/AddImageBtn";
 import FormikDropBox from "../../components/form/FormikDropBox";
@@ -19,7 +19,7 @@ import {
   getAreasByCity,
   getItemsByCategory,
 } from "../../constants/DropOptions";
-import SubmitBtn from "../../components/SubmitBtn";
+import SubmitBtn from "../../components/form/SubmitBtn";
 import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
 

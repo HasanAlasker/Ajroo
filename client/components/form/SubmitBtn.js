@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import FormBtn from "./FormBtn";
+import FormBtn from "../FormBtn";
 import { useFormikContext } from "formik";
 
 function SubmitBtn({ submittingText='Submitting...', defaultText='Submit', setHasBeenSubmitted, style, ...otherProps }) {

@@ -8,10 +8,10 @@ import useThemedStyles from "../../hooks/useThemedStyles";
 import { useNavigation } from "@react-navigation/native";
 import * as Yup from "yup";
 import FormikInput from "../../components/form/FormikInput";
-import SubmitBtn from "../../components/SubmitBtn";
+import SubmitBtn from "../../components/form/SubmitBtn";
 import SeparatorComp from "../../components/SeparatorComp";
 import AppText from "../../config/AppText";
-import KeyboardScrollScreen from "../../components/KeyboardScrollScreen";
+import KeyboardScrollScreen from "../../components/general/KeyboardScrollScreen";
 
 import { useUser } from "../../config/UserContext";
 
@@ -94,9 +94,7 @@ function Login(props) {
             ></FormikInput>
 
             {/* Display context error if exists */}
-            {error && (
-              <AppText style={styles.errorText}>{error}</AppText>
-            )}
+            {error && <AppText style={styles.errorText}>{error}</AppText>}
 
             <SubmitBtn
               defaultText="Login"

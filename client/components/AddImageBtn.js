@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AppText from "../config/AppText";
 import { selectImageFromLibrary, selectImageFromCamera } from "../functions/addImage";
 import { useState } from "react";
-import ErrorMessage from "./ErrorMessage";
+import ErrorMessage from "./form/ErrorMessage";
 
 function AddImageBtn({
   image,

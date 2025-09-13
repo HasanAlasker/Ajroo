@@ -1,7 +1,7 @@
 
 import { View, StyleSheet } from "react-native";
-import AppText from "../config/AppText";
-import useThemedStyles from "../hooks/useThemedStyles";
+import AppText from "../../config/AppText";
+import useThemedStyles from "../../hooks/useThemedStyles";
 
 function ErrorMessage({ error }) {
   const styles = useThemedStyles(getStyles);

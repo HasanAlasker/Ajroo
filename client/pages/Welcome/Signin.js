@@ -8,11 +8,11 @@ import useThemedStyles from "../../hooks/useThemedStyles";
 import { useNavigation } from "@react-navigation/native";
 import * as Yup from "yup";
 import FormikInput from "../../components/form/FormikInput";
-import SubmitBtn from "../../components/SubmitBtn";
+import SubmitBtn from "../../components/form/SubmitBtn";
 import SeparatorComp from "../../components/SeparatorComp";
 import FormikDropBox from "../../components/form/FormikDropBox";
 import { gender } from "../../constants/DropOptions";
-import KeyboardScrollScreen from "../../components/KeyboardScrollScreen";
+import KeyboardScrollScreen from "../../components/general/KeyboardScrollScreen";
 
 import { useUser } from "../../config/UserContext";
 import AppText from "../../config/AppText";

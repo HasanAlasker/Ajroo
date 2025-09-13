@@ -3,19 +3,13 @@ import AppText from "../../config/AppText";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
 import { useRoute } from "@react-navigation/native";
-import RequestModal from "../RequestModal";
+import RequestModal from "./RequestModal";
 import { useState } from "react";
-import RatingModal from "../RatingModal";
+import RatingModal from "./RatingModal";
 import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
 
-function PrimaryBtn({
-  title,
-  isDisabled,
-  status,
-  pricePerDay,
-  postId,
-}) {
+function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId }) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
@@ -25,13 +19,13 @@ function PrimaryBtn({
   const [visibleRequest, setVisibileRequest] = useState(false);
   const [visibleRating, setVisibileRating] = useState(false);
   const [pendingStatusUpdate, setPendingStatusUpdate] = useState(null);
-  
+
   // Get the actual post data to check request status
   const currentPost = getPostById(postId);
-  const isMine = currentPost.userId === user.id
+  const isMine = currentPost.userId === user.id;
   const iRequested = currentPost?.requesterId === user.id;
-  const iBorrowed = currentPost?.borrowerId === user.id
-  
+  const iBorrowed = currentPost?.borrowerId === user.id;
+
   const shouldBeDisabled = () => {
     if (isDisabled) return true;
     if (!isMine && status === "disabled") return true;
@@ -80,7 +74,7 @@ function PrimaryBtn({
 
   const handleRatingModalClose = () => {
     setVisibileRating(false);
-    
+
     // Apply pending status update after modal closes
     if (pendingStatusUpdate) {
       updatePost(postId, { status: pendingStatusUpdate });
@@ -90,36 +84,36 @@ function PrimaryBtn({
 
   const handlePress = () => {
     const buttonText = renderBtnText();
-    
+
     if (buttonText === "Request") {
       setVisibileRequest(true);
     }
-    
+
     if (buttonText === "Mark Returned") {
       setVisibileRating(true);
       // Store the status update for later (after modal closes)
       setPendingStatusUpdate("available");
     }
-    
+
     if (buttonText === "Got it back") {
       setVisibileRating(true);
       // Store the status update for later (after modal closes)
       setPendingStatusUpdate("available");
     }
-    
+
     if (buttonText === "Disable") {
       updatePost(postId, { status: "disabled" });
     }
-    
+
     if (buttonText === "Enable") {
       updatePost(postId, { status: "available" });
     }
-    
+
     if (buttonText === "Cancel Request") {
       // Remove the requesterId and change status back to available
-      updatePost(postId, { 
-        status: "available", 
-        requesterId: null 
+      updatePost(postId, {
+        status: "available",
+        requesterId: null,
       });
     }
   };
@@ -133,7 +127,7 @@ function PrimaryBtn({
       >
         <AppText style={styles.text}>{renderBtnText()}</AppText>
       </TouchableOpacity>
-      
+
       <RequestModal
         isVisibile={visibleRequest}
         onClose={() => {
@@ -145,7 +139,7 @@ function PrimaryBtn({
         }}
         postId={postId}
       />
-      
+
       <RatingModal
         isOwner={isMine}
         isVisible={visibleRating}
