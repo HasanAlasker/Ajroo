@@ -37,67 +37,6 @@ function Profile({ isNotification, myProfile = true }) {
 
         <IndivisualPromo></IndivisualPromo>
         {/* <BuisnessPromo></BuisnessPromo> */}
-
-        {/* <Post
-          area={"Al Jandaweel"}
-          condition={"Brand new"}
-          date={"12/ 1/ 2024"}
-          name={user.name}
-          profilePic={user.avatar}
-          // image={require('../../assets/Pics/tv.png')}
-          itemName={"Television"}
-          itemCat={"Electronics"}
-          isMine={true}
-          status={"requested"}
-          rating={"4.3"}
-          iBorrowed={false}
-          iRequested={false}
-        ></Post>
-        <Post
-          area={"Al Jandaweel"}
-          condition={"Brand new"}
-          date={"12/ 1/ 2024"}
-          name={user.name}
-          profilePic={user.avatar}
-          // image={require('../../assets/Pics/tv.png')}
-          itemName={"Television"}
-          itemCat={"Electronics"}
-          isMine={true}
-          status={"taken"}
-          rating={"4.3"}
-          iBorrowed={false}
-          iRequested={false}
-        ></Post>
-        <Post
-          area={"Al Jandaweel"}
-          condition={"Brand new"}
-          date={"12/ 1/ 2024"}
-          name={user.name}
-          profilePic={user.avatar}
-          // image={require('../../assets/Pics/tv.png')}
-          itemName={"Television"}
-          itemCat={"Electronics"}
-          isMine={true}
-          status={"available"}
-          rating={"4.3"}
-          iBorrowed={false}
-          iRequested={false}
-        ></Post>
-        <Post
-          area={"Al Jandaweel"}
-          condition={"Brand new"}
-          date={"12/ 1/ 2024"}
-          name={user.name}
-          profilePic={user.avatar}
-          // image={require('../../assets/Pics/tv.png')}
-          itemName={"Television"}
-          itemCat={"Electronics"}
-          isMine={true}
-          status={"disabled"}
-          rating={"4.3"}
-          iBorrowed={false}
-          iRequested={false}
-        ></Post> */}
       </PostRenderer>
       <Navbar></Navbar>
     </SafeScreen>
