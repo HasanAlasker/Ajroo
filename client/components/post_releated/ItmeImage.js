@@ -1,5 +1,5 @@
 import { View, StyleSheet, Image } from "react-native";
-import useThemedStyles from "../hooks/useThemedStyles";
+import useThemedStyles from "../../hooks/useThemedStyles";
 
 function ItmeImage({source}) {
   const styles = useThemedStyles(getStyles);

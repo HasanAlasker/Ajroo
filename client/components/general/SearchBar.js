@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import useThemedStyles from "../hooks/useThemedStyles";
-import { useTheme } from "../config/ThemeContext";
+import useThemedStyles from "../../hooks/useThemedStyles";
+import { useTheme } from "../../config/ThemeContext";
 
 function SearchBar(props) {
   const [searchItem, setSearchItem] = useState("");

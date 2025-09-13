@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
-import SafeScreen from "../../components/SafeScreen";
+import SafeScreen from "../../components/general/SafeScreen";
 import ScrollScreen from "../../components/ScrollScreen";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/general/Navbar";
 import AddImageBtn from "../../components/AddImageBtn";
-import FormikDropBox from "../../components/FormikDropBox";
+import FormikDropBox from "../../components/form/FormikDropBox";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -21,7 +21,7 @@ import {
 } from "../../constants/DropOptions";
 import SubmitBtn from "../../components/SubmitBtn";
 import { usePosts } from "../../config/PostContext";
-import {useUser} from '../../config/UserContext'
+import { useUser } from "../../config/UserContext";
 
 const validationSchema = Yup.object().shape({
   category: Yup.string()
@@ -88,7 +88,7 @@ const validationSchema = Yup.object().shape({
 function Post(props) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const { addPost } = usePosts();
-  const {user} = useUser()
+  const { user } = useUser();
   const initialValues = {
     category: "",
     item: "",
@@ -102,11 +102,11 @@ function Post(props) {
   const handleSubmit = (values, { setSubmitting, setStatus, resetForm }) => {
     console.log("Post form values:", values);
 
-    const userImageUri = user.avatar
-    const userId = user.id
-    const username = user.id
+    const userImageUri = user.avatar;
+    const userId = user.id;
+    const username = user.id;
     const status = "available";
-    const rating = null; 
+    const rating = null;
 
     addPost({
       userImageUri,
@@ -120,7 +120,7 @@ function Post(props) {
       area: values.area,
       condition: values.condition,
       status,
-      rating
+      rating,
     });
     setHasBeenSubmitted(true);
 

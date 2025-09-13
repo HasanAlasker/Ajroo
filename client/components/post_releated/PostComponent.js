@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import useThemedStyles from "../hooks/useThemedStyles";
+import useThemedStyles from "../../hooks/useThemedStyles";
 
 function PostComponent({ children, style }) {
   const styles = useThemedStyles(getStyles);

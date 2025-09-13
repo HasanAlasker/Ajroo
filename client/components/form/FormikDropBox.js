@@ -1,12 +1,20 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from "react-native";
 
-import { useFormikContext } from 'formik';
-import DropBox from './DropBox';
-import ErrorMessage from './ErrorMessage';
+import { useFormikContext } from "formik";
+import DropBox from '../DropBox'
+import ErrorMessage from "../ErrorMessage";
 
-function FormikDropBox({name, placeholder, items, disabled=false, penOn=false, hasBeenSubmitted=false, ...other}) {
-  
-  const {values, errors, touched, setFieldTouched, setFieldValue, setStatus} = useFormikContext()
+function FormikDropBox({
+  name,
+  placeholder,
+  items,
+  disabled = false,
+  penOn = false,
+  hasBeenSubmitted = false,
+  ...other
+}) {
+  const { values, errors, touched, setFieldTouched, setFieldValue, setStatus } =
+    useFormikContext();
   const shouldShowError = hasBeenSubmitted && errors[name];
 
   return (
@@ -29,10 +37,10 @@ function FormikDropBox({name, placeholder, items, disabled=false, penOn=false, h
       {shouldShowError && <ErrorMessage error={errors[name]}></ErrorMessage>}
     </>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container:{},
-})
+  container: {},
+});
 
 export default FormikDropBox;

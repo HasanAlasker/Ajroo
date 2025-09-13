@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
 
 import { useFormikContext } from 'formik';
-import InputBox from './InputBox';
-import ErrorMessage from './ErrorMessage';
+import InputBox from '../InputBox';
+import ErrorMessage from '../ErrorMessage';
 
 function FormikInput({name, placeholder, penOn=false, keyboardType, autoCapitalize, hasBeenSubmitted=false, icon , isPassword, ...other}) {
   const {values, errors, touched, setFieldTouched, setFieldValue, setStatus, handleBlur, handleChange} = useFormikContext()

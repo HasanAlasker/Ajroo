@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import SafeScreen from "../../components/SafeScreen";
-import AppForm from "../../components/AppForm";
+import SafeScreen from "../../components/general/SafeScreen";
+import AppForm from "../../components/form/AppForm";
 import Logo from "../../components/Logo";
 import RequestBtn from "../../components/RequestBtn";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useNavigation } from "@react-navigation/native";
 import * as Yup from "yup";
-import FormikInput from "../../components/FormikInput";
+import FormikInput from "../../components/form/FormikInput";
 import SubmitBtn from "../../components/SubmitBtn";
 import SeparatorComp from "../../components/SeparatorComp";
 import AppText from "../../config/AppText";

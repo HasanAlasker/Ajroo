@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { StyleSheet } from "react-native";
-import SafeScreen from "../../components/SafeScreen";
+import SafeScreen from "../../components/general/SafeScreen";
 import TopChunkProfile from "../../components/TopChunkProfile";
-import FormikInput from "../../components/FormikInput";
-import AppForm from "../../components/AppForm";
+import FormikInput from "../../components/form/FormikInput";
+import AppForm from "../../components/form/AppForm";
 import SubmitBtn from "../../components/SubmitBtn";
 
 import * as Yup from "yup";

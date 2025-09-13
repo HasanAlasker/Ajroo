@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
-import SafeScreen from "../../components/SafeScreen";
-import Navbar from "../../components/Navbar";
+import SafeScreen from "../../components/general/SafeScreen";
+import Navbar from "../../components/general/Navbar";
 import TopChunkProfile from "../../components/TopChunkProfile";
 import SettingsMenu from "../../components/SettingsMenu";
 import { useState } from "react";

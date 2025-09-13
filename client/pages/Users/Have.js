@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import Navbar from "../../components/Navbar";
-import SearchBar from "../../components/SearchBar";
-import SafeScreen from "../../components/SafeScreen";
+import Navbar from "../../components/general/Navbar";
+import SearchBar from "../../components/general/SearchBar";
+import SafeScreen from "../../components/general/SafeScreen";
 import { useUser } from "../../config/UserContext";
 import PostRenderer from "../../components/PostRenderer";
 import { useState } from "react";

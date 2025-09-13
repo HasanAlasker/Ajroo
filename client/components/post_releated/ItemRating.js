@@ -1,8 +1,8 @@
 import { Octicons } from "@expo/vector-icons";
 import { View, StyleSheet } from "react-native";
-import useThemedStyles from "../hooks/useThemedStyles";
-import { useTheme } from "../config/ThemeContext";
-import AppText from "../config/AppText";
+import useThemedStyles from "../../hooks/useThemedStyles";
+import { useTheme } from "../../config/ThemeContext";
+import AppText from "../../config/AppText";
 
 function ItemRating({rating}) {
   const styles = useThemedStyles(getStyles);

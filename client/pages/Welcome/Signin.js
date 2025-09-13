@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import SafeScreen from "../../components/SafeScreen";
-import AppForm from "../../components/AppForm";
+import SafeScreen from "../../components/general/SafeScreen";
+import AppForm from "../../components/form/AppForm";
 import Logo from "../../components/Logo";
 import RequestBtn from "../../components/RequestBtn";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useNavigation } from "@react-navigation/native";
 import * as Yup from "yup";
-import FormikInput from "../../components/FormikInput";
+import FormikInput from "../../components/form/FormikInput";
 import SubmitBtn from "../../components/SubmitBtn";
 import SeparatorComp from "../../components/SeparatorComp";
-import FormikDropBox from "../../components/FormikDropBox";
+import FormikDropBox from "../../components/form/FormikDropBox";
 import { gender } from "../../constants/DropOptions";
 import KeyboardScrollScreen from "../../components/KeyboardScrollScreen";
-
 
 import { useUser } from "../../config/UserContext";
 import AppText from "../../config/AppText";
@@ -229,9 +228,7 @@ function Signin(props) {
             ></FormikInput>
 
             {/* Display context error if exists */}
-            {error && (
-              <AppText style={styles.errorText}>{error}</AppText>
-            )}
+            {error && <AppText style={styles.errorText}>{error}</AppText>}
 
             <SubmitBtn
               defaultText="Register"

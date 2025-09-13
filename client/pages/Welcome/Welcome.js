@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Image } from "react-native";
-import SafeScreen from "../../components/SafeScreen";
+import SafeScreen from "../../components/general/SafeScreen";
 import ScrollScreen from "../../components/ScrollScreen";
 import Logo from "../../components/Logo";
 import RequestBtn from "../../components/RequestBtn";

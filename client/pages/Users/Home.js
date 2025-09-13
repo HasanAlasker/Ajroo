@@ -2,13 +2,13 @@ import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AppText from '../../config/AppText'
-import SearchBar from '../../components/SearchBar';
+import SearchBar from '../../components/general/SearchBar';
 
 import useThemedStyles from "../../hooks/useThemedStyles";
 import WelcomeCard from '../../components/WelcomeCard';
 import SquareCard from '../../components/SquareCard';
-import Navbar from '../../components/Navbar';
-import SafeScreen from '../../components/SafeScreen';
+import Navbar from '../../components/general/Navbar';
+import SafeScreen from '../../components/general/SafeScreen';
 import { useUser } from '../../config/UserContext';
 
 function Home(props) {

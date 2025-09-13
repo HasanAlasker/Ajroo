@@ -1,14 +1,14 @@
 import { View, StyleSheet } from "react-native";
-import useThemedStyles from "../hooks/useThemedStyles";
-import AppText from "../config/AppText";
-import RowLableCont from "./RowLableCont";
+import useThemedStyles from "../../hooks/useThemedStyles";
+import AppText from "../../config/AppText";
+import RowLableCont from "../RowLableCont";
 import ItemPricing from "./ItemPricing";
 import { Octicons } from "@expo/vector-icons";
-import { useTheme } from "../config/ThemeContext";
+import { useTheme } from "../../config/ThemeContext";
 
 function ItemNameAndCat({ itemName, itemCat, pricePerDay }) {
   const styles = useThemedStyles(getStyles);
-  const {theme} = useTheme()
+  const { theme } = useTheme();
   return (
     <View style={styles.itemAndCatagory}>
       <AppText style={styles.itemName}>{itemName}</AppText>
@@ -17,7 +17,6 @@ function ItemNameAndCat({ itemName, itemCat, pricePerDay }) {
         {<Octicons name="dot-fill" color={theme.sec_text}></Octicons>}
         <ItemPricing pricePerDay={pricePerDay}></ItemPricing>
       </RowLableCont>
-      
     </View>
   );
 }
@@ -37,10 +36,10 @@ const getStyles = (theme) =>
       color: theme.sec_text,
       fontWeight: "bold",
     },
-    row:{
-      gap:20,
+    row: {
+      gap: 20,
       // justifyContent:'space-between'
-    }
+    },
   });
 
 export default ItemNameAndCat;

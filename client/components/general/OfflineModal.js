@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Modal, TouchableOpacity } from "react-native";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { Feather } from "@expo/vector-icons";
-import useThemedStyles from "../hooks/useThemedStyles";
-import { useTheme } from "../config/ThemeContext";
-import AppText from "../config/AppText";
-import RequestBtn from "../components/RequestBtn";
+import useThemedStyles from "../../hooks/useThemedStyles";
+import { useTheme } from '../../config/ThemeContext'
+import AppText from "../../config/AppText";
+import RequestBtn from "../RequestBtn";
 
 
 function OfflineModal(props) {

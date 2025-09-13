@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import PostComponent from "./PostComponent";
+import PostComponent from "./post_releated/PostComponent";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
@@ -17,7 +17,7 @@ function OfferCard({
   backColor,
   color,
   size,
-  onPress
+  onPress,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
@@ -32,11 +32,15 @@ function OfferCard({
           size={size ? size : 23}
           color={theme[color]}
         ></MaterialIcons>
-        <AppText style={[styles.text, styles.title, { color : theme[color]}]}>{title}</AppText>
+        <AppText style={[styles.text, styles.title, { color: theme[color] }]}>
+          {title}
+        </AppText>
       </View>
-      <AppText style={[styles.text , { color : theme[color]}]}>{children}</AppText>
+      <AppText style={[styles.text, { color: theme[color] }]}>
+        {children}
+      </AppText>
       {startNow && (
-        <AppText style={[styles.text, { color : theme[color]}]}>
+        <AppText style={[styles.text, { color: theme[color] }]}>
           Start now for just {startNow} JD/month!
         </AppText>
       )}

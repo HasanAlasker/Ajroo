@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { View, StyleSheet, Modal, ScrollView } from "react-native";
-import AppForm from "./AppForm";
-import FormikDropBox from "./FormikDropBox";
+import AppForm from "./form/AppForm";
+import FormikDropBox from "./form/FormikDropBox";
 import AddImageBtn from "./AddImageBtn";
 import {
   areas,
@@ -81,17 +81,13 @@ const validationSchema = Yup.object().shape({
   price: Yup.string().required("Please choose pricing"),
 });
 
-function EditPostModal({
-  postId,
-  visible,
-  onClose,
-}) {
+function EditPostModal({ postId, visible, onClose }) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
-  const { editPost, getPostById } = usePosts(); 
+  const { editPost, getPostById } = usePosts();
   const styles = useThemedStyles(getStyles);
 
   const existingPost = getPostById(postId);
-  
+
   // If no post found, return null or show error
   if (!existingPost) {
     return null;
@@ -100,27 +96,30 @@ function EditPostModal({
   const initialValues = {
     category: existingPost.category || "",
     item: existingPost.item || "",
-    price: existingPost.price || "", 
+    price: existingPost.price || "",
     city: existingPost.city || "",
     area: existingPost.area || "",
     condition: existingPost.condition || "",
-    image: existingPost.image || null, 
+    image: existingPost.image || null,
   };
 
-  const handleSubmit = async (values, { setSubmitting, setStatus, resetForm }) => {
+  const handleSubmit = async (
+    values,
+    { setSubmitting, setStatus, resetForm }
+  ) => {
     console.log("Edit form values:", values);
 
     try {
       setSubmitting(true);
-  
+
       const updatedData = {
         category: values.category,
         item: values.item,
-        price: values.price, 
+        price: values.price,
         city: values.city,
         area: values.area,
         condition: values.condition,
-        image: values.image, 
+        image: values.image,
       };
 
       await editPost(postId, updatedData);
@@ -135,9 +134,8 @@ function EditPostModal({
         }
         setSubmitting(false);
       }, 500);
-
     } catch (error) {
-      console.error('Error updating post:', error);
+      console.error("Error updating post:", error);
       setStatus({
         type: "error",
         message: "Failed to update item. Please try again.",
@@ -258,9 +256,12 @@ function EditPostModal({
                   setHasBeenSubmitted={setHasBeenSubmitted}
                   defaultText="Update Post"
                   submittingText="Updating..."
-
                 />
-                <FormBtn title={'Cancel'} onPress={onClose} style={styles.cancel}></FormBtn>
+                <FormBtn
+                  title={"Cancel"}
+                  onPress={onClose}
+                  style={styles.cancel}
+                ></FormBtn>
               </ScrollView>
             );
           }}
@@ -270,21 +271,22 @@ function EditPostModal({
   );
 }
 
-const getStyles = (theme) => StyleSheet.create({
-  container: {},
-  scroll: {
-    flex: 1,
-    backgroundColor: theme.background,
-  },
-  cancel:{
-    backgroundColor:theme.red,
-    borderColor:theme.red,
-    marginTop:20
-  },
-  scroll:{
-    paddingBottom:30,
-    backgroundColor:theme.background
-  }
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {},
+    scroll: {
+      flex: 1,
+      backgroundColor: theme.background,
+    },
+    cancel: {
+      backgroundColor: theme.red,
+      borderColor: theme.red,
+      marginTop: 20,
+    },
+    scroll: {
+      paddingBottom: 30,
+      backgroundColor: theme.background,
+    },
+  });
 
 export default EditPostModal;

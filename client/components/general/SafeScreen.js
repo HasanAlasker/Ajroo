@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import useThemedStyles from '../hooks/useThemedStyles';
+import useThemedStyles from '../../hooks/useThemedStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 function SafeScreen({children}) {

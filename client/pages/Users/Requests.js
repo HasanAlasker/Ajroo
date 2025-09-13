@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { StyleSheet } from "react-native";
-import SafeScreen from "../../components/SafeScreen";
-import TopNav from "../../components/TopNav";
-import Navbar from "../../components/Navbar";
+import SafeScreen from "../../components/general/SafeScreen";
+import TopNav from "../../components/general/TopNav";
+import Navbar from "../../components/general/Navbar";
 import { useUser } from "../../config/UserContext";
 import PostRenderer from "../../components/PostRenderer";
 

@@ -8,14 +8,14 @@ import {
   Dimensions,
   Share,
 } from "react-native";
-import useThemedStyles from "../hooks/useThemedStyles";
-import { useTheme } from "../config/ThemeContext";
+import useThemedStyles from "../../hooks/useThemedStyles";
+import { useTheme } from "../../config/ThemeContext";
 
-import BackContainer from "../components/BackContainer";
-import MenuBackBtn from "./MenuBackBtn";
-import MenuOption from "./MenuOption";
-import SeparatorComp from "./SeparatorComp";
-import { usePosts } from "../config/PostContext";
+import BackContainer from "../BackContainer";
+import MenuBackBtn from "../MenuBackBtn";
+import MenuOption from "../MenuOption";
+import SeparatorComp from "../SeparatorComp";
+import { usePosts } from "../../config/PostContext";
 
 const { height: screenHeight } = Dimensions.get("window");
 

@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import useThemedStyles from "../hooks/useThemedStyles";
+import useThemedStyles from "../../hooks/useThemedStyles";
 
 function Navbar(props) {
   const navigation = useNavigation();

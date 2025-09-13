@@ -1,11 +1,11 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import ScrollScreen from "../../components/ScrollScreen";
-import SafeScreen from "../../components/SafeScreen";
-import Navbar from "../../components/Navbar";
+import SafeScreen from "../../components/general/SafeScreen";
+import Navbar from "../../components/general/Navbar";
 import IndivisualPromo from "../../components/IndivisualPromo";
 import OfferCard from "../../components/OfferCard";
-import PostComponent from "../../components/PostComponent";
+import PostComponent from "../../components/post_releated/PostComponent";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
@@ -19,7 +19,7 @@ function Subscription(props) {
   return (
     <SafeScreen>
       <ScrollScreen>
-        <Logo slogan style={styles.logo}/>
+        <Logo slogan style={styles.logo} />
         <PostComponent style={styles.container}>
           <View style={styles.iconAndTitle}>
             <MaterialIcons
@@ -52,7 +52,8 @@ function Subscription(props) {
               color={theme.darker_gray}
             ></FontAwesome6>
             <AppText style={[styles.note, styles.small]}>
-              Note: Businesses must choose a business plan. Misuse may lead to account suspension.
+              Note: Businesses must choose a business plan. Misuse may lead to
+              account suspension.
             </AppText>
           </View>
         </PostComponent>
@@ -123,7 +124,7 @@ const getStyles = (theme) =>
       color: theme.purple,
       fontSize: 18,
       fontWeight: "bold",
-      textAlignVertical:'center'
+      textAlignVertical: "center",
     },
     title: {
       fontSize: 22,
@@ -138,12 +139,12 @@ const getStyles = (theme) =>
     },
     small: {
       fontSize: 15,
-      color:theme.darker_gray,
-      fontWeight:'bold'
+      color: theme.darker_gray,
+      fontWeight: "bold",
     },
-    logo:{
-      marginVertical:20
-    }
+    logo: {
+      marginVertical: 20,
+    },
   });
 
 export default Subscription;

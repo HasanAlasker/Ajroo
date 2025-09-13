@@ -24,7 +24,7 @@ import Welcome from "./pages/Welcome/Welcome";
 import Login from "./pages/Welcome/Login";
 import Signin from "./pages/Welcome/Signin";
 import { View, ActivityIndicator } from "react-native";
-import OfflineModal from "./components/OfflineModal";
+import OfflineModal from "./components/general/OfflineModal";
 
 const Stack = createNativeStackNavigator();
 
