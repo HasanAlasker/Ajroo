@@ -16,7 +16,7 @@ import { useRoute } from "@react-navigation/native";
 import PostMenu from "./PostMenu";
 import { useState } from "react";
 import ItemPricing from "./ItemPricing";
-import EditPostModal from "../EditPostModal"; // Import the EditPostModal here
+import EditPostModal from "../EditPostModal";
 import { useUser } from "../../config/UserContext";
 import ItemBill from "./ItemBill";
 

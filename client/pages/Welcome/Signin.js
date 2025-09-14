@@ -58,32 +58,32 @@ const validationSchema = Yup.object().shape({
         return !weakPatterns.some((pattern) => pattern.test(value));
       }
     )
-    .test(
-      "no-personal-info",
-      "Password should not contain personal information",
-      function (value) {
-        if (!value) return true;
+    // .test(
+    //   "no-personal-info",
+    //   "Password should not contain personal information",
+    //   function (value) {
+    //     if (!value) return true;
 
-        // Get other form values to check against
-        const { name, email } = this.parent;
+    //     // Get other form values to check against
+    //     const { name, email } = this.parent;
 
-        if (
-          name &&
-          value.toLowerCase().includes(name.toLowerCase().split(" ")[0])
-        ) {
-          return false;
-        }
+    //     if (
+    //       name &&
+    //       value.toLowerCase().includes(name.toLowerCase().split(" ")[0])
+    //     ) {
+    //       return false;
+    //     }
 
-        if (
-          email &&
-          value.toLowerCase().includes(email.toLowerCase().split("@")[0])
-        ) {
-          return false;
-        }
+    //     if (
+    //       email &&
+    //       value.toLowerCase().includes(email.toLowerCase().split("@")[0])
+    //     ) {
+    //       return false;
+    //     }
 
-        return true;
-      }
-    )
+    //     return true;
+    //   }
+    // )
     .trim(),
 
   confirmPassword: Yup.string()

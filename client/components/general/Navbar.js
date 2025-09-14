@@ -3,88 +3,150 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import useThemedStyles from "../../hooks/useThemedStyles";
+import { useUser } from "../../config/UserContext";
 
 function Navbar(props) {
   const navigation = useNavigation();
   const route = useRoute();
+  const { isAuthenticated, isAdmin } = useUser();
 
   const styles = useThemedStyles(getStyles);
 
   return (
     <>
-      <View style={styles.navbar}>
-        <TouchableOpacity
-          style={styles.navbarBtn}
-          onPress={() => navigation.navigate("Home")}
-        >
-          <Feather
-            name="home"
-            size={30}
-            style={[styles.icon, route.name === "Home" && styles.active]}
-          />
-          <Text style={[styles.text, route.name === "Home" && styles.active]}>
-            Home
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.navbarBtn}
-          onPress={() => navigation.navigate("Have")}
-        >
-          <Feather
-            name="clipboard"
-            size={30}
-            style={[styles.icon, route.name === "Have" && styles.active]}
-          />
-          <Text style={[styles.text, route.name === "Have" && styles.active]}>
-            Have
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.navbarBtn}
-          onPress={() => navigation.navigate("Post")}
-        >
-          <Feather
-            name="plus-circle"
-            size={30}
-            style={[styles.icon, route.name === "Post" && styles.active]}
-          />
-          <Text style={[styles.text, route.name === "Post" && styles.active]}>
-            Post
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.navbarBtn}
-          onPress={() => navigation.navigate("Book")}
-        >
-          <Feather
-            name="calendar"
-            size={30}
-            style={[styles.icon, route.name === "Book" && styles.active]}
-          />
-          <Text style={[styles.text, route.name === "Book" && styles.active]}>
-            Book
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.navbarBtn}
-          onPress={() => navigation.navigate("Profile")}
-        >
-          <Feather
-            name="user"
-            size={30}
-            style={[styles.icon, route.name === "Profile" && styles.active]}
-          />
-          <Text
-            style={[styles.text, route.name === "Profile" && styles.active]}
+      {!isAdmin ? ( // Normal user Navbar
+        <View style={styles.navbar}>
+          <TouchableOpacity
+            style={styles.navbarBtn}
+            onPress={() => navigation.navigate("Home")}
           >
-            Profile
-          </Text>
-        </TouchableOpacity>
-      </View>
+            <Feather
+              name="home"
+              size={30}
+              style={[styles.icon, route.name === "Home" && styles.active]}
+            />
+            <Text style={[styles.text, route.name === "Home" && styles.active]}>
+              Home
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navbarBtn}
+            onPress={() => navigation.navigate("Have")}
+          >
+            <Feather
+              name="clipboard"
+              size={30}
+              style={[styles.icon, route.name === "Have" && styles.active]}
+            />
+            <Text style={[styles.text, route.name === "Have" && styles.active]}>
+              Have
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navbarBtn}
+            onPress={() => navigation.navigate("Post")}
+          >
+            <Feather
+              name="plus-circle"
+              size={30}
+              style={[styles.icon, route.name === "Post" && styles.active]}
+            />
+            <Text style={[styles.text, route.name === "Post" && styles.active]}>
+              Post
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navbarBtn}
+            onPress={() => navigation.navigate("Book")}
+          >
+            <Feather
+              name="calendar"
+              size={30}
+              style={[styles.icon, route.name === "Book" && styles.active]}
+            />
+            <Text style={[styles.text, route.name === "Book" && styles.active]}>
+              Book
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navbarBtn}
+            onPress={() => navigation.navigate("Profile")}
+          >
+            <Feather
+              name="user"
+              size={30}
+              style={[styles.icon, route.name === "Profile" && styles.active]}
+            />
+            <Text
+              style={[styles.text, route.name === "Profile" && styles.active]}
+            >
+              Profile
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ) : ( // Admin user Navbar
+        <View style={styles.navbar}>
+          <TouchableOpacity
+            style={styles.navbarBtn}
+            onPress={() => navigation.navigate("Dash")}
+          >
+            <Feather
+              name="pie-chart"
+              size={30}
+              style={[styles.icon, route.name === "Dash" && styles.active]}
+            />
+            <Text style={[styles.text, route.name === "Dash" && styles.active]}>
+              Dash
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navbarBtn}
+            onPress={() => navigation.navigate("Search")}
+          >
+            <Feather
+              name="search"
+              size={30}
+              style={[styles.icon, route.name === "Search" && styles.active]}
+            />
+            <Text style={[styles.text, route.name === "Search" && styles.active]}>
+              Search
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navbarBtn}
+            onPress={() => navigation.navigate("Reports")}
+          >
+            <Feather
+              name="file-text"
+              size={30}
+              style={[styles.icon, route.name === "Reports" && styles.active]}
+            />
+            <Text style={[styles.text, route.name === "Reports" && styles.active]}>
+              Reports
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navbarBtn}
+            onPress={() => ''} // Open menu here
+          >
+            <Feather
+              name="settings"
+              size={30}
+              style={[styles.icon, ]}
+            />
+            <Text style={[styles.text, ]}>
+              Settings
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={styles.bottom}></View>
     </>
   );
@@ -104,7 +166,6 @@ const getStyles = (theme) =>
       height: 73,
       width: "100%",
       zIndex: 100,
-
     },
     navbarBtn: {
       display: "flex",

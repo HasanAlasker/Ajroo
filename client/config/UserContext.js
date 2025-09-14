@@ -20,9 +20,15 @@ const USER_ACTION_TYPES = {
 const initialState = {
   user: null,
   isAuthenticated: false,
+  isAdmin: false,
   isLoading: true, // Start with true to check for stored auth
   error: null,
   token: null,
+};
+
+// Helper function to check if user is admin
+const checkIsAdmin = (user) => {
+  return user?.role === 'admin';
 };
 
 // Reducer function to manage state changes
@@ -40,6 +46,7 @@ const userReducer = (state, action) => {
         user: action.payload.user,
         token: action.payload.token,
         isAuthenticated: true,
+        isAdmin: checkIsAdmin(action.payload.user),
         isLoading: false,
         error: null,
       };
@@ -50,6 +57,7 @@ const userReducer = (state, action) => {
         user: action.payload.user,
         token: action.payload.token,
         isAuthenticated: true,
+        isAdmin: checkIsAdmin(action.payload.user),
         isLoading: false,
         error: null,
       };
@@ -61,6 +69,7 @@ const userReducer = (state, action) => {
         user: null,
         token: null,
         isAuthenticated: false,
+        isAdmin: false,
         isLoading: false,
         error: action.payload,
       };
@@ -71,14 +80,17 @@ const userReducer = (state, action) => {
         user: null,
         token: null,
         isAuthenticated: false,
+        isAdmin: false,
         isLoading: false,
         error: null,
       };
 
     case USER_ACTION_TYPES.UPDATE_PROFILE:
+      const updatedUser = { ...state.user, ...action.payload };
       return {
         ...state,
-        user: { ...state.user, ...action.payload },
+        user: updatedUser,
+        isAdmin: checkIsAdmin(updatedUser),
         error: null,
       };
 
@@ -101,6 +113,7 @@ const userReducer = (state, action) => {
         user: action.payload.user,
         token: action.payload.token,
         isAuthenticated: true,
+        isAdmin: checkIsAdmin(action.payload.user),
         isLoading: false,
       };
 
@@ -185,17 +198,20 @@ export const UserProvider = ({ children }) => {
       // });
       // const data = await response.json();
 
-      // Mock API response for now
+      // Mock API response - check for admin email
+      const isAdminUser = email === 'admin@ajroo.com'; // Example admin check
+      
       const mockResponse = {
         success: true,
         user: {
           id: "1",
-          name: "Default user",
+          name: isAdminUser ? "Admin User" : "Default User",
           email: email,
           phone: "0776252987",
           gender: "male",
           avatar: null,
           rating: null,
+          role: isAdminUser ? "admin" : "user", // Set role based on email
           createdAt: new Date().toISOString(),
         },
         token: "mock-jwt-token-" + Date.now(),
@@ -245,7 +261,7 @@ export const UserProvider = ({ children }) => {
       // });
       // const data = await response.json();
 
-      // Mock API response for now
+      // Mock API response for now - new users are regular users by default
       const mockResponse = {
         success: true,
         user: {
@@ -256,6 +272,7 @@ export const UserProvider = ({ children }) => {
           gender: userData.gender,
           avatar: null,
           rating: null,
+          role: "user", // Default role for new registrations
           createdAt: new Date().toISOString(),
         },
         token: "mock-jwt-token-" + Date.now(),
@@ -345,6 +362,11 @@ export const UserProvider = ({ children }) => {
     return state.isAuthenticated && state.user && state.token;
   };
 
+  // Check if user is admin (fixed function)
+  const isUserAdmin = () => {
+    return state.isAuthenticated && state.isAdmin;
+  };
+
   // Get user's full name
   const getUserDisplayName = () => {
     return state.user?.name || "User";
@@ -353,6 +375,11 @@ export const UserProvider = ({ children }) => {
   // Get user's id
   const getUserId = () => {
     return state.user?.id;
+  };
+
+  // Get user's role
+  const getUserRole = () => {
+    return state.user?.role || "user";
   };
 
   // Check if user has completed profile
@@ -372,6 +399,7 @@ export const UserProvider = ({ children }) => {
     // State
     user: state.user,
     isAuthenticated: state.isAuthenticated,
+    isAdmin: state.isAdmin, // Now exposed in context
     isLoading: state.isLoading,
     error: state.error,
     token: state.token,
@@ -385,8 +413,10 @@ export const UserProvider = ({ children }) => {
 
     // Utilities
     isUserAuthenticated,
+    isUserAdmin,
     getUserDisplayName,
     getUserId,
+    getUserRole, // New utility function
     isProfileComplete,
   };
 

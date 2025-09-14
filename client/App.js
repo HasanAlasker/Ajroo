@@ -25,6 +25,9 @@ import Login from "./pages/Welcome/Login";
 import Signin from "./pages/Welcome/Signin";
 import { View, ActivityIndicator } from "react-native";
 import OfflineModal from "./components/general/OfflineModal";
+import Dash from "./pages/admin/Dash";
+import Search from "./pages/admin/Search";
+import Reports from "./pages/admin/Reports";
 
 const Stack = createNativeStackNavigator();
 
@@ -47,6 +50,19 @@ const AuthenticatedStack = () => {
     </Stack.Navigator>
   );
 };
+// Authenticated user navigation stack
+const AdminStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="Dash"
+      screenOptions={{ headerShown: false, animation: "none" }}
+    >
+      <Stack.Screen name="Dash" component={Dash} />
+      <Stack.Screen name="Search" component={Search} />
+      <Stack.Screen name="Reports" component={Reports} />
+    </Stack.Navigator>
+  );
+};
 // Non-authenticated user navigation stack
 const AuthStack = () => (
   <Stack.Navigator
@@ -61,7 +77,7 @@ const AuthStack = () => (
 
 // Main navigation component that switches based on auth state
 const AppNavigator = () => {
-  const { isAuthenticated, isLoading } = useUser();
+  const { isAuthenticated, isAdmin, isLoading } = useUser();
   const { isDarkMode } = useTheme();
 
   // Show loading screen while checking authentication
@@ -82,7 +98,7 @@ const AppNavigator = () => {
     <>
       <StatusBar style={isDarkMode ? "light" : "dark"} />
       <NavigationContainer>
-        {isAuthenticated ? <AuthenticatedStack /> : <AuthStack />}
+        {(isAuthenticated && isAdmin) ? <AdminStack /> : isAuthenticated ? <AuthenticatedStack /> : <AuthStack />}
       </NavigationContainer>
     </>
   );
