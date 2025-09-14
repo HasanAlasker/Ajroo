@@ -9,7 +9,7 @@ function Dash(props) {
   return (
     <SafeScreen>
       <ScrollScreen>
-        <WelcomeCard></WelcomeCard>
+        
       </ScrollScreen>
       <Navbar></Navbar>
     </SafeScreen>
