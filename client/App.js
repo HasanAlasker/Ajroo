@@ -28,6 +28,7 @@ import OfflineModal from "./components/general/OfflineModal";
 import Dash from "./pages/admin/Dash";
 import Search from "./pages/admin/Search";
 import Reports from "./pages/admin/Reports";
+import SettingsMenu from "./components/SettingsMenu";
 
 const Stack = createNativeStackNavigator();
 

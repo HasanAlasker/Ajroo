@@ -9,16 +9,17 @@ import MenuOption from "./MenuOption";
 import SeparatorComp from "./SeparatorComp";
 import { useNavigation } from "@react-navigation/native";
 import { useUser } from "../config/UserContext";
+import { Modal } from "react-native";
 
 function SettingsMenu({ isVisible, onClose }) {
   const styles = useThemedStyles(getStyles);
   const {toggleTheme, isDarkMode} = useTheme()
   const navigation = useNavigation()
-  const {logout} = useUser()
+  const {logout, isAdmin} = useUser()
   
   if (!isVisible) return null;
   return (
-    <>
+    <Modal transparent animationType="slide">
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay} />
       </TouchableWithoutFeedback>
@@ -29,27 +30,27 @@ function SettingsMenu({ isVisible, onClose }) {
           <MenuOption text={isDarkMode ? 'Light mode': 'Dark mode'} icon={"circle-half-full"} onPress={toggleTheme}/>
           <SeparatorComp style={styles.sep} />
           <MenuOption text={"Change language"} icon={"earth"} />
-          <SeparatorComp style={styles.sep} />
-          <MenuOption text={"Privacy policy"} icon={"shield-check-outline"} />
-          <SeparatorComp style={styles.sep} />
-          <MenuOption
+          {!isAdmin && <SeparatorComp style={styles.sep} />}
+          {!isAdmin && <MenuOption text={"Privacy policy"} icon={"shield-check-outline"} />}
+          {!isAdmin && <SeparatorComp style={styles.sep} />}
+          {!isAdmin && <MenuOption
             text={"Terms of service"}
             icon={"newspaper-variant-outline"}
-          />
-          <SeparatorComp style={styles.sep} />
-          <MenuOption
+          />}
+          {!isAdmin && <SeparatorComp style={styles.sep} />}
+          {!isAdmin && <MenuOption
             text={"Subscription"}
             icon={"card-account-details-star-outline"}
             color={'purple'}
             onPress={()=> navigation.navigate('Subscription')}
-          />
+          />}
           <SeparatorComp style={styles.sep} />
           <MenuOption text={"Support"} icon={"headphones"} color={"green"} />
           <SeparatorComp style={styles.sep} />
           <MenuOption text={"Log out"} icon={"logout"} color={"red"} onPress={logout}/>
         </BackContainer>
       </View>
-    </>
+    </Modal>
   );
 }
 

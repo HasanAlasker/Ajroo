@@ -4,16 +4,20 @@ import { Feather } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useUser } from "../../config/UserContext";
+import { useState } from "react";
+import SettingsMenu from "../SettingsMenu";
 
 function Navbar(props) {
   const navigation = useNavigation();
   const route = useRoute();
-  const { isAuthenticated, isAdmin } = useUser();
+  const { logout, isAdmin } = useUser();
+  const [isMenu, setIsMenu] = useState(false);
 
   const styles = useThemedStyles(getStyles);
 
   return (
     <>
+    <SettingsMenu isVisible={isMenu} onClose={()=>setIsMenu(false)}/>
       {!isAdmin ? ( // Normal user Navbar
         <View style={styles.navbar}>
           <TouchableOpacity
@@ -134,7 +138,7 @@ function Navbar(props) {
 
           <TouchableOpacity
             style={styles.navbarBtn}
-            onPress={() => ''} // Open menu here
+            onPress={() => setIsMenu(true)} // Open menu here
           >
             <Feather
               name="settings"
