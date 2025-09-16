@@ -26,6 +26,7 @@ import * as Yup from "yup";
 import FormikDropBox from "../form/FormikDropBox";
 import SubmitBtn from "../form/SubmitBtn";
 import MenuBackBtn from "../MenuBackBtn";
+import FormBtn from "../FormBtn";
 
 function FilterModal({ isVisible, onClose }) {
   const styles = useThemedStyles(getStyles);
@@ -45,6 +46,7 @@ function FilterModal({ isVisible, onClose }) {
     { setSubmitting, setStatus, resetForm }
   ) => {
     console.log("filter", values);
+    setSubmitting(false);
   };
 
   if (!isVisible) {
@@ -53,21 +55,24 @@ function FilterModal({ isVisible, onClose }) {
 
   return (
     <Modal transparent>
-    
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay} />
       </TouchableWithoutFeedback>
 
       <View style={styles.container}>
         <BackContainer style={styles.back}>
-          <MenuBackBtn onClose={onClose}/>  
+          <MenuBackBtn onClose={onClose} />
         </BackContainer>
-        
+
         <AppText style={styles.text}>Filter Search</AppText>
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-          {({ values, errors, setFieldValue, setStatus }) => {
-
+          {({ values, errors, setFieldValue, setStatus, resetForm, handleSubmit }) => {
             
+            // Handle clear function - this gets access to resetForm
+            const handleClear = () => {
+              resetForm(); // Reset to initial values
+              setHasBeenSubmitted(false); // Reset submission state
+            };
 
             return (
               <ScrollView>
@@ -117,7 +122,16 @@ function FilterModal({ isVisible, onClose }) {
                   defaultText="Search"
                   submittingText="Searching..."
                   setHasBeenSubmitted={setHasBeenSubmitted}
-                ></SubmitBtn>
+                  onPress={handleSubmit}
+                />
+
+                <FormBtn 
+                  title="Clear" 
+                  onPress={handleClear}
+                  style={styles.clearButton}
+                  textColor={'purple'}
+                />
+                
               </ScrollView>
             );
           }}
@@ -136,7 +150,6 @@ const getStyles = (theme) =>
       zIndex: 90,
       position: "absolute",
       width: "100%",
-
       paddingBottom: 40,
     },
     overlay: {
@@ -144,19 +157,24 @@ const getStyles = (theme) =>
       backgroundColor: theme.background,
       zIndex: 80,
       opacity: 0.5,
-      flex:1,
-      inset:0
+      flex: 1,
+      inset: 0,
     },
     text: {
       color: theme.main_text,
       fontSize: 18,
       textAlign: "center",
-      fontWeight:'bold'
+      fontWeight: "bold",
     },
-    back:{
-        marginVertical:0,
-        marginTop:13
-    }
+    back: {
+      marginVertical: 0,
+      marginTop: 13,
+    },
+    clearButton: {
+      marginTop: 10,
+      backgroundColor: theme.post,
+      borderColor: theme.purple,
+    },
   });
 
 export default FilterModal;

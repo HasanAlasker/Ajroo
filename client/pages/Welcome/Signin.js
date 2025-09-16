@@ -180,7 +180,7 @@ function Signin(props) {
             <FormikInput
               name={"name"}
               placeholder={"Name"}
-              autoCapitalize={false}
+              autoCapitalize={'none'}
               icon={"user"}
               hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
@@ -188,7 +188,7 @@ function Signin(props) {
             <FormikInput
               name={"email"}
               placeholder={"Email"}
-              autoCapitalize={false}
+              autoCapitalize={'none'}
               icon={"mail"}
               hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
@@ -196,7 +196,7 @@ function Signin(props) {
             <FormikInput
               name={"phone"}
               placeholder={"Phone"}
-              autoCapitalize={false}
+              autoCapitalize={'none'}
               icon={"phone"}
               hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
@@ -212,7 +212,7 @@ function Signin(props) {
             <FormikInput
               name={"password"}
               placeholder={"Password"}
-              autoCapitalize={false}
+              autoCapitalize={'none'}
               icon={"lock"}
               isPassword
               hasBeenSubmitted={hasBeenSubmitted}
@@ -221,7 +221,7 @@ function Signin(props) {
             <FormikInput
               name={"confirmPassword"}
               placeholder={"Confirm password"}
-              autoCapitalize={false}
+              autoCapitalize={'none'}
               icon={"lock"}
               isPassword
               hasBeenSubmitted={hasBeenSubmitted}

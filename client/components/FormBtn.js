@@ -3,13 +3,13 @@ import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import AppText from "../config/AppText";
 
-function FormBtn({ title, onPress, style }) {
+function FormBtn({ title, onPress, style, textColor }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
 
   return (
     <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
-      <AppText style={styles.text}>{title}</AppText>
+      <AppText style={[styles.text, {color:theme[textColor || 'always_white']}]}>{title}</AppText>
     </TouchableOpacity>
   );
 }
