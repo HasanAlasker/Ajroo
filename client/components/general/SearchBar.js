@@ -3,39 +3,45 @@ import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
+import FilterModal from "./FilterModal";
 
 function SearchBar(props) {
-  const [searchItem, setSearchItem] = useState("");
   const { theme } = useTheme();
-
   const styles = useThemedStyles(getStyles);
 
+  const [searchItem, setSearchItem] = useState("");
+  const [filter, setFilter] = useState(false)
+
+
   return (
-    <View style={styles.searchbar}>
-      <View style={styles.bigBox}>
-        <View style={styles.inputContainer}>
-          <MaterialIcons
-            name="search"
-            size={24}
-            color={theme.purple}
-            style={styles.icon}
-          />
-          <TextInput
-            onChangeText={(text) => setSearchItem(text)}
-            placeholder={"Search Items"}
-            placeholderTextColor={theme.purple}
-            style={styles.input}
-          />
+    <>
+      <View style={styles.searchbar}>
+        <View style={styles.bigBox}>
+          <View style={styles.inputContainer}>
+            <MaterialIcons
+              name="search"
+              size={24}
+              color={theme.purple}
+              style={styles.icon}
+            />
+            <TextInput
+              onChangeText={(text) => setSearchItem(text)}
+              placeholder={"Search Items"}
+              placeholderTextColor={theme.purple}
+              style={styles.input}
+            />
+          </View>
+          <TouchableOpacity style={styles.filter} onPress={()=>{setFilter(!filter)}}>
+            <MaterialIcons
+              name="tune"
+              size={22}
+              color={theme.purple}
+            ></MaterialIcons>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.filter}>
-          <MaterialIcons
-            name="tune"
-            size={22}
-            color={theme.purple}
-          ></MaterialIcons>
-        </TouchableOpacity>
       </View>
-    </View>
+      <FilterModal isVisible={filter} onClose={()=>{setFilter(false)}}/>
+    </>
   );
 }
 
