@@ -16,6 +16,7 @@ import MenuBackBtn from "../MenuBackBtn";
 import MenuOption from "../MenuOption";
 import SeparatorComp from "../SeparatorComp";
 import { usePosts } from "../../config/PostContext";
+import { useAlert } from "../../config/AlertContext";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -31,6 +32,7 @@ function PostMenu({
   const { toggleTheme } = useTheme();
   const [reportMenu, setReportMenu] = useState(false);
   const { deletePost } = usePosts();
+  const { showAlert, showInfo } = useAlert();
 
   const handleShare = async () => {
     try {
@@ -58,7 +60,7 @@ function PostMenu({
 
   const handleReporReason = () => {
     setReportMenu(!reportMenu);
-    onClose()
+    onClose();
     // send the reason with API
   };
 
@@ -68,13 +70,25 @@ function PostMenu({
     }
   };
 
-  const handleDeletePost = async () => {
-    try {
-      await deletePost(postId);
-      onClose(); // Close the menu after deleting
-    } catch (error) {
-      console.error("Error deleting post:", error);
-    }
+  const handleDeletePost = () => {
+    showAlert({
+      title: "Delete Item",
+      message: "This action cannot be undone.",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        try {
+          await deletePost(postId);
+          onClose(); // Close the menu after deleting
+        } catch (error) {
+          showInfo({
+            title:'Error',
+            message:'Post could not be deleted.',
+            confirmText:'Close'
+          })
+        }
+      },
+    });
   };
 
   if (!isVisible) return null;
@@ -83,7 +97,7 @@ function PostMenu({
     <Modal
       transparent
       visible={isVisible}
-      animationType="slide" 
+      animationType="slide"
       onRequestClose={onClose}
     >
       <TouchableWithoutFeedback onPress={onClose}>
@@ -92,7 +106,9 @@ function PostMenu({
 
       <View style={styles.container}>
         <BackContainer>
-          <MenuBackBtn onClose={!reportMenu ? onClose : ()=> setReportMenu(!reportMenu)} />
+          <MenuBackBtn
+            onClose={!reportMenu ? onClose : () => setReportMenu(!reportMenu)}
+          />
           {!reportMenu && (
             <>
               <MenuOption

@@ -11,6 +11,8 @@ export const AlertProvider = ({ children }) => {
     onCancel: null,
     confirmText: 'Yes',
     cancelText: 'No',
+    isLoading: false,
+    type: 'confirm', // 'confirm' or 'info'
   });
 
   const showAlert = ({
@@ -20,6 +22,7 @@ export const AlertProvider = ({ children }) => {
     onCancel,
     confirmText = 'Yes',
     cancelText = 'No',
+    type = 'confirm', // 'confirm' or 'info'
   }) => {
     setAlertConfig({
       isVisible: true,
@@ -27,8 +30,26 @@ export const AlertProvider = ({ children }) => {
       message,
       onConfirm,
       onCancel,
-      confirmText,
+      confirmText: type === 'info' ? 'OK' : confirmText,
       cancelText,
+      type,
+      isLoading: false,
+    });
+  };
+
+  // Convenience method for info alerts
+  const showInfo = ({
+    title = 'Information',
+    message = '',
+    onConfirm,
+    confirmText = 'OK',
+  }) => {
+    showAlert({
+      title,
+      message,
+      onConfirm,
+      confirmText,
+      type: 'info',
     });
   };
 
@@ -36,9 +57,21 @@ export const AlertProvider = ({ children }) => {
     setAlertConfig(prev => ({ ...prev, isVisible: false }));
   };
 
-  const handleConfirm = () => {
-    alertConfig.onConfirm?.();
-    hideAlert();
+  const handleConfirm = async () => {
+    if (alertConfig.onConfirm) {
+      setAlertConfig(prev => ({ ...prev, isLoading: true }));
+      try {
+        await alertConfig.onConfirm();
+        hideAlert();
+      } catch (error) {
+        console.error('Error in alert confirm:', error);
+        setAlertConfig(prev => ({ ...prev, isLoading: false }));
+        // Optionally show error in the alert or hide it
+        hideAlert();
+      }
+    } else {
+      hideAlert();
+    }
   };
 
   const handleCancel = () => {
@@ -50,6 +83,7 @@ export const AlertProvider = ({ children }) => {
     <AlertContext.Provider 
       value={{ 
         showAlert, 
+        showInfo,
         hideAlert, 
         alertConfig,
         handleConfirm,

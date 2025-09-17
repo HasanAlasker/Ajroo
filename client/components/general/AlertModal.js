@@ -21,15 +21,20 @@ function AlertModal() {
 
       <View style={styles.buttons}>
         <RequestBtn
-          title={alertConfig.confirmText}
+          title={alertConfig.isLoading ? "Loading..." : alertConfig.confirmText}
           isGreen={true}
           onPress={handleConfirm}
+          disabled={alertConfig.isLoading}
+          style={alertConfig.type === "info" ? styles.fullWidthButton : null}
         />
-        <RequestBtn 
-          title={alertConfig.cancelText} 
-          isRed={true} 
-          onPress={handleCancel}
-        />
+        {alertConfig.type === "confirm" && (
+          <RequestBtn
+            title={alertConfig.cancelText}
+            isRed={true}
+            onPress={handleCancel}
+            disabled={alertConfig.isLoading}
+          />
+        )}
       </View>
     </CardModal>
   );
@@ -38,16 +43,16 @@ function AlertModal() {
 const getStyles = (theme) =>
   StyleSheet.create({
     text: {
-      fontSize: 20,
+      fontSize: 22,
       color: theme.main_text,
-      fontWeight: 'bold',
+      fontWeight: "bold",
       marginBottom: 10,
-      textAlign: 'center'
+      textAlign: "center",
     },
     message: {
-      fontSize: 16,
-      color: theme.main_text,
-      textAlign: 'center',
+      fontSize: 18,
+      color: theme.darker_gray,
+      textAlign: "center",
       marginBottom: 20,
     },
     buttons: {
@@ -56,7 +61,10 @@ const getStyles = (theme) =>
       width: "100%",
       rowGap: 20,
       justifyContent: "space-between",
-      marginTop: 10,
+      marginTop: 20,
+    },
+    fullWidthButton: {
+      width: "100%",
     },
   });
 

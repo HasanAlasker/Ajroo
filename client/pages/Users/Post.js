@@ -22,6 +22,7 @@ import {
 import SubmitBtn from "../../components/form/SubmitBtn";
 import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
+import { useAlert } from "../../config/AlertContext";
 
 const validationSchema = Yup.object().shape({
   category: Yup.string()
@@ -89,6 +90,8 @@ function Post(props) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const { addPost } = usePosts();
   const { user } = useUser();
+  const { showInfo } = useAlert();
+
   const initialValues = {
     category: "",
     item: "",
@@ -123,6 +126,12 @@ function Post(props) {
       rating,
     });
     setHasBeenSubmitted(true);
+
+    showInfo({
+      title:'Success',
+      message:'Post added successfully.',
+      confirmText:'Got it'
+    })
 
     // Simulate API call
     setTimeout(() => {
