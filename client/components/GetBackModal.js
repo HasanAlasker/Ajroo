@@ -26,11 +26,11 @@ function GetBackModal({
 
   const handleYes = () => {
     updatePost(postId, {
-    //   status: "available",
-    //   borrowerId: null,
-    //   requestDuration: null,
-    //   requestUnit: null,
-    //   requestPrice: null,
+      status: "available",
+      borrowerId: null,
+      requestDuration: null,
+      requestUnit: null,
+      requestPrice: null,
     });
     onClose();
   };
@@ -44,6 +44,7 @@ function GetBackModal({
           <ItemNameAndCat
             itemCat={"Electronics"}
             itemName={"Nintendo Switch"}
+            showPrice={false}
           />
         </LableContainer>
       </View>
@@ -73,6 +74,8 @@ const getStyles = (theme) =>
     text: {
       fontSize: 20,
       color: theme.main_text,
+      fontWeight:'bold',
+      textAlign:'center'
     },
     buttons: {
       flexDirection: "row",

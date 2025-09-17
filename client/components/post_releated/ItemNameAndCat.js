@@ -6,7 +6,7 @@ import ItemPricing from "./ItemPricing";
 import { Octicons } from "@expo/vector-icons";
 import { useTheme } from "../../config/ThemeContext";
 
-function ItemNameAndCat({ itemName, itemCat, pricePerDay }) {
+function ItemNameAndCat({ itemName, itemCat, pricePerDay, showPrice = true }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
   return (
@@ -14,8 +14,8 @@ function ItemNameAndCat({ itemName, itemCat, pricePerDay }) {
       <AppText style={styles.itemName}>{itemName}</AppText>
       <RowLableCont style={styles.row}>
         <AppText style={styles.itemCat}>{itemCat}</AppText>
-        {<Octicons name="dot-fill" color={theme.sec_text}></Octicons>}
-        <ItemPricing pricePerDay={pricePerDay}></ItemPricing>
+        { showPrice && <Octicons name="dot-fill" color={theme.sec_text}></Octicons>}
+        { showPrice && <ItemPricing pricePerDay={pricePerDay}></ItemPricing>}
       </RowLableCont>
     </View>
   );
