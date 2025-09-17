@@ -3,12 +3,14 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet } from "react-native";
+import { Button, StyleSheet } from "react-native";
 
 import { ThemeProvider, useTheme } from "./config/ThemeContext";
 import { PostProvider } from "./config/PostContext";
 import { UserProvider } from "./config/UserContext";
 import { useUser } from "./config/UserContext";
+import { AlertProvider } from "./config/AlertContext";
+import AlertModal from "./components/general/AlertModal";
 
 import Home from "./pages/Users/Home";
 import Have from "./pages/Users/Have";
@@ -29,6 +31,8 @@ import Dash from "./pages/admin/Dash";
 import Search from "./pages/admin/Search";
 import Reports from "./pages/admin/Reports";
 import SettingsMenu from "./components/SettingsMenu";
+import GetBackModal from "./components/GetBackModal";
+import { useState } from "react";
 
 const Stack = createNativeStackNavigator();
 
@@ -99,7 +103,13 @@ const AppNavigator = () => {
     <>
       <StatusBar style={isDarkMode ? "light" : "dark"} />
       <NavigationContainer>
-        {(isAuthenticated && isAdmin) ? <AdminStack /> : isAuthenticated ? <AuthenticatedStack /> : <AuthStack />}
+        {isAuthenticated && isAdmin ? (
+          <AdminStack />
+        ) : isAuthenticated ? (
+          <AuthenticatedStack />
+        ) : (
+          <AuthStack />
+        )}
       </NavigationContainer>
     </>
   );
@@ -111,14 +121,26 @@ const AppContent = () => {
 };
 
 export default function App() {
+  const [backModal, setBackModal] = useState(false);
+
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <UserProvider>
-          <PostProvider>
-            <AppContent />
-          </PostProvider>
-        </UserProvider>
+        <AlertProvider>
+          <UserProvider>
+            <PostProvider>
+              <AppContent />
+              {/* This modal shows for the item owner when the borrower
+                claims that he returned the item */}
+              <GetBackModal
+                isVisibile={backModal}
+                onClose={() => {
+                  setBackModal(false);
+                }}
+              />
+            </PostProvider>
+          </UserProvider>
+        </AlertProvider>
         <OfflineModal />
       </ThemeProvider>
     </SafeAreaProvider>

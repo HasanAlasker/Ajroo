@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import AppText from '../../config/AppText'
 import SearchBar from '../../components/general/SearchBar';
-import GetBackModal from '../../components/GetBackModal'
 
 import useThemedStyles from "../../hooks/useThemedStyles";
 import WelcomeCard from '../../components/WelcomeCard';
@@ -11,11 +9,11 @@ import SquareCard from '../../components/SquareCard';
 import Navbar from '../../components/general/Navbar';
 import SafeScreen from '../../components/general/SafeScreen';
 import { useUser } from '../../config/UserContext';
+import AlertModal from '../../components/general/AlertModal'
 
 function Home(props) {
   const styles = useThemedStyles(getStyles);
   const {getUserDisplayName} = useUser()
-  const [backModal, setBackModal] = useState(false)
 
   return (
     <SafeScreen>
@@ -36,7 +34,7 @@ function Home(props) {
           <SquareCard icon={'book'} name={'Books'} cardnum={8}></SquareCard>
         </View>
       </ScrollView>
-      <GetBackModal isVisibile={backModal} onClose={()=>{ setBackModal(false) }}/>
+      <AlertModal></AlertModal>
       <Navbar></Navbar>
     </SafeScreen>
   );

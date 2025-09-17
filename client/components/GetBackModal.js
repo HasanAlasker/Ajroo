@@ -36,7 +36,7 @@ function GetBackModal({
   };
 
   return (
-    <CardModal isVisibile={isVisibile} onClose={onClose}>
+    <CardModal isVisibile={isVisibile}>
       <AppText style={styles.text}>Did you get this item back?</AppText>
       <View style={styles.box}>
         <ItmeImage />
@@ -70,12 +70,11 @@ const getStyles = (theme) =>
       flexDirection: "row",
       alignItems: "center",
     },
-
     text: {
       fontSize: 20,
       color: theme.main_text,
       fontWeight:'bold',
-      textAlign:'center'
+      marginBottom:10
     },
     buttons: {
       flexDirection: "row",
