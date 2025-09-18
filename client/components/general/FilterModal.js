@@ -61,13 +61,19 @@ function FilterModal({ isVisible, onClose }) {
 
       <View style={styles.container}>
         <BackContainer style={styles.back}>
-          <MenuBackBtn onClose={onClose} />
+          <MenuBackBtn onClose={onClose} x={true} style={styles.close} />
         </BackContainer>
 
         <AppText style={styles.text}>Filter Search</AppText>
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-          {({ values, errors, setFieldValue, setStatus, resetForm, handleSubmit }) => {
-            
+          {({
+            values,
+            errors,
+            setFieldValue,
+            setStatus,
+            resetForm,
+            handleSubmit,
+          }) => {
             // Handle clear function - this gets access to resetForm
             const handleClear = () => {
               resetForm(); // Reset to initial values
@@ -125,13 +131,12 @@ function FilterModal({ isVisible, onClose }) {
                   onPress={handleSubmit}
                 />
 
-                <FormBtn 
-                  title="Clear" 
+                <FormBtn
+                  title="Clear"
                   onPress={handleClear}
                   style={styles.clearButton}
-                  textColor={'purple'}
+                  textColor={"purple"}
                 />
-                
               </ScrollView>
             );
           }}
@@ -174,6 +179,9 @@ const getStyles = (theme) =>
       marginTop: 10,
       backgroundColor: theme.post,
       borderColor: theme.purple,
+    },
+    close: {
+      marginBottom: 0,
     },
   });
 
