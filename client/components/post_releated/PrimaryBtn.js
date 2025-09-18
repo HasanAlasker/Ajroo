@@ -8,6 +8,7 @@ import { useState } from "react";
 import RatingModal from "./RatingModal";
 import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
+import { useAlert } from "../../config/AlertContext";
 
 function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId }) {
   const { theme } = useTheme();
@@ -15,6 +16,7 @@ function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId }) {
   const route = useRoute();
   const { updatePost, getPostById } = usePosts();
   const { user } = useUser();
+  const { showAlert } = useAlert();
 
   const [visibleRequest, setVisibileRequest] = useState(false);
   const [visibleRating, setVisibileRating] = useState(false);
@@ -90,19 +92,67 @@ function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId }) {
     }
 
     if (buttonText === "Mark Returned") {
-      setVisibileRating(true);
-      // Store the status update for later (after modal closes)
-      setPendingStatusUpdate("available");
+      showAlert({
+        title: "Gave it back?",
+        message: "Are you sure you returned item back?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            setVisibileRating(true);
+            // Store the status update for later (after modal closes)
+            setPendingStatusUpdate("available");
+          } catch (error) {
+            showInfo({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
     }
 
     if (buttonText === "Got it back") {
-      setVisibileRating(true);
-      // Store the status update for later (after modal closes)
-      setPendingStatusUpdate("available");
+      showAlert({
+        title: "Got it back?",
+        message: "Are you sure you got this item back?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            setVisibileRating(true);
+            // Store the status update for later (after modal closes)
+            setPendingStatusUpdate("available");
+          } catch (error) {
+            showInfo({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
     }
 
     if (buttonText === "Disable") {
-      updatePost(postId, { status: "disabled" });
+      showAlert({
+        title: "Disable post?",
+        message: "Are you sure you want to disable post?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            updatePost(postId, { status: "disabled" });
+          } catch (error) {
+            showInfo({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
     }
 
     if (buttonText === "Enable") {
@@ -110,10 +160,26 @@ function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId }) {
     }
 
     if (buttonText === "Cancel Request") {
-      // Remove the requesterId and change status back to available
-      updatePost(postId, {
-        status: "available",
-        requesterId: null,
+      showAlert({
+        title: "Cancel request?",
+        message: "Are you sure you want to cancel request?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            // Remove the requesterId and change status back to available
+            updatePost(postId, {
+              status: "available",
+              requesterId: null,
+            });
+          } catch (error) {
+            showInfo({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
       });
     }
   };
