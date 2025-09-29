@@ -68,7 +68,6 @@
 
 > **Ajroo is a private, closed-source project.**  
 > Redistribution, reuse, or copying of code and design elements is **strictly prohibited**.  
-> Created as a graduation project by **Hasan Alasker**.
 
 ---
 
