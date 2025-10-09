@@ -1,5 +1,6 @@
 import Joi from "joi";
 import express from "express";
+import logger from "./logger.js";
 
 const app = express();
 
@@ -32,6 +33,7 @@ const courses = [
   },
 ];
 
+app.use(logger) // my first custom middleware
 app.use(express.json());
 
 app.get("/", (req, res) => {
