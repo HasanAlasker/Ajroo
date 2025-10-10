@@ -5,6 +5,7 @@ import logger from "./middleware/logger.js";
 import courses from "./routers/courses.js";
 import home from "./routers/home.js";
 import mongoose from "mongoose";
+import CourseModel from "./models/coursesModel.js";
 
 dotenv.config();
 
@@ -15,42 +16,6 @@ mongoose
   .connect(process.env.DATABASE_URL)
   .then(() => console.log("Connected to mongoDB... ✅"))
   .catch((err) => console.error("Error connecting to mongoDB... ❌", err));
-
-const courseSchema = new mongoose.Schema({
-  author: {
-    type: String,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  tags: [String],
-  date: { type: Date, default: Date.now() },
-  isPublished: Boolean,
-});
-
-const CourseModel = mongoose.model("Course", courseSchema); // this is a class (model to use the Schema)
-
-const createCourse = async () => {
-  try {
-    const course = new CourseModel({
-      // this is an object of the class
-      author: "Hasan Alasker",
-      name: "flutter",
-      isPublished: true,
-      tags: ["online", "ReactNative", "mobile"],
-    });
-
-    const result = await course.save();
-    console.log(result);
-  } catch (err) {
-    console.log("error adding course", err);
-  }
-};
-
-// createCourse();
 
 const getCourses = async () => {
   // comparison operators:
@@ -82,7 +47,7 @@ const getCourses = async () => {
 
   try {
     const courses = await CourseModel.find()
-      .or([{ author: /.*omar*./i }, { name: /an*/ }, { price: { $gte: 15 } }])
+      .or([{ author: /.*so*./i }, { name: /an*/ }, { price: { $gte: 15 } }])
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .sort({ price: 1 })
@@ -92,16 +57,6 @@ const getCourses = async () => {
   } catch (err) {
     console.log(err);
   }
-};
-
-getCourses();
-
-const validateCourse = (course) => {
-  const schema = Joi.object({
-    name: Joi.string().min(2).required(),
-    id: Joi.number().min(0).max(10),
-  });
-  return schema.validate(course);
 };
 
 app.use(logger); // my first custom middleware

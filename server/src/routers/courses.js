@@ -1,32 +1,29 @@
+// import Joi from "joi";
 import express from "express";
+import CourseModel from "../models/coursesModel.js";
 
 const router = express.Router();
 
-const courses = [
-  {
-    id: 1,
-    name: "React Native",
-  },
-  {
-    id: 2,
-    name: "React JS",
-  },
-  {
-    id: 3,
-    name: "Node JS",
-  },
-  {
-    id: 4,
-    name: "MongoDB",
-  },
-];
+// const validateCourse = (course) => {
+//   const schema = Joi.object({
+//     name: Joi.string().min(2).required(),
+//     id: Joi.number().min(0).max(10),
+//   });
+//   return schema.validate(course);
+// };
 
-router.get("/", (req, res) => {
-  return res.send(courses);
+router.get("/", async (req, res) => {
+  try {
+    const courses = await CourseModel.find();
+    return res.send(courses);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
-router.get("/:id", (req, res) => {
-  const course = courses.find((c) => c.id === parseInt(req.params.id));
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  const course = await CourseModel.findById(id);
   if (!course)
     return res.status(404).send("Course with this id was not found!");
 
@@ -37,50 +34,49 @@ router.get("/:id/:name", (req, res) => {
   return res.send(req.params);
 });
 
-router.post("/", (req, res) => {
-  const { error } = validateCourse(req.body);
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
+router.post("/", async (req, res) => {
+  // const { error } = validateCourse(req.body);
+  // if (error) {
+  //   return res.status(400).send(error.details[0].message);
+  // }
 
+  const data = req.body;
   try {
-    const course = {
-      id: courses.length + 1,
-      name: req.body.name,
-    };
-    courses.push(course);
-    return res.status(200).send(courses);
+    const result = await CourseModel(data);
+    result.save();
+    return res.status(200).send(result);
   } catch {
     return res.status(500).send("Something went wrong");
   }
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
+  // const { error } = validateCourse(req.body);
+  // if (error) {
+  //   return res.status(400).send(error.details[0].message);
+  // }
+  const id = req.params.id;
+  const data = req.body;
+
   try {
-    const course = courses.find((c) => c.id === parseInt(req.params.id));
-    if (!course) return res.status(404).send("course doesn't exist");
-
-    const { error } = validateCourse(req.body);
-    if (error) {
-      return res.status(400).send(error.details[0].message);
-    }
-
-    course.name = req.body.name;
-    return res.status(200).send(course);
-  } catch (error) {
-    return res.status(500).send(error);
+    const result = await CourseModel.findByIdAndUpdate(id, data, {
+      new: true,
+      runValidators: true,
+    });
+    return res.status(200).send(result);
+  } catch {
+    return res.status(500).send("Something went wrong");
   }
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
+  const id = req.params.id;
+  
   try {
-    const course = courses.find((c) => c.id === parseInt(req.params.id));
+    const course = await CourseModel.findByIdAndDelete(id);
     if (!course) return res.status(404).send("No course has this id");
 
-    const index = courses.indexOf(course);
-    courses.splice(index, 1);
-
-    return res.status(200).send(courses);
+    return res.status(200).send(course);
   } catch (error) {
     return res.status(500).send(error);
   }
