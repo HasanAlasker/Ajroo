@@ -3,6 +3,7 @@ import Joi from "joi";
 import express from "express";
 import logger from "./middleware/logger.js";
 import courses from "./routers/courses.js";
+import students from './routers/students.js'
 import home from "./routers/home.js";
 import mongoose from "mongoose";
 import CourseModel from "./models/coursesModel.js";
@@ -63,5 +64,6 @@ app.use(logger); // my first custom middleware
 app.use(express.json());
 app.use("/api/courses", courses);
 app.use("/", home);
+app.use('/api/students', students)
 
 app.listen(port, () => console.log(`listening to port ${port}`));
