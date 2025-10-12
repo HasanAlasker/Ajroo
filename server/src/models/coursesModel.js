@@ -2,9 +2,8 @@ import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema({
   author: {
-    type: String,
-    required: true,
-    minLength: 2,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Teachers"
   },
   name: {
     type: String,
