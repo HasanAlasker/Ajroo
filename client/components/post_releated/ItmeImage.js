@@ -12,14 +12,15 @@ function ItmeImage({source}) {
 const getStyles = (theme) => StyleSheet.create({
   itemImage: {
       width: "100%",
-      height: "250",
+      aspectRatio: 4/3.5,
       backgroundColor: theme.sec_text,
       borderRadius: 15,
       overflow:'hidden'
     },
     image:{
       width:'100%',
-      height:'250',
+      aspectRatio: 4/3.5,
+      // height:'250',
       resizeMode:'cover'
     }
 });
