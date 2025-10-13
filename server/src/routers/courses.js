@@ -1,24 +1,33 @@
 import Joi from "joi";
 import express from "express";
 import CourseModel from "../models/coursesModel.js";
+import joiObjectid from "joi-objectid";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
+const myJoiObjectId = joiObjectid(Joi);
+
 const validateCourse = (course) => {
   const schema = Joi.object({
-    author: Joi.string().min(2).required(),
+    author: myJoiObjectId().required(),
+    // OR for array of ObjectIds:
+    // author: Joi.array().items(myJoiObjectId()),
     tags: Joi.array(),
     isPublished: Joi.boolean(),
     price: Joi.number().min(1).max(1000),
     name: Joi.string().min(2).required(),
-    category: Joi.string()
+    category: Joi.string(),
   });
   return schema.validate(course);
 };
 
 router.get("/", async (req, res) => {
   try {
-    const courses = await CourseModel.find().select('name price author -_id').populate('author', 'name -_id').sort('price');
+    const courses = await CourseModel.find()
+      .select("name price author -_id")
+      .populate("author", "name -_id")
+      .sort("price");
     return res.send(courses);
   } catch (err) {
     console.log(err);
@@ -27,6 +36,8 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(400).send("not valid id");
   const course = await CourseModel.findById(id);
   if (!course)
     return res.status(404).send("Course with this id was not found!");
@@ -50,18 +61,18 @@ router.post("/", async (req, res) => {
     return res.status(200).send(course);
   } catch (err) {
     console.log(err);
-    for(const field in err.errors){
-      console.log(err.errors[field].message)
+    for (const field in err.errors) {
+      console.log(err.errors[field].message);
     }
     return res.status(500).send("Something went wrong");
   }
 });
 
 router.put("/:id", async (req, res) => {
-  // const { error } = validateCourse(req.body);
-  // if (error) {
-  //   return res.status(400).send(error.details[0].message);
-  // }
+  const { error } = validateCourse(req.body);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
   const id = req.params.id;
   const data = req.body;
 
@@ -75,53 +86,55 @@ router.put("/:id", async (req, res) => {
     for (const field in err.errors) {
       console.log(err.errors[field].message);
     }
-    console.log(err)
+    console.log(err);
     return res.status(500).send("Something went wrong");
   }
 });
 
 router.put("/addauthor/:id", async (req, res) => {
-  // const { error } = validateCourse(req.body);
-  // if (error) {
-  //   return res.status(400).send(error.details[0].message);
-  // }
+  const { error } = validateCourse(req.body);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
   const id = req.params.id;
-  const {author} = req.body;
+  const { author } = req.body;
 
   try {
-    const course = await CourseModel.findByIdAndUpdate(id, 
-      {$push:{author:author}},
-      {new:true}
-    )
+    const course = await CourseModel.findByIdAndUpdate(
+      id,
+      { $push: { author: author } },
+      { new: true }
+    );
     return res.status(200).send(course);
   } catch (err) {
     for (const field in err.errors) {
       console.log(err.errors[field].message);
     }
-    console.log(err)
+    console.log(err);
     return res.status(500).send("Something went wrong");
   }
 });
 
 router.put("/removeauthor/:id", async (req, res) => {
-  // const { error } = validateCourse(req.body);
-  // if (error) {
-  //   return res.status(400).send(error.details[0].message);
-  // }
+  const { error } = validateCourse(req.body);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
   const id = req.params.id;
-  const {author} = req.body;
+  const { author } = req.body;
 
   try {
-    const course = await CourseModel.findByIdAndUpdate(id, 
-      {$pull:{author:author}},
-      {new:true}
-    )
+    const course = await CourseModel.findByIdAndUpdate(
+      id,
+      { $pull: { author: author } },
+      { new: true }
+    );
     return res.status(200).send(course);
   } catch (err) {
     for (const field in err.errors) {
       console.log(err.errors[field].message);
     }
-    console.log(err)
+    console.log(err);
     return res.status(500).send("Something went wrong");
   }
 });
