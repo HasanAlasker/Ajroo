@@ -4,6 +4,7 @@ import express from "express";
 import logger from "./middleware/logger.js";
 import courses from "./routers/courses.js";
 import students from './routers/students.js'
+import teachers from './routers/teachers.js'
 import home from "./routers/home.js";
 import mongoose from "mongoose";
 import CourseModel from "./models/coursesModel.js";
@@ -65,5 +66,6 @@ app.use(express.json());
 app.use("/api/courses", courses);
 app.use("/", home);
 app.use('/api/students', students)
+app.use('/api/teachers', teachers)
 
 app.listen(port, () => console.log(`listening to port ${port}`));

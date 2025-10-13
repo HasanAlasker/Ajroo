@@ -18,7 +18,7 @@ const validateCourse = (course) => {
 
 router.get("/", async (req, res) => {
   try {
-    const courses = await CourseModel.find().sort({price:1}).select({name:1, price:1,});
+    const courses = await CourseModel.find().select('name price author -_id').populate('author', 'name -_id').sort('-price');
     return res.send(courses);
   } catch (err) {
     console.log(err);
