@@ -18,7 +18,7 @@ const validateCourse = (course) => {
 
 router.get("/", async (req, res) => {
   try {
-    const courses = await CourseModel.find().select('name price author -_id').populate('author', 'name -_id').sort('-price');
+    const courses = await CourseModel.find().select('name price author -_id').populate('author', 'name -_id').sort('price');
     return res.send(courses);
   } catch (err) {
     console.log(err);
@@ -71,6 +71,52 @@ router.put("/:id", async (req, res) => {
       runValidators: true,
     });
     return res.status(200).send(result);
+  } catch (err) {
+    for (const field in err.errors) {
+      console.log(err.errors[field].message);
+    }
+    console.log(err)
+    return res.status(500).send("Something went wrong");
+  }
+});
+
+router.put("/addauthor/:id", async (req, res) => {
+  // const { error } = validateCourse(req.body);
+  // if (error) {
+  //   return res.status(400).send(error.details[0].message);
+  // }
+  const id = req.params.id;
+  const {author} = req.body;
+
+  try {
+    const course = await CourseModel.findByIdAndUpdate(id, 
+      {$push:{author:author}},
+      {new:true}
+    )
+    return res.status(200).send(course);
+  } catch (err) {
+    for (const field in err.errors) {
+      console.log(err.errors[field].message);
+    }
+    console.log(err)
+    return res.status(500).send("Something went wrong");
+  }
+});
+
+router.put("/removeauthor/:id", async (req, res) => {
+  // const { error } = validateCourse(req.body);
+  // if (error) {
+  //   return res.status(400).send(error.details[0].message);
+  // }
+  const id = req.params.id;
+  const {author} = req.body;
+
+  try {
+    const course = await CourseModel.findByIdAndUpdate(id, 
+      {$pull:{author:author}},
+      {new:true}
+    )
+    return res.status(200).send(course);
   } catch (err) {
     for (const field in err.errors) {
       console.log(err.errors[field].message);
