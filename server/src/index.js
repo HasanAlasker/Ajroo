@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import Joi from "joi";
 import express from "express";
 import logger from "./middleware/logger.js";
 import courses from "./routers/courses.js";
