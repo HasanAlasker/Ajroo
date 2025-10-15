@@ -21,13 +21,8 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    minLength: [8, "Password must be at least 8 characters long"],
-    maxLength: [128, "Password can't be longer than 128 characters"],
-    match: [
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-      "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (@$!%*?&)",
-    ],
     required: true,
+    // Joi will handle the rest
   },
   phone: {
     type: String,
@@ -37,6 +32,7 @@ const userSchema = new mongoose.Schema({
       /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/,
       "Please enter a valid phone number",
     ],
+    unique: true
   },
   gender: {
     type: String,

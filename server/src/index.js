@@ -3,6 +3,8 @@ import express from "express";
 import logger from "./middleware/logger.js";
 import mongoose from "mongoose";
 
+import users from './routers/users.js'
+
 dotenv.config();
 
 const app = express();
@@ -16,6 +18,7 @@ mongoose
 
 app.use(logger); // my first custom middleware
 app.use(express.json());
+app.use("/api/users", users)
 
 
 app.listen(port, () => console.log(`listening to port ${port}`));
