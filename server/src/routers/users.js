@@ -1,9 +1,13 @@
 import express from "express";
 import _ from "lodash";
-import bcrypt, { hash } from "bcrypt";
-import { userRegistrationSchema } from "../validation/userValidation.js";
+import bcrypt from "bcrypt";
+import {
+  userLoginSchema,
+  userRegistrationSchema,
+} from "../validation/userValidation.js";
 import validate from "../middleware/joiValidation.js";
 import usersModel from "../models/usersModel.js";
+import UserModel from "../models/usersModel.js";
 
 const router = express.Router();
 
@@ -33,6 +37,22 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
 });
 
 // login
+
+router.post("/login", validate(userLoginSchema), async (req, res) => {
+  try {
+    const user = await UserModel.findOne({ email: req.body.email });
+    if (!user) return res.status(400).send("Invalid email or password");
+
+    const validPassword = await bcrypt.compare(req.body.password, user.password )
+
+    if(!validPassword) return res.status(400).send("Invalid email or password");
+
+    return res.status(200).send(_.pick(user, ['name', 'email', 'phone', 'gender', 'image', '_id', 'role']))
+
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
 
 // edit profile
 
