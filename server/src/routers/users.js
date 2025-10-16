@@ -1,16 +1,30 @@
 import express from "express";
 import _ from "lodash";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import {
   userLoginSchema,
   userRegistrationSchema,
+  userUpdateSchema,
 } from "../validation/userValidation.js";
 import validate from "../middleware/joiValidation.js";
 import usersModel from "../models/usersModel.js";
 import UserModel from "../models/usersModel.js";
 
 const router = express.Router();
+
+// get all users
+
+router.get("/", async (req, res) => {
+  try {
+    const users = await UserModel.find().select("name role");
+    if (!users) return res.status(400).send("No users found");
+
+    return res.status(200).send(users);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
 
 // register
 
@@ -44,20 +58,70 @@ router.post("/login", validate(userLoginSchema), async (req, res) => {
     const user = await UserModel.findOne({ email: req.body.email });
     if (!user) return res.status(400).send("Invalid email or password");
 
-    const validPassword = await bcrypt.compare(req.body.password, user.password )
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
 
-    if(!validPassword) return res.status(400).send("Invalid email or password");
+    if (!validPassword)
+      return res.status(400).send("Invalid email or password");
 
-    const token = jwt.sign({name: user.name, email: user.email, phone: user.phone, gender: user.gender, _id: user._id, role: user.role}, "e3d5f00120453f0cef0946af3eed5c7f421da013849fbba83107a4a91bde1ec8244ea00f4354cc69cacb490e16e700912305d018c0172734d7708f58261799c0")
+    const token = jwt.sign(
+      {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        gender: user.gender,
+        _id: user._id,
+        role: user.role,
+      },
+      "e3d5f00120453f0cef0946af3eed5c7f421da013849fbba83107a4a91bde1ec8244ea00f4354cc69cacb490e16e700912305d018c0172734d7708f58261799c0"
+    );
 
-    return res.status(200).send(token)
+    return res.status(200).send(token);
     // return res.status(200).send(_.pick(user, ['name', 'email', 'phone', 'gender', 'image', '_id', 'role']))
-
   } catch (err) {
     return res.status(500).send(err);
   }
 });
 
 // edit profile
+
+router.put("/edit/:id", validate(userUpdateSchema), async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = _.pick(req.body, [
+      "name",
+      "password",
+      "email",
+      "phone",
+      "image",
+    ]);
+    if (data.password) {
+      const salt = await bcrypt.genSalt(10);
+      data.password = await bcrypt.hash(data.password, salt);
+    }
+    const user = await usersModel.findByIdAndUpdate(id, data, { new: true });
+    if (!user) return res.status(400).send("not found");
+    return res
+      .status(200)
+      .send(_.pick(user, ["name", "email", "phone", "image", "_id"]));
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
+
+// delete user
+
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const user = await UserModel.findByIdAndDelete(id);
+    if (!user) return res.status(400).send("not found");
+    return res.status(200).send(_.pick(user, ["_id", "name", "email"]));
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
 
 export default router;
