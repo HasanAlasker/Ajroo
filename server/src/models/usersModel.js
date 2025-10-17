@@ -1,4 +1,9 @@
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 import mongoose from "mongoose";
+
+dotenv.config();
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -32,7 +37,7 @@ const userSchema = new mongoose.Schema({
       /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/,
       "Please enter a valid phone number",
     ],
-    unique: true
+    unique: true,
   },
   gender: {
     type: String,
@@ -67,6 +72,26 @@ const userSchema = new mongoose.Schema({
     min: 0,
   },
 });
+
+userSchema.methods.generateAuthToken = function () {
+  const token = jwt.sign(
+    {
+      _id: this._id,
+      name: this.name,
+      role: this.role,
+      email: this.email,
+      phone: this.phone,
+    },
+    process.env.JWT_SECRET,
+    {expiresIn: "7d"}
+  );
+  return token;
+};
+
+userSchema.methods.hashPassword = async function (password) {
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, salt);
+};
 
 const UserModel = mongoose.model("User", userSchema);
 export default UserModel;

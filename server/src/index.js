@@ -10,6 +10,10 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 4000;
 
+if(!process.env.JWT_SECRET){
+  console.log("fatal error no JWT defined")
+}
+
 mongoose
   .connect(process.env.DATABASE_URL)
   .then(() => console.log("Connected to mongoDB... ✅"))
