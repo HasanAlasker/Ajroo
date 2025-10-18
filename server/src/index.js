@@ -2,12 +2,14 @@ import dotenv from "dotenv";
 import express from "express";
 import logger from "./middleware/logger.js";
 import mongoose from "mongoose";
+import cors from 'cors'
 
 import users from './routers/users.js'
 
 dotenv.config();
 
 const app = express();
+app.use(cors())
 const port = process.env.PORT || 4000;
 
 if(!process.env.JWT_SECRET){
