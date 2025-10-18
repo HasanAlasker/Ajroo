@@ -14,6 +14,7 @@ import AppText from "../../config/AppText";
 import KeyboardScrollScreen from "../../components/general/KeyboardScrollScreen";
 
 import { useUser } from "../../config/UserContext";
+import ErrorMessage from "../../components/form/ErrorMessage";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -46,10 +47,6 @@ function Login(props) {
       const result = await login(values.email, values.password);
 
       if (result.success) {
-        setStatus({
-          type: "success",
-          message: "Logged in successfully!",
-        });
         // Navigation will happen automatically via UserContext state change
       } else {
         setStatus({
@@ -94,7 +91,7 @@ function Login(props) {
             ></FormikInput>
 
             {/* Display context error if exists */}
-            {error && <AppText style={styles.errorText}>{error}</AppText>}
+            {error && <ErrorMessage error={error}/>}
 
             <SubmitBtn
               defaultText="Login"
@@ -145,6 +142,9 @@ const getStyles = (theme) =>
     sep: {
       marginTop: 0,
     },
+    errorText:{
+      color: theme.red
+    }
   });
 
 export default Login;

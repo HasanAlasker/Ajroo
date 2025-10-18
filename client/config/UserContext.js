@@ -1,8 +1,7 @@
 // contexts/UserContext.js
 import React, { createContext, useContext, useReducer, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { registerUser } from "../api/user";
-
+import { registerUser, loginUser } from "../api/user";
 
 // Define action types for the reducer
 const USER_ACTION_TYPES = {
@@ -190,61 +189,55 @@ export const UserProvider = ({ children }) => {
     dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: true });
 
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('your-api-endpoint/login', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ email, password }),
-      // });
-      // const data = await response.json();
+      const response = await loginUser({ email, password });
 
-      // Mock API response - check for admin email
-      const isAdminUser = email === "admin@ajroo.com"; // Example admin check
+      if (!response || !response._id) {
+        throw new Error("Invalid response from server");
+      }
 
-      const mockResponse = {
-        success: true,
-        user: {
-          id: "1",
-          name: isAdminUser ? "Admin User" : "Default User",
-          email: email,
-          phone: "0776252987",
-          gender: "male",
-          avatar: null,
-          rating: null,
-          role: isAdminUser ? "admin" : "user", // Set role based on email
-          createdAt: new Date().toISOString(),
-        },
-        token: "mock-jwt-token-" + Date.now(),
+      const user = {
+        id: response._id,
+        name: response.name,
+        email: email,
+        phone: response.phone,
+        gender: response.gender,
+        avatar: response.image || null,
+        rating: response.rating || null,
+        ratingCount: response.ratingCount || 0,
+        role: response.role || "user",
+        createdAt: response.createdAt || new Date().toISOString(),
       };
 
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await storeUserData(user, response.token);
 
-      if (mockResponse.success) {
-        await storeUserData(mockResponse.user, mockResponse.token);
-        dispatch({
-          type: USER_ACTION_TYPES.LOGIN_SUCCESS,
-          payload: {
-            user: mockResponse.user,
-            token: mockResponse.token,
-          },
-        });
-        return { success: true };
-      } else {
-        dispatch({
-          type: USER_ACTION_TYPES.LOGIN_FAILURE,
-          payload: mockResponse.message || "Login failed",
-        });
-        return { success: false, error: mockResponse.message };
-      }
+      dispatch({
+        type: USER_ACTION_TYPES.LOGIN_SUCCESS,
+        payload: {
+          user: user,
+          token: response.token,
+        },
+      });
+
+      return { success: true };
     } catch (error) {
+      let errorMessage = "Login failed";
+
+      if (error.message.includes("Invalid email or password")) {
+        errorMessage = "Invalid email or password";
+      } else if (error.message.includes("500")) {
+        errorMessage = "Server error. Please try again";
+      } else if (error.message.includes("Network")) {
+        errorMessage = "Network error. Check your connection";
+      } else {
+        errorMessage = error.message || "Something went wrong";
+      }
+
       dispatch({
         type: USER_ACTION_TYPES.LOGIN_FAILURE,
-        payload: error.message || "Network error occurred",
+        payload: errorMessage,
       });
-      return { success: false, error: error.message };
+
+      return { success: false, error: errorMessage };
     }
   };
 
