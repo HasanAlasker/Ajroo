@@ -57,3 +57,29 @@ export const loginUser = async ({ email, password }) => {
     throw err;
   }
 };
+
+export const updateUser = async (id, updatedData, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/users/edit/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(updatedData),
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": token,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `HTTP ${response.status}`);
+    }
+
+    const responseData = await response.json();
+
+    return responseData
+    
+  } catch (err) {
+    console.error("Login API error:", err);
+    throw err;
+  }
+};

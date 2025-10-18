@@ -1,7 +1,7 @@
 // contexts/UserContext.js
 import React, { createContext, useContext, useReducer, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { registerUser, loginUser } from "../api/user";
+import { registerUser, loginUser, updateUser } from "../api/user";
 
 // Define action types for the reducer
 const USER_ACTION_TYPES = {
@@ -305,37 +305,40 @@ export const UserProvider = ({ children }) => {
   };
 
   // Update profile function
-  const updateProfile = async (updatedData) => {
+  const updateProfile = async (id, updatedData) => {
     dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: true });
 
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('your-api-endpoint/profile', {
-      //   method: 'PUT',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${state.token}`,
-      //   },
-      //   body: JSON.stringify(updatedData),
-      // });
-
-      // Mock successful update
-      const updatedUser = { ...state.user, ...updatedData };
+      const response = await updateUser(id, updatedData, state.token);
+      const updatedUser = { ...state.user, ...response };
       await storeUserData(updatedUser, state.token);
 
       dispatch({
         type: USER_ACTION_TYPES.UPDATE_PROFILE,
-        payload: updatedData,
+        payload: response,
       });
 
       dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: false });
       return { success: true };
     } catch (error) {
+      let errorMessage = "Failed to update profile";
+
+      if (error.message.includes("Forbidden")) {
+        errorMessage = "You can only edit your own profile";
+      } else if (error.message.includes("404")) {
+        errorMessage = "User not found";
+      } else if (error.message.includes("500")) {
+        errorMessage = "Server error. Please try again";
+      } else {
+        errorMessage = error.message || "Failed to update profile";
+      }
+
       dispatch({
         type: USER_ACTION_TYPES.SET_ERROR,
-        payload: error.message || "Failed to update profile",
+        payload: errorMessage,
       });
-      return { success: false, error: error.message };
+
+      return { success: false, error: errorMessage };
     }
   };
 

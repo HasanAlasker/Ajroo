@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Alert } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import TopChunkProfile from "../../components/TopChunkProfile";
 import FormikInput from "../../components/form/FormikInput";
 import AppForm from "../../components/form/AppForm";
 import SubmitBtn from "../../components/form/SubmitBtn";
-
 import * as Yup from "yup";
 import KeyboardScrollScreen from "../../components/general/KeyboardScrollScreen";
 import { useUser } from "../../config/UserContext";
+import ErrorMessage from "../../components/form/ErrorMessage";
 import { Formik } from "formik";
+import { useAlert } from "../../config/AlertContext";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -23,7 +24,7 @@ const validationSchema = Yup.object().shape({
     .required("Name is required"),
 
   phone: Yup.string()
-    .required()
+    .required("Phone is required")
     .test(
       "phone-validation",
       "Please enter a valid phone number",
@@ -42,34 +43,55 @@ const validationSchema = Yup.object().shape({
     .trim(),
 });
 
-function EditProfile({ userName, image, number, email, rating, sep }) {
+function EditProfile({ rating, sep }) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
-  const { updateProfile, user } = useUser();
+  const { updateProfile, user, error } = useUser();
+  const { showInfo } = useAlert();
 
   const initialValues = {
-    name: user.name || "",
-    phone: user.phone || "",
-    email: user.email || "",
-    image: user.avatar || null,
+    name: user?.name || "",
+    phone: user?.phone || "",
+    email: user?.email || "",
+    image: user?.avatar || "null",
   };
 
-  const handleSubmit = (values, { setSubmitting, setStatus }) => {
+  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
     console.log("Profile form values:", values);
     setHasBeenSubmitted(true);
-    updateProfile(values);
 
-    setTimeout(() => {
-      try {
+    try {
+      // ✅ Pass user ID and await the result
+      const result = await updateProfile(user.id, values);
+
+      if (result.success) {
         setStatus({
           type: "success",
           message: "Profile updated successfully!",
         });
-      } catch (error) {
-        setStatus({ type: "error", message: "Failed to update profile." });
-      } finally {
-        setSubmitting(false);
+
+        // Optional: Show error alert
+        showInfo({
+          title: "Success",
+          message: "Profile updated successfully",
+          confirmText: "Close",
+        });
       }
-    }, 1500);
+    } catch (error) {
+      console.error("Update error:", error);
+      showInfo({
+        title: "Error",
+        message: "Something went wrong",
+        confirmText: "Close",
+      });
+      setStatus({
+        type: "error",
+        message: error.message || "An unexpected error occurred.",
+      });
+
+      Alert.alert("Error", error.message || "An unexpected error occurred.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -83,8 +105,8 @@ function EditProfile({ userName, image, number, email, rating, sep }) {
           {({ setFieldValue, setStatus }) => (
             <>
               <TopChunkProfile
-                userName={user.name}
-                userRate={rating || "Unrated"}
+                userName={user?.name}
+                userRate={rating || user?.rating || "Unrated"}
                 isPicDisabled={false}
                 sep={sep || "Edit Info"}
                 onImageChange={(imageUri) => {
@@ -98,6 +120,7 @@ function EditProfile({ userName, image, number, email, rating, sep }) {
                 placeholder="Name"
                 hasBeenSubmitted={hasBeenSubmitted}
                 penOn={true}
+                autoCapitalize="words"
               />
 
               <FormikInput
@@ -121,7 +144,10 @@ function EditProfile({ userName, image, number, email, rating, sep }) {
                 defaultText="Save"
                 submittingText="Saving..."
                 setHasBeenSubmitted={setHasBeenSubmitted}
-              ></SubmitBtn>
+              />
+
+              {/* Display context error if exists */}
+              {error && <ErrorMessage error={error} />}
             </>
           )}
         </Formik>
