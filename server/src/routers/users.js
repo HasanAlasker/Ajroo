@@ -74,7 +74,7 @@ router.post("/login", validate(userLoginSchema), async (req, res) => {
 
     const token = user.generateAuthToken()
 
-    return res.status(200).header("x-auth-token", token).send(_.pick(user, "_id"));
+    return res.status(200).header("x-auth-token", token).send(_.pick(user, "_id", "name", "image", "rating", "ratingCount", "gender", "phone"));
     // return res.status(200).send(_.pick(user, ['name', 'email', 'phone', 'gender', 'image', '_id', 'role']))
   } catch (err) {
     return res.status(500).send(err);

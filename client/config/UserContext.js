@@ -2,7 +2,6 @@
 import React, { createContext, useContext, useReducer, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerUser } from "../api/user";
-import { gender } from "../constants/DropOptions";
 
 
 // Define action types for the reducer
