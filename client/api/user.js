@@ -10,12 +10,19 @@ export const registerUser = async (data) => {
       },
     });
 
+    const token = response.headers.get("x-auth-token");
+
     if (!response.ok) {
-      throw new Error(response.status);
+      const errorText = await response.text();
+      throw new Error(errorText || `HTTP ${response.status}`);
     }
 
-    return await response.json();
+    const responseData = await response.json();
 
+    return {
+      ...responseData,
+      token: token, // Add token to response
+    };
   } catch (err) {
     console.error(err);
     throw err;

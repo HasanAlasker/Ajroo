@@ -146,10 +146,6 @@ function Signin(props) {
       const result = await register(userData);
 
       if (result.success) {
-        setStatus({
-          type: "success",
-          message: "Registered successfully!",
-        });
         // Navigation will happen automatically via UserContext state change
       } else {
         setStatus({

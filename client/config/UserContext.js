@@ -1,6 +1,9 @@
 // contexts/UserContext.js
 import React, { createContext, useContext, useReducer, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { registerUser } from "../api/user";
+import { gender } from "../constants/DropOptions";
+
 
 // Define action types for the reducer
 const USER_ACTION_TYPES = {
@@ -28,7 +31,7 @@ const initialState = {
 
 // Helper function to check if user is admin
 const checkIsAdmin = (user) => {
-  return user?.role === 'admin';
+  return user?.role === "admin";
 };
 
 // Reducer function to manage state changes
@@ -199,8 +202,8 @@ export const UserProvider = ({ children }) => {
       // const data = await response.json();
 
       // Mock API response - check for admin email
-      const isAdminUser = email === 'admin@ajroo.com'; // Example admin check
-      
+      const isAdminUser = email === "admin@ajroo.com"; // Example admin check
+
       const mockResponse = {
         success: true,
         user: {
@@ -252,58 +255,50 @@ export const UserProvider = ({ children }) => {
 
     try {
       // TODO: Replace with actual API call
-      // const response = await fetch('your-api-endpoint/register', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(userData),
-      // });
-      // const data = await response.json();
+      const response = await registerUser(userData);
 
       // Mock API response for now - new users are regular users by default
-      const mockResponse = {
-        success: true,
-        user: {
-          id: Date.now().toString(),
-          name: userData.name,
-          email: userData.email,
-          phone: userData.phone,
-          gender: userData.gender,
-          avatar: null,
-          rating: null,
-          role: "user", // Default role for new registrations
-          createdAt: new Date().toISOString(),
-        },
-        token: "mock-jwt-token-" + Date.now(),
+      const user = {
+        id: response._id,
+        name: response.name,
+        email: response.email,
+        phone: response.phone,
+        gender: response.gender,
+        avatar: null,
+        router: response.role,
+        createdAt: response.createdAt,
       };
 
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // store user data
+      await storeUserData(user, response.token);
 
-      if (mockResponse.success) {
-        await storeUserData(mockResponse.user, mockResponse.token);
-        dispatch({
-          type: USER_ACTION_TYPES.REGISTER_SUCCESS,
-          payload: {
-            user: mockResponse.user,
-            token: mockResponse.token,
-          },
-        });
-        return { success: true };
-      } else {
-        dispatch({
-          type: USER_ACTION_TYPES.REGISTER_FAILURE,
-          payload: mockResponse.message || "Registration failed",
-        });
-        return { success: false, error: mockResponse.message };
-      }
+      dispatch({
+        type: USER_ACTION_TYPES.REGISTER_SUCCESS,
+        payload: {
+          user: user,
+          token: response.token,
+        },
+      });
     } catch (error) {
+      // Handle different error types
+      let errorMessage = "Registration failed";
+
+      if (error.message.includes("already registered")) {
+        errorMessage = "This email is already registered";
+      } else if (error.message.includes("500")) {
+        errorMessage = "Server error. Please try again later";
+      } else if (error.message.includes("Network")) {
+        errorMessage = "Network error. Check your connection";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       dispatch({
         type: USER_ACTION_TYPES.REGISTER_FAILURE,
-        payload: error.message || "Network error occurred",
+        payload: errorMessage,
       });
-      return { success: false, error: error.message };
+
+      return { success: false, error: errorMessage };
     }
   };
 

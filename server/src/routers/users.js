@@ -39,7 +39,7 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
     if (user) return res.status(400).send("This email is already registered");
 
     const newUser = new usersModel(
-      _.pick(req.body, ["name", "password", "email", "phone", "gender"])
+      _.pick(req.body, ["_id", "name", "password", "email", "phone", "gender"])
     );
 
     newUser.password = await newUser.hashPassword(req.body.password)
