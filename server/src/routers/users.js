@@ -11,6 +11,7 @@ import usersModel from "../models/usersModel.js";
 import UserModel from "../models/usersModel.js";
 import dotenv from "dotenv";
 import auth from "../middleware/auth.js";
+import admin from "../middleware/admin.js";
 
 const router = express.Router();
 
@@ -101,7 +102,7 @@ router.get("/me", auth, async(req, res)=>{
 router.get("/:id", auth, async(req, res)=>{
   try{
     const id = req.params.id
-    const user = await UserModel.findById(id).select("name image email phone rating ratingCount gender")
+    const user = await UserModel.findById(id).select("role name image email phone rating ratingCount gender")
     if(!user) return res.status(404).send("user not found")
 
     return res.status(200).send(user)
@@ -145,13 +146,12 @@ router.put("/edit/:id", auth, validate(userUpdateSchema), async (req, res) => {
 
 // delete user
 
-router.delete("/delete/:id", auth, async (req, res) => {
+router.delete("/delete/:id", [auth, admin], async (req, res) => {
   try {
     const id = req.params.id;
-    if(req.user._id !== id) return res.status(401).send("unauthorized access")
 
     const user = await UserModel.findByIdAndDelete(id);
-    if (!user) return res.status(400).send("not found");
+    if (!user) return res.status(404).send("user not found");
     return res.status(200).send(_.pick(user, ["_id", "name", "email"]));
   } catch (err) {
     return res.status(500).send(err);
