@@ -119,7 +119,7 @@ router.delete("/delete/:id", auth, async (req, res) => {
 
 // get the posts of a user (you or others)
 
-router.get("/others/:id", auth, async (req, res) => {
+router.get("/user/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
 
