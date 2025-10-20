@@ -117,11 +117,11 @@ router.delete("/delete/:id", auth, async (req, res) => {
   }
 });
 
-// get MY posts (when you open your profile)
+// get the posts of a user (you or others)
 
-router.get("/me", auth, async (req, res) => {
+router.get("/others/:id", auth, async (req, res) => {
   try {
-    const id = req.user._id;
+    const id = req.params.id;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).send("Invalid ID");
@@ -154,9 +154,6 @@ router.get("/:id", auth, async (req, res) => {
     return res.status(500).send(err);
   }
 });
-
-
-// get OTHERS Posts (when you open their profile)
 
 // get posts with search and filter, how to do that?
 
