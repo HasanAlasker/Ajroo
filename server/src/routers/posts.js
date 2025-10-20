@@ -67,7 +67,7 @@ router.put(
       if (!post) return res.status(404).send("Post not found");
 
       if (req.user._id !== post.user.toString()) {
-        return res.status(403).send("Only post owner can edit");
+        return res.status(403).send("Only post owner can edit post");
       }
 
       const data = _.pick(req.body, [
@@ -94,11 +94,51 @@ router.put(
 
 // delete post (post owner)
 
+router.delete("/delete/:id", auth, async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send("Invalid post ID");
+    }
+
+    const post = await PostModel.findById(id);
+    if (!post) return res.status(404).send("Post not found");
+
+    if (req.user._id !== post.user.toString()) {
+      return res.status(403).send("Only post owner can delete post");
+    }
+
+    const deletedPost = await PostModel.findByIdAndDelete(id);
+
+    return res.status(200).send(deletedPost);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
+
 // get post with id (shared post)
 
-// get MY posts
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const id = req.params.id;
 
-// get others Posts
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send("Invalid post ID");
+    }
+    
+    const post = await PostModel.findById(id);
+    if (!post) return res.status(404).send("No posts found");
+
+    return res.status(200).send(post);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
+
+// get MY posts (when you open your profile)
+
+// get OTHERS Posts (when you open their profile)
 
 // get posts with search and filter, how to do that?
 
