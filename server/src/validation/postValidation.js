@@ -125,14 +125,6 @@ export const updatePostValidation = Joi.object({
     "string.max": "Area cannot exceed 500 characters",
   }),
 
-  status: Joi.string()
-    .lowercase()
-    .valid("available", "taken", "pending", "early", "late")
-    .messages({
-      "any.only":
-        "Status must be one of: available, taken, pending, early, late",
-    }),
-
   condition: Joi.string()
     .lowercase()
     .valid("excellent", "very good", "good", "fair", "needs repair")
@@ -140,22 +132,12 @@ export const updatePostValidation = Joi.object({
       "any.only":
         "Condition must be one of: excellent, very good, good, fair, needs repair",
     }),
-
-  isRated: Joi.boolean(),
-
-  rating: Joi.number().min(0).max(5).messages({
-    "number.min": "Rating must be at least 0",
-    "number.max": "Rating cannot exceed 5",
-  }),
-
-  ratingCount: Joi.number().min(0).messages({
-    "number.min": "Rating count must be at least 0",
-  }),
 })
   .min(1)
   .messages({
     "object.min": "At least one field must be provided for update",
-  });
+  })
+  .unknown(false);
 
 // Usage example in your route/controller:
 // const { error, value } = createPostValidation.validate(req.body);

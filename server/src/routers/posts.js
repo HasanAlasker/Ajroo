@@ -1,9 +1,13 @@
 import express from "express";
+import mongoose from "mongoose";
 import PostModel from "../models/postsModel.js";
 import validate from "../middleware/joiValidation.js";
 import auth from "../middleware/auth.js";
 import _ from "lodash";
-import { createPostValidation } from "../validation/postValidation.js";
+import {
+  createPostValidation,
+  updatePostValidation,
+} from "../validation/postValidation.js";
 
 const router = express.Router();
 
@@ -36,11 +40,11 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
     ]);
 
     const newPost = new PostModel(data);
-    if (!newPost) return res.status(400).send("Post not added, something went wrong");
+    if (!newPost)
+      return res.status(400).send("Post not added, something went wrong");
 
-    await newPost.save()
-    return res.status(200).send(newPost);
-
+    const savedPost = await newPost.save();
+    return res.status(201).send(savedPost); // just to make sure it sends the saved post
   } catch (err) {
     return res.status(500).send(err);
   }
@@ -48,9 +52,53 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
 
 // edit post (post owner)
 
+router.put(
+  "/edit/:id",
+  [auth, validate(updatePostValidation)],
+  async (req, res) => {
+    try {
+      const id = req.params.id;
+
+      if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).send("Invalid post ID");
+      }
+
+      const post = await PostModel.findById(id);
+      if (!post) return res.status(404).send("Post not found");
+
+      if (req.user._id !== post.user.toString()) {
+        return res.status(403).send("Only post owner can edit");
+      }
+
+      const data = _.pick(req.body, [
+        "image",
+        "name",
+        "category",
+        "pricePerDay",
+        "city",
+        "area",
+        "condition",
+      ]);
+
+      const updatedPost = await PostModel.findByIdAndUpdate(id, data, {
+        new: true,
+        runValidators: true,
+      });
+
+      return res.status(200).send(updatedPost);
+    } catch (err) {
+      return res.status(500).send(err);
+    }
+  }
+);
+
 // delete post (post owner)
 
 // get post with id (shared post)
+
+// get MY posts
+
+// get others Posts
 
 // get posts with search and filter, how to do that?
 
