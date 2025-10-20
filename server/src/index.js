@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 
 import users from "./routers/users.js";
+import posts from "./routers/posts.js";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ mongoose
 app.use(logger); // my first custom middleware
 app.use(express.json());
 app.use("/api/users", users);
+app.use("/api/posts", posts);
 
 app.listen(port, () => {
   console.log(`listening to port ${port} 🖥️`);

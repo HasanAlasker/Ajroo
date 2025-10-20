@@ -9,13 +9,10 @@ import {
 import validate from "../middleware/joiValidation.js";
 import usersModel from "../models/usersModel.js";
 import UserModel from "../models/usersModel.js";
-import dotenv from "dotenv";
 import auth from "../middleware/auth.js";
 import admin from "../middleware/admin.js";
 
 const router = express.Router();
-
-dotenv.config();
 
 // ==================== PUBLIC ROUTES ====================
 

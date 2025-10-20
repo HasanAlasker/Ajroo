@@ -15,12 +15,26 @@ const postSchema = new mongoose.Schema(
       type: String,
       minLength: 2,
       maxLength: 500,
+      lowercase: true,
       required: true,
     },
     category: {
       type: String,
       minLength: 2,
       maxLength: 500,
+      lowercase: true,
+      enum: [
+        "tools",
+        "household",
+        "electronics",
+        "garden",
+        "sports",
+        "clothes",
+        "events",
+        "books",
+        "transportation",
+        "realestate",
+      ],
       required: true,
       // maybe here i can add enum: ['sports', 'transportation', ...]
       // or make a schema for categories?
@@ -35,12 +49,14 @@ const postSchema = new mongoose.Schema(
       type: String,
       minLength: 2,
       maxLength: 500,
+      lowercase: true,
       required: true,
     },
     area: {
       type: String,
       minLength: 2,
       maxLength: 500,
+      lowercase: true,
       required: true,
     },
     status: {
@@ -53,7 +69,7 @@ const postSchema = new mongoose.Schema(
     condition: {
       type: String,
       lowercase: true,
-      enum: ["excellent", "very good", "good", "fair", "needs repair"],
+      enum: ["excellent", "very_good", "good", "fair", "needs_repair"],
       required: true,
     },
     isRated: {
@@ -77,8 +93,8 @@ const postSchema = new mongoose.Schema(
 
 // Essential indexes:
 postSchema.index({ city: 1, area: 1, status: 1 }); // Location filtering
-postSchema.index({ category: 1, status: 1 });      // Category filtering
-postSchema.index({ user: 1 });                     // User's posts
+postSchema.index({ category: 1, status: 1 }); // Category filtering
+postSchema.index({ user: 1 }); // User's posts
 
 const PostModel = mongoose.model("Post", postSchema);
 export default PostModel;
