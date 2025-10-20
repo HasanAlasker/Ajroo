@@ -2,7 +2,10 @@ import Joi from "joi";
 
 // Joi validation schema for User
 export const userValidationSchema = Joi.object({
-  image: { type: String },
+  image: Joi.string().uri().required().messages({
+    "string.uri": "Image must be a valid URL",
+    "any.required": "Image is required",
+  }),
   name: Joi.string()
     .min(2)
     .max(25)
@@ -160,7 +163,10 @@ export const userLoginSchema = Joi.object({
 
 // Validation for updating user profile
 export const userUpdateSchema = Joi.object({
-  image: Joi.string(),
+  image: Joi.string().uri().required().messages({
+    "string.uri": "Image must be a valid URL",
+    "any.required": "Image is required",
+  }),
   name: Joi.string()
     .min(2)
     .max(25)

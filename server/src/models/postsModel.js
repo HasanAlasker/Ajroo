@@ -75,5 +75,10 @@ const postSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Essential indexes:
+postSchema.index({ city: 1, area: 1, status: 1 }); // Location filtering
+postSchema.index({ category: 1, status: 1 });      // Category filtering
+postSchema.index({ user: 1 });                     // User's posts
+
 const PostModel = mongoose.model("Post", postSchema);
 export default PostModel;
