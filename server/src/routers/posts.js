@@ -117,6 +117,25 @@ router.delete("/delete/:id", auth, async (req, res) => {
   }
 });
 
+// get MY posts (when you open your profile)
+
+router.get("/me", auth, async (req, res) => {
+  try {
+    const id = req.user._id;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send("Invalid ID");
+    }
+
+    const posts = await PostModel.find({ user: id }).sort({ createdAt: -1 });
+    if (posts.length === 0) return res.status(404).send("No posts found");
+
+    return res.status(200).send(posts);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
+
 // get post with id (shared post)
 
 router.get("/:id", auth, async (req, res) => {
@@ -126,7 +145,7 @@ router.get("/:id", auth, async (req, res) => {
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).send("Invalid post ID");
     }
-    
+
     const post = await PostModel.findById(id);
     if (!post) return res.status(404).send("No posts found");
 
@@ -136,7 +155,6 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
-// get MY posts (when you open your profile)
 
 // get OTHERS Posts (when you open their profile)
 
