@@ -87,6 +87,19 @@ const postSchema = new mongoose.Schema(
       min: 0,
       default: 0,
     },
+
+    // after creating request model add these:
+    currentRequests: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Request",
+    },
+    borrower: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    resevedUntil: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );

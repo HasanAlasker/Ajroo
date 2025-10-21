@@ -29,7 +29,6 @@ router.get("/", auth, async (req, res) => {
 router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
   try {
     const data = _.pick(req.body, [
-      "user",
       "image",
       "name",
       "category",
@@ -38,6 +37,9 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
       "area",
       "condition",
     ]);
+
+    // user id should be set by req.user._id for security reasons
+    data.user = req.user._id
 
     const newPost = new PostModel(data);
     if (!newPost)

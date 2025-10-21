@@ -2,13 +2,16 @@ import Joi from "joi";
 
 // Validation schema for creating a new post
 export const createPostValidation = Joi.object({
-  user: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
-    .required()
-    .messages({
-      "string.pattern.base": "User ID must be a valid MongoDB ObjectId",
-      "any.required": "User is required",
-    }),
+  
+  // i removed this because it must not be a feild the user enters rather got from the middleware (auth)
+
+  // user: Joi.string()
+  //   .pattern(/^[0-9a-fA-F]{24}$/)
+  //   .required()
+  //   .messages({
+  //     "string.pattern.base": "User ID must be a valid MongoDB ObjectId",
+  //     "any.required": "User is required",
+  //   }),
 
   image: Joi.string().uri().required().messages({
     "string.uri": "Image must be a valid URL",
