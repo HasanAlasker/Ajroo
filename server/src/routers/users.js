@@ -176,4 +176,9 @@ router.delete("/delete/:id", [auth, admin], async (req, res) => {
   }
 });
 
+// increment / decrement strikes
+// add subscription
+// block user (admin only)
+// compute rating
+
 export default router;

@@ -12,6 +12,7 @@ import {
 const router = express.Router();
 
 // get all posts (authinticatied users)
+// use pagination
 
 router.get("/", auth, async (req, res) => {
   try {
@@ -25,6 +26,7 @@ router.get("/", auth, async (req, res) => {
 });
 
 // create post (authinticatied users)
+// add (chech subscription limits)
 
 router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
   try {
@@ -158,5 +160,12 @@ router.get("/:id", auth, async (req, res) => {
 });
 
 // get posts with search and filter, how to do that?
+
+// maybe there should be a route just to update post requests or borrowers?
+
+// update state
+// block post (admin only)
+// compute rating
+// enforce subscription limits
 
 export default router;
