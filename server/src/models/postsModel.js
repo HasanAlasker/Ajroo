@@ -88,6 +88,15 @@ const postSchema = new mongoose.Schema(
       default: 0,
     },
 
+    // soft delete (admin)
+    isDeleted:{
+      type: Boolean,
+      default: false
+    },
+    deletedAt:{
+      type: Date,
+    },
+
     // after creating request model add these:
     currentRequests: {
       type: [mongoose.Schema.Types.ObjectId],

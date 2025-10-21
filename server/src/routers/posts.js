@@ -16,7 +16,7 @@ const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
   try {
-    const posts = await PostModel.find();
+    const posts = await PostModel.find({ isDeleted: false });
     if (!posts) return res.status(404).send("No posts found");
 
     return res.status(200).send(posts);
@@ -41,7 +41,7 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
     ]);
 
     // user id should be set by req.user._id for security reasons
-    data.user = req.user._id
+    data.user = req.user._id;
 
     const newPost = new PostModel(data);
     if (!newPost)
@@ -159,12 +159,78 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
+// delete post (admin only)
+
+router.put("/soft-delete/:id", auth, async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send("Invalid post ID");
+    }
+
+    if (req.user.role !== "admin")
+      return res.status(403).send("Access Forbidden");
+
+    const post = await PostModel.findById(id);
+    if (!post) return res.status(404).send("No posts found");
+
+    if (post.isDeleted) return res.status(400).send("Post already deleted");
+
+    const deletedPost = await PostModel.findByIdAndUpdate(
+      id,
+      {
+        isDeleted: true,
+        deletedAt: new Date(),
+      },
+      { new: true }
+    );
+
+    return res.status(200).send(deletedPost)
+
+  } catch (error) {
+    return res.status(500).send(err);
+  }
+});
+
+// Undelete post (admin only)
+
+router.put("/un-delete/:id", auth, async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send("Invalid post ID");
+    }
+
+    if (req.user.role !== "admin")
+      return res.status(403).send("Access Forbidden");
+
+    const post = await PostModel.findById(id);
+    if (!post) return res.status(404).send("No posts found");
+
+    if (!post.isDeleted) return res.status(400).send("Post already available");
+
+    const deletedPost = await PostModel.findByIdAndUpdate(
+      id,
+      {
+        isDeleted: false,
+        deletedAt: new Date(),
+      },
+      { new: true }
+    );
+
+    return res.status(200).send(deletedPost)
+
+  } catch (error) {
+    return res.status(500).send(err);
+  }
+});
 // get posts with search and filter, how to do that?
 
 // maybe there should be a route just to update post requests or borrowers?
 
 // update state
-// block post (admin only)
 // compute rating
 // enforce subscription limits
 
