@@ -9,6 +9,7 @@ import {
   updatePostStatusValidation,
   updatePostValidation,
 } from "../validation/postValidation.js";
+import admin from "../middleware/admin.js";
 
 const router = express.Router();
 
@@ -162,16 +163,13 @@ router.get("/:id", auth, async (req, res) => {
 
 // delete post (admin only)
 
-router.put("/soft-delete/:id", auth, async (req, res) => {
+router.put("/soft-delete/:id", [auth, admin], async (req, res) => {
   try {
     const id = req.params.id;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).send("Invalid post ID");
     }
-
-    if (req.user.role !== "admin")
-      return res.status(403).send("Access Forbidden");
 
     const post = await PostModel.findById(id);
     if (!post) return res.status(404).send("No posts found");
@@ -195,16 +193,13 @@ router.put("/soft-delete/:id", auth, async (req, res) => {
 
 // Undelete post (admin only)
 
-router.put("/un-delete/:id", auth, async (req, res) => {
+router.put("/un-delete/:id", [auth, admin], async (req, res) => {
   try {
     const id = req.params.id;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).send("Invalid post ID");
     }
-
-    if (req.user.role !== "admin")
-      return res.status(403).send("Access Forbidden");
 
     const post = await PostModel.findById(id);
     if (!post) return res.status(404).send("No posts found");
