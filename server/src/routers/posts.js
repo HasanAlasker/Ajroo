@@ -6,6 +6,7 @@ import auth from "../middleware/auth.js";
 import _ from "lodash";
 import {
   createPostValidation,
+  updatePostStatusValidation,
   updatePostValidation,
 } from "../validation/postValidation.js";
 
@@ -186,8 +187,7 @@ router.put("/soft-delete/:id", auth, async (req, res) => {
       { new: true }
     );
 
-    return res.status(200).send(deletedPost)
-
+    return res.status(200).send(deletedPost);
   } catch (error) {
     return res.status(500).send(err);
   }
@@ -215,23 +215,60 @@ router.put("/un-delete/:id", auth, async (req, res) => {
       id,
       {
         isDeleted: false,
-        deletedAt: new Date(),
+        deletedAt: null,
       },
       { new: true }
     );
 
-    return res.status(200).send(deletedPost)
-
+    return res.status(200).send(deletedPost);
   } catch (error) {
     return res.status(500).send(err);
   }
 });
+
+// update state ( available /taken )
+
+router.put(
+  "/status/:id",
+  [auth, validate(updatePostStatusValidation)],
+  async (req, res) => {
+    try {
+      const id = req.params.id;
+
+      if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).send("Invalid post ID");
+      }
+
+      const post = await PostModel.findById(id);
+      if (!post) return res.status(404).send("Post not found");
+
+      if (req.user._id !== post.user.toString()) {
+        return res.status(403).send("Only post owner can change status");
+      }
+
+      const data = _.pick(req.body, ["status"]);
+
+      const updatedPost = await PostModel.findByIdAndUpdate(id, data, {
+        new: true,
+        runValidators: true,
+      });
+
+      return res.status(200).send(updatedPost);
+    } catch (err) {
+      return res.status(500).send(err);
+    }
+  }
+);
+
+// compute rating
+
+
+
 // get posts with search and filter, how to do that?
 
 // maybe there should be a route just to update post requests or borrowers?
 
-// update state
-// compute rating
+
 // enforce subscription limits
 
 export default router;

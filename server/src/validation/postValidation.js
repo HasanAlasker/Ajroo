@@ -2,7 +2,6 @@ import Joi from "joi";
 
 // Validation schema for creating a new post
 export const createPostValidation = Joi.object({
-  
   // i removed this because it must not be a feild the user enters rather got from the middleware (auth)
 
   // user: Joi.string()
@@ -68,7 +67,7 @@ export const createPostValidation = Joi.object({
 
   status: Joi.string()
     .lowercase()
-    .valid("available", "taken", "pending", "early", "late")
+    .valid("available", "taken", "pending", "early", "late", "disabled")
     .default("available")
     .messages({
       "any.only":
@@ -141,6 +140,19 @@ export const updatePostValidation = Joi.object({
     "object.min": "At least one field must be provided for update",
   })
   .unknown(false);
+
+// Validation schema for updating Status
+export const updatePostStatusValidation = Joi.object({
+  status: Joi.string()
+    .lowercase()
+    .valid("available", "taken", "pending", "early", "late", "disabled")
+    .default("available")
+    .required()
+    .messages({
+      "any.only":
+        "Status must be one of: available, taken, pending, early, late",
+    }),
+}).unknown(false);
 
 // Usage example in your route/controller:
 // const { error, value } = createPostValidation.validate(req.body);

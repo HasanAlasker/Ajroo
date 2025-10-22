@@ -62,7 +62,7 @@ const postSchema = new mongoose.Schema(
     status: {
       type: String,
       lowercase: true,
-      enum: ["available", "taken", "pending", "early", "late"],
+      enum: ["available", "taken", "pending", "early", "late", "disabled"],
       default: "available",
       required: true,
     },
