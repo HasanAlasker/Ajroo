@@ -7,6 +7,7 @@ const borrowSchema = new mongoose.Schema(
     borrower: {},
     durationValue: {},
     durationUnit: {},
+    pricePerDay: {},
     totalPrice: {},
     status: {
       // active / completed
@@ -15,6 +16,17 @@ const borrowSchema = new mongoose.Schema(
     endDate: {},
     borrowerReturnedAt: {},
     owernrConfirmedReturnAt: {},
+    returnState: {
+      // ontime - late
+    },
+    daysLate:{
+
+    },
+    lateFees:{
+
+    },
+    owenerRating: {},
+    borrowerRating: {},
     strikesGiven: {},
   },
   { timestamps: true }
