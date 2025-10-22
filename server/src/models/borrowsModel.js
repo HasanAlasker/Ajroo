@@ -1,4 +1,3 @@
-import { min } from "lodash";
 import mongoose from "mongoose";
 
 const borrowSchema = new mongoose.Schema(

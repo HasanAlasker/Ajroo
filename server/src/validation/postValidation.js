@@ -67,7 +67,7 @@ export const createPostValidation = Joi.object({
 
   status: Joi.string()
     .lowercase()
-    .valid("available", "taken", "pending", "early", "late", "disabled")
+    .valid("available", "taken", "disabled")
     .default("available")
     .messages({
       "any.only":
@@ -80,20 +80,9 @@ export const createPostValidation = Joi.object({
     .required()
     .messages({
       "any.only":
-        "Condition must be one of: excellent, very good, good, fair, needs repair",
+        "Condition must be one of: excellent, very_good, good, fair, needs_repair",
       "any.required": "Condition is required",
     }),
-
-  isRated: Joi.boolean().default(false),
-
-  rating: Joi.number().min(0).max(5).default(0).messages({
-    "number.min": "Rating must be at least 0",
-    "number.max": "Rating cannot exceed 5",
-  }),
-
-  ratingCount: Joi.number().min(0).default(0).messages({
-    "number.min": "Rating count must be at least 0",
-  }),
 });
 
 // Validation schema for updating a post (all fields optional)
@@ -129,10 +118,10 @@ export const updatePostValidation = Joi.object({
 
   condition: Joi.string()
     .lowercase()
-    .valid("excellent", "very good", "good", "fair", "needs repair")
+    .valid("excellent", "very_good", "good", "fair", "needs_repair")
     .messages({
       "any.only":
-        "Condition must be one of: excellent, very good, good, fair, needs repair",
+        "Condition must be one of: excellent, very_good, good, fair, needs_repair",
     }),
 })
   .min(1)
@@ -143,16 +132,12 @@ export const updatePostValidation = Joi.object({
 
 // Validation schema for updating Status
 export const updatePostStatusValidation = Joi.object({
-  status: Joi.string()
-    .lowercase()
-    .valid("available", "taken", "pending", "early", "late", "disabled")
-    .default("available")
-    .required()
-    .messages({
-      "any.only":
-        "Status must be one of: available, taken, pending, early, late",
-    }),
-}).unknown(false);
+  status: Joi.string().valid("available", "taken", "disabled").required(),
+  currentBorrow: Joi.string().pattern(/^[0-9a-fA-F]{24}$/),
+  rentStartDate: Joi.date().iso(),
+  rentEndDate: Joi.date().iso(),
+  reservedUntil: Joi.date().iso(),
+});
 
 // Usage example in your route/controller:
 // const { error, value } = createPostValidation.validate(req.body);
