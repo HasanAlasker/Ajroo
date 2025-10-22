@@ -96,8 +96,6 @@ const postSchema = new mongoose.Schema(
     deletedAt:{
       type: Date,
     },
-
-    // after creating request model add these:
     currentRequests: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Request",
@@ -106,7 +104,7 @@ const postSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    resevedUntil: {
+    reservedUntil: {
       type: Date,
     },
   },
