@@ -6,6 +6,7 @@ import cors from "cors";
 
 import users from "./routers/users.js";
 import posts from "./routers/posts.js";
+import requests from "./routers/requests.js";
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use(logger); // my first custom middleware
 app.use(express.json());
 app.use("/api/users", users);
 app.use("/api/posts", posts);
+app.use("/api/requests", requests);
 
 app.listen(port, () => {
   console.log(`listening to port ${port} 🖥️`);

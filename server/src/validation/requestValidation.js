@@ -3,27 +3,10 @@ import Joi from "joi";
 
 // Create request (borrower requests to rent item)
 export const createRequestValidation = Joi.object({
-  item: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
-    .required()
+  requestedStartDate: Joi.date().iso().min("now").required()
     .messages({
-      "string.pattern.base": "Invalid item ID format",
+      "date.min": "Start date cannot be in the past",
     }),
-  requester: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
-    .required()
-    .messages({
-      "string.pattern.base": "Invalid requester ID format",
-    }),
-  owner: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
-    .required()
-    .messages({
-      "string.pattern.base": "Invalid owner ID format",
-    }),
-  requestedStartDate: Joi.date().iso().min("now").required().messages({
-    "date.min": "Start date cannot be in the past",
-  }),
   requestedEndDate: Joi.date()
     .iso()
     .greater(Joi.ref("requestedStartDate"))
