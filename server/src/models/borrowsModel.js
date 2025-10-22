@@ -75,7 +75,7 @@ const borrowSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
-    owenerRating: {
+    ownerRating: {
       type: Number,
       min: 1,
       max: 5,
@@ -85,11 +85,9 @@ const borrowSchema = new mongoose.Schema(
       min: 1,
       max: 5,
     },
-    strikesGiven: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 3,
+    strikeGivenToBorrower: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

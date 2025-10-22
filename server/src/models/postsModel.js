@@ -62,7 +62,7 @@ const postSchema = new mongoose.Schema(
     status: {
       type: String,
       lowercase: true,
-      enum: ["available", "taken", "pending", "early", "late", "disabled"],
+      enum: ["available", "taken", "disabled"],
       default: "available",
       required: true,
     },
@@ -96,18 +96,19 @@ const postSchema = new mongoose.Schema(
     deletedAt: {
       type: Date,
     },
-    currentRequests: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "Request",
-    },
-    borrower: { // do i still need this? 
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
     currentBorrow: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Borrow",
     },
+    // use it like this:
+
+    // const post = await PostModel.findById(id).populate({
+    //   path: 'currentBorrow',
+    //   populate: { path: 'borrower', select: 'name image' }
+    // });
+
+    // const borrower = post.currentBorrow?.borrower;
+
     rentStartDate: Date,
     rentEndDate: Date,
     reservedUntil: Date,
