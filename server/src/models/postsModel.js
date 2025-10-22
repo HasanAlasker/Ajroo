@@ -89,24 +89,28 @@ const postSchema = new mongoose.Schema(
     },
 
     // soft delete (admin)
-    isDeleted:{
+    isDeleted: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    deletedAt:{
+    deletedAt: {
       type: Date,
     },
     currentRequests: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Request",
     },
-    borrower: {
+    borrower: { // do i still need this? 
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    reservedUntil: {
-      type: Date,
+    currentBorrow: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Borrow",
     },
+    rentStartDate: Date,
+    rentEndDate: Date,
+    reservedUntil: Date,
   },
   { timestamps: true }
 );
