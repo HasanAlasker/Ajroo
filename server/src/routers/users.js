@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
 
     return res.status(200).send(users);
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 });
 
@@ -51,7 +51,7 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
       .status(200)
       .send(_.pick(newUser, ["name", "email", "phone", "gender"]));
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 });
 
@@ -89,7 +89,7 @@ router.post("/login", validate(userLoginSchema), async (req, res) => {
       );
     // return res.status(200).send(_.pick(user, ['name', 'email', 'phone', 'gender', 'image', '_id', 'role']))
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 });
 
@@ -158,7 +158,7 @@ router.put("/edit/:id", auth, validate(userUpdateSchema), async (req, res) => {
       .status(200)
       .send(_.pick(updatedUser, ["name", "email", "phone", "image", "_id", "gender", "rating", "ratingCount", "role"]));
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 });
 
@@ -172,7 +172,7 @@ router.delete("/delete/:id", [auth, admin], async (req, res) => {
     if (!user) return res.status(404).send("user not found");
     return res.status(200).send(_.pick(user, ["_id", "name", "email"]));
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 });
 

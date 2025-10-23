@@ -23,7 +23,7 @@ router.get("/", auth, async (req, res) => {
 
     return res.status(200).send(posts);
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 });
 
@@ -52,7 +52,7 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
     const savedPost = await newPost.save();
     return res.status(201).send(savedPost); // just to make sure it sends the saved post
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 });
 
@@ -93,7 +93,7 @@ router.put(
 
       return res.status(200).send(updatedPost);
     } catch (err) {
-      return res.status(500).send(err);
+      return res.status(500).send(err.message);
     }
   }
 );
@@ -119,7 +119,7 @@ router.delete("/delete/:id", auth, async (req, res) => {
 
     return res.status(200).send(deletedPost);
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 });
 
@@ -138,7 +138,7 @@ router.get("/user/:id", auth, async (req, res) => {
 
     return res.status(200).send(posts);
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 });
 
@@ -157,7 +157,7 @@ router.get("/:id", auth, async (req, res) => {
 
     return res.status(200).send(post);
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 });
 
@@ -187,7 +187,7 @@ router.put("/soft-delete/:id", [auth, admin], async (req, res) => {
 
     return res.status(200).send(deletedPost);
   } catch (error) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 });
 
@@ -250,7 +250,7 @@ router.put(
 
       return res.status(200).send(updatedPost);
     } catch (err) {
-      return res.status(500).send(err);
+      return res.status(500).send(err.message);
     }
   }
 );

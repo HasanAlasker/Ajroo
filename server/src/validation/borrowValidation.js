@@ -3,24 +3,6 @@ import Joi from "joi";
 
 // Create borrow (when owner accepts a request)
 export const createBorrowValidation = Joi.object({
-  item: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
-    .required()
-    .messages({
-      "string.pattern.base": "Invalid item ID format",
-    }),
-  owner: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
-    .required()
-    .messages({
-      "string.pattern.base": "Invalid owner ID format",
-    }),
-  borrower: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
-    .required()
-    .messages({
-      "string.pattern.base": "Invalid borrower ID format",
-    }),
   durationValue: Joi.number().integer().min(1).required(),
   durationUnit: Joi.string().valid("hour", "day", "week", "month").required(),
   pricePerDay: Joi.number().min(0).required(),

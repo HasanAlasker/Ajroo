@@ -21,7 +21,7 @@ if (!process.env.JWT_SECRET) {
 mongoose
   .connect(process.env.DATABASE_URL)
   .then(() => console.log("Connected to mongoDB... ✅"))
-  .catch((err) => console.error("Error connecting to mongoDB... ❌", err));
+  .catch((err) => console.error("Error connecting to mongoDB... ❌", err.message));
 
 app.use(logger); // my first custom middleware
 app.use(express.json());
