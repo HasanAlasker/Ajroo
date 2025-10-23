@@ -62,6 +62,31 @@ router.post(
 
 // delete request ( cancel / reject )
 
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send("Invalid post ID");
+    }
+
+    const request = await RequestModel.findById(id);
+    if (!request) return res.status(400).send("Request not found");
+
+    const isRequester = req.user._id.toString() === request.requester._id.toString();
+    const isOwner = req.user._id.toString() === request.owner._id.toString();
+
+    if (!isRequester && !isOwner) {
+      return res.status(403).send("Forbidden");
+    }
+
+    const deletedRequest = await RequestModel.findByIdAndDelete(id);
+    return res.status(200).send(deletedRequest);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
 // requests i GOT
 
 // requests i SENT
