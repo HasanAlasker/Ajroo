@@ -165,6 +165,7 @@ router.post(
 router.get("/got", auth, async (req, res) => {
   try {
     const requests = await RequestModel.find({ owner: req.user._id });
+    if(requests.length === 0) return res.status(404).send("You haven't received any requests");
     return res.status(200).send(requests);
   } catch (err) {
     return res.status(500).send(err.message);
@@ -176,10 +177,13 @@ router.get("/got", auth, async (req, res) => {
 router.get("/sent", auth, async (req, res) => {
   try {
     const requests = await RequestModel.find({ requester: req.user._id });
+    if(requests.length === 0) return res.status(404).send("You haven't sent any requests");
     return res.status(200).send(requests);
   } catch (err) {
     return res.status(500).send(err.message);
   }
 });
+
+// when the owner confirms one request the other requests should be deleted!
 
 export default router;
