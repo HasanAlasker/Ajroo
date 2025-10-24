@@ -7,6 +7,7 @@ import cors from "cors";
 import users from "./routers/users.js";
 import posts from "./routers/posts.js";
 import requests from "./routers/requests.js";
+import borrows from "./routers/borrows.js";
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use(express.json());
 app.use("/api/users", users);
 app.use("/api/posts", posts);
 app.use("/api/requests", requests);
+app.use("/api/borrows", borrows);
 
 app.listen(port, () => {
   console.log(`listening to port ${port} 🖥️`);

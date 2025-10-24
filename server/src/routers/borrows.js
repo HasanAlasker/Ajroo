@@ -1,0 +1,59 @@
+import express from "express";
+import mongoose from "mongoose";
+import auth from "../middleware/auth.js";
+import admin from "../middleware/admin.js";
+import BorrowModel from "../models/borrowsModel.js";
+
+const router = express.Router();
+
+// get all borrows (admin only)
+
+router.get("/", [auth, admin], async (req, res) => {
+  try {
+    const borrows = await BorrowModel.find();
+    if (borrows.length === 0)
+      return res.status(404).send("No borrowed items found");
+
+    return res.status(200).send(borrows);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+// get GIVEN items
+
+router.get("/given", auth, async (req, res) => {
+  try {
+    const givenItems = await BorrowModel.find({ owner: req.user._id });
+    if (givenItems.length === 0)
+      return res.status(404).send("You haven't given any items");
+
+    return res.status(200).send(givenItems);
+
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+// get TAKEN items
+
+router.get("/taken", auth, async (req, res) => {
+  try {
+    const takenItems = await BorrowModel.find({ borrower: req.user._id });
+    if (takenItems.length === 0)
+      return res.status(404).send("You haven't taken any items");
+
+    return res.status(200).send(takenItems);
+    
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+// borrower mark as returned
+
+// owner mark as confirmed
+
+// rating after confirmation
+
+export default router;
