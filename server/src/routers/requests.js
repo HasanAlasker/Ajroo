@@ -24,6 +24,8 @@ router.post(
         return res.status(400).send("Invalid post ID");
       }
 
+      if(req.user.role === 'admin') return res.status(400).send("Admins can't request items");
+
       const post = await PostModel.findById(id);
 
       if (!post) return res.status(404).send("Post not found");

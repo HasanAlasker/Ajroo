@@ -50,9 +50,9 @@ router.get("/taken", auth, async (req, res) => {
   }
 });
 
-// borrower mark as returned
+// borrower mark as returned (PUT), must be confirmed by owner
 
-// owner mark as confirmed
+// owner mark as confirmed (DELETE)
 
 // rating after confirmation
 
