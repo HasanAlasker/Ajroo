@@ -65,8 +65,8 @@ router.put(
 
       const borrowedItem = await BorrowModel.findById(borrowId);
       if (!borrowedItem) return res.status(404).send("Item not found");
-      
-      if (borrowedItem.status === "completed")
+
+      if (borrowedItem.status === "pending_return")
         return res.status(400).send("You already marked item as returned");
 
       if (req.user._id.toString() !== borrowedItem.borrower.toString())
@@ -75,7 +75,7 @@ router.put(
       const updatedBorrow = await BorrowModel.findByIdAndUpdate(
         borrowId,
         {
-          status: "completed",
+          status: "pending_return",
         },
         { new: true, runValidators: true }
       );
@@ -88,6 +88,33 @@ router.put(
 );
 
 // owner mark as confirmed (DELETE)
+
+router.delete("/confirm-return/:id", auth, async (req, res) => {
+  try {
+    const borrowId = req.params.id;
+
+    if (!borrowId || !mongoose.Types.ObjectId.isValid(borrowId)) {
+      return res.status(400).send("Invalid borrow ID");
+    }
+
+    const borrowedItem = await BorrowModel.findById(borrowId);
+    if (!borrowedItem) return res.status(404).send("Item not found");
+
+    if (borrowedItem.status !== "pending_return")
+      return res.status(400).send("Item is not marked as returned");
+
+    if (req.user._id.toString() !== borrowedItem.owner.toString())
+      return res.status(403).send("Only item owner can confirm return");
+
+    const deletedBorrow = await BorrowModel.findByIdAndDelete(borrowId);
+
+    return res.status(200).send(deletedBorrow);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+// get items marked as returned
 
 // rating after confirmation
 

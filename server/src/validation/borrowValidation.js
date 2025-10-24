@@ -15,7 +15,7 @@ export const createBorrowValidation = Joi.object({
 
 // Update borrow (for marking return, confirming, etc.)
 export const updateBorrowValidation = Joi.object({
-  status: Joi.string().valid("active", "completed"),
+  status: Joi.string().valid("active", "pending_return"),
   borrowerReturnedAt: Joi.date().iso(),
   ownerConfirmedReturnAt: Joi.date().iso(),
   returnStatus: Joi.string().valid("on-time", "late", "early"),

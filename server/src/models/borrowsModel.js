@@ -41,7 +41,7 @@ const borrowSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "completed"],
+      enum: ["active", "pending_return"],
       default: "active",
       required: true,
     },
