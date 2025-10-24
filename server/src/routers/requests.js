@@ -150,9 +150,11 @@ router.post(
       });
 
       const savedBorrow = await newBorrow.save();
-
+      
       await PostModel.findByIdAndUpdate(request.item, { status: "taken" });
-      await RequestModel.findByIdAndDelete(requestId)
+
+      // when the owner confirms one request ,requests on the same post should be deleted!
+      await RequestModel.deleteMany({item : request.item})
       return res.status(201).send(savedBorrow);
     } catch (err) {
       return res.status(500).send(err.message);
@@ -184,6 +186,5 @@ router.get("/sent", auth, async (req, res) => {
   }
 });
 
-// when the owner confirms one request the other requests should be deleted!
 
 export default router;
