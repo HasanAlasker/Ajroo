@@ -114,8 +114,14 @@ router.delete("/confirm-return/:id", auth, async (req, res) => {
   }
 });
 
+// owner rejects borrower claim of returning the item
+
+
+
 // get items marked as returned
 
 // rating after confirmation
+
+// deal with people not returning on time
 
 export default router;

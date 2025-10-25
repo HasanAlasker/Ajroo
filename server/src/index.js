@@ -32,7 +32,6 @@ app.use("/api/requests", requests);
 app.use("/api/borrows", borrows);
 
 app.listen(port, () => {
-  console.log(`listening to port ${port} 🖥️`);
   console.log(`Server running on port ${port} 🌍`);
-  console.log(`Accessible at http://YOUR_IP:${port} 📌`);
+  console.log(`Accessible at http://YOUR_IP:${port} 🖥️`);
 });
