@@ -116,7 +116,40 @@ router.delete("/confirm-return/:id", auth, async (req, res) => {
 
 // owner rejects borrower claim of returning the item
 
+router.put(
+  "/reject-confirmation/:id",
+  [auth, validate(updateBorrowValidation)],
+  async (req, res) => {
+    try {
+      const borrowId = req.params.id;
 
+      if (!borrowId || !mongoose.Types.ObjectId.isValid(borrowId)) {
+        return res.status(400).send("Invalid borrow ID");
+      }
+
+      const borrowedItem = await BorrowModel.findById(borrowId);
+      if (!borrowedItem) return res.status(404).send("Item not found");
+
+      if (borrowedItem.status === "active")
+        return res.status(400).send("You already marked item as not returned");
+
+      if (req.user._id.toString() !== borrowedItem.owner.toString())
+        return res.status(403).send("Only item owner can reject confirmation");
+
+      const updatedBorrow = await BorrowModel.findByIdAndUpdate(
+        borrowId,
+        {
+          status: "active",
+        },
+        { new: true, runValidators: true }
+      );
+
+      return res.status(200).send(updatedBorrow);
+    } catch (err) {
+      return res.status(500).send(err.message);
+    }
+  }
+);
 
 // get items marked as returned
 
