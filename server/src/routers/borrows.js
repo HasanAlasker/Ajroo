@@ -151,7 +151,19 @@ router.put(
   }
 );
 
-// get items marked as returned
+// get items marked as returned (owner)
+
+router.get("/marked-as-returned", auth, async (req, res) => {
+  try {
+    const claimsOfReturn = await BorrowModel.find({owner: req.user._id, status: "pending_return"});
+    if (claimsOfReturn.length === 0)
+      return res.status(404).send("No borrowed items found");
+
+    return res.status(200).send(claimsOfReturn);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
 
 // rating after confirmation
 
