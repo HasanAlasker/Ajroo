@@ -287,8 +287,6 @@ router.put(
 
 // get posts with search and filter, how to do that?
 
-// maybe there should be a route just to update post requests or borrowers?
-
 // enforce subscription limits
 
 export default router;

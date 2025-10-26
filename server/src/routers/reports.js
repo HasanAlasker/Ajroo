@@ -34,8 +34,6 @@ router.post("/post/:id", [auth, validate(createReport)], async (req, res) => {
     });
     await newReport.save()
 
-    // find out how to not allow the same user report the same post more than once
-
     return res.status(201).send(newReport)
 
   } catch (err) {
