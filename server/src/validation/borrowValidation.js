@@ -1,4 +1,3 @@
-// borrowValidation.js
 import Joi from "joi";
 
 // Create borrow (when owner accepts a request)

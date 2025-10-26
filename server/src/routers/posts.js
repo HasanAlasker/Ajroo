@@ -13,12 +13,40 @@ import admin from "../middleware/admin.js";
 
 const router = express.Router();
 
+// get all posts (admin)
+// use pagination
+
+router.get("/", [auth, admin], async (req, res) => {
+  try {
+    const posts = await PostModel.find();
+    if (!posts) return res.status(404).send("No posts found");
+
+    return res.status(200).send(posts);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
 // get all posts (authinticatied users)
 // use pagination
 
 router.get("/", auth, async (req, res) => {
   try {
     const posts = await PostModel.find({ isDeleted: false });
+    if (!posts) return res.status(404).send("No posts found");
+
+    return res.status(200).send(posts);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+// get all requestable posts (authinticatied users)
+// use pagination
+
+router.get("/", auth, async (req, res) => {
+  try {
+    const posts = await PostModel.find({ isDeleted: false, status: ["available", "pending"] });
     if (!posts) return res.status(404).send("No posts found");
 
     return res.status(200).send(posts);
