@@ -8,7 +8,7 @@ export const createReport = Joi.object({
       "string.pattern.base": "Reporter must be a valid MongoDB ObjectId",
       "any.required": "Reporter is required",
     }),
-  reportedItem: Joi.string()
+  reportedPost: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/)
     .optional()
     .messages({
