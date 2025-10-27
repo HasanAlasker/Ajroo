@@ -189,7 +189,7 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
-// delete post (admin only)
+// soft-delete post (admin only)
 
 router.put("/soft-delete/:id", [auth, admin], async (req, res) => {
   try {

@@ -6,7 +6,6 @@ import validate from "../middleware/joiValidation.js";
 import { createReport } from "../validation/reportValidation.js";
 import ReportModel from "../models/reportModel.js";
 import PostModel from "../models/postsModel.js";
-import _ from "lodash";
 import UserModel from "../models/usersModel.js";
 
 const router = express.Router();
@@ -110,8 +109,6 @@ router.delete("/delete/:id", [auth, admin], async (req, res) => {
 });
 
 // block user (admin)
-
-// delete post (i have a soft-delete endpoint in Posts.js) (admin)
 
 // add strike (admin)
 
