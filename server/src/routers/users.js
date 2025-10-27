@@ -176,10 +176,10 @@ router.delete("/delete/:id", [auth, admin], async (req, res) => {
   }
 });
 
-// increment / decrement strikes
 // forgot password
+
 // add subscription
-// block user (admin only)
+
 // compute rating
 
 export default router;
