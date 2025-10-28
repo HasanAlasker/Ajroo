@@ -1,5 +1,5 @@
 import { apiClient } from "./client";
 
-const endPoint = "/posts"
+const endPoint = "/api/posts"
 
 export const getPosts = () => apiClient.get(endPoint)

@@ -32,7 +32,7 @@ const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
   try {
-    const posts = await PostModel.find({ isDeleted: false });
+    const posts = await PostModel.find({ isDeleted: false }).populate('user', "name image");
     if (!posts) return res.status(404).send("No posts found");
 
     return res.status(200).send(posts);
