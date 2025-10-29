@@ -80,6 +80,7 @@ router.post("/login", validate(userLoginSchema), async (req, res) => {
           "_id",
           "name",
           "image",
+          "isRated",
           "rating",
           "ratingCount",
           "gender",

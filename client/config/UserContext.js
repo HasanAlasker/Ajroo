@@ -202,6 +202,7 @@ export const UserProvider = ({ children }) => {
         phone: response.phone,
         gender: response.gender,
         avatar: response.image || null,
+        isRated: response.isRated,
         rating: response.rating || null,
         ratingCount: response.ratingCount || 0,
         role: response.role || "user",
