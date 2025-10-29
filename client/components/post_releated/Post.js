@@ -22,9 +22,9 @@ import ItemBill from "./ItemBill";
 
 function Post({
   id,
-  userId,
-  requesterId,
-  borrowerId,
+  // userId,
+  // requesterId,
+  // borrowerId,
   profilePic,
   name,
   date,

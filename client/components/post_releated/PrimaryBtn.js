@@ -24,9 +24,12 @@ function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId }) {
 
   // Get the actual post data to check request status
   const currentPost = getPostById(postId);
-  const isMine = currentPost.userId === user.id;
-  const iRequested = currentPost?.requesterId === user.id;
-  const iBorrowed = currentPost?.borrowerId === user.id;
+  // const isMine = currentPost.userId === user.id;
+  // const iRequested = currentPost?.requesterId === user.id;
+  // const iBorrowed = currentPost?.borrowerId === user.id;
+  const isMine = false;
+  const iRequested = false;
+  const iBorrowed = false;
 
   const shouldBeDisabled = () => {
     if (isDisabled) return true;

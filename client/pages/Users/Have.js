@@ -26,14 +26,14 @@ function Have(props) {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await fetchPosts()
+    await fetchPosts();
     setRefreshing(false);
   };
 
   return (
     <SafeScreen>
       <PostRenderer
-        filterType={"browsable"}
+        fetchedPosts={posts}
         refreshing={refreshing}
         onRefresh={handleRefresh}
         emptyMessage="No one has posted yet"
