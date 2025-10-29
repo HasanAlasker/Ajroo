@@ -2,7 +2,7 @@ import { apiClient } from "./client";
 
 const endPoint = "/api/posts";
 
-export const getPosts = () => apiClient.get(endPoint);
+export const getPosts = () => apiClient.get(endPoint); // admin
 
 export const availablePosts = () => apiClient.get(`${endPoint}/available`);
 
