@@ -33,6 +33,7 @@ import Reports from "./pages/admin/Reports";
 import SettingsMenu from "./components/SettingsMenu";
 import GetBackModal from "./components/GetBackModal";
 import { useState } from "react";
+import LoadingCircle from "./components/general/LoadingCircle";
 
 const Stack = createNativeStackNavigator();
 
@@ -87,16 +88,7 @@ const AppNavigator = () => {
 
   // Show loading screen while checking authentication
   if (isLoading) {
-    return (
-      <View
-        style={[
-          styles.loadingContainer,
-          { backgroundColor: isDarkMode ? "#262626" : "#ECECEC" },
-        ]}
-      >
-        <ActivityIndicator size="large" color={"#AC2FFF"} />
-      </View>
-    );
+    return <LoadingCircle />;
   }
 
   return (
