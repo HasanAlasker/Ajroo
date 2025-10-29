@@ -32,7 +32,7 @@ const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
   try {
-    const posts = await PostModel.find({ isDeleted: false }).populate('user', "name image");
+    const posts = await PostModel.find({ isDeleted: false }).populate('user', "name image").sort('-createdAt');
     if (!posts) return res.status(404).send("No posts found");
 
     return res.status(200).send(posts);
@@ -49,7 +49,7 @@ router.get("/available", auth, async (req, res) => {
     const posts = await PostModel.find({ 
       isDeleted: false, 
       status: { $in: ["available", "pending"] } 
-    }).populate('user', "name image");
+    }).populate('user', "name image").sort('-createdAt');
     if (!posts) return res.status(404).send("No posts found");
 
     return res.status(200).send(posts);
