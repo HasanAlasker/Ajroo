@@ -76,16 +76,7 @@ function PostRenderer({
   refreshing = false,
   children,
 }) {
-  //   const [postList, setPostList] = useState([])
 
-  // const loadPosts = async () => {
-  //   const response =  await getPosts()
-  //   setPostList(response.data)
-  // }
-
-  // useEffect(()=>{
-  //   loadPosts()
-  // },[])
   const { posts } = usePosts();
   const { user } = useUser();
 

@@ -5,21 +5,40 @@ import SafeScreen from "../../components/general/SafeScreen";
 import { useUser } from "../../config/UserContext";
 import PostRenderer from "../../components/PostRenderer";
 import { useState } from "react";
+import useApi from "../../hooks/useApi";
+import { availablePosts } from "../../api/post";
+import { useEffect } from "react";
 
 function Have(props) {
   const { user } = useUser();
-
   const [refreshing, setRefreshing] = useState(false);
-  
+
+  const {
+    data: posts,
+    error,
+    loading,
+    request: fetchPosts,
+  } = useApi(availablePosts);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
   const handleRefresh = async () => {
     setRefreshing(true);
-    // refresh posts logic here
+    await fetchPosts()
     setRefreshing(false);
   };
 
   return (
     <SafeScreen>
-      <PostRenderer filterType={"browsable"} refreshing={refreshing} onRefresh={handleRefresh} emptyMessage="No one has posted yet" currentUserId={user.id}>
+      <PostRenderer
+        filterType={"browsable"}
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
+        emptyMessage="No one has posted yet"
+        currentUserId={user.id}
+      >
         <SearchBar></SearchBar>
       </PostRenderer>
       <Navbar></Navbar>
