@@ -1,4 +1,7 @@
+import { apiClient } from "./client";
 import { BASE_URL } from "../constants/baseUrl";
+
+const endPoint = '/api/users'
 
 export const registerUser = async (data) => {
   try {
@@ -83,3 +86,13 @@ export const updateUser = async (id, updatedData, token) => {
     throw err;
   }
 };
+
+export const getAllusers = () => apiClient.get(endPoint)
+
+export const getMyProfile = () => apiClient.get(`${endPoint}/me`)
+
+export const getOthersProfile = (id) => apiClient.get(`${endPoint}/${id}`)
+
+export const deleteUser = (id) => apiClient.delete(`${endPoint}/delete/${id}`)
+
+

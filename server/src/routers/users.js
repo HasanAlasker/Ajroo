@@ -18,7 +18,7 @@ const router = express.Router();
 
 // get all users
 
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
     const users = await UserModel.find().select("name role");
     if (!users) return res.status(400).send("No users found");
@@ -157,7 +157,19 @@ router.put("/edit/:id", auth, validate(userUpdateSchema), async (req, res) => {
 
     return res
       .status(200)
-      .send(_.pick(updatedUser, ["name", "email", "phone", "image", "_id", "gender", "rating", "ratingCount", "role"]));
+      .send(
+        _.pick(updatedUser, [
+          "name",
+          "email",
+          "phone",
+          "image",
+          "_id",
+          "gender",
+          "rating",
+          "ratingCount",
+          "role",
+        ])
+      );
   } catch (err) {
     return res.status(500).send(err.message);
   }
