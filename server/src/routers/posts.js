@@ -164,7 +164,7 @@ router.get("/user/:id", auth, async (req, res) => {
       return res.status(400).send("Invalid ID");
     }
 
-    const posts = await PostModel.find({ user: id }).sort({ createdAt: -1 });
+    const posts = await PostModel.find({ user: id }).sort({ createdAt: -1 }).populate('user', "name image");
     if (posts.length === 0) return res.status(404).send("No posts found");
 
     return res.status(200).send(posts);
