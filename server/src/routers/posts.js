@@ -44,7 +44,7 @@ router.get("/", auth, async (req, res) => {
 // get all requestable posts (authinticatied users)
 // use pagination
 
-router.get("/", auth, async (req, res) => {
+router.get("/available", auth, async (req, res) => {
   try {
     const posts = await PostModel.find({ isDeleted: false, status: ["available", "pending"] });
     if (!posts) return res.status(404).send("No posts found");
