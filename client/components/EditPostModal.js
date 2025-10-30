@@ -14,12 +14,15 @@ import {
   getItemsByCategory,
 } from "../constants/DropOptions";
 import SubmitBtn from "./form/SubmitBtn";
-import { usePosts } from "../config/PostContext";
 import useThemedStyles from "../hooks/useThemedStyles";
+import LoadingCircle from "../components/general/LoadingCircle";
 
 import * as Yup from "yup";
 import { Formik } from "formik";
 import FormBtn from "./FormBtn";
+import { editPost, getPostById } from "../api/post";
+import useApi from "../hooks/useApi";
+import { uploadImage } from "../api/upload";
 
 const validationSchema = Yup.object().shape({
   category: Yup.string()
@@ -83,24 +86,42 @@ const validationSchema = Yup.object().shape({
 
 function EditPostModal({ postId, visible, onClose }) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
-  const { editPost, getPostById } = usePosts();
+  const {
+    data: post,
+    request: fetchPost,
+    error,
+    loading,
+  } = useApi(getPostById);
   const styles = useThemedStyles(getStyles);
 
-  const existingPost = getPostById(postId);
+  useEffect(() => {
+    if (visible && postId) {
+      fetchPost(postId);
+    }
+  }, [postId, visible]);
 
-  // If no post found, return null or show error
-  if (!existingPost) {
-    return null;
+  if (loading) {
+    return <LoadingCircle />;
+  }
+
+  if (!post) {
+    return (
+      <Modal visible={visible} animationType="slide" transparent>
+        <View style={styles.errorContainer}>
+          <FormBtn title="Close" onPress={onClose} />
+        </View>
+      </Modal>
+    );
   }
 
   const initialValues = {
-    category: existingPost.category || "",
-    item: existingPost.item || "",
-    price: existingPost.price || "",
-    city: existingPost.city || "",
-    area: existingPost.area || "",
-    condition: existingPost.condition || "",
-    image: existingPost.image || null,
+    category: post.category || "",
+    item: post.name || "",
+    price: post.pricePerDay?.toString() || "",
+    city: post.city || "",
+    area: post.area || "",
+    condition: post.condition || "",
+    image: post.image || null,
   };
 
   const handleSubmit = async (
@@ -112,14 +133,21 @@ function EditPostModal({ postId, visible, onClose }) {
     try {
       setSubmitting(true);
 
+      let imageUrl = values.image;
+      if (values.image && !values.image.startsWith("http")) {
+        console.log("Uploading new image...");
+        imageUrl = await uploadImage(values.image);
+        console.log("New image uploaded:", imageUrl);
+      }
+
       const updatedData = {
         category: values.category,
-        item: values.item,
-        price: values.price,
+        name: values.item,
+        pricePerDay: values.price,
         city: values.city,
         area: values.area,
         condition: values.condition,
-        image: values.image,
+        image: imageUrl,
       };
 
       await editPost(postId, updatedData);
@@ -151,6 +179,7 @@ function EditPostModal({ postId, visible, onClose }) {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          enableReinitialize
         >
           {({ values, errors, setFieldValue, setStatus }) => {
             const [availableItems, setAvailableItems] = useState([]);
@@ -286,6 +315,13 @@ const getStyles = (theme) =>
     scroll: {
       paddingBottom: 30,
       backgroundColor: theme.background,
+    },
+    errorContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: theme.background,
+      padding: 20,
     },
   });
 
