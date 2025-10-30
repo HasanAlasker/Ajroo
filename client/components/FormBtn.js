@@ -3,7 +3,7 @@ import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import AppText from "../config/AppText";
 
-function FormBtn({ title, onPress, style, textColor, disabled, loading }) {
+function FormBtn({ title, onPress, style, textColor, disabled=false, loading }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
 
@@ -11,7 +11,7 @@ function FormBtn({ title, onPress, style, textColor, disabled, loading }) {
     <TouchableOpacity
       onPress={onPress}
       style={[styles.container, disabled && styles.disabled, style]}
-      disabled={disabled}
+      disabled={false}
     >
       <AppText
         style={[styles.text, { color: theme[textColor || "always_white"] }]}
