@@ -32,7 +32,7 @@ function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId, isMine }) 
   const shouldBeDisabled = () => {
     if (isDisabled) return true;
     if (!isMine && status === "disabled") return true;
-    if (isMine && status === "pending" && route.name === "Profile") return true;
+    if (isMine && (status === "pending") && (route.name === "Profile" || "Have")) return true;
     return false;
   };
 
@@ -52,7 +52,7 @@ function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId, isMine }) 
         case "disabled":
           return "Enable";
         case "pending":
-          if (route.name === "Profile") return "Pending...";
+          if (route.name === "Profile" || "Have") return "Pending...";
           if (route.name === "Requests") return "show_accept_reject";
           break;
         default:
