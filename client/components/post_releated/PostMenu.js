@@ -17,6 +17,7 @@ import MenuOption from "../MenuOption";
 import SeparatorComp from "../SeparatorComp";
 import { usePosts } from "../../config/PostContext";
 import { useAlert } from "../../config/AlertContext";
+import { deletePost } from "../../api/post";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -31,7 +32,6 @@ function PostMenu({
   const styles = useThemedStyles(getStyles);
   const { toggleTheme } = useTheme();
   const [reportMenu, setReportMenu] = useState(false);
-  const { deletePost } = usePosts();
   const { showAlert, showInfo } = useAlert();
 
   const handleShare = async () => {
@@ -78,7 +78,7 @@ function PostMenu({
       cancelText: "Cancel",
       onConfirm: async () => {
         try {
-          await deletePost(postId);
+          await deletePost(postId)
           onClose(); // Close the menu after deleting
         } catch (error) {
           showInfo({
