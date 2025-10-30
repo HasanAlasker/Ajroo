@@ -10,7 +10,7 @@ import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
 import { useAlert } from "../../config/AlertContext";
 
-function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId }) {
+function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId, isMine }) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
@@ -24,10 +24,8 @@ function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId }) {
 
   // Get the actual post data to check request status
   const currentPost = getPostById(postId);
-  // const isMine = currentPost.userId === user.id;
   // const iRequested = currentPost?.requesterId === user.id;
   // const iBorrowed = currentPost?.borrowerId === user.id;
-  const isMine = false;
   const iRequested = false;
   const iBorrowed = false;
 
