@@ -5,6 +5,7 @@ import ScrollScreen from "../../components/general/ScrollScreen";
 import Navbar from "../../components/general/Navbar";
 import AddImageBtn from "../../components/AddImageBtn";
 import FormikDropBox from "../../components/form/FormikDropBox";
+import { addPost } from "../../api/post";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -23,6 +24,7 @@ import SubmitBtn from "../../components/form/SubmitBtn";
 import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
 import { useAlert } from "../../config/AlertContext";
+import { uploadImage } from "../../api/upload";
 
 const validationSchema = Yup.object().shape({
   category: Yup.string()
@@ -88,8 +90,6 @@ const validationSchema = Yup.object().shape({
 
 function Post(props) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
-  const { addPost } = usePosts();
-  const { user } = useUser();
   const { showInfo } = useAlert();
 
   const initialValues = {
@@ -102,53 +102,58 @@ function Post(props) {
     image: null,
   };
 
-  const handleSubmit = (values, { setSubmitting, setStatus, resetForm }) => {
-    console.log("Post form values:", values);
+  const handleSubmit = async (
+    values,
+    { setSubmitting, setStatus, resetForm }
+  ) => {
+    try {
+      console.log("uploading image");
+      const imageUrl = await uploadImage(values.image);
+      console.log("Image uploaded:", imageUrl);
 
-    const userImageUri = user.avatar;
-    const userId = user.id;
-    const username = user.id;
-    const status = "available";
-    const rating = null;
+      const postData = {
+        image: imageUrl,
+        name: values.item,
+        pricePerDay: values.price,
+        category: values.category,
+        city: values.city,
+        area: values.area,
+        condition: values.condition,
+      };
 
-    addPost({
-      userImageUri,
-      username,
-      userId,
-      image: values.image,
-      category: values.category,
-      item: values.item,
-      price: values.price,
-      city: values.city,
-      area: values.area,
-      condition: values.condition,
-      status,
-      rating,
-    });
-    setHasBeenSubmitted(true);
+      console.log("submitting post data:", postData);
 
-    showInfo({
-      title:'Success',
-      message:'Post added successfully.',
-      confirmText:'Got it'
-    })
+      const response = await addPost(postData);
+      console.log("response:", response);
 
-    // Simulate API call
-    setTimeout(() => {
-      try {
-        // Your API call here
-        setStatus({ type: "success", message: "Item posted successfully!" });
-        resetForm();
-        setHasBeenSubmitted(false); // Reset submission state
-      } catch (error) {
-        setStatus({
-          type: "error",
-          message: "Failed to post item. Please try again.",
-        });
-      } finally {
-        setSubmitting(false);
-      }
-    }, 500);
+      showInfo({
+        title: "Success",
+        message: "Post added successfully.",
+        confirmText: "Got it",
+      });
+
+      resetForm();
+      setHasBeenSubmitted(false);
+    } catch (err) {
+      console.log("error posting: ", err);
+      console.error("Error details:", err.response?.data || err.message);
+
+      showInfo({
+        title: "Error",
+        message:
+          err.response?.data?.message ||
+          "Failed to post item. Please try again.",
+        confirmText: "OK",
+      });
+      setStatus({
+        type: "error",
+        message:
+          err.response?.data?.message ||
+          "Failed to post item. Please try again.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
