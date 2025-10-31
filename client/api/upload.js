@@ -8,6 +8,8 @@ export const uploadImage = async (imageUri) => {
       name: 'upload.jpg',
     });
     formData.append('upload_preset', 'ajroo_posts'); // Create this in Cloudinary settings
+    formData.append('format', 'webp');
+    formData.append('quality', 'auto');
     
     // Upload to Cloudinary
     const response = await fetch(
