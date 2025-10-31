@@ -46,6 +46,12 @@ function PostRenderer({
       ListEmptyComponent={() => <EmptyState message={emptyMessage} />}
       ListHeaderComponent={children ? () => children : null}
       showsVerticalScrollIndicator={false}
+
+      initialNumToRender={2}
+      maxToRenderPerBatch={2}
+      windowSize={3}
+      removeClippedSubviews={true}
+      updateCellsBatchingPeriod={50}
     />
   );
 }
