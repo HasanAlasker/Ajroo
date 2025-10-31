@@ -11,7 +11,14 @@ import { useUser } from "../../config/UserContext";
 import { useAlert } from "../../config/AlertContext";
 import { updateStatus } from "../../api/post";
 
-function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId, isMine }) {
+function PrimaryBtn({
+  title,
+  isDisabled,
+  status,
+  pricePerDay,
+  postId,
+  isMine,
+}) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
@@ -27,13 +34,15 @@ function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId, isMine }) 
   const currentPost = getPostById(postId);
   // const iRequested = currentPost?.requesterId === user.id;
   // const iBorrowed = currentPost?.borrowerId === user.id;
+  const isAdmin = user.role === 'admin'
   const iRequested = false;
   const iBorrowed = false;
 
   const shouldBeDisabled = () => {
     if (isDisabled) return true;
     if (!isMine && status === "disabled") return true;
-    if (isMine && (status === "pending") && (route.name === "Profile" || "Have")) return true;
+    if (isMine && status === "pending" && (route.name === "Profile" || "Have"))
+      return true;
     return false;
   };
 
@@ -42,6 +51,9 @@ function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId, isMine }) 
   };
 
   const renderBtnText = () => {
+    if(isAdmin){
+      return "Admin User"
+    }
     if (isMine) {
       switch (status) {
         case "available":
@@ -160,8 +172,8 @@ function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId, isMine }) 
     if (buttonText === "Enable") {
       const update = async () => {
         await updateStatus(postId, { status: "available" });
-      }
-      update()
+      };
+      update();
     }
 
     if (buttonText === "Cancel Request") {

@@ -12,29 +12,34 @@ const router = express.Router();
 
 // get all reportedPosts
 
-router.get('/posts', [auth, admin], async(req, res)=>{
-  try{
-    const reports = await ReportModel.find({ reportedPost: { $exists: true }})
-    if(reports.length === 0) return res.status(404).send('No reported posts found');
-    return res.status(200).send(reports)
-
-  }catch(err){
+router.get("/posts", [auth, admin], async (req, res) => {
+  try {
+    const reports = await ReportModel.find({
+      reportedPost: { $exists: true },
+    }).populate({
+      path: "reportedPost",
+      populate: { path: "user", select: "name image" },
+    });
+    if (reports.length === 0)
+      return res.status(404).send("No reported posts found");
+    return res.status(200).send(reports);
+  } catch (err) {
     return res.status(500).send(err.message);
   }
-})
+});
 
 // get all reportedUsers
 
-router.get('/users', [auth, admin], async(req, res)=>{
-  try{
-    const reports = await ReportModel.find({ reportedUser: { $exists: true }})
-    if(reports.length === 0) return res.status(404).send('No reported users found');
-    return res.status(200).send(reports)
-
-  }catch(err){
+router.get("/users", [auth, admin], async (req, res) => {
+  try {
+    const reports = await ReportModel.find({ reportedUser: { $exists: true } });
+    if (reports.length === 0)
+      return res.status(404).send("No reported users found");
+    return res.status(200).send(reports);
+  } catch (err) {
     return res.status(500).send(err.message);
   }
-})
+});
 
 // report post
 
@@ -126,7 +131,7 @@ router.delete("/delete/:id", [auth, admin], async (req, res) => {
 
     if (!report) return res.status(404).send("Report not found");
 
-    const deletedReport = await ReportModel.findByIdAndDelete(reportId)
+    const deletedReport = await ReportModel.findByIdAndDelete(reportId);
 
     return res.status(201).send(deletedReport);
   } catch (err) {

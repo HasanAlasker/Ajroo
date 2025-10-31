@@ -16,19 +16,19 @@ function PostRenderer({
     return (
       <Post
         id={post._id}
-        profilePic={post.user?.image}
-        name={post.user?.name}
-        userId={post.user?._id}
-        image={post.image}
-        itemCat={post.category}
-        itemName={post.name}
-        pricePerDay={post.pricePerDay}
-        city={post.city}
-        area={post.area}
-        condition={post.condition}
-        rating={post.rating}
+        profilePic={post.user?.image || post.reportedPost?.user?.image}
+        name={post.user?.name || post.reportedPost?.user?.name}
+        userId={post.user?._id || post.reportedPost?.user?._id}
+        image={post.image || post.reportedPost?.image}
+        itemCat={post.category || post.reportedPost?.category}
+        itemName={post.name || post.reportedPost?.name}
+        pricePerDay={post.pricePerDay || post.reportedPost?.pricePerDay}
+        city={post.city || post.reportedPost?.city}
+        area={post.area || post.reportedPost?.area}
+        condition={post.condition || post.reportedPost?.condition}
+        rating={post?.rating || post.reportedPost?.rating}
         date={post.createdAt}
-        status={post.status}
+        status={post.status || post.reportedPost?.status}
         isMine={post.user?._id === currentUserId}
         iRequested={false}  // Simplify for now
         iBorrowed={false}   // Simplify for now

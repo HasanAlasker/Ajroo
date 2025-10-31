@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import Navbar from "../../components/general/Navbar";
@@ -6,15 +6,36 @@ import ScrollScreen from "../../components/general/ScrollScreen";
 import SearchBar from "../../components/general/SearchBar";
 import PostRenderer from "../../components/PostRenderer";
 import useApi from "../../hooks/useApi";
-
+import { reportedPosts } from "../../api/report";
+import { useUser } from "../../config/UserContext";
 
 function Reports(props) {
-  const {} = useApi()
+  const { user } = useUser();
+  const [refresh, setRefresh] = useState(false);
+  const {
+    data: posts,
+    request: fetchPosts,
+    error,
+    loading,
+  } = useApi(reportedPosts);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const handleRefresh = () => {
+    setRefresh(true);
+    fetchPosts();
+    setRefresh(false);
+  };
 
   return (
     <SafeScreen>
       <PostRenderer
-      
+        currentUserId={user.id}
+        onRefresh={handleRefresh}
+        refreshing={refresh}
+        fetchedPosts={posts}
       >
         <SearchBar />
       </PostRenderer>
