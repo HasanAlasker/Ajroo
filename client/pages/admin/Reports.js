@@ -4,14 +4,20 @@ import SafeScreen from "../../components/general/SafeScreen";
 import Navbar from "../../components/general/Navbar";
 import ScrollScreen from "../../components/general/ScrollScreen";
 import SearchBar from "../../components/general/SearchBar";
+import PostRenderer from "../../components/PostRenderer";
+import useApi from "../../hooks/useApi";
 
 
 function Reports(props) {
+  const {} = useApi()
+
   return (
     <SafeScreen>
-      <ScrollScreen>
+      <PostRenderer
+      
+      >
         <SearchBar />
-      </ScrollScreen>
+      </PostRenderer>
       <Navbar></Navbar>
     </SafeScreen>
   );
