@@ -58,10 +58,16 @@ function PostMenu({
   };
 
   const handleReporReason = async (reason) => {
-    console.log(reason)
-    await reportPost(postId, {reason: reason})
+    console.log(reason);
+    await reportPost(postId, { reason: reason });
     setReportMenu(!reportMenu);
     onClose();
+
+    showInfo({
+      title: "Success",
+      message: "Post report sent to admins to check.",
+      confirmText: "Close",
+    });
   };
 
   const handleEditPost = () => {
@@ -78,14 +84,14 @@ function PostMenu({
       cancelText: "Cancel",
       onConfirm: async () => {
         try {
-          await deletePost(postId)
+          await deletePost(postId);
           onClose(); // Close the menu after deleting
         } catch (error) {
           showInfo({
-            title:'Error',
-            message:'Post could not be deleted.',
-            confirmText:'Close'
-          })
+            title: "Error",
+            message: "Post could not be deleted.",
+            confirmText: "Close",
+          });
         }
       },
     });
@@ -153,68 +159,76 @@ function PostMenu({
                 <MenuOption
                   text={"Item doesn't exist/fake listing"}
                   icon={"alert-circle-outline"}
-                  onPress={()=>handleReporReason("Item doesn't exist/fake listing")}
+                  onPress={() =>
+                    handleReporReason("Item doesn't exist/fake listing")
+                  }
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Misleading item description"}
                   icon={"information-off-outline"}
-                  onPress={()=>handleReporReason("Misleading item description")}
+                  onPress={() =>
+                    handleReporReason("Misleading item description")
+                  }
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Unsafe or damaged item"}
                   icon={"shield-alert-outline"}
-                  onPress={()=>handleReporReason("Unsafe or damaged item")}
+                  onPress={() => handleReporReason("Unsafe or damaged item")}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Spam or duplicate listing"}
                   icon={"content-copy"}
-                  onPress={()=>handleReporReason("Spam or duplicate listing")}
+                  onPress={() => handleReporReason("Spam or duplicate listing")}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Unreasonable pricing"}
                   icon={"currency-usd-off"}
-                  onPress={()=>handleReporReason("Unreasonable pricing")}
+                  onPress={() => handleReporReason("Unreasonable pricing")}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Price doesn't match listing"}
                   icon={"currency-usd"}
-                  onPress={()=>handleReporReason("Price doesn't match listing")}
+                  onPress={() =>
+                    handleReporReason("Price doesn't match listing")
+                  }
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Prohibited item"}
                   icon={"cancel"}
-                  onPress={()=>handleReporReason("Prohibited item")}
+                  onPress={() => handleReporReason("Prohibited item")}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Harassment or rude behavior"}
                   icon={"account-alert-outline"}
-                  onPress={()=>handleReporReason("Harassment or rude behavior")}
+                  onPress={() =>
+                    handleReporReason("Harassment or rude behavior")
+                  }
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Suspicious activity"}
                   icon={"eye-off-outline"}
-                  onPress={()=>handleReporReason("Suspicious activity")}
+                  onPress={() => handleReporReason("Suspicious activity")}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Other"}
                   icon={"dots-horizontal"}
-                  onPress={()=>handleReporReason("Other")}
+                  onPress={() => handleReporReason("Other")}
                 />
                 <SeparatorComp style={styles.sep} />
                 <MenuOption
                   text={"Cancel"}
                   icon={"close"}
                   color={"red"}
-                  onPress={()=>handleReportMenu("")}
+                  onPress={() => handleReportMenu("")}
                 />
               </ScrollView>
             </>
