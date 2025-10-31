@@ -28,6 +28,8 @@ function PostRenderer({
         condition={post.condition || post.reportedPost?.condition}
         rating={post?.rating || post.reportedPost?.rating}
         date={post.createdAt}
+        reportReason={post?.reason}
+        reporter={post?.reporter}
         status={post.status || post.reportedPost?.status}
         isMine={post.user?._id === currentUserId}
         iRequested={false}  // Simplify for now

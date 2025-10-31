@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import TopOfPost from "./TopOfPost";
 import ItmeImage from "./ItmeImage";
 import ItemNameAndCat from "./ItemNameAndCat";
@@ -19,6 +19,7 @@ import ItemPricing from "./ItemPricing";
 import EditPostModal from "../EditPostModal";
 import { useUser } from "../../config/UserContext";
 import ItemBill from "./ItemBill";
+import AppText from "../../config/AppText";
 
 // Format ISO date to DD/MM/YYYY
 const formatDate = (isoDate) => {
@@ -32,12 +33,12 @@ const formatDate = (isoDate) => {
 
 // Capitalize first letter and replace underscores with spaces
 const formatText = (text) => {
-  if (!text) return '';
+  if (!text) return "";
   return text
-    .replace(/_/g, ' ') // Replace underscores with spaces
-    .split(' ') // Split into words
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
-    .join(' ');
+    .replace(/_/g, " ") // Replace underscores with spaces
+    .split(" ") // Split into words
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+    .join(" ");
 };
 
 function Post({
@@ -62,6 +63,8 @@ function Post({
   title,
   isDisabled,
   pricePerDay,
+  reportReason,
+  reporter,
 }) {
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
@@ -95,6 +98,12 @@ function Post({
           status={status}
           isMine={isMine}
         />
+        {reportReason && (
+          <View style={styles.display}>
+            <AppText style={styles.reportReason}>Reason: {formatText(reportReason)}</AppText>
+            <AppText style={styles.reportReason}>Reporter ID: {reporter}</AppText>
+          </View>
+        )}
         <ItmeImage source={image} />
         {route.name != "Requests" && route.name != "Book" ? (
           <ItemNameAndCat
@@ -154,6 +163,22 @@ const getStyles = (theme) =>
     post: {
       marginVertical: 20,
       zIndex: 50,
+    },
+    reportReason: {
+      color: theme.error_text,
+      fontSize: 18,
+      fontWeight: "bold",
+    },
+    display: {
+      width: "100%",
+      backgroundColor: theme.error_back,
+      borderColor: theme.error_border,
+      borderWidth: 2,
+      paddingHorizontal: 20,
+      paddingVertical: 20,
+      borderRadius: 10,
+      gap: 10,
+
     },
   });
 
