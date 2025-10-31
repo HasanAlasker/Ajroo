@@ -10,6 +10,7 @@ import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
 import { useAlert } from "../../config/AlertContext";
 import { updateStatus } from "../../api/post";
+import { deleteReport } from "../../api/report";
 
 function PrimaryBtn({
   title,
@@ -34,7 +35,7 @@ function PrimaryBtn({
   const currentPost = getPostById(postId);
   // const iRequested = currentPost?.requesterId === user.id;
   // const iBorrowed = currentPost?.borrowerId === user.id;
-  const isAdmin = user.role === 'admin'
+  const isAdmin = user.role === "admin";
   const iRequested = false;
   const iBorrowed = false;
 
@@ -51,8 +52,11 @@ function PrimaryBtn({
   };
 
   const renderBtnText = () => {
-    if(isAdmin){
-      return "Admin User"
+    if (isAdmin && route.name === "Reports") {
+      return "Delete Report";
+    }
+    if (isAdmin && route.name === "Search") {
+      return "Contact User";
     }
     if (isMine) {
       switch (status) {
@@ -98,8 +102,12 @@ function PrimaryBtn({
     }
   };
 
-  const handlePress = () => {
+  const handlePress = async () => {
     const buttonText = renderBtnText();
+
+    if (buttonText === "Delete Report") {
+      await deleteReport(postId)
+    }
 
     if (buttonText === "Request") {
       setVisibileRequest(true);
@@ -170,10 +178,7 @@ function PrimaryBtn({
     }
 
     if (buttonText === "Enable") {
-      const update = async () => {
-        await updateStatus(postId, { status: "available" });
-      };
-      update();
+      await updateStatus(postId, { status: "available" });
     }
 
     if (buttonText === "Cancel Request") {
