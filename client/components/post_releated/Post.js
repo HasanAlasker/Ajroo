@@ -20,6 +20,26 @@ import EditPostModal from "../EditPostModal";
 import { useUser } from "../../config/UserContext";
 import ItemBill from "./ItemBill";
 
+// Format ISO date to DD/MM/YYYY
+const formatDate = (isoDate) => {
+  if (!isoDate) return "";
+  const date = new Date(isoDate);
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Months are 0-indexed
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+// Capitalize first letter and replace underscores with spaces
+const formatText = (text) => {
+  if (!text) return '';
+  return text
+    .replace(/_/g, ' ') // Replace underscores with spaces
+    .split(' ') // Split into words
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+    .join(' ');
+};
+
 function Post({
   id,
   // userId,
@@ -69,7 +89,7 @@ function Post({
         <TopOfPost
           image={profilePic}
           name={name}
-          date={date}
+          date={formatDate(date)}
           onPressThree={handelMenu}
           postId={id}
           status={status}
@@ -78,8 +98,8 @@ function Post({
         <ItmeImage source={image} />
         {route.name != "Requests" && route.name != "Book" ? (
           <ItemNameAndCat
-            itemName={itemName}
-            itemCat={itemCat}
+            itemName={formatText(itemName)}
+            itemCat={formatText(itemCat)}
             pricePerDay={pricePerDay}
           />
         ) : (
@@ -87,12 +107,12 @@ function Post({
         )}
 
         <LableContainer>
-          {area && <Location city={city} area={area} />}
+          {area && <Location city={formatText(city)} area={formatText(area)} />}
           <RowLableCont>
             <ItemStatus status={status} time={time} />
           </RowLableCont>
           <RowLableCont>
-            {condition && <ItemCondition condition={condition} />}
+            {condition && <ItemCondition condition={formatText(condition)} />}
             <ItemRating rating={rating ? rating : "Unrated Yet"} />
           </RowLableCont>
           {
