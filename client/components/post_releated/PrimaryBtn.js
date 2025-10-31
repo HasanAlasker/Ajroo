@@ -9,6 +9,7 @@ import RatingModal from "./RatingModal";
 import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
 import { useAlert } from "../../config/AlertContext";
+import { updateStatus } from "../../api/post";
 
 function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId, isMine }) {
   const { theme } = useTheme();
@@ -144,7 +145,7 @@ function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId, isMine }) 
         cancelText: "No",
         onConfirm: async () => {
           try {
-            updatePost(postId, { status: "disabled" });
+            await updateStatus(postId, { status: "disabled" });
           } catch (error) {
             showInfo({
               title: "Error",
@@ -157,7 +158,10 @@ function PrimaryBtn({ title, isDisabled, status, pricePerDay, postId, isMine }) 
     }
 
     if (buttonText === "Enable") {
-      updatePost(postId, { status: "available" });
+      const update = async () => {
+        await updateStatus(postId, { status: "available" });
+      }
+      update()
     }
 
     if (buttonText === "Cancel Request") {
