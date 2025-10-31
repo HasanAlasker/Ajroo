@@ -3,7 +3,7 @@ import { BASE_URL } from "../constants/baseUrl";
 
 const endPoint = '/api/users'
 
-export const registerUser = async (data) => {
+export const registerUser = async (data) => {  // ✅
   try {
     const response = await fetch(`${BASE_URL}/api/users/register`, {
       method: "POST",
@@ -32,7 +32,7 @@ export const registerUser = async (data) => {
   }
 };
 
-export const loginUser = async ({ email, password }) => {
+export const loginUser = async ({ email, password }) => {  // ✅
   try {
     const response = await fetch(`${BASE_URL}/api/users/login`, {
       method: "POST",
@@ -61,7 +61,7 @@ export const loginUser = async ({ email, password }) => {
   }
 };
 
-export const updateUser = async (id, updatedData, token) => {
+export const updateUser = async (id, updatedData, token) => {  // ✅
   try {
     const response = await fetch(`${BASE_URL}/api/users/edit/${id}`, {
       method: "PUT",
@@ -87,7 +87,7 @@ export const updateUser = async (id, updatedData, token) => {
   }
 };
 
-export const getAllusers = () => apiClient.get(endPoint)
+export const getAllusers = () => apiClient.get(endPoint)  
 
 export const getMyProfile = () => apiClient.get(`${endPoint}/me`)
 
