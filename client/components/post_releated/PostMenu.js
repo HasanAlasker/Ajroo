@@ -113,49 +113,67 @@ function PostMenu({
     });
   };
 
-  const handleSoftDelete = () => {
-    // for admin deletion
-    console.log(postId)
-    showAlert({
-      title: "Soft Delete item",
-      message: "Are you sure you want to delete this post?",
-      confirmText: "Delete",
-      cancelText: "Cancel",
-      onConfirm: async () => {
-        try {
-          await softDelete(postId);
-          onClose();
-        } catch (error) {
-          showInfo({
-            title: "Error",
-            message: "Post could not be deleted.",
-            confirmText: "Close",
-          });
-        }
-      },
-    });
+  const handleSoftDelete = async () => {
+    try {
+      await softDelete(postId);
+      onClose();
+    } catch (err) {
+      console.log("Error:", err);
+    }
   };
 
-  const handleUnDelete = () => {
-    showAlert({
-      title: "UnDelete Item",
-      message: "Do you want to unDelete post?",
-      confirmText: "Yes",
-      cancelText: "Cancel",
-      onConfirm: async () => {
-        try {
-          await unDelete(postId);
-          onClose(); // Close the menu after deleting
-        } catch (error) {
-          showInfo({
-            title: "Error",
-            message: "Post could not be UnDeleted.",
-            confirmText: "Close",
-          });
-        }
-      },
-    });
+  const handleUnDelete = async () => {
+    try {
+      await unDelete(postId);
+      onClose();
+    } catch (err) {
+      console.log("Error:", err);
+    }
   };
+
+  // const handleSoftDelete = () => {
+  //   // for admin deletion
+  //   console.log(postId)
+  //   showAlert({
+  //     title: "Soft Delete item",
+  //     message: "Are you sure you want to delete this post?",
+  //     confirmText: "Delete",
+  //     cancelText: "Cancel",
+  //     onConfirm: async () => {
+  //       try {
+  //         await softDelete(postId);
+  //         onClose();
+  //       } catch (error) {
+  //         showInfo({
+  //           title: "Error",
+  //           message: "Post could not be deleted.",
+  //           confirmText: "Close",
+  //         });
+  //       }
+  //     },
+  //   });
+  // };
+
+  // const handleUnDelete = () => {
+  //   showAlert({
+  //     title: "UnDelete Item",
+  //     message: "Do you want to unDelete post?",
+  //     confirmText: "Yes",
+  //     cancelText: "Cancel",
+  //     onConfirm: async () => {
+  //       try {
+  //         await unDelete(postId);
+  //         onClose(); // Close the menu after deleting
+  //       } catch (error) {
+  //         showInfo({
+  //           title: "Error",
+  //           message: "Post could not be UnDeleted.",
+  //           confirmText: "Close",
+  //         });
+  //       }
+  //     },
+  //   });
+  // };
 
   if (!isVisible) return null;
 
