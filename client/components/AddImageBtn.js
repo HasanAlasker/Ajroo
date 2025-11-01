@@ -49,7 +49,6 @@ function AddImageBtn({
         aspect: [4, 4], // Better aspect ratio for general images
       });
 
-      console.log("Selected image URI:", imageUri); // Debug log
       if (imageUri && onImageChange) {
         onImageChange(imageUri);
       }
@@ -69,7 +68,6 @@ function AddImageBtn({
         aspect: [4, 3.9], // Better aspect ratio for general images
       });
 
-      console.log("Camera image URI:", imageUri); // Debug log
       if (imageUri && onImageChange) {
         onImageChange(imageUri);
       }

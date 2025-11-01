@@ -40,7 +40,6 @@ function Login(props) {
   }, []);
 
   const handleSubmit = async (values, { setSubmitting, setStatus }) => {
-    console.log("Login values:", values);
     setHasBeenSubmitted(true);
 
     try {

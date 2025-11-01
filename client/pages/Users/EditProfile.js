@@ -56,7 +56,6 @@ function EditProfile({ rating, sep }) {
   };
 
   const handleSubmit = async (values, { setSubmitting, setStatus }) => {
-    console.log("Profile form values:", values);
     setHasBeenSubmitted(true);
 
     try {

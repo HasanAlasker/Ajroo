@@ -4,9 +4,9 @@ const endPoint = "/api/borrows"
 
 export const getAllBorrows = () => apiClient.get(endPoint)
 
-export const givenItems = () => apiClient.get(`${endPoint}/given`)
+export const givenItems = () => apiClient.get(`${endPoint}/given`) // ✅
 
-export const takenItems = () => apiClient.get(`${endPoint}/taken`)
+export const takenItems = () => apiClient.get(`${endPoint}/taken`) // ✅
 
 export const markReturned = (id) => apiClient.put(`${endPoint}/mark-returned/${id}`)
 

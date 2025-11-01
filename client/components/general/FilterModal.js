@@ -45,7 +45,6 @@ function FilterModal({ isVisible, onClose }) {
     values,
     { setSubmitting, setStatus, resetForm }
   ) => {
-    console.log("filter", values);
     setSubmitting(false);
   };
 

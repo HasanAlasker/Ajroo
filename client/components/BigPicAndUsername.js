@@ -61,7 +61,6 @@ function BigPicAndUsername({
         aspect: [1, 1],
       });
 
-      console.log("Selected image URI:", imageUri);
       if (imageUri) {
         setSelectedImage(imageUri); // Set local state
 
@@ -87,7 +86,6 @@ function BigPicAndUsername({
         aspect: [1, 1],
       });
 
-      console.log("Camera image URI:", imageUri);
       if (imageUri) {
         setSelectedImage(imageUri); // Set local state
 

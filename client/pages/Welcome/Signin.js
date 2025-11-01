@@ -136,7 +136,6 @@ function Signin(props) {
   }, []);
 
   const handleSubmit = async (values, { setSubmitting, setStatus }) => {
-    console.log("Register values:", values);
     setHasBeenSubmitted(true);
 
     // Remove confirmPassword before sending to API

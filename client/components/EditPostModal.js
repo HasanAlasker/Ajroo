@@ -128,16 +128,13 @@ function EditPostModal({ postId, visible, onClose }) {
     values,
     { setSubmitting, setStatus, resetForm }
   ) => {
-    console.log("Edit form values:", values);
 
     try {
       setSubmitting(true);
 
       let imageUrl = values.image;
       if (values.image && !values.image.startsWith("http")) {
-        console.log("Uploading new image...");
         imageUrl = await uploadImage(values.image);
-        console.log("New image uploaded:", imageUrl);
       }
 
       const updatedData = {

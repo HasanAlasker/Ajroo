@@ -107,9 +107,7 @@ function Post(props) {
     { setSubmitting, setStatus, resetForm }
   ) => {
     try {
-      console.log("uploading image");
       const imageUrl = await uploadImage(values.image);
-      console.log("Image uploaded:", imageUrl);
 
       const postData = {
         image: imageUrl,
@@ -121,10 +119,7 @@ function Post(props) {
         condition: values.condition,
       };
 
-      console.log("submitting post data:", postData);
-
       const response = await addPost(postData);
-      console.log("response:", response);
 
       showInfo({
         title: "Success",
@@ -213,7 +208,6 @@ function Post(props) {
                 <AddImageBtn
                   image={values.image} // This will now correctly show the image
                   onImageChange={(imageUri) => {
-                    console.log("Image selected:", imageUri); // Debug log
                     setFieldValue("image", imageUri);
                     setStatus(null);
                   }}

@@ -74,7 +74,6 @@ function PostMenu({
   };
 
   const handleReporReason = async (reason) => {
-    console.log(reason);
     await reportPost(postId, { reason: reason });
     setReportMenu(!reportMenu);
     onClose();
