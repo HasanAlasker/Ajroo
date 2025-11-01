@@ -217,7 +217,7 @@ router.put("/soft-delete/:id", [auth, admin], async (req, res) => {
     );
 
     return res.status(200).send(deletedPost);
-  } catch (error) {
+  } catch (err) {
     return res.status(500).send(err.message);
   }
 });

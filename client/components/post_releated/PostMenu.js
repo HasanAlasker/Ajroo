@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -10,14 +10,16 @@ import {
 } from "react-native";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
+import { useUser } from "../../config/UserContext";
 
 import BackContainer from "../BackContainer";
 import MenuBackBtn from "../MenuBackBtn";
 import MenuOption from "../MenuOption";
 import SeparatorComp from "../SeparatorComp";
 import { useAlert } from "../../config/AlertContext";
-import { deletePost } from "../../api/post";
+import { deletePost, getPostById, softDelete, unDelete } from "../../api/post";
 import { reportPost } from "../../api/report";
+import useApi from "../../hooks/useApi";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -32,6 +34,21 @@ function PostMenu({
   const styles = useThemedStyles(getStyles);
   const [reportMenu, setReportMenu] = useState(false);
   const { showAlert, showInfo } = useAlert();
+  const { user } = useUser();
+  const {
+    data: post,
+    request: fetchPost,
+    error,
+    loading,
+  } = useApi(getPostById);
+
+  const isAdmin = user.role === "admin";
+
+  useEffect(()=>{
+    if(postId){
+      fetchPost(postId)
+    }
+  },[])
 
   const handleShare = async () => {
     try {
@@ -97,6 +114,49 @@ function PostMenu({
     });
   };
 
+    const handleUnDelete = () => {
+    showAlert({
+      title: "UnDelete Item",
+      message: "Do you want to unDelete post?",
+      confirmText: "Yes",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        try {
+          await unDelete(postId);
+          onClose(); // Close the menu after deleting
+        } catch (error) {
+          showInfo({
+            title: "Error",
+            message: "Post could not be UnDeleted.",
+            confirmText: "Close",
+          });
+        }
+      },
+    });
+  };
+
+  const handleSoftDelete = () => {
+    // for admin deletion
+    showAlert({
+      title: "Soft Delete item",
+      message: "Are you sure you want to delete this post?",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        try {
+          await softDelete(postId);
+          onClose();
+        } catch (error) {
+          showInfo({
+            title: "Error",
+            message: "Post could not be deleted.",
+            confirmText: "Close",
+          });
+        }
+      },
+    });
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -117,12 +177,16 @@ function PostMenu({
           />
           {!reportMenu && (
             <>
-              <MenuOption
-                text={"Share post"}
-                icon={"share-outline"}
-                onPress={handleShare}
-              />
-              <SeparatorComp style={styles.sep} />
+              {!isAdmin && (
+                <>
+                  <MenuOption
+                    text={"Share post"}
+                    icon={"share-outline"}
+                    onPress={handleShare}
+                  />
+                  <SeparatorComp style={styles.sep} />
+                </>
+              )}
               {isMine && (
                 <MenuOption
                   text={"Edit post"}
@@ -137,6 +201,20 @@ function PostMenu({
                   icon={"delete-outline"}
                   color={"red"}
                   onPress={handleDeletePost}
+                />
+              ) : isAdmin && !post.isDeleted ? (
+                <MenuOption
+                  text={"Delete post"}
+                  icon={"delete-outline"}
+                  color={"red"}
+                  onPress={handleSoftDelete}
+                />
+              ) : isAdmin && post.isDeleted ? (
+                <MenuOption
+                  text={"UnDelete post"}
+                  icon={"arrow-u-left-top"}
+                  color={"green"}
+                  onPress={handleUnDelete}
                 />
               ) : (
                 <MenuOption
