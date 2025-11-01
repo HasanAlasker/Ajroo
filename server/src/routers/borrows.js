@@ -54,6 +54,25 @@ router.get("/taken", auth, async (req, res) => {
   }
 });
 
+// get borrow by id
+
+router.get('/:id', auth, async (req, res)=> {
+  try {
+      const borrowId = req.params.id;
+
+      if (!borrowId || !mongoose.Types.ObjectId.isValid(borrowId)) {
+        return res.status(400).send("Invalid borrow ID");
+      }
+
+      const borrowedItem = await BorrowModel.findById(borrowId);
+      if (!borrowedItem) return res.status(404).send("Item not found");
+
+      return res.status(200).send(borrowedItem);
+    } catch (err) {
+      return res.status(500).send(err.message);
+    }
+})
+
 // borrower mark as returned (PUT), must be confirmed by owner
 
 router.put(
