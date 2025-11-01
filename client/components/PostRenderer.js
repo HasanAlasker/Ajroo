@@ -1,4 +1,3 @@
-import React from "react";
 import { FlatList, View } from "react-native";
 import AppText from "../config/AppText";
 import Post from "./post_releated/Post";

@@ -5,7 +5,7 @@ import InputBox from '../InputBox';
 import ErrorMessage from './ErrorMessage';
 
 function FormikInput({name, placeholder, penOn=false, keyboardType, autoCapitalize, hasBeenSubmitted=false, icon , isPassword, ...other}) {
-  const {values, errors, touched, setFieldTouched, setFieldValue, setStatus, handleBlur, handleChange} = useFormikContext()
+  const {values, errors, handleBlur, handleChange} = useFormikContext()
   const shouldShowError = hasBeenSubmitted && errors[name];
 
 

@@ -1,9 +1,8 @@
 import {useState} from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import CardModal from "../CardModal";
 import RequestBtn from "../RequestBtn";
 import RatingStars from "../RatingStars";
-import AppText from "../../config/AppText";
 
 function RatingModal({ isVisible, onClose, isOwner }) {
   const [itemRating, setItemRating] = useState(0);

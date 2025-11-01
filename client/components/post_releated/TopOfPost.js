@@ -8,7 +8,6 @@ import { usePosts } from "../../config/PostContext";
 function TopOfPost({ name, date, image, onPressThree, onPressProfile, postId, status, isMine }) {
   const styles = useThemedStyles(getStyles);
   const {theme} = useTheme();
-  const {posts} = usePosts()
   
   const renderProfileImage = () => {
     // Check if image is a valid URI string

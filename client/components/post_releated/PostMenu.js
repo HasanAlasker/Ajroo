@@ -9,7 +9,6 @@ import {
   Share,
 } from "react-native";
 import useThemedStyles from "../../hooks/useThemedStyles";
-import { useTheme } from "../../config/ThemeContext";
 import { useUser } from "../../config/UserContext";
 
 import BackContainer from "../BackContainer";
