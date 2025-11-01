@@ -204,4 +204,23 @@ router.get("/sent", auth, async (req, res) => {
   }
 });
 
+// get request by id
+
+router.get('/:id', auth, async (req, res)=> {
+  try {
+      const requestId = req.params.id;
+
+      if (!requestId || !mongoose.Types.ObjectId.isValid(requestId)) {
+        return res.status(400).send("Invalid request ID");
+      }
+
+      const requestedItem = await BorrowModel.findById(requestId);
+      if (!requestedItem) return res.status(404).send("Item not found");
+
+      return res.status(200).send(requestedItem);
+    } catch (err) {
+      return res.status(500).send(err.message);
+    }
+})
+
 export default router;
