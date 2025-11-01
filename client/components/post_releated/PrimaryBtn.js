@@ -107,8 +107,6 @@ function PrimaryBtn({
     const buttonText = renderBtnText();
 
     if (buttonText === "Delete Report") {
-      console.log('reportId', reportId)
-      console.log('postId', postId)
       await deleteReport(reportId)
     }
 
