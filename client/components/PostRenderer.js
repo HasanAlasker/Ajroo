@@ -11,17 +11,52 @@ function PostRenderer({
   refreshing = false,
   children,
 }) {
-
   const renderPost = ({ item: post }) => {
+    let isMine = false;
+
+    // For regular posts
+    if (post.user?._id) {
+      isMine = post.user._id === currentUserId;
+    }
+    // For borrows (I'm the owner)
+    else if (post.owner?._id) {
+      isMine = post.owner._id === currentUserId;
+    }
+    // For requests (I'm the requester)
+    else if (post.requester?._id) {
+      isMine = post.requester._id !== currentUserId;
+    }
+    // For reported posts
+    else if (post.reportedPost?.user?._id) {
+      isMine = post.reportedPost.user._id === currentUserId;
+    }
+    
     return (
       <Post
         id={post._id}
-        profilePic={post.user?.image || post.reportedPost?.user?.image || post?.owner?.image || post?.requester?.image}
-        name={post.user?.name || post.reportedPost?.user?.name || post?.owner?.name || post?.requester?.name}
-        userId={post.user?._id || post.reportedPost?.user?._id || post?.owner?._id || post?.requester?._id}
-        image={post.image || post.reportedPost?.image || post?.owner?.name || post?.item?.image }
-        itemCat={post.category || post.reportedPost?.category || post?.item?.category}
-        itemName={post.name || post.reportedPost?.name }
+        profilePic={
+          post.user?.image ||
+          post.reportedPost?.user?.image ||
+          post?.owner?.image ||
+          post?.requester?.image
+        }
+        name={
+          post.user?.name ||
+          post.reportedPost?.user?.name ||
+          post?.owner?.name ||
+          post?.requester?.name
+        }
+        userId={
+          post.user?._id ||
+          post.reportedPost?.user?._id ||
+          post?.owner?._id ||
+          post?.requester?._id
+        }
+        image={post.image || post.reportedPost?.image || post?.item?.image}
+        itemCat={
+          post.category || post.reportedPost?.category || post?.item?.category
+        }
+        itemName={post.name || post.reportedPost?.name}
         pricePerDay={post.pricePerDay || post.reportedPost?.pricePerDay}
         city={post.city || post.reportedPost?.city}
         area={post.area || post.reportedPost?.area}
@@ -31,9 +66,9 @@ function PostRenderer({
         reportReason={post?.reason}
         reporter={post?.reporter}
         status={post.status || post.reportedPost?.status}
-        isMine={post.user?._id === currentUserId || post?.owner?._id === currentUserId || post.requester._id !== currentUserId} // a problem here
-        iRequested={false}  // Simplify for now
-        iBorrowed={false}   // Simplify for now
+        isMine={isMine} // a problem here
+        iRequested={false} // Simplify for now
+        iBorrowed={false} // Simplify for now
       />
     );
   };
@@ -48,7 +83,6 @@ function PostRenderer({
       ListEmptyComponent={() => <EmptyState message={emptyMessage} />}
       ListHeaderComponent={children ? () => children : null}
       showsVerticalScrollIndicator={false}
-
       initialNumToRender={2}
       maxToRenderPerBatch={2}
       windowSize={3}

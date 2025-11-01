@@ -100,8 +100,12 @@ function Post({
         />
         {reportReason && (
           <View style={styles.display}>
-            <AppText style={styles.reportReason}>Reason: {formatText(reportReason)}</AppText>
-            <AppText style={styles.reportReason}>Reporter ID: {reporter}</AppText>
+            <AppText style={styles.reportReason}>
+              Reason: {formatText(reportReason)}
+            </AppText>
+            <AppText style={styles.reportReason}>
+              Reporter ID: {reporter}
+            </AppText>
           </View>
         )}
         <ItmeImage source={image} />
@@ -124,7 +128,11 @@ function Post({
             {condition && <ItemCondition condition={formatText(condition)} />}
             <ItemRating rating={rating ? rating : "Unrated Yet"} />
           </RowLableCont>
-          {
+          {!(
+            route.name === "Requests" &&
+            status === "pending" &&
+            isMine === true
+          ) && (
             <PrimaryBtn
               title={title}
               isDisabled={isDisabled}
@@ -134,7 +142,7 @@ function Post({
               pricePerDay={pricePerDay}
               postId={id}
             />
-          }
+          )}
           {route.name === "Requests" &&
             status === "pending" &&
             isMine === true && <AcceptRejectBtn postId={id} />}
@@ -178,7 +186,6 @@ const getStyles = (theme) =>
       paddingVertical: 20,
       borderRadius: 10,
       gap: 10,
-
     },
   });
 
