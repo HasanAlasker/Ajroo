@@ -41,6 +41,7 @@ function PrimaryBtn({
   const iBorrowed = false;
 
   const shouldBeDisabled = () => {
+    if(isAdmin) return false
     if (isDisabled) return true;
     if (!isMine && status === "disabled") return true;
     if (isMine && status === "pending" && (route.name === "Profile" || "Have"))
