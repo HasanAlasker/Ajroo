@@ -43,11 +43,11 @@ function PostMenu({
 
   const isAdmin = user.role === "admin";
 
-  useEffect(()=>{
-    if(postId){
-      fetchPost(postId)
+  useEffect(() => {
+    if (postId) {
+      fetchPost(postId);
     }
-  },[])
+  }, []);
 
   const handleShare = async () => {
     try {
@@ -112,29 +112,9 @@ function PostMenu({
     });
   };
 
-    const handleUnDelete = () => {
-    showAlert({
-      title: "UnDelete Item",
-      message: "Do you want to unDelete post?",
-      confirmText: "Yes",
-      cancelText: "Cancel",
-      onConfirm: async () => {
-        try {
-          await unDelete(postId);
-          onClose(); // Close the menu after deleting
-        } catch (error) {
-          showInfo({
-            title: "Error",
-            message: "Post could not be UnDeleted.",
-            confirmText: "Close",
-          });
-        }
-      },
-    });
-  };
-
   const handleSoftDelete = () => {
     // for admin deletion
+    console.log(postId)
     showAlert({
       title: "Soft Delete item",
       message: "Are you sure you want to delete this post?",
@@ -148,6 +128,27 @@ function PostMenu({
           showInfo({
             title: "Error",
             message: "Post could not be deleted.",
+            confirmText: "Close",
+          });
+        }
+      },
+    });
+  };
+
+  const handleUnDelete = () => {
+    showAlert({
+      title: "UnDelete Item",
+      message: "Do you want to unDelete post?",
+      confirmText: "Yes",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        try {
+          await unDelete(postId);
+          onClose(); // Close the menu after deleting
+        } catch (error) {
+          showInfo({
+            title: "Error",
+            message: "Post could not be UnDeleted.",
             confirmText: "Close",
           });
         }
