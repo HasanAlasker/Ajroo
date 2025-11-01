@@ -23,11 +23,33 @@ const requestSchema = new mongoose.Schema(
       default: "pending",
       required: true,
     },
-    requestedStartDate: {
+    durationValue: {
+      type: Number,
+      min: 1,
+      required: true,
+    },
+    durationUnit: {
+      type: String,
+      lowercase: true,
+      enum: ["hour", "day", "week", "month"],
+      required: true,
+      default: "hour",
+    },
+    pricePerDay: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
+    totalPrice: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    startDate: {
       type: Date,
       required: true,
     },
-    requestedEndDate: {
+    endDate: {
       type: Date,
       required: true,
     },

@@ -4,19 +4,26 @@ import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
 import AppText from "../../config/AppText";
 import { usePosts } from "../../config/PostContext";
+import useApi from "../../hooks/useApi";
+import { getPostById } from "../../api/post";
+import { useEffect } from "react";
 
 function ItemBill({ postId }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
-  const {getPostById} = usePosts()
   const currentPost = getPostById(postId)
+  const {request: fetchedPost, data:post} = useApi(getPostById)
+
+  useEffect(()=>{
+    fetchedPost()
+  },[postId])
 
   return (
     <View style={styles.container}>
-      { currentPost.price >= 1 ? (
-        <AppText style={styles.text}>Requested {currentPost.requestDuration} {currentPost.requestUnit} for {currentPost.requestPrice} JD</AppText>
+      { post.pricePerDay >= 1 ? (
+        <AppText style={styles.text}>Requested {post.requestDuration} {post.requestUnit} for {post.totalPrice} JD</AppText>
       ) : (
-        <AppText style={styles.text}>Requested {currentPost.requestDuration} {currentPost.requestUnit} for Free</AppText>
+        <AppText style={styles.text}>Requested {post.requestDuration} {post.requestUnit} for Free</AppText>
       )}
     </View>
   );

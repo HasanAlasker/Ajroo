@@ -18,7 +18,7 @@ router.post(
   async (req, res) => {
     try {
       const id = req.params.id;
-      const { requestedStartDate, requestedEndDate } = req.body;
+      const { startDate, endDate, durationUnit, durationValue, pricePerDay, totalPrice } = req.body;
 
       if (!id || !mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).send("Invalid post ID");
@@ -52,8 +52,12 @@ router.post(
         item: id,
         requester: req.user._id,
         owner: post.user,
-        requestedStartDate,
-        requestedEndDate,
+        startDate,
+        endDate,
+        pricePerDay,
+        durationUnit,
+        durationValue,
+        totalPrice,
       });
 
       const savedRequest = await newRequest.save();
@@ -169,7 +173,7 @@ router.post(
 router.get("/got", auth, async (req, res) => {
   try {
     const requests = await RequestModel.find({ owner: req.user._id });
-    if(requests.length === 0) return res.status(404).send("You haven't received any requests");
+    // if(requests.length === 0) return res.status(404).send("You haven't received any requests");
     return res.status(200).send(requests);
   } catch (err) {
     return res.status(500).send(err.message);
@@ -181,7 +185,7 @@ router.get("/got", auth, async (req, res) => {
 router.get("/sent", auth, async (req, res) => {
   try {
     const requests = await RequestModel.find({ requester: req.user._id });
-    if(requests.length === 0) return res.status(404).send("You haven't sent any requests");
+    // if(requests.length === 0) return res.status(404).send("You haven't sent any requests");
     return res.status(200).send(requests);
   } catch (err) {
     return res.status(500).send(err.message);

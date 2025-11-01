@@ -10,6 +10,6 @@ export const deleteRequest = (id) => apiClient.delete(`${endPoint}/${id}`); // c
 export const confirmRequest = (id, data) =>
   apiClient.post(`${endPoint}/borrow/${id}`, data);
 
-export const gotRequests = () => apiClient.get(`/got`);
+export const gotRequests = () => apiClient.get(`${endPoint}/got`);
 
-export const sentRequests = () => apiClient.get(`/sent`);
+export const sentRequests = () => apiClient.get(`${endPoint}/sent`);
