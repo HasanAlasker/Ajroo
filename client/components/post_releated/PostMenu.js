@@ -27,6 +27,7 @@ function PostMenu({
   onClose,
   isMine,
   postId,
+  reportId,
   onEditPress,
   shareContent,
 }) {

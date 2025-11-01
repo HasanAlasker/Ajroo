@@ -33,6 +33,7 @@ function PostRenderer({
     return (
       <Post
         id={post?.reportedPost?._id || post._id || post?.item?._id}
+        reportId={post._id}
         profilePic={
           post.user?.image ||
           post.reportedPost?.user?.image ||

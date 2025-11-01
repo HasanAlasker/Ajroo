@@ -43,6 +43,7 @@ const formatText = (text) => {
 
 function Post({
   id,
+  reportId,
   // userId,
   // requesterId,
   // borrowerId,
@@ -141,6 +142,7 @@ function Post({
               iBorrowed={iBorrowed}
               pricePerDay={pricePerDay}
               postId={id}
+              reportId={reportId}
             />
           )}
           {route.name === "Requests" &&

@@ -18,6 +18,7 @@ function PrimaryBtn({
   status,
   pricePerDay,
   postId,
+  reportId,
   isMine,
 }) {
   const { theme } = useTheme();
@@ -106,7 +107,9 @@ function PrimaryBtn({
     const buttonText = renderBtnText();
 
     if (buttonText === "Delete Report") {
-      await deleteReport(postId)
+      console.log('reportId', reportId)
+      console.log('postId', postId)
+      await deleteReport(reportId)
     }
 
     if (buttonText === "Request") {
