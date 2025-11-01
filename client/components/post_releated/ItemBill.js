@@ -12,7 +12,7 @@ function ItemBill({ postId }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
   const currentPost = getPostById(postId)
-  const {request: fetchedPost, data:post} = useApi(getPostById)
+  const {request: fetchedPost, data:post} = useApi(getPostById)  // you should get the request not the post
 
   useEffect(()=>{
     fetchedPost()
