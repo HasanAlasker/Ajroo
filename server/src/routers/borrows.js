@@ -26,7 +26,9 @@ router.get("/", [auth, admin], async (req, res) => {
 
 router.get("/given", auth, async (req, res) => {
   try {
-    const givenItems = await BorrowModel.find({ owner: req.user._id });
+    const givenItems = await BorrowModel.find({ owner: req.user._id })
+      .populate("item", "image")
+      .populate("borrower", "name image");
     if (givenItems.length === 0)
       return res.status(404).send("You haven't given any items");
 
@@ -40,7 +42,9 @@ router.get("/given", auth, async (req, res) => {
 
 router.get("/taken", auth, async (req, res) => {
   try {
-    const takenItems = await BorrowModel.find({ borrower: req.user._id });
+    const takenItems = await BorrowModel.find({ borrower: req.user._id })
+      .populate("item", "image")
+      .populate("owner", "name image");
     if (takenItems.length === 0)
       return res.status(404).send("You haven't taken any items");
 
@@ -155,7 +159,10 @@ router.put(
 
 router.get("/marked-as-returned", auth, async (req, res) => {
   try {
-    const claimsOfReturn = await BorrowModel.find({owner: req.user._id, status: "pending_return"});
+    const claimsOfReturn = await BorrowModel.find({
+      owner: req.user._id,
+      status: "pending_return",
+    });
     if (claimsOfReturn.length === 0)
       return res.status(404).send("No borrowed items found");
 

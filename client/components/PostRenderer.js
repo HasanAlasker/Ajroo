@@ -29,7 +29,7 @@ function PostRenderer({
     else if (post.reportedPost?.user?._id) {
       isMine = post.reportedPost.user._id === currentUserId;
     }
-    
+
     return (
       <Post
         id={post._id}
@@ -37,19 +37,22 @@ function PostRenderer({
           post.user?.image ||
           post.reportedPost?.user?.image ||
           post?.owner?.image ||
-          post?.requester?.image
+          post?.requester?.image ||
+          post?.borrower?.image
         }
         name={
           post.user?.name ||
           post.reportedPost?.user?.name ||
           post?.owner?.name ||
-          post?.requester?.name
+          post?.requester?.name ||
+          post?.borrower?.name
         }
         userId={
           post.user?._id ||
           post.reportedPost?.user?._id ||
           post?.owner?._id ||
-          post?.requester?._id
+          post?.requester?._id ||
+          post?.borrower?._id
         }
         image={post.image || post.reportedPost?.image || post?.item?.image}
         itemCat={
