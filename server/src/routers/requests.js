@@ -18,13 +18,21 @@ router.post(
   async (req, res) => {
     try {
       const id = req.params.id;
-      const { startDate, endDate, durationUnit, durationValue, pricePerDay, totalPrice } = req.body;
+      const {
+        startDate,
+        endDate,
+        durationUnit,
+        durationValue,
+        pricePerDay,
+        totalPrice,
+      } = req.body;
 
       if (!id || !mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).send("Invalid post ID");
       }
 
-      if(req.user.role === 'admin') return res.status(400).send("Admins can't request items");
+      if (req.user.role === "admin")
+        return res.status(400).send("Admins can't request items");
 
       const post = await PostModel.findById(id);
 
@@ -156,11 +164,11 @@ router.post(
       });
 
       const savedBorrow = await newBorrow.save();
-      
+
       await PostModel.findByIdAndUpdate(request.item, { status: "taken" });
 
       // when the owner confirms one request ,requests on the same post should be deleted!
-      await RequestModel.deleteMany({item : request.item})
+      await RequestModel.deleteMany({ item: request.item });
       return res.status(201).send(savedBorrow);
     } catch (err) {
       return res.status(500).send(err.message);
@@ -172,7 +180,9 @@ router.post(
 
 router.get("/got", auth, async (req, res) => {
   try {
-    const requests = await RequestModel.find({ owner: req.user._id }).populate('requester', "name image").populate('item', 'image');
+    const requests = await RequestModel.find({ owner: req.user._id })
+      .populate("requester", "name image")
+      .populate("item", "image");
     // if(requests.length === 0) return res.status(404).send("You haven't received any requests");
     return res.status(200).send(requests);
   } catch (err) {
@@ -184,13 +194,14 @@ router.get("/got", auth, async (req, res) => {
 
 router.get("/sent", auth, async (req, res) => {
   try {
-    const requests = await RequestModel.find({ requester: req.user._id }).populate('owner', "name image").populate('item', 'image');
+    const requests = await RequestModel.find({ requester: req.user._id })
+      .populate("owner", "name image")
+      .populate("item", "image");
     // if(requests.length === 0) return res.status(404).send("You haven't sent any requests");
     return res.status(200).send(requests);
   } catch (err) {
     return res.status(500).send(err.message);
   }
 });
-
 
 export default router;
