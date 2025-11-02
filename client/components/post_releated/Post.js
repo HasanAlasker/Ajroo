@@ -45,6 +45,8 @@ const formatText = (text) => {
 function Post({
   id,
   reportId,
+  requestId,
+  borrowId,
   // userId,
   // requesterId,
   // borrowerId,
@@ -116,7 +118,7 @@ function Post({
             pricePerDay={pricePerDay}
           />
         ) : (
-          <ItemBill postId={id}></ItemBill>
+          <ItemBill billId={borrowId} postId={id}></ItemBill>
         )}
 
         <LableContainer>

@@ -32,8 +32,10 @@ function PostRenderer({
 
     return (
       <Post
-        id={post?.reportedPost?._id || post._id || post?.item?._id}
+        id={post?.reportedPost?._id || post?.item?._id || post._id }
         reportId={post._id}
+        requestId= { post._id }
+        borrowId = { post._id }
         profilePic={
           post.user?.image ||
           post.reportedPost?.user?.image ||
@@ -69,7 +71,7 @@ function PostRenderer({
         reportReason={post?.reason}
         reporter={post?.reporter}
         status={post.status || post.reportedPost?.status}
-        isMine={isMine} // a problem here
+        isMine={isMine}
         iRequested={false} // Simplify for now
         iBorrowed={false} // Simplify for now
       />

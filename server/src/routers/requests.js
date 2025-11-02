@@ -214,7 +214,7 @@ router.get('/:id', auth, async (req, res)=> {
         return res.status(400).send("Invalid request ID");
       }
 
-      const requestedItem = await BorrowModel.findById(requestId);
+      const requestedItem = await RequestModel.findById(requestId);
       if (!requestedItem) return res.status(404).send("Item not found");
 
       return res.status(200).send(requestedItem);
