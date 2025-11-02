@@ -12,13 +12,13 @@ export const getPostById = (id) => apiClient.get(`${endPoint}/${id}`); // ✅
 
 export const addPost = (data) => apiClient.post(`${endPoint}`, data); // ✅
 
-export const editPost = (id, data) => // ✅
-  apiClient.put(`${endPoint}/edit/${id}`, data);
+export const editPost = (id, data) => 
+  apiClient.put(`${endPoint}/edit/${id}`, data); // ✅
 
 export const softDelete = (id) =>
-  apiClient.put(`${endPoint}/soft-delete/${id}`);
+  apiClient.put(`${endPoint}/soft-delete/${id}`); // ✅
 
-export const unDelete = (id) => apiClient.put(`${endPoint}/un-delete/${id}`);
+export const unDelete = (id) => apiClient.put(`${endPoint}/un-delete/${id}`); // ✅
 
 export const deletePost = (id) => apiClient.delete(`${endPoint}/delete/${id}`); // ✅
 
