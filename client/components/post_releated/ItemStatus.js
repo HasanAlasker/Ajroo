@@ -3,24 +3,26 @@ import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
 import AppText from "../../config/AppText";
 import { Octicons } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
 
 function ItemStatus({ status, type, endDate }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
+  const route = useRoute();
 
   // Calculate days remaining if endDate exists
   const getDaysRemaining = () => {
     if (!endDate) return null;
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     const end = new Date(endDate);
     end.setHours(0, 0, 0, 0);
-    
+
     const diffTime = end - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     return diffDays;
   };
 
@@ -63,9 +65,11 @@ function ItemStatus({ status, type, endDate }) {
       case "active":
         const daysRemaining = getDaysRemaining();
         if (daysRemaining === null) return `End Date: ${endDate}`;
-        
+
         if (daysRemaining < 0) {
-          return `Late by ${Math.abs(daysRemaining)} day${Math.abs(daysRemaining) > 1 ? "s" : ""}`;
+          return `Late by ${Math.abs(daysRemaining)} day${
+            Math.abs(daysRemaining) > 1 ? "s" : ""
+          }`;
         }
         if (daysRemaining === 0) {
           return "Due Today";
@@ -86,7 +90,7 @@ function ItemStatus({ status, type, endDate }) {
   return (
     <View style={styles.container}>
       <Octicons
-        name={endDate ? "calendar" : "clock"}
+        name={endDate && route.name === "Book" ? "calendar" : "clock"}
         size={18}
         color={getColor()}
       />
