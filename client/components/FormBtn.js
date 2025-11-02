@@ -11,7 +11,7 @@ function FormBtn({ title, onPress, style, textColor, disabled=false, loading }) 
     <TouchableOpacity
       onPress={onPress}
       style={[styles.container, disabled && styles.disabled, style]}
-      disabled={false}
+      disabled={disabled}
     >
       <AppText
         style={[styles.text, { color: theme[textColor || "always_white"] }]}
