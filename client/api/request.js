@@ -2,6 +2,8 @@ import { apiClient } from "./client";
 
 const endPoint = "/api/requests";
 
+export const getRequestByid = () => apiClient.get(`${endPoint}/${id}`);
+
 export const createRequest = (id, data) =>
   apiClient.post(`${endPoint}/${id}`, data);
 
