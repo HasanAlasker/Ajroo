@@ -15,6 +15,7 @@ import KeyboardScrollScreen from "../../components/general/KeyboardScrollScreen"
 
 import { useUser } from "../../config/UserContext";
 import ErrorMessage from "../../components/form/ErrorMessage";
+import ErrorBox from "../../components/general/ErrorBox";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -112,6 +113,8 @@ function Login(props) {
               title={"Create account"}
               onPress={() => navigation.navigate("Signin")}
             ></RequestBtn>
+
+            {error && <ErrorBox style={styles.errorBox} firstTitle={"Login Failed"} fistDetail={error.message}/>}
           </AppForm>
         </View>
       </KeyboardScrollScreen>
@@ -143,6 +146,11 @@ const getStyles = (theme) =>
     },
     errorText:{
       color: theme.red
+    },
+    errorBox:{
+      width:'90%',
+      margin: 'auto',
+      marginTop: 50
     }
   });
 
