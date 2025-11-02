@@ -20,6 +20,7 @@ import EditPostModal from "../EditPostModal";
 import { useUser } from "../../config/UserContext";
 import ItemBill from "./ItemBill";
 import AppText from "../../config/AppText";
+import ErrorBox from "../general/ErrorBox";
 
 // Format ISO date to DD/MM/YYYY
 const formatDate = (isoDate) => {
@@ -100,14 +101,12 @@ function Post({
           isMine={isMine}
         />
         {reportReason && (
-          <View style={styles.display}>
-            <AppText style={styles.reportReason}>
-              Reason: {formatText(reportReason)}
-            </AppText>
-            <AppText style={styles.reportReason}>
-              Reporter ID: {reporter}
-            </AppText>
-          </View>
+          <ErrorBox
+            firstTitle={"Reason"}
+            fistDetail={formatText(reportReason)}
+            secondTitle={"Reporter Id"}
+            secondDetail={formatText(reporter)}
+          />
         )}
         <ItmeImage source={image} />
         {route.name != "Requests" && route.name != "Book" ? (
