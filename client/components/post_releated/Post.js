@@ -68,6 +68,7 @@ function Post({
   isDisabled,
   pricePerDay,
   reportReason,
+  endDate,
   reporter,
 }) {
   const styles = useThemedStyles(getStyles);
@@ -124,7 +125,7 @@ function Post({
         <LableContainer>
           {area && <Location city={formatText(city)} area={formatText(area)} />}
           <RowLableCont>
-            <ItemStatus status={status} time={time} />
+            <ItemStatus status={status} endDate={endDate} />
           </RowLableCont>
           <RowLableCont>
             {condition && <ItemCondition condition={formatText(condition)} />}

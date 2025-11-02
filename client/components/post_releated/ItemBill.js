@@ -26,13 +26,6 @@ function ItemBill({ postId, billId }) {
     }
   }, [billId, isBookRoute]);
 
-  console.log("route name:", route.name);
-  console.log("post:", postId);
-  console.log("request/borrow:", billId);
-  console.log("isBookRoute:", isBookRoute);
-  console.log("getRequestApi.data:", getRequestApi.data);
-  console.log("getBorrowApi.data:", getBorrowApi.data);
-
   // Select the active API data
   const activeApi = isBookRoute ? getBorrowApi : getRequestApi;
 
