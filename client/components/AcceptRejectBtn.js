@@ -3,7 +3,7 @@ import AppText from "../config/AppText";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import { usePosts } from "../config/PostContext";
-import { deleteRequest } from "../api/request";
+import { confirmRequest, deleteRequest } from "../api/request";
 import { useAlert } from "../config/AlertContext";
 
 function AcceptRejectBtn({ postId, requestId }) {
@@ -14,13 +14,14 @@ function AcceptRejectBtn({ postId, requestId }) {
 
   const currentPost = getPostById(postId);
 
-  const handleAccept = () => {
+  const handleAccept = async () => {
+    const response = await confirmRequest()
     // When accepting, move the requester to borrower and change status to taken
-    updatePost(postId, {
-      status: "taken",
-      borrowerId: currentPost?.requesterId, // Move requester to borrower
-      requesterId: null, // Clear the request
-    });
+    // updatePost(postId, {
+    //   status: "taken",
+    //   borrowerId: currentPost?.requesterId, // Move requester to borrower
+    //   requesterId: null, // Clear the request
+    // });
   };
 
   const handleReject = async () => {

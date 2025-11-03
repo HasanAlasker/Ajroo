@@ -112,14 +112,7 @@ router.post(
   async (req, res) => {
     try {
       const requestId = req.params.id;
-      const {
-        durationValue,
-        durationUnit,
-        pricePerDay,
-        totalPrice,
-        startDate,
-        endDate,
-      } = req.body;
+      const { startDate } = req.body;
 
       if (!requestId || !mongoose.Types.ObjectId.isValid(requestId)) {
         return res.status(400).send("Invalid request ID");
@@ -141,12 +134,30 @@ router.post(
       if (post.status !== "available")
         return res.status(400).send("Post is not available for rent");
 
-      // Check for overlapping requests
+      // Calculate the end date based on start date and duration
+      const borrowStartDate = startDate ? new Date(startDate) : new Date();
+      const borrowEndDate = new Date(borrowStartDate);
+      
+      if (request.durationUnit === "days") {
+        borrowEndDate.setDate(borrowEndDate.getDate() + request.durationValue);
+      } else if (request.durationUnit === "weeks") {
+        borrowEndDate.setDate(borrowEndDate.getDate() + (request.durationValue * 7));
+      } else if (request.durationUnit === "months") {
+        borrowEndDate.setMonth(borrowEndDate.getMonth() + request.durationValue);
+      }
+
+      // Check for overlapping borrows
       const existingBorrow = await BorrowModel.findOne({
         item: request.item,
         status: "active",
-        $or: [{ startDate: { $lte: endDate }, endDate: { $gte: startDate } }],
+        $or: [
+          { 
+            startDate: { $lte: borrowEndDate }, 
+            endDate: { $gte: borrowStartDate } 
+          }
+        ],
       });
+      
       if (existingBorrow) {
         return res.status(400).send("Item is already booked for these dates");
       }
@@ -155,26 +166,92 @@ router.post(
         item: request.item,
         borrower: request.requester,
         owner: request.owner,
-        durationValue,
-        durationUnit,
-        pricePerDay,
-        totalPrice,
-        startDate,
-        endDate,
+        durationValue: request.durationValue,
+        durationUnit: request.durationUnit,
+        pricePerDay: request.pricePerDay,
+        totalPrice: request.totalPrice,
+        startDate: borrowStartDate,
+        endDate: borrowEndDate,
       });
 
       const savedBorrow = await newBorrow.save();
 
       await PostModel.findByIdAndUpdate(request.item, { status: "taken" });
 
-      // when the owner confirms one request ,requests on the same post should be deleted!
+      // Delete all requests for this item when one is confirmed
       await RequestModel.deleteMany({ item: request.item });
+      
       return res.status(201).send(savedBorrow);
     } catch (err) {
       return res.status(500).send(err.message);
     }
   }
 );
+
+// old way of creating borrow
+
+// router.post(
+//   "/borrow/:id",
+//   [auth, validate(createBorrowValidation)],
+//   async (req, res) => {
+//     try {
+//       const requestId = req.params.id;
+//       const { startDate } = req.body;
+
+//       if (!requestId || !mongoose.Types.ObjectId.isValid(requestId)) {
+//         return res.status(400).send("Invalid request ID");
+//       }
+
+//       const request = await RequestModel.findById(requestId);
+//       if (!request) return res.status(404).send("Request not found");
+
+//       // Verify the current user is the owner of the post
+//       if (request.owner.toString() !== req.user._id.toString()) {
+//         return res.status(403).send("Only the owner can confirm requests");
+//       }
+
+//       // Get the post
+//       const post = await PostModel.findById(request.item);
+
+//       if (!post) return res.status(404).send("Post not found");
+//       if (post.isDeleted) return res.status(400).send("Post is not available");
+//       if (post.status !== "available")
+//         return res.status(400).send("Post is not available for rent");
+
+//       // Check for overlapping requests
+//       const existingBorrow = await BorrowModel.findOne({
+//         item: request.item,
+//         status: "active",
+//         $or: [{ startDate: { $lte: endDate }, endDate: { $gte: startDate } }],
+//       });
+//       if (existingBorrow) {
+//         return res.status(400).send("Item is already booked for these dates");
+//       }
+
+//       const newBorrow = new BorrowModel({
+//         item: request.item,
+//         borrower: request.requester,
+//         owner: request.owner,
+//         durationValue: request.durationValue,
+//         durationUnit: request.durationUnit,
+//         pricePerDay: request.pricePerDay,
+//         totalPrice: request.totalPrice,
+//         startDate: new Date(), // it starts from the time the owner accepts the request
+//         endDate, // this should be calculated again now!
+//       });
+
+//       const savedBorrow = await newBorrow.save();
+
+//       await PostModel.findByIdAndUpdate(request.item, { status: "taken" });
+
+//       // when the owner confirms one request ,requests on the same post should be deleted!
+//       await RequestModel.deleteMany({ item: request.item });
+//       return res.status(201).send(savedBorrow);
+//     } catch (err) {
+//       return res.status(500).send(err.message);
+//     }
+//   }
+// );
 
 // requests i GOT
 
@@ -206,21 +283,21 @@ router.get("/sent", auth, async (req, res) => {
 
 // get request by id
 
-router.get('/:id', auth, async (req, res)=> {
+router.get("/:id", auth, async (req, res) => {
   try {
-      const requestId = req.params.id;
+    const requestId = req.params.id;
 
-      if (!requestId || !mongoose.Types.ObjectId.isValid(requestId)) {
-        return res.status(400).send("Invalid request ID");
-      }
-
-      const requestedItem = await RequestModel.findById(requestId);
-      if (!requestedItem) return res.status(404).send("Item not found");
-
-      return res.status(200).send(requestedItem);
-    } catch (err) {
-      return res.status(500).send(err.message);
+    if (!requestId || !mongoose.Types.ObjectId.isValid(requestId)) {
+      return res.status(400).send("Invalid request ID");
     }
-})
+
+    const requestedItem = await RequestModel.findById(requestId);
+    if (!requestedItem) return res.status(404).send("Item not found");
+
+    return res.status(200).send(requestedItem);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
 
 export default router;

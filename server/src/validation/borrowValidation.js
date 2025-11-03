@@ -2,14 +2,7 @@ import Joi from "joi";
 
 // Create borrow (when owner accepts a request)
 export const createBorrowValidation = Joi.object({
-  durationValue: Joi.number().integer().min(1).required(),
-  durationUnit: Joi.string().valid("hour", "day", "week", "month").required(),
-  pricePerDay: Joi.number().min(0).required(),
-  totalPrice: Joi.number().min(0).required(),
   startDate: Joi.date().iso().required(),
-  endDate: Joi.date().iso().greater(Joi.ref("startDate")).required().messages({
-    "date.greater": "End date must be after start date",
-  }),
 });
 
 // Update borrow (for marking return, confirming, etc.)
