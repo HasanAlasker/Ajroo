@@ -3,11 +3,14 @@ import AppText from "../config/AppText";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import { usePosts } from "../config/PostContext";
+import { deleteRequest } from "../api/request";
+import { useAlert } from "../config/AlertContext";
 
-function AcceptRejectBtn({ postId }) {
+function AcceptRejectBtn({ postId, requestId }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
   const { updatePost, getPostById } = usePosts();
+  const { showAlert, showInfo } = useAlert();
 
   const currentPost = getPostById(postId);
 
@@ -20,11 +23,23 @@ function AcceptRejectBtn({ postId }) {
     });
   };
 
-  const handleReject = () => {
-    // When rejecting, clear the request and return to available
-    updatePost(postId, {
-      status: "available",
-      requesterId: null, // Clear the request
+  const handleReject = async () => {
+    showAlert({
+      title: "Delete request?",
+      message: "Are you sure you want to delete request?",
+      confirmText: "Yes",
+      cancelText: "No",
+      onConfirm: async () => {
+        try {
+          await deleteRequest(requestId);
+        } catch (error) {
+          showAlert({
+            title: "Error",
+            message: "Something went wrong.",
+            confirmText: "Close",
+          });
+        }
+      },
     });
   };
 

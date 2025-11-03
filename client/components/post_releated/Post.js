@@ -150,7 +150,7 @@ function Post({
           )}
           {route.name === "Requests" &&
             status === "pending" &&
-            isMine === true && <AcceptRejectBtn postId={id} />}
+            isMine === true && <AcceptRejectBtn requestId={requestId} postId={id} />}
         </LableContainer>
       </PostComponent>
 
