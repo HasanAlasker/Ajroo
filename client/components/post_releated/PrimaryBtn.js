@@ -151,10 +151,7 @@ function PrimaryBtn({
         onConfirm: async () => {
           try {
             setVisibileRating(true);
-            const response = await confirmReturn(requestId);
-            console.log("request", requestId)
-            console.log("post", postId)
-            console.log(response);
+            await confirmReturn(requestId);
           } catch (error) {
             showInfo({
               title: "Error",
@@ -234,7 +231,7 @@ function PrimaryBtn({
       />
 
       <RatingModal
-        isOwner={isMine}
+        isOwner={iGave}
         isVisible={visibleRating}
         onClose={handleRatingModalClose}
       />
