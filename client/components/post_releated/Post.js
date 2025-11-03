@@ -48,8 +48,8 @@ function Post({
   requestId,
   borrowId,
   // userId,
-  // requesterId,
-  // borrowerId,
+  iRequested,
+  iBorrowed,
   profilePic,
   name,
   date,
@@ -59,7 +59,6 @@ function Post({
   city,
   area,
   isMine,
-  iBorrowed,
   status,
   rating,
   time,
@@ -141,6 +140,7 @@ function Post({
               isDisabled={isDisabled}
               status={status}
               isMine={isMine}
+              iRequested={iRequested}
               iBorrowed={iBorrowed}
               pricePerDay={pricePerDay}
               postId={id}

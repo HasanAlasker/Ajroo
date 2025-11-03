@@ -20,6 +20,8 @@ function PrimaryBtn({
   postId,
   reportId,
   isMine,
+  iBorrowed,
+  iRequested
 }) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
@@ -37,8 +39,6 @@ function PrimaryBtn({
   // const iRequested = currentPost?.requesterId === user.id;
   // const iBorrowed = currentPost?.borrowerId === user.id;
   const isAdmin = user.role === "admin";
-  const iRequested = false;
-  const iBorrowed = false;
 
   const shouldBeDisabled = () => {
     if(isAdmin) return false

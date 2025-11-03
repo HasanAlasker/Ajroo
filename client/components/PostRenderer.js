@@ -32,10 +32,10 @@ function PostRenderer({
 
     return (
       <Post
-        id={post?.reportedPost?._id || post?.item?._id || post._id }
-        reportId={post._id}
-        requestId= { post._id }
-        borrowId = { post._id }
+        id={post?.reportedPost?._id || post?.item?._id || post._id}
+        reportId={post._id} // this one the the 3 under are the difenition of: if it works dont touch it, here is and explination: the response from DB for rendering posts has 4 posibilities: normal post in have.js/ a request in requests.js / a borrow in borrow.js / and a report. so the order of them is not stupidity but studied carefully also i have three with the same value but different names to not confuse my self in other places (the main purpose is to not have the post id = to the report/ request/ borrow id and not be able to fetch data i need)
+        requestId={post._id}
+        borrowId={post._id}
         profilePic={
           post.user?.image ||
           post.reportedPost?.user?.image ||
@@ -71,10 +71,10 @@ function PostRenderer({
         reportReason={post?.reason}
         reporter={post?.reporter}
         status={post.status || post.reportedPost?.status}
-        endDate= {post?.endDate}
+        endDate={post?.endDate}
         isMine={isMine}
-        iRequested={false} // Simplify for now
-        iBorrowed={false} // Simplify for now
+        iRequested={post?.requester === currentUserId}
+        iBorrowed={post?.borrower === currentUserId}
       />
     );
   };
