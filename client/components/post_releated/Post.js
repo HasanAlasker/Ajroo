@@ -50,6 +50,7 @@ function Post({
   // userId,
   iRequested,
   iBorrowed,
+  iGave,
   profilePic,
   name,
   date,
@@ -146,6 +147,7 @@ function Post({
               postId={id}
               reportId={reportId}
               requestId={requestId}
+              iGave={iGave}
             />
           )}
           {route.name === "Requests" &&

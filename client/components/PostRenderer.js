@@ -75,6 +75,7 @@ function PostRenderer({
         isMine={isMine}
         iRequested={post?.requester === currentUserId}
         iBorrowed={post?.borrower === currentUserId}
+        iGave={post?.owner === currentUserId}
       />
     );
   };

@@ -32,7 +32,9 @@ const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
   try {
-    const posts = await PostModel.find({ isDeleted: false }).populate('user', "name image").sort('-createdAt');
+    const posts = await PostModel.find({ isDeleted: false })
+      .populate("user", "name image")
+      .sort("-createdAt");
     if (!posts) return res.status(404).send("No posts found");
 
     return res.status(200).send(posts);
@@ -46,10 +48,12 @@ router.get("/", auth, async (req, res) => {
 
 router.get("/available", auth, async (req, res) => {
   try {
-    const posts = await PostModel.find({ 
-      isDeleted: false, 
-      status: { $in: ["available", "pending"] } 
-    }).populate('user', "name image").sort('-createdAt');
+    const posts = await PostModel.find({
+      isDeleted: false,
+      status: { $in: ["available", "pending"] },
+    })
+      .populate("user", "name image")
+      .sort("-createdAt");
     if (!posts) return res.status(404).send("No posts found");
 
     return res.status(200).send(posts);
@@ -164,7 +168,12 @@ router.get("/user/:id", auth, async (req, res) => {
       return res.status(400).send("Invalid ID");
     }
 
-    const posts = await PostModel.find({ user: id }).sort({ createdAt: -1 }).populate('user', "name image");
+    const posts = await PostModel.find({
+      user: id,
+      status: { $in: ["available", "disabled" ] },
+    })
+      .sort({ createdAt: -1 })
+      .populate("user", "name image");
     if (posts.length === 0) return res.status(404).send("No posts found");
 
     return res.status(200).send(posts);

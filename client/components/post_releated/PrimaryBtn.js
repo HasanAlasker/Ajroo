@@ -12,6 +12,7 @@ import { useAlert } from "../../config/AlertContext";
 import { updateStatus } from "../../api/post";
 import { deleteReport } from "../../api/report";
 import { deleteRequest } from "../../api/request";
+import { confirmReturn } from "../../api/borrow";
 
 function PrimaryBtn({
   title,
@@ -23,6 +24,7 @@ function PrimaryBtn({
   isMine,
   iBorrowed,
   iRequested,
+  iGave,
   requestId,
 }) {
   const { theme } = useTheme();
@@ -85,6 +87,7 @@ function PrimaryBtn({
       if (status === "disabled") return "Disabled";
       if (iRequested) return "Cancel Request";
       if (iBorrowed) return "Mark Returned";
+      if (iGave) return "Got It Back";
       return "Request";
     }
 
@@ -139,7 +142,7 @@ function PrimaryBtn({
       });
     }
 
-    if (buttonText === "Got it back") {
+    if (buttonText === "Got It Back") {
       showAlert({
         title: "Got it back?",
         message: "Are you sure you got this item back?",
@@ -148,8 +151,10 @@ function PrimaryBtn({
         onConfirm: async () => {
           try {
             setVisibileRating(true);
-            // Store the status update for later (after modal closes)
-            setPendingStatusUpdate("available");
+            const response = await confirmReturn(requestId);
+            console.log("request", requestId)
+            console.log("post", postId)
+            console.log(response);
           } catch (error) {
             showInfo({
               title: "Error",
