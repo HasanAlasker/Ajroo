@@ -11,6 +11,7 @@ import { useUser } from "../../config/UserContext";
 import { useAlert } from "../../config/AlertContext";
 import { updateStatus } from "../../api/post";
 import { deleteReport } from "../../api/report";
+import { deleteRequest } from "../../api/request";
 
 function PrimaryBtn({
   title,
@@ -21,14 +22,15 @@ function PrimaryBtn({
   reportId,
   isMine,
   iBorrowed,
-  iRequested
+  iRequested,
+  requestId,
 }) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
   const { updatePost, getPostById } = usePosts();
   const { user } = useUser();
-  const { showAlert } = useAlert();
+  const { showAlert, showInfo } = useAlert();
 
   const [visibleRequest, setVisibileRequest] = useState(false);
   const [visibleRating, setVisibileRating] = useState(false);
@@ -41,7 +43,7 @@ function PrimaryBtn({
   const isAdmin = user.role === "admin";
 
   const shouldBeDisabled = () => {
-    if(isAdmin) return false
+    if (isAdmin) return false;
     if (isDisabled) return true;
     if (!isMine && status === "disabled") return true;
     if (isMine && status === "pending" && (route.name === "Profile" || "Have"))
@@ -108,7 +110,7 @@ function PrimaryBtn({
     const buttonText = renderBtnText();
 
     if (buttonText === "Delete Report") {
-      await deleteReport(reportId)
+      await deleteReport(reportId);
     }
 
     if (buttonText === "Request") {
@@ -127,7 +129,7 @@ function PrimaryBtn({
             // Store the status update for later (after modal closes)
             setPendingStatusUpdate("available");
           } catch (error) {
-            showInfo({
+            showAlert({
               title: "Error",
               message: "Something went wrong.",
               confirmText: "Close",
@@ -191,11 +193,7 @@ function PrimaryBtn({
         cancelText: "No",
         onConfirm: async () => {
           try {
-            // Remove the requesterId and change status back to available
-            updatePost(postId, {
-              status: "available",
-              requesterId: null,
-            });
+            await deleteRequest(requestId);
           } catch (error) {
             showInfo({
               title: "Error",

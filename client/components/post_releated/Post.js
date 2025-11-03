@@ -145,6 +145,7 @@ function Post({
               pricePerDay={pricePerDay}
               postId={id}
               reportId={reportId}
+              requestId={requestId}
             />
           )}
           {route.name === "Requests" &&

@@ -111,8 +111,7 @@ function RequestModal({
     endDate: endDate.toISOString(),
   };
 
-  const response = await createRequest(postId, data);
-  console.log(response);
+  await createRequest(postId, data);
 
   onRequestSubmit();
   onClose();
