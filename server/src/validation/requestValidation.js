@@ -7,16 +7,7 @@ export const createRequestValidation = Joi.object({
   durationUnit: Joi.string().valid("hour", "day", "week", "month").required(),
   pricePerDay: Joi.number().min(0).required(),
   totalPrice: Joi.number().min(0).required(),
-  startDate: Joi.date().iso().min("now").required().messages({
-    "date.min": "Start date cannot be in the past",
-  }),
-  endDate: Joi.date()
-    .iso()
-    .greater(Joi.ref("startDate"))
-    .required()
-    .messages({
-      "date.greater": "End date must be after start date",
-    }),
+  endDate: Joi.date().iso().min('now').required(),
 });
 
 // Update request (accept, reject, cancel)

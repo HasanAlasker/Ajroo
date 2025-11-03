@@ -1,8 +1,5 @@
 import { useState } from "react";
-import {
-  View,
-  StyleSheet,
-} from "react-native";
+import { View, StyleSheet } from "react-native";
 import AppText from "../../config/AppText";
 import PlusMinusBtn from "../PlusMinusBtn";
 import CardModal from "../CardModal";
@@ -12,6 +9,8 @@ import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
 import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
+import useApi from "../../hooks/useApi";
+import { createRequest } from "../../api/request";
 
 function RequestModal({
   isVisibile,
@@ -82,17 +81,42 @@ function RequestModal({
       : baseUnit
     : "";
 
-  const handleRequest = () => {
-    updatePost(postId, {
-      status: "pending",
-      requesterId: user.id,
-      requestDuration: duration,
-      requestUnit: displayUnit,
-      requestPrice: showPrice(),
-    });
-    onRequestSubmit();
-    onClose();
+  const handleRequest = async () => {
+  const startDate = new Date();
+  const endDate = new Date(startDate);
+
+  // Calculate end date based on duration and unit
+  switch (baseUnit) {
+    case "hours":
+      endDate.setHours(endDate.getHours() + duration);
+      break;
+    case "days":
+      endDate.setDate(endDate.getDate() + duration);
+      break;
+    case "weeks":
+      endDate.setDate(endDate.getDate() + duration * 7);
+      break;
+    case "months":
+      endDate.setMonth(endDate.getMonth() + duration);
+      break;
+  }
+
+  const apiUnit = baseUnit.slice(0, -1);
+
+  const data = {
+    durationValue: duration,
+    durationUnit: apiUnit,
+    pricePerDay: pricePerDay,
+    totalPrice: showPrice(),
+    endDate: endDate.toISOString(),
   };
+
+  const response = await createRequest(postId, data);
+  console.log(response);
+
+  onRequestSubmit();
+  onClose();
+};
 
   return (
     <CardModal isVisibile={isVisibile} onClose={onClose}>

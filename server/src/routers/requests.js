@@ -60,7 +60,7 @@ router.post(
         item: id,
         requester: req.user._id,
         owner: post.user,
-        startDate,
+        startDate: new Date(),
         endDate,
         pricePerDay,
         durationUnit,
