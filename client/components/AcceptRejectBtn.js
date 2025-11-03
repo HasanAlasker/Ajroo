@@ -9,19 +9,14 @@ import { useAlert } from "../config/AlertContext";
 function AcceptRejectBtn({ postId, requestId }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
-  const { updatePost, getPostById } = usePosts();
   const { showAlert, showInfo } = useAlert();
 
-  const currentPost = getPostById(postId);
-
   const handleAccept = async () => {
-    const response = await confirmRequest()
-    // When accepting, move the requester to borrower and change status to taken
-    // updatePost(postId, {
-    //   status: "taken",
-    //   borrowerId: currentPost?.requesterId, // Move requester to borrower
-    //   requesterId: null, // Clear the request
-    // });
+    const data = {
+      startDate: new Date().toISOString(),
+    };
+    const response = await confirmRequest(requestId, data);
+    console.log(response);
   };
 
   const handleReject = async () => {

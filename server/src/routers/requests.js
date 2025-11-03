@@ -136,28 +136,42 @@ router.post(
 
       // Calculate the end date based on start date and duration
       const borrowStartDate = startDate ? new Date(startDate) : new Date();
-      const borrowEndDate = new Date(borrowStartDate);
-      
-      if (request.durationUnit === "days") {
+      const borrowEndDate = new Date(borrowStartDate); // Simplified - creates a copy
+
+      if (request.durationUnit === "hour") {
+        borrowEndDate.setHours(
+          borrowEndDate.getHours() + request.durationValue
+        );
+      } else if (request.durationUnit === "day") {
         borrowEndDate.setDate(borrowEndDate.getDate() + request.durationValue);
-      } else if (request.durationUnit === "weeks") {
-        borrowEndDate.setDate(borrowEndDate.getDate() + (request.durationValue * 7));
-      } else if (request.durationUnit === "months") {
-        borrowEndDate.setMonth(borrowEndDate.getMonth() + request.durationValue);
+      } else if (request.durationUnit === "week") {
+        borrowEndDate.setDate(
+          borrowEndDate.getDate() + request.durationValue * 7
+        );
+      } else if (request.durationUnit === "month") {
+        borrowEndDate.setMonth(
+          borrowEndDate.getMonth() + request.durationValue
+        );
       }
+
+      // debug logging to verify:
+      // console.log("Duration Unit:", request.durationUnit);
+      // console.log("Duration Value:", request.durationValue);
+      // console.log("Start Date:", borrowStartDate);
+      // console.log("End Date:", borrowEndDate);
 
       // Check for overlapping borrows
       const existingBorrow = await BorrowModel.findOne({
         item: request.item,
         status: "active",
         $or: [
-          { 
-            startDate: { $lte: borrowEndDate }, 
-            endDate: { $gte: borrowStartDate } 
-          }
+          {
+            startDate: { $lte: borrowEndDate },
+            endDate: { $gte: borrowStartDate },
+          },
         ],
       });
-      
+
       if (existingBorrow) {
         return res.status(400).send("Item is already booked for these dates");
       }
@@ -180,7 +194,7 @@ router.post(
 
       // Delete all requests for this item when one is confirmed
       await RequestModel.deleteMany({ item: request.item });
-      
+
       return res.status(201).send(savedBorrow);
     } catch (err) {
       return res.status(500).send(err.message);
