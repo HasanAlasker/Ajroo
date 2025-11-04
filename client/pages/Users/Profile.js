@@ -12,14 +12,26 @@ import useApi from "../../hooks/useApi";
 import { getUserPosts } from "../../api/post";
 import { useEffect } from "react";
 import { useRoute } from "@react-navigation/native";
+import { getMyProfile, getOthersProfile } from "../../api/user";
 
 function Profile({ isNotification }) {
   const [isMenu, setIsMenu] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useUser();
-  const route = useRoute()
-  const userId = route?.params?.userId || user.id
+  const route = useRoute();
+  const userId = route?.params?.userId || user.id;
   const myProfile = user.id === userId;
+  const myProfileApi = useApi(getMyProfile);
+  const othersProfileApi = useApi(getOthersProfile);
+
+  const activeApi = myProfile ? myProfileApi : othersProfileApi;
+
+  useEffect(() => {
+    if (myProfile) {
+      activeApi.request();
+    } else activeApi.request(userId);
+  }, [user.id, userId]);
+
   const {
     data: posts,
     loading,
@@ -56,8 +68,9 @@ function Profile({ isNotification }) {
         <TopChunkProfile
           isNotification={true} // change dynamicly
           myProfile={myProfile}
-          userName={user.name}
-          userRate={null}
+          userImage={activeApi.data?.image || null}
+          userName={activeApi.data.name}
+          userRate={activeApi.data?.rating || "Unrated"}
           sep={"Items"}
           settingsPress={() => {
             setIsMenu(true);

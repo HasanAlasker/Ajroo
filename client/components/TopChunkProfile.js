@@ -9,13 +9,14 @@ import SeparatorComp from './SeparatorComp';
 import BackBtn from './BackBtn';
 import BlankBtn from './BlankBtn';
 
-function TopChunkProfile({myProfile, isNotification, userName, userRate, sep, isPicDisabled, settingsPress, onImageChange}) {
+function TopChunkProfile({myProfile, isNotification, userName, userRate, sep, isPicDisabled, settingsPress, onImageChange, userImage}) {
   return (
     <View style={styles.container}>
         <MyProfileContainer>
           {myProfile ? <NotificationBtn isActive={isNotification}></NotificationBtn>: <BackBtn></BackBtn>}
           <UserPicAndRateContainer>
             <BigPicAndUsername
+              initialImage={userImage}
               userName={userName}
               isEdit={myProfile}
               isPicDisabled={isPicDisabled}
