@@ -26,10 +26,8 @@ function BigPicAndUsername({
   const { user, updateProfile } = useUser();
 
   useEffect(() => {
-    if (user?.avatar && !selectedImage) {
-      setSelectedImage(user.avatar);
-    }
-  }, [user?.avatar]);
+    setSelectedImage(initialImage)
+  }, [initialImage]);
 
   const handleImageSelection = () => {
     if (allowCamera) {
@@ -158,7 +156,7 @@ function BigPicAndUsername({
             ></MaterialCommunityIcons>
           </View>
         )}
-        {!selectedImage && !user.avatar && (
+        {initialImage === null && (
           <View style={styles.default}>
             <MaterialCommunityIcons
               name="account"
