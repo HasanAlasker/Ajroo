@@ -47,7 +47,7 @@ function Post({
   reportId,
   requestId,
   borrowId,
-  // userId,
+  userId,
   iRequested,
   iBorrowed,
   iGave,
@@ -102,6 +102,7 @@ function Post({
           postId={id}
           status={status}
           isMine={isMine}
+          userId={userId}
         />
         {reportReason && (
           <ErrorBox

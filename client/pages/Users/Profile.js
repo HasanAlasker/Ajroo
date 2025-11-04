@@ -11,11 +11,15 @@ import PostRenderer from "../../components/PostRenderer";
 import useApi from "../../hooks/useApi";
 import { getUserPosts } from "../../api/post";
 import { useEffect } from "react";
+import { useRoute } from "@react-navigation/native";
 
-function Profile({ isNotification, myProfile = true }) {
+function Profile({ isNotification }) {
   const [isMenu, setIsMenu] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useUser();
+  const route = useRoute()
+  const userId = route?.params?.userId || user.id
+  const myProfile = user.id === userId;
   const {
     data: posts,
     loading,
@@ -24,12 +28,12 @@ function Profile({ isNotification, myProfile = true }) {
   } = useApi(getUserPosts);
 
   useEffect(() => {
-    fetchPosts(user.id);
-  }, []);
+    fetchPosts(userId);
+  }, [userId]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await fetchPosts(user.id);
+    await fetchPosts(userId);
     setRefreshing(false);
   };
 

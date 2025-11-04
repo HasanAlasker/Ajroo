@@ -4,41 +4,55 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
 import { usePosts } from "../../config/PostContext";
+import { useNavigation } from "@react-navigation/native";
 
-function TopOfPost({ name, date, image, onPressThree, onPressProfile, postId, status, isMine }) {
+function TopOfPost({
+  name,
+  date,
+  image,
+  onPressThree,
+  onPressProfile,
+  postId,
+  status,
+  isMine,
+  userId,
+}) {
   const styles = useThemedStyles(getStyles);
-  const {theme} = useTheme();
-  
+  const { theme } = useTheme();
+  const navigate = useNavigation()
+
+  const handelOpenProfile = () => {
+    navigate.navigate('Profile', {userId: userId})
+  }
+
   const renderProfileImage = () => {
     // Check if image is a valid URI string
-    if (image && typeof image === 'string' && image.trim() !== '') {
+    if (image && typeof image === "string" && image.trim() !== "") {
       return (
-        <Image 
+        <Image
           source={{ uri: image }}
           style={styles.pic}
           onError={(error) => {
-            console.log("Error loading profile image:", error.nativeEvent.error);
+            console.log(
+              "Error loading profile image:",
+              error.nativeEvent.error
+            );
           }}
         />
       );
-    } 
+    }
     // Check if image is a require() statement (local image)
-    else if (image && typeof image === 'number') {
-      return (
-        <Image 
-          source={image}
-          style={styles.pic}
-        />
-      );
+    else if (image && typeof image === "number") {
+      return <Image source={image} style={styles.pic} />;
     }
     // Default placeholder when no valid image
     else {
       return (
         <View style={styles.placeholderContainer}>
-          <MaterialCommunityIcons 
-            name="account" 
-            size={25} 
-            color={theme.light_gray} 
+          <MaterialCommunityIcons
+            name="account"
+            size={25}
+            color={theme.light_gray}
           />
         </View>
       );
@@ -47,18 +61,19 @@ function TopOfPost({ name, date, image, onPressThree, onPressProfile, postId, st
 
   return (
     <View style={styles.topPart}>
-      <View style={styles.picAndNameAndDate}>
-        <View style={styles.imageHolder}>
-          {renderProfileImage()}
-        </View>
+      <TouchableOpacity onPress={handelOpenProfile} style={styles.picAndNameAndDate}>
+        <View style={styles.imageHolder}>{renderProfileImage()}</View>
         <View style={styles.nameAndDate}>
           <AppText style={styles.name}>{name}</AppText>
           <AppText style={styles.date}>{date}</AppText>
         </View>
-      </View>
-      {(((status === 'available' || status === 'disabled') && isMine) || (!isMine)) &&<TouchableOpacity onPress={onPressThree}>
-        <Feather name="more-vertical" size={30} style={styles.more}></Feather>
-      </TouchableOpacity>}
+      </TouchableOpacity>
+      {(((status === "available" || status === "disabled") && isMine) ||
+        !isMine) && (
+        <TouchableOpacity onPress={onPressThree}>
+          <Feather name="more-vertical" size={30} style={styles.more}></Feather>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -107,8 +122,8 @@ const getStyles = (theme) =>
     placeholderContainer: {
       width: "100%",
       height: 40,
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: "center",
+      alignItems: "center",
       backgroundColor: theme.sec_text,
     },
   });
