@@ -10,14 +10,19 @@ import SettingsMenu from "../SettingsMenu";
 function Navbar(props) {
   const navigation = useNavigation();
   const route = useRoute();
-  const { logout, isAdmin } = useUser();
+  const { logout, isAdmin, user } = useUser();
   const [isMenu, setIsMenu] = useState(false);
 
   const styles = useThemedStyles(getStyles);
 
+  // Check if we're on the Profile screen AND it's the current user's profile
+  const isMyProfile =
+    route.name === "Profile" &&
+    (route.params?.userId === user.id || !route.params?.userId);
+
   return (
     <>
-    <SettingsMenu isVisible={isMenu} onClose={()=>setIsMenu(false)}/>
+      <SettingsMenu isVisible={isMenu} onClose={() => setIsMenu(false)} />
       {!isAdmin ? ( // Normal user Navbar
         <View style={styles.navbar}>
           <TouchableOpacity
@@ -83,16 +88,17 @@ function Navbar(props) {
             <Feather
               name="user"
               size={30}
-              style={[styles.icon, route.name === "Profile" && styles.active]}
+              style={[styles.icon, isMyProfile && styles.active]}
             />
             <Text
-              style={[styles.text, route.name === "Profile" && styles.active]}
+              style={[styles.text, isMyProfile && styles.active]}
             >
               Profile
             </Text>
           </TouchableOpacity>
         </View>
-      ) : ( // Admin user Navbar
+      ) : (
+        // Admin user Navbar
         <View style={styles.navbar}>
           <TouchableOpacity
             style={styles.navbarBtn}
@@ -117,7 +123,9 @@ function Navbar(props) {
               size={30}
               style={[styles.icon, route.name === "Search" && styles.active]}
             />
-            <Text style={[styles.text, route.name === "Search" && styles.active]}>
+            <Text
+              style={[styles.text, route.name === "Search" && styles.active]}
+            >
               Search
             </Text>
           </TouchableOpacity>
@@ -131,7 +139,9 @@ function Navbar(props) {
               size={30}
               style={[styles.icon, route.name === "Reports" && styles.active]}
             />
-            <Text style={[styles.text, route.name === "Reports" && styles.active]}>
+            <Text
+              style={[styles.text, route.name === "Reports" && styles.active]}
+            >
               Reports
             </Text>
           </TouchableOpacity>
@@ -140,14 +150,8 @@ function Navbar(props) {
             style={styles.navbarBtn}
             onPress={() => setIsMenu(true)} // Open menu here
           >
-            <Feather
-              name="settings"
-              size={30}
-              style={[styles.icon, ]}
-            />
-            <Text style={[styles.text, ]}>
-              Settings
-            </Text>
+            <Feather name="settings" size={30} style={[styles.icon]} />
+            <Text style={[styles.text]}>Settings</Text>
           </TouchableOpacity>
         </View>
       )}
