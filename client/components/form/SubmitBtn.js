@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import FormBtn from "../FormBtn";
 import { useFormikContext } from "formik";
 
-function SubmitBtn({ submittingText='Submitting...', defaultText='Submit', setHasBeenSubmitted, style, ...otherProps }) {
+function SubmitBtn({ submittingText='Submitting...', defaultText='Submit', setHasBeenSubmitted, disabled, style, ...otherProps }) {
 
   const { handleSubmit, isSubmitting, isValid } = useFormikContext();
 
@@ -15,7 +15,7 @@ function SubmitBtn({ submittingText='Submitting...', defaultText='Submit', setHa
         }
         handleSubmit();
       }}
-      disabled={!isValid || isSubmitting}
+      disabled={disabled || isSubmitting}
       loading={isSubmitting}
       style={style}
       {...otherProps}

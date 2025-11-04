@@ -45,6 +45,7 @@ const validationSchema = Yup.object().shape({
 
 function EditProfile({ rating, sep }) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { updateProfile, user, error } = useUser();
   const { showInfo } = useAlert();
 
@@ -59,7 +60,7 @@ function EditProfile({ rating, sep }) {
     setHasBeenSubmitted(true);
 
     try {
-      // ✅ Pass user ID and await the result
+      setLoading(true)
       const result = await updateProfile(user.id, values);
 
       if (result.success) {
@@ -91,6 +92,7 @@ function EditProfile({ rating, sep }) {
     } finally {
       setSubmitting(false);
     }
+    setLoading(false)
   };
 
   return (
@@ -142,6 +144,7 @@ function EditProfile({ rating, sep }) {
               <SubmitBtn
                 defaultText="Save"
                 submittingText="Saving..."
+                disabled={loading}
                 setHasBeenSubmitted={setHasBeenSubmitted}
               />
 

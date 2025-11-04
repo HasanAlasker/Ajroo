@@ -76,7 +76,7 @@ function Login(props) {
             <FormikInput
               name={"email"}
               placeholder={"Email"}
-              autoCapitalize={'none'}
+              autoCapitalize={"none"}
               icon={"mail"}
               hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
@@ -84,16 +84,17 @@ function Login(props) {
             <FormikInput
               name={"password"}
               placeholder={"Password"}
-              autoCapitalize={'none'}
+              autoCapitalize={"none"}
               icon={"lock"}
               isPassword
               hasBeenSubmitted={hasBeenSubmitted}
             ></FormikInput>
 
             {/* Display context error if exists */}
-            {error && <ErrorMessage error={error}/>}
+            {error && <ErrorMessage error={error} />}
 
             <SubmitBtn
+              disabled={isLoading}
               defaultText="Login"
               submittingText="Logging in..."
               setHasBeenSubmitted={setHasBeenSubmitted}
@@ -114,7 +115,13 @@ function Login(props) {
               onPress={() => navigation.navigate("Signin")}
             ></RequestBtn>
 
-            {error && <ErrorBox style={styles.errorBox} firstTitle={"Login Failed"} fistDetail={error.message}/>}
+            {error && (
+              <ErrorBox
+                style={styles.errorBox}
+                firstTitle={"Login Failed"}
+                fistDetail={error.message}
+              />
+            )}
           </AppForm>
         </View>
       </KeyboardScrollScreen>
@@ -144,14 +151,14 @@ const getStyles = (theme) =>
     sep: {
       marginTop: 0,
     },
-    errorText:{
-      color: theme.red
+    errorText: {
+      color: theme.red,
     },
-    errorBox:{
-      width:'90%',
-      margin: 'auto',
-      marginTop: 50
-    }
+    errorBox: {
+      width: "90%",
+      margin: "auto",
+      marginTop: 50,
+    },
   });
 
 export default Login;

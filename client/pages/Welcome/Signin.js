@@ -228,6 +228,7 @@ function Signin(props) {
             <SubmitBtn
               defaultText="Register"
               submittingText="Registering..."
+              disabled={isLoading}
               setHasBeenSubmitted={setHasBeenSubmitted}
             ></SubmitBtn>
 

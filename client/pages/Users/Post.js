@@ -90,6 +90,7 @@ const validationSchema = Yup.object().shape({
 
 function Post(props) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { showInfo } = useAlert();
 
   const initialValues = {
@@ -106,6 +107,7 @@ function Post(props) {
     values,
     { setSubmitting, setStatus, resetForm }
   ) => {
+    setLoading(true);
     try {
       const imageUrl = await uploadImage(values.image);
 
@@ -149,6 +151,7 @@ function Post(props) {
     } finally {
       setSubmitting(false);
     }
+    setLoading(false);
   };
 
   return (
@@ -260,6 +263,7 @@ function Post(props) {
                 />
 
                 <SubmitBtn
+                  disabled={loading}
                   setHasBeenSubmitted={setHasBeenSubmitted}
                 ></SubmitBtn>
               </>
