@@ -107,6 +107,7 @@ function EditProfile({ rating, sep }) {
             <>
               <TopChunkProfile
                 userName={user?.name}
+                userImage={user?.avatar}
                 userRate={rating || user?.rating || "Unrated"}
                 isPicDisabled={false}
                 sep={sep || "Edit Info"}

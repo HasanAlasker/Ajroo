@@ -40,7 +40,7 @@ function AcceptRejectBtn({ postId, requestId }) {
     } else if (route.name === "Book") {
       showAlert({
         title: "Got item back?",
-        message: "Are you sure you got the item back?",
+        message: "Are you sure you got this item back?",
         confirmText: "Yes",
         cancelText: "No",
         onConfirm: async () => {
@@ -81,7 +81,7 @@ function AcceptRejectBtn({ postId, requestId }) {
      if (route.name === "Book") {
       showAlert({
         title: "Didn't get item back?",
-        message: "Are you sure you did not get item back?",
+        message: "Are you sure you did not get this item back?",
         confirmText: "Yes",
         cancelText: "No",
         onConfirm: async () => {
