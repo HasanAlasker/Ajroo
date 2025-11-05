@@ -137,24 +137,25 @@ router.post(
       // Calculate the end date based on start date and duration
       const borrowStartDate = startDate ? new Date(startDate) : new Date();
       const borrowEndDate = new Date(borrowStartDate); // Simplified - creates a copy
+      const pickUpCoolDown = 2; // if you want to change how much extra time for pick up
 
       if (request.durationUnit === "hour") {
         borrowEndDate.setHours(
-          borrowEndDate.getHours() + request.durationValue + 2
+          borrowEndDate.getHours() + request.durationValue + pickUpCoolDown
         );
       } else if (request.durationUnit === "day") {
         borrowEndDate.setDate(borrowEndDate.getDate() + request.durationValue);
-        borrowEndDate.setHours(borrowEndDate.getHours() + 2);
+        borrowEndDate.setHours(borrowEndDate.getHours() + pickUpCoolDown);
       } else if (request.durationUnit === "week") {
         borrowEndDate.setDate(
           borrowEndDate.getDate() + request.durationValue * 7
         );
-        borrowEndDate.setHours(borrowEndDate.getHours() + 2);
+        borrowEndDate.setHours(borrowEndDate.getHours() + pickUpCoolDown);
       } else if (request.durationUnit === "month") {
         borrowEndDate.setMonth(
           borrowEndDate.getMonth() + request.durationValue
         );
-        borrowEndDate.setHours(borrowEndDate.getHours() + 2);
+        borrowEndDate.setHours(borrowEndDate.getHours() + pickUpCoolDown);
       }
 
       // debug logging to verify:
