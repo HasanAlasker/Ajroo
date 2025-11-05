@@ -140,18 +140,21 @@ router.post(
 
       if (request.durationUnit === "hour") {
         borrowEndDate.setHours(
-          borrowEndDate.getHours() + request.durationValue
+          borrowEndDate.getHours() + request.durationValue + 2
         );
       } else if (request.durationUnit === "day") {
         borrowEndDate.setDate(borrowEndDate.getDate() + request.durationValue);
+        borrowEndDate.setHours(borrowEndDate.getHours() + 2);
       } else if (request.durationUnit === "week") {
         borrowEndDate.setDate(
           borrowEndDate.getDate() + request.durationValue * 7
         );
+        borrowEndDate.setHours(borrowEndDate.getHours() + 2);
       } else if (request.durationUnit === "month") {
         borrowEndDate.setMonth(
           borrowEndDate.getMonth() + request.durationValue
         );
+        borrowEndDate.setHours(borrowEndDate.getHours() + 2);
       }
 
       // debug logging to verify:
