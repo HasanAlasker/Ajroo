@@ -12,7 +12,7 @@ import { useAlert } from "../../config/AlertContext";
 import { updateStatus } from "../../api/post";
 import { deleteReport } from "../../api/report";
 import { deleteRequest } from "../../api/request";
-import { confirmReturn } from "../../api/borrow";
+import { confirmReturn, markReturned } from "../../api/borrow";
 
 function PrimaryBtn({
   title,
@@ -47,6 +47,7 @@ function PrimaryBtn({
   const shouldBeDisabled = () => {
     if (isAdmin) return false;
     if (isDisabled) return true;
+    if (iBorrowed && status === "pending_return") return true
     if (!isMine && status === "disabled") return true;
     if (isMine && status === "pending" && (route.name === "Profile" || "Have"))
       return true;
@@ -86,7 +87,8 @@ function PrimaryBtn({
     if (!isMine) {
       if (status === "disabled") return "Disabled";
       if (iRequested) return "Cancel Request";
-      if (iBorrowed) return "Mark Returned";
+      if (iBorrowed && status === "active") return "Mark Returned";
+      if (iBorrowed && status === "pending_return") return "Pending Confirm...";
       if (iGave) return "Got It Back";
       return "Request";
     }
@@ -128,9 +130,8 @@ function PrimaryBtn({
         cancelText: "No",
         onConfirm: async () => {
           try {
+            await markReturned(requestId);
             setVisibileRating(true);
-            // Store the status update for later (after modal closes)
-            setPendingStatusUpdate("available");
           } catch (error) {
             showAlert({
               title: "Error",

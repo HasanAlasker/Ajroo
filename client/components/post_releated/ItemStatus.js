@@ -85,7 +85,7 @@ function ItemStatus({ status, type, endDate }) {
       case "early":
         return "Early";
       case "pending_return":
-        return "Borrower Marked As Returned"
+        return "Marked As Returned"
       default:
         return "Taken";
     }

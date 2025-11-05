@@ -137,7 +137,9 @@ function Post({
             (route.name === "Requests" &&
               status === "pending" &&
               isMine === true) ||
-            (route.name === "Book" && status === "pending_return")
+            (route.name === "Book" &&
+              status === "pending_return" &&
+              iGave === true)
           ) && (
             <PrimaryBtn
               title={title}
