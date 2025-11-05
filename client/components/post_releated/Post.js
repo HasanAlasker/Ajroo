@@ -61,6 +61,7 @@ function Post({
   area,
   isMine,
   status,
+  borrowStatus,
   rating,
   time,
   condition,
@@ -133,9 +134,10 @@ function Post({
             <ItemRating rating={rating ? rating : "Unrated Yet"} />
           </RowLableCont>
           {!(
-            route.name === "Requests" &&
-            status === "pending" &&
-            isMine === true
+            (route.name === "Requests" &&
+              status === "pending" &&
+              isMine === true) ||
+            (route.name === "Book" && status === "pending_return")
           ) && (
             <PrimaryBtn
               title={title}
@@ -153,7 +155,14 @@ function Post({
           )}
           {route.name === "Requests" &&
             status === "pending" &&
-            isMine === true && <AcceptRejectBtn requestId={requestId} postId={id} />}
+            isMine === true && (
+              <AcceptRejectBtn requestId={requestId} postId={id} />
+            )}
+          {route.name === "Book" &&
+            status === "pending_return" &&
+            iGave === true && (
+              <AcceptRejectBtn requestId={requestId} postId={id} />
+            )}
         </LableContainer>
       </PostComponent>
 

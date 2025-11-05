@@ -71,6 +71,7 @@ function PostRenderer({
         reportReason={post?.reason}
         reporter={post?.reporter}
         status={post.status || post.reportedPost?.status}
+        borrowStatus={post?.status}
         endDate={post?.endDate}
         isMine={isMine}
         iRequested={post?.requester === currentUserId}

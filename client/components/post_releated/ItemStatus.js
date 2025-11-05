@@ -41,6 +41,8 @@ function ItemStatus({ status, type, endDate }) {
         return theme.red;
       case "early":
         return theme.green;
+      case "pending_return":
+        return theme.orange;
       case "active":
         // For active status, determine color based on end date
         const daysRemaining = getDaysRemaining();
@@ -82,6 +84,8 @@ function ItemStatus({ status, type, endDate }) {
         return "Late";
       case "early":
         return "Early";
+      case "pending_return":
+        return "Borrower Marked As Returned"
       default:
         return "Taken";
     }
