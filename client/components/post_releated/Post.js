@@ -21,6 +21,7 @@ import { useUser } from "../../config/UserContext";
 import ItemBill from "./ItemBill";
 import AppText from "../../config/AppText";
 import ErrorBox from "../general/ErrorBox";
+import PhoneNumber from "./PhoneNumber";
 
 // Format ISO date to DD/MM/YYYY
 const formatDate = (isoDate) => {
@@ -63,7 +64,7 @@ function Post({
   status,
   borrowStatus,
   rating,
-  time,
+  phoneNumber,
   condition,
   title,
   isDisabled,
@@ -126,6 +127,9 @@ function Post({
 
         <LableContainer>
           {area && <Location city={formatText(city)} area={formatText(area)} />}
+          {route.name === "Book" && phoneNumber && (
+            <PhoneNumber phoneNumber={phoneNumber}/>
+          )}
           <RowLableCont>
             <ItemStatus status={status} endDate={endDate} />
           </RowLableCont>

@@ -36,6 +36,7 @@ function PostRenderer({
         reportId={post._id} // this one the the 3 under are the difenition of: if it works dont touch it, here is and explination: the response from DB for rendering posts has 4 posibilities: normal post in have.js/ a request in requests.js / a borrow in borrow.js / and a report. so the order of them is not stupidity but studied carefully also i have three with the same value but different names to not confuse my self in other places (the main purpose is to not have the post id = to the report/ request/ borrow id and not be able to fetch data i need)
         requestId={post._id}
         borrowId={post._id}
+        phoneNumber={post?.owner?.phone || post?.borrower?.phone}
         profilePic={
           post.user?.image ||
           post.reportedPost?.user?.image ||

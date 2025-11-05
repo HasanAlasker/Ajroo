@@ -29,7 +29,7 @@ router.get("/given", auth, async (req, res) => {
   try {
     const givenItems = await BorrowModel.find({ owner: req.user._id })
       .populate("item", "image")
-      .populate("borrower", "name image");
+      .populate("borrower", "name image phone");
     if (givenItems.length === 0)
       return res.status(404).send("You haven't given any items");
 
@@ -45,7 +45,7 @@ router.get("/taken", auth, async (req, res) => {
   try {
     const takenItems = await BorrowModel.find({ borrower: req.user._id })
       .populate("item", "image")
-      .populate("owner", "name image");
+      .populate("owner", "name image phone");
     if (takenItems.length === 0)
       return res.status(404).send("You haven't taken any items");
 
