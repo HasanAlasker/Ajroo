@@ -5,38 +5,98 @@ import { useTheme } from "../config/ThemeContext";
 import { usePosts } from "../config/PostContext";
 import { confirmRequest, deleteRequest } from "../api/request";
 import { useAlert } from "../config/AlertContext";
+import { useRoute } from "@react-navigation/native";
+import { confirmReturn, rejectConfirmation } from "../api/borrow";
 
 function AcceptRejectBtn({ postId, requestId }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
   const { showAlert, showInfo } = useAlert();
+  const route = useRoute();
 
   const handleAccept = async () => {
-    const data = {
-      startDate: new Date().toISOString(),
-    };
-    const response = await confirmRequest(requestId, data);
-    console.log(response);
+    if (route.name === "Requests") {
+      const data = {
+        startDate: new Date().toISOString(),
+      };
+
+      showAlert({
+        title: "Accept request?",
+        message: "Are you sure you want to accept request?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            await confirmRequest(requestId, data);
+          } catch (error) {
+            showAlert({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
+    } else if (route.name === "Book") {
+      showAlert({
+        title: "Got item back?",
+        message: "Are you sure you got the item back?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            await confirmReturn(requestId);
+          } catch (error) {
+            showAlert({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
+    }
   };
 
   const handleReject = async () => {
-    showAlert({
-      title: "Delete request?",
-      message: "Are you sure you want to delete request?",
-      confirmText: "Yes",
-      cancelText: "No",
-      onConfirm: async () => {
-        try {
-          await deleteRequest(requestId);
-        } catch (error) {
-          showAlert({
-            title: "Error",
-            message: "Something went wrong.",
-            confirmText: "Close",
-          });
-        }
-      },
-    });
+    if (route.name === "Requests") {
+      showAlert({
+        title: "Delete request?",
+        message: "Are you sure you want to delete request?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            await deleteRequest(requestId);
+          } catch (error) {
+            showAlert({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
+    }
+     if (route.name === "Book") {
+      showAlert({
+        title: "Didn't get item back?",
+        message: "Are you sure you did not get item back?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            await rejectConfirmation(requestId);
+          } catch (error) {
+            showAlert({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
+     }
   };
 
   return (
