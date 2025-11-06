@@ -297,6 +297,54 @@ router.put(
 
 // compute rating
 
+
+router.put("/rate/:id", async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const { rating } = req.body; // Get the rating from request body (1-5)
+
+    // Validate user ID
+    if (!postId || !mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(400).send("Invalid post ID");
+    }
+
+    // Validate rating value
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).send("Rating must be between 1 and 5");
+    }
+
+    // Get current user data
+    const post = await PostModel.findById(postId);
+    if (!post) {
+      return res.status(404).send("User not found");
+    }
+
+    // Calculate new average rating
+    const currentTotal = post.rating * post.ratingCount;
+    const newRatingCount = post.ratingCount + 1;
+    const newAverageRating = (currentTotal + rating) / newRatingCount;
+
+    // Update post with new rating
+    const ratedPost = await PostModel.findByIdAndUpdate(
+      postId,
+      {
+        rating: newAverageRating,
+        ratingCount: newRatingCount,
+        isRated: true,
+      },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      message: "Rating submitted successfully",
+      rating: ratedPost.rating,
+      ratingCount: ratedPost.ratingCount,
+    });
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
 // get posts with search and filter, how to do that?
 
 // enforce subscription limits
