@@ -24,3 +24,6 @@ export const deletePost = (id) => apiClient.delete(`${endPoint}/delete/${id}`); 
 
 export const updateStatus = (id, data) => 
   apiClient.put(`${endPoint}/status/${id}`, data);  // ✅
+
+export const rateItem = (id, rating) => apiClient.put(`${endPoint}/rate/${id}`)
+
