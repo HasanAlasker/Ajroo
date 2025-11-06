@@ -12,8 +12,9 @@ import ErrorMessage from "../../components/form/ErrorMessage";
 import { Formik } from "formik";
 import { useAlert } from "../../config/AlertContext";
 import useApi from "../../hooks/useApi";
-import { getUserById } from "../../api/user";
+import { getUserById, updateUser } from "../../api/user";
 import LoadingCircle from "../../components/general/LoadingCircle";
+import { uploadImage } from "../../api/upload";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -48,23 +49,23 @@ const validationSchema = Yup.object().shape({
 
 function EditProfile({ rating, sep }) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const { updateProfile, user, error } = useUser();
+  const [submitting, setSubmitting] = useState(false);
+  const { user, error } = useUser();
   const { showInfo } = useAlert();
-  const {data: profile, request: fetchProfile } = useApi(getUserById)
+  const { data: profile, request: fetchProfile, loading: fetchingProfile } = useApi(getUserById);
 
-  useEffect(()=>{
-    fetchProfile(user.id)
-  },[])
+  useEffect(() => {
+    fetchProfile(user.id);
+  }, [user]);
 
-  if(!profile || loading){
-    return <LoadingCircle />
+  if (!profile || fetchingProfile) {
+    return <LoadingCircle />;
   }
 
   const initialValues = {
     name: profile?.name,
     phone: profile?.phone,
-    email: profile?.email ,
+    email: profile?.email,
     image: profile?.image,
   };
 
@@ -72,10 +73,16 @@ function EditProfile({ rating, sep }) {
     setHasBeenSubmitted(true);
 
     try {
-      setLoading(true)
-      const result = await updateProfile(user.id, values);
+      setSubmitting(true);
 
-      if (result.success) {
+      let imageUrl = values.image;
+      if (values.image && !values.image.startsWith("http")) {
+        imageUrl = await uploadImage(values.image);
+      }
+
+      const result = await updateUser(user.id, values);
+
+      if (result.ok) {
         setStatus({
           type: "success",
           message: "Profile updated successfully!",
@@ -104,7 +111,6 @@ function EditProfile({ rating, sep }) {
     } finally {
       setSubmitting(false);
     }
-    setLoading(false)
   };
 
   return (
@@ -122,7 +128,7 @@ function EditProfile({ rating, sep }) {
                 userName={profile?.name}
                 userImage={profile?.image}
                 userRate={user?.rating || "Unrated"}
-                isPicDisabled={profile.gender === 'female' ? true : false}
+                isPicDisabled={profile.gender === "female" ? true : false}
                 sep={sep || "Edit Info"}
                 onImageChange={(imageUri) => {
                   setFieldValue("image", imageUri);
@@ -158,7 +164,7 @@ function EditProfile({ rating, sep }) {
               <SubmitBtn
                 defaultText="Save"
                 submittingText="Saving..."
-                disabled={loading}
+                disabled={submitting}
                 setHasBeenSubmitted={setHasBeenSubmitted}
               />
 

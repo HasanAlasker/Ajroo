@@ -250,7 +250,6 @@ export const UserProvider = ({ children }) => {
       // TODO: Replace with actual API call
       const response = await registerUser(userData);
 
-      // Mock API response for now - new users are regular users by default
       const user = {
         id: response._id,
         name: response.name,
@@ -310,11 +309,11 @@ export const UserProvider = ({ children }) => {
     dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: true });
 
     try {
-      const response = await updateUser(id, updatedData, state.token);
+      // const response = await updateUser(id, updatedData, state.token);
 
       dispatch({
         type: USER_ACTION_TYPES.UPDATE_PROFILE,
-        payload: response,
+        
       });
 
       dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: false });

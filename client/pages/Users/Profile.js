@@ -25,7 +25,7 @@ function Profile({ isNotification }) {
 
   useEffect(() => {
     fetchProfile(userId)
-  }, [user.id, userId]);
+  }, [userId]);
 
   const {
     data: posts,
@@ -41,6 +41,7 @@ function Profile({ isNotification }) {
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchPosts(userId);
+    await fetchProfile(userId)
     setRefreshing(false);
   };
 
