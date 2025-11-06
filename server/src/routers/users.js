@@ -191,6 +191,53 @@ router.delete("/delete/:id", [auth, admin], async (req, res) => {
 
 // add subscription
 
-// compute rating
+// Rate a user
+
+router.put("/rate/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { rating } = req.body; // Get the rating from request body (1-5)
+
+    // Validate user ID
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).send("Invalid user ID");
+    }
+
+    // Validate rating value
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).send("Rating must be between 1 and 5");
+    }
+
+    // Get current user data
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Calculate new average rating
+    const currentTotal = user.rating * user.ratingCount;
+    const newRatingCount = user.ratingCount + 1;
+    const newAverageRating = (currentTotal + rating) / newRatingCount;
+
+    // Update user with new rating
+    const ratedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      {
+        rating: newAverageRating,
+        ratingCount: newRatingCount,
+        isRated: true,
+      },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      message: "Rating submitted successfully",
+      rating: ratedUser.rating,
+      ratingCount: ratedUser.ratingCount,
+    });
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
 
 export default router;
