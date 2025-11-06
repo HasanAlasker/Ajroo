@@ -52,11 +52,15 @@ function EditProfile({ rating, sep }) {
   const [submitting, setSubmitting] = useState(false);
   const { user, error } = useUser();
   const { showInfo } = useAlert();
-  const { data: profile, request: fetchProfile, loading: fetchingProfile } = useApi(getUserById);
+  const {
+    data: profile,
+    request: fetchProfile,
+    loading: fetchingProfile,
+  } = useApi(getUserById);
 
   useEffect(() => {
     fetchProfile(user.id);
-  }, [user]);
+  }, []);
 
   if (!profile || fetchingProfile) {
     return <LoadingCircle />;
@@ -75,12 +79,17 @@ function EditProfile({ rating, sep }) {
     try {
       setSubmitting(true);
 
+      // Only upload if it's a new local image (not an HTTP URL)
       let imageUrl = values.image;
       if (values.image && !values.image.startsWith("http")) {
         imageUrl = await uploadImage(values.image);
       }
 
-      const result = await updateUser(user.id, values);
+      // Pass the imageUrl (not values.image) to updateUser
+      const result = await updateUser(user.id, {
+        ...values,
+        image: imageUrl, // Use the uploaded URL here!
+      });
 
       if (result.ok) {
         setStatus({
@@ -94,6 +103,9 @@ function EditProfile({ rating, sep }) {
           message: "Profile updated successfully",
           confirmText: "Close",
         });
+
+        // Update the profile data so it has the new image URL
+        await fetchProfile(user.id);
       }
     } catch (error) {
       console.error("Update error:", error);
