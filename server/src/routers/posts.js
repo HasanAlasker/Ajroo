@@ -297,7 +297,6 @@ router.put(
 
 // compute rating
 
-
 router.put("/rate/:id", async (req, res) => {
   try {
     const postId = req.params.id;
@@ -316,7 +315,7 @@ router.put("/rate/:id", async (req, res) => {
     // Get current user data
     const post = await PostModel.findById(postId);
     if (!post) {
-      return res.status(404).send("User not found");
+      return res.status(404).send("Post not found");
     }
 
     // Calculate new average rating
