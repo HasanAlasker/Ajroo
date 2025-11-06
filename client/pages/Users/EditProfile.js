@@ -81,8 +81,17 @@ function EditProfile({ rating, sep }) {
 
       // Only upload if it's a new local image (not an HTTP URL)
       let imageUrl = values.image;
-      if (values.image && !values.image.startsWith("http")) {
+
+      // Only process image if it exists and is a new local image
+      if (
+        values.image &&
+        typeof values.image === "string" &&
+        !values.image.startsWith("http")
+      ) {
         imageUrl = await uploadImage(values.image);
+      } else if (!values.image) {
+        // If no image provided, keep the existing one or set to null
+        imageUrl = profile?.image || null;
       }
 
       // Pass the imageUrl (not values.image) to updateUser

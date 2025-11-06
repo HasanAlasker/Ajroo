@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      default: null,
+      default: "https://res.cloudinary.com/dwiw2bprt/image/upload/v1762451339/bf496wsayryocrugd7kn.png",
     },
     gender: {
       type: String,
