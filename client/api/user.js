@@ -61,37 +61,13 @@ export const loginUser = async ({ email, password }) => {  // ✅
   }
 };
 
-// export const updateUser = async (id, updatedData, token) => {  // ✅
-//   try {
-//     const response = await fetch(`${BASE_URL}/api/users/edit/${id}`, {
-//       method: "PUT",
-//       body: JSON.stringify(updatedData),
-//       headers: {
-//         "Content-Type": "application/json",
-//         "x-auth-token": token,
-//       },
-//     });
+// export const loginUser = (email, password) => apiClient.post(`${endPoint}/login`, {email, password})
 
-//     if (!response.ok) {
-//       const errorText = await response.text();
-//       throw new Error(errorText || `HTTP ${response.status}`);
-//     }
-
-//     const responseData = await response.json();
-
-//     return responseData
-    
-//   } catch (err) {
-//     console.error("Login API error:", err);
-//     throw err;
-//   }
-// };
-
-export const updateUser = (id, data) => apiClient.put(`${endPoint}/edit/${id}`, data)
+export const updateUser = (id, data) => apiClient.put(`${endPoint}/edit/${id}`, data) // ✅
 
 export const getAllusers = () => apiClient.get(endPoint)  
 
-export const getUserById = (id) => apiClient.get(`${endPoint}/${id}`)
+export const getUserById = (id) => apiClient.get(`${endPoint}/${id}`) // ✅
 
 export const deleteUser = (id) => apiClient.delete(`${endPoint}/delete/${id}`)
 

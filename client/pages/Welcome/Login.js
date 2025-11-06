@@ -119,7 +119,7 @@ function Login(props) {
               <ErrorBox
                 style={styles.errorBox}
                 firstTitle={"Login Failed"}
-                fistDetail={error.message}
+                fistDetail={error}
               />
             )}
           </AppForm>
