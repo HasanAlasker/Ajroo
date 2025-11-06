@@ -311,8 +311,6 @@ export const UserProvider = ({ children }) => {
 
     try {
       const response = await updateUser(id, updatedData, state.token);
-      const updatedUser = { ...state.user, ...response };
-      await storeUserData(updatedUser, state.token);
 
       dispatch({
         type: USER_ACTION_TYPES.UPDATE_PROFILE,

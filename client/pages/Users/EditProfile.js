@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Alert } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import TopChunkProfile from "../../components/TopChunkProfile";
@@ -11,6 +11,9 @@ import { useUser } from "../../config/UserContext";
 import ErrorMessage from "../../components/form/ErrorMessage";
 import { Formik } from "formik";
 import { useAlert } from "../../config/AlertContext";
+import useApi from "../../hooks/useApi";
+import { getUserById } from "../../api/user";
+import LoadingCircle from "../../components/general/LoadingCircle";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -48,12 +51,21 @@ function EditProfile({ rating, sep }) {
   const [loading, setLoading] = useState(false);
   const { updateProfile, user, error } = useUser();
   const { showInfo } = useAlert();
+  const {data: profile, request: fetchProfile } = useApi(getUserById)
+
+  useEffect(()=>{
+    fetchProfile(user.id)
+  },[])
+
+  if(!profile || loading){
+    return <LoadingCircle />
+  }
 
   const initialValues = {
-    name: user?.name || "",
-    phone: user?.phone || "",
-    email: user?.email || "",
-    image: user?.avatar || "null",
+    name: profile?.name,
+    phone: profile?.phone,
+    email: profile?.email ,
+    image: profile?.image,
   };
 
   const handleSubmit = async (values, { setSubmitting, setStatus }) => {
@@ -102,14 +114,15 @@ function EditProfile({ rating, sep }) {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          enableReinitialize
         >
           {({ setFieldValue, setStatus }) => (
             <>
               <TopChunkProfile
-                userName={user?.name}
-                userImage={user?.avatar}
-                userRate={rating || user?.rating || "Unrated"}
-                isPicDisabled={false}
+                userName={profile?.name}
+                userImage={profile?.image}
+                userRate={user?.rating || "Unrated"}
+                isPicDisabled={profile.gender === 'female' ? true : false}
                 sep={sep || "Edit Info"}
                 onImageChange={(imageUri) => {
                   setFieldValue("image", imageUri);

@@ -108,14 +108,12 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
-// get others profile
+// get profile by id
 
 router.get("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
-    const user = await UserModel.findById(id).select(
-      "role name image email phone rating ratingCount gender"
-    );
+    const user = await UserModel.findById(id).select("-password -strikes");
     if (!user) return res.status(404).send("user not found");
 
     return res.status(200).send(user);

@@ -12,7 +12,7 @@ import useApi from "../../hooks/useApi";
 import { getUserPosts } from "../../api/post";
 import { useEffect } from "react";
 import { useRoute } from "@react-navigation/native";
-import { getMyProfile, getOthersProfile } from "../../api/user";
+import { getUserById } from "../../api/user";
 
 function Profile({ isNotification }) {
   const [isMenu, setIsMenu] = useState(false);
@@ -21,15 +21,10 @@ function Profile({ isNotification }) {
   const route = useRoute();
   const userId = route?.params?.userId || user.id;
   const myProfile = user.id === userId;
-  const myProfileApi = useApi(getMyProfile);
-  const othersProfileApi = useApi(getOthersProfile);
-
-  const activeApi = myProfile ? myProfileApi : othersProfileApi;
+  const {data: profile, request: fetchProfile} = useApi(getUserById)
 
   useEffect(() => {
-    if (myProfile) {
-      activeApi.request();
-    } else activeApi.request(userId);
+    fetchProfile(userId)
   }, [user.id, userId]);
 
   const {
@@ -68,9 +63,9 @@ function Profile({ isNotification }) {
         <TopChunkProfile
           isNotification={true} // change dynamicly
           myProfile={myProfile}
-          userImage={activeApi.data?.image || null}
-          userName={activeApi.data.name}
-          userRate={activeApi.data?.rating || "Unrated"}
+          userImage={profile?.image || null}
+          userName={profile?.name}
+          userRate={profile?.rating || "Unrated"}
           sep={"Items"}
           settingsPress={() => {
             setIsMenu(true);
