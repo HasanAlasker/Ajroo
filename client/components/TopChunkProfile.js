@@ -1,40 +1,101 @@
-import { View, StyleSheet } from 'react-native';
-import MyProfileContainer from './MyProfileContainer';
-import NotificationBtn from './NotificationBtn';
-import UserPicAndRateContainer from './UserPicAndRateContainer';
-import BigPicAndUsername from './BigPicAndUsername';
-import UserRate from './UserRate';
-import SettingsBtn from './SettingsBtn';
-import SeparatorComp from './SeparatorComp';
-import BackBtn from './BackBtn';
-import BlankBtn from './BlankBtn';
+import { View, StyleSheet } from "react-native";
+import MyProfileContainer from "./MyProfileContainer";
+import NotificationBtn from "./NotificationBtn";
+import UserPicAndRateContainer from "./UserPicAndRateContainer";
+import BigPicAndUsername from "./BigPicAndUsername";
+import UserRate from "./UserRate";
+import SettingsBtn from "./SettingsBtn";
+import SeparatorComp from "./SeparatorComp";
+import BackBtn from "./BackBtn";
+import BlankBtn from "./BlankBtn";
+import { useUser } from "../config/UserContext";
+import AppText from "../config/AppText";
+import useThemedStyles from "../hooks/useThemedStyles";
+import { FontAwesome6 } from "@expo/vector-icons";
+import { useTheme } from "../config/ThemeContext";
+import { useRoute } from "@react-navigation/native";
 
-function TopChunkProfile({myProfile, isNotification, userName, userRate, sep, isPicDisabled, settingsPress, onImageChange, userImage}) {
+function TopChunkProfile({
+  myProfile,
+  isNotification,
+  userName,
+  userRate,
+  sep,
+  isPicDisabled,
+  settingsPress,
+  onImageChange,
+  userImage,
+}) {
+  const { user } = useUser();
+  const styles = useThemedStyles(getStyles);
+  const { theme } = useTheme();
+  const route = useRoute();
+
   return (
     <View style={styles.container}>
-        <MyProfileContainer>
-          {myProfile ? <NotificationBtn isActive={isNotification}></NotificationBtn>: <BackBtn></BackBtn>}
-          <UserPicAndRateContainer>
-            <BigPicAndUsername
-              initialImage={userImage}
-              userName={userName}
-              isEdit={myProfile}
-              isPicDisabled={isPicDisabled}
-              onImageChange={onImageChange}
-            ></BigPicAndUsername>
-            <UserRate userRating={userRate}></UserRate>
-          </UserPicAndRateContainer>
-          {myProfile ? <SettingsBtn onPress={settingsPress}></SettingsBtn> : <BlankBtn></BlankBtn>}
-        </MyProfileContainer>
-        <SeparatorComp>{sep}</SeparatorComp>
+      <MyProfileContainer>
+        {myProfile ? (
+          <NotificationBtn isActive={isNotification}></NotificationBtn>
+        ) : (
+          <BackBtn></BackBtn>
+        )}
+        <UserPicAndRateContainer>
+          <BigPicAndUsername
+            initialImage={userImage}
+            userName={userName}
+            isEdit={myProfile}
+            isPicDisabled={isPicDisabled}
+            onImageChange={onImageChange}
+          ></BigPicAndUsername>
+          <UserRate userRating={userRate}></UserRate>
+        </UserPicAndRateContainer>
+        {myProfile ? (
+          <SettingsBtn onPress={settingsPress}></SettingsBtn>
+        ) : (
+          <BlankBtn></BlankBtn>
+        )}
+      </MyProfileContainer>
+      {user.gender === "female" && route.name === "EditProfile" && (
+        <View style={styles.iconAndTitle}>
+          <FontAwesome6
+            name="circle-exclamation"
+            color={theme.darker_gray}
+            style={styles.icon}
+          ></FontAwesome6>
+          <AppText style={[styles.note, styles.small]}>
+            Note: Profile photos are disabled for female users to protect their
+            privacy
+          </AppText>
+        </View>
+      )}
+      <SeparatorComp>{sep}</SeparatorComp>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container:{
-    width:'100%'
-  },
-})
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      width: "100%",
+    },
+    small: {
+      fontSize: 15,
+      color: theme.darker_gray,
+      fontWeight: "bold",
+      "textAlign":'center'
+    },
+    icon:{
+      alignSelf:'stretch',
+      paddingTop:4,
+    },
+    iconAndTitle: {
+      width: "90%",
+      marginHorizontal: 'auto',
+      marginTop:'20',
+      flexDirection: "row",
+      alignItems: "center",
+      gap:0,
+    },
+  });
 
 export default TopChunkProfile;
