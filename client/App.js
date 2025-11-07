@@ -34,6 +34,7 @@ import SettingsMenu from "./components/SettingsMenu";
 import GetBackModal from "./components/GetBackModal";
 import { useState } from "react";
 import LoadingCircle from "./components/general/LoadingCircle";
+import Suggestions from "./pages/Users/Suggestions";
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +54,7 @@ const AuthenticatedStack = () => {
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Promo" component={Promo} />
       <Stack.Screen name="Subscription" component={Subscription} />
+      <Stack.Screen name="Suggestions" component={Suggestions} />
     </Stack.Navigator>
   );
 };

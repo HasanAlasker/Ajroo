@@ -9,6 +9,7 @@ import posts from "./routers/posts.js";
 import requests from "./routers/requests.js";
 import borrows from "./routers/borrows.js";
 import reports from "./routers/reports.js";
+import suggestions from "./routers/suggestions.js";
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use("/api/posts", posts);
 app.use("/api/requests", requests);
 app.use("/api/borrows", borrows);
 app.use("/api/reports", reports);
+app.use("/api/suggestions", suggestions);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port} 🌍`);

@@ -19,7 +19,7 @@ function Home(props) {
     <SafeScreen>
       <SearchBar></SearchBar>
       <ScrollView >
-        {/* <WelcomeCard name={getUserDisplayName()}></WelcomeCard> */}
+        <WelcomeCard name={getUserDisplayName()}></WelcomeCard>
         <AppText style={styles.text}>
           What kind of item are you looking for?
         </AppText>

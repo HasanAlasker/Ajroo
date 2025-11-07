@@ -1,18 +1,28 @@
 import { View, StyleSheet } from "react-native";
 import useThemedStyles from "../hooks/useThemedStyles";
 import AppText from "../config/AppText";
+import RequestBtn from "./RequestBtn";
+import { useNavigation } from "@react-navigation/native";
 
-function WelcomeCard({ name }) {
+function WelcomeCard() {
   const styles = useThemedStyles(getStyles);
+  const navigation = useNavigation()
 
   return (
     <View style={styles.container}>
-      <AppText numberOfLines={1} style={styles.big}>
-        Hello {name}!
-      </AppText>
+      <AppText style={styles.big}>💡 Suggestions & Feature Requests</AppText>
       <AppText style={styles.small}>
-        Give what you can. Borrow what you need.
+        We’re in the testing phase! Share your ideas or request features you’d
+        love to see.
       </AppText>
+      <RequestBtn
+        title={"Send suggestion"}
+        arrow={true}
+        color={"purple"}
+        backColor={"always_white"}
+        style={styles.btn}
+        onPress={()=> navigation.navigate('Suggestions') }
+      />
     </View>
   );
 }
@@ -23,7 +33,7 @@ const getStyles = (theme) =>
       width: "90%",
       backgroundColor: theme.purple,
       marginHorizontal: "auto",
-      marginTop:30,
+      marginTop: 30,
       paddingVertical: 25,
       paddingHorizontal: 20,
       gap: 10,
@@ -48,6 +58,12 @@ const getStyles = (theme) =>
       fontSize: 20,
       color: theme.always_white,
       fontWeight: "medium",
+    },
+    btn: {
+      padding: 2,
+      borderRadius: 10,
+      width: "100%",
+      marginTop: 5,
     },
   });
 
