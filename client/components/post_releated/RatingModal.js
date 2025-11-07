@@ -29,7 +29,9 @@ function RatingModal({ isVisible, onClose, isOwner, ratedUserId, ratedItemId }) 
       // Borrower needs to rate both item and owner
       if (itemRating > 0 && userRating > 0) {
         const responseOne = await rateUser(ratedUserId, userRating)
-        const responseTwo =await rateItem(ratedItemId, itemRating)
+        await rateItem(ratedItemId, itemRating)
+        console.log(responseOne)
+
         onClose({ itemRating, userRating });
       }
     }

@@ -13,6 +13,9 @@ function PostRenderer({
   const renderPost = ({ item: post }) => {
     let isMine = false;
 
+    // console.log("PostRenderer - borrowerId:", post?.borrower?._id); // Add this
+    // console.log("PostRenderer - ownerId:", post?.owner?._id); // Add this
+
     // For regular posts
     if (post.user?._id) {
       isMine = post.user._id === currentUserId;

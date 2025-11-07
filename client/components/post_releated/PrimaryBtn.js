@@ -37,6 +37,11 @@ function PrimaryBtn({
   const { showAlert, showInfo } = useAlert();
   const passedUserId = iGave ? borrowerId : ownerId;
 
+  // console.log("PrimaryBtn - iGave:", iGave); // Add this
+  // console.log("PrimaryBtn - ownerId:", ownerId); // Add this
+  // console.log("PrimaryBtn - borrowerId:", borrowerId); // Add this
+  // console.log("PrimaryBtn - passedUserId:", passedUserId); // Add this
+
   const [visibleRequest, setVisibileRequest] = useState(false);
   const [visibleRating, setVisibileRating] = useState(false);
   const [pendingStatusUpdate, setPendingStatusUpdate] = useState(null);

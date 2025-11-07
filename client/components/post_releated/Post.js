@@ -82,6 +82,9 @@ function Post({
   const [isPostMenu, setIsPostMenu] = useState(false);
   const [isEditModal, setIsEditModal] = useState(false); // Add edit modal state
 
+  // console.log("Post component - borrowerId:", borrowerId); // Add this
+  // console.log("Post component - ownerId:", ownerId); // Add this
+
   const handelMenu = () => {
     setIsPostMenu(!isPostMenu);
   };
@@ -137,7 +140,7 @@ function Post({
           </RowLableCont>
           <RowLableCont>
             {condition && <ItemCondition condition={formatText(condition)} />}
-            <ItemRating rating={rating ? rating : "Unrated Yet"} />
+            { route.name !== 'Book' && <ItemRating rating={rating ? rating : "Unrated Yet"} />}
           </RowLableCont>
           {!(
             (route.name === "Requests" &&
