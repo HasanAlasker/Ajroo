@@ -4,7 +4,7 @@ import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import { useState } from "react";
 
-function InputBox({ placeholder, penOn, icon, value, isPassword, ...rest }) {
+function InputBox({ placeholder, penOn, icon, value, isPassword, isBox , ...rest }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
   const [isHidden, setIsHidden] = useState( isPassword? true : false)
@@ -19,7 +19,7 @@ function InputBox({ placeholder, penOn, icon, value, isPassword, ...rest }) {
       {penOn && <Feather name="edit-3" size={24} color={theme.purple} />}
       {icon && <Feather name={icon} size={24} color={theme.purple} />}
       <TextInput
-        style={styles.text}
+        style={[styles.text, isBox && {textAlignVertical:"top", paddingTop:6}]}
         placeholder={placeholder}
         placeholderTextColor={theme.purple}
         value={value}

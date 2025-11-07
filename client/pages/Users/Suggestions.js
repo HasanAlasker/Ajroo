@@ -108,6 +108,7 @@ function Suggestions() {
               <FormikInput
                 name="details"
                 placeholder="Describe your idea or issue in detail"
+                isBox={true}
                 multiline
                 height={140}
                 hasBeenSubmitted={hasBeenSubmitted}

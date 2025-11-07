@@ -4,7 +4,7 @@ import { useFormikContext } from 'formik';
 import InputBox from '../InputBox';
 import ErrorMessage from './ErrorMessage';
 
-function FormikInput({name, placeholder, penOn=false, keyboardType, autoCapitalize, hasBeenSubmitted=false, icon , isPassword, ...other}) {
+function FormikInput({name, placeholder, penOn=false, keyboardType, autoCapitalize, hasBeenSubmitted=false, icon ,isBox, isPassword, ...other}) {
   const {values, errors, handleBlur, handleChange} = useFormikContext()
   const shouldShowError = hasBeenSubmitted && errors[name];
 
@@ -20,6 +20,7 @@ function FormikInput({name, placeholder, penOn=false, keyboardType, autoCapitali
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
         icon={icon}
+        isBox={isBox}
         isPassword={isPassword}
         {...other}
       />
