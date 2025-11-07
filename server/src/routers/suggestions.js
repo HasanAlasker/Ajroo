@@ -11,7 +11,7 @@ const router = express.Router();
 router.post("/", auth, async (req, res) => {
   try {
     const {title, type, details} = req.body
-    const suggestion = new SuggestionModel({title, type, description, user: req.user});
+    const suggestion = new SuggestionModel({title, type, details, user: req.user});
     await suggestion.save();
     res.status(201).send("Suggestion submitted successfully");
   } catch (err) {
