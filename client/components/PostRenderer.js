@@ -58,6 +58,8 @@ function PostRenderer({
           post?.requester?._id ||
           post?.borrower?._id
         }
+        ownerId={post?.owner?._id}
+        borrowerId={post?.borrower?._id}
         image={post.image || post.reportedPost?.image || post?.item?.image}
         itemCat={
           post.category || post.reportedPost?.category || post?.item?.category

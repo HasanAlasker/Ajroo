@@ -21,6 +21,8 @@ function PrimaryBtn({
   pricePerDay,
   postId,
   reportId,
+  ownerId,
+  borrowerId,
   isMine,
   iBorrowed,
   iRequested,
@@ -33,6 +35,7 @@ function PrimaryBtn({
   const { updatePost, getPostById } = usePosts();
   const { user } = useUser();
   const { showAlert, showInfo } = useAlert();
+  const passedUserId = iGave ? borrowerId : ownerId;
 
   const [visibleRequest, setVisibileRequest] = useState(false);
   const [visibleRating, setVisibileRating] = useState(false);
@@ -47,7 +50,7 @@ function PrimaryBtn({
   const shouldBeDisabled = () => {
     if (isAdmin) return false;
     if (isDisabled) return true;
-    if (iBorrowed && status === "pending_return") return true
+    if (iBorrowed && status === "pending_return") return true;
     if (!isMine && status === "disabled") return true;
     if (isMine && status === "pending" && (route.name === "Profile" || "Have"))
       return true;
@@ -234,6 +237,8 @@ function PrimaryBtn({
       <RatingModal
         isOwner={iGave}
         isVisible={visibleRating}
+        ratedItemId={postId}
+        ratedUserId={passedUserId}
         onClose={handleRatingModalClose}
       />
     </>

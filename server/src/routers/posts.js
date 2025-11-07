@@ -297,7 +297,7 @@ router.put(
 
 // compute rating
 
-router.put("/rate/:id", async (req, res) => {
+router.put("/rate/:id", auth, async (req, res) => {
   try {
     const postId = req.params.id;
     const { rating } = req.body; // Get the rating from request body (1-5)

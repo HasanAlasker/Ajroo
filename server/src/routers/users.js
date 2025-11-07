@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import _ from "lodash";
 import bcrypt from "bcrypt";
 import {
@@ -209,7 +210,7 @@ router.delete("/delete/:id", [auth, admin], async (req, res) => {
 
 // Rate a user
 
-router.put("/rate/:id", async (req, res) => {
+router.put("/rate/:id", auth, async (req, res) => {
   try {
     const userId = req.params.id;
     const { rating } = req.body; // Get the rating from request body (1-5)

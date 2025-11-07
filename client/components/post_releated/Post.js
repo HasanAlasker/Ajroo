@@ -49,6 +49,8 @@ function Post({
   requestId,
   borrowId,
   userId,
+  ownerId,
+  borrowerId,
   iRequested,
   iBorrowed,
   iGave,
@@ -128,7 +130,7 @@ function Post({
         <LableContainer>
           {area && <Location city={formatText(city)} area={formatText(area)} />}
           {route.name === "Book" && phoneNumber && (
-            <PhoneNumber phoneNumber={phoneNumber}/>
+            <PhoneNumber phoneNumber={phoneNumber} />
           )}
           <RowLableCont>
             <ItemStatus status={status} endDate={endDate} />
@@ -157,6 +159,8 @@ function Post({
               reportId={reportId}
               requestId={requestId}
               iGave={iGave}
+              ownerId={ownerId}
+              borrowerId={borrowerId}
             />
           )}
           {route.name === "Requests" &&

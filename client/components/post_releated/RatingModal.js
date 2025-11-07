@@ -3,8 +3,10 @@ import { StyleSheet, ScrollView } from "react-native";
 import CardModal from "../CardModal";
 import RequestBtn from "../RequestBtn";
 import RatingStars from "../RatingStars";
+import { rateUser } from "../../api/user";
+import { rateItem } from "../../api/post";
 
-function RatingModal({ isVisible, onClose, isOwner }) {
+function RatingModal({ isVisible, onClose, isOwner, ratedUserId, ratedItemId }) {
   const [itemRating, setItemRating] = useState(0);
   const [userRating, setUserRating] = useState(0);
 
@@ -16,17 +18,18 @@ function RatingModal({ isVisible, onClose, isOwner }) {
     }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (isOwner) {
       // Owner only needs to rate the borrower
       if (userRating > 0) {
-        // Send userRating to backend
+        await rateUser(ratedUserId, userRating)
         onClose({ userRating });
       }
     } else {
       // Borrower needs to rate both item and owner
       if (itemRating > 0 && userRating > 0) {
-        // Send both ratings to backend
+        const responseOne = await rateUser(ratedUserId, userRating)
+        const responseTwo =await rateItem(ratedItemId, itemRating)
         onClose({ itemRating, userRating });
       }
     }
