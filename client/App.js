@@ -68,6 +68,7 @@ const AdminStack = () => {
       <Stack.Screen name="Dash" component={Dash} />
       <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="Reports" component={Reports} />
+      <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
   );
 };
