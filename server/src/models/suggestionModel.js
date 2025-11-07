@@ -10,11 +10,15 @@ const suggstionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  description:{
+  details:{
+    type: String,
+    required: true
+  },
+  type:{
     type: String,
     required: true
   }
-});
+}, { timestamps: true });
 
 const SuggestionModel = mongoose.model('Suggestion', suggstionSchema)
 export default SuggestionModel
