@@ -11,6 +11,9 @@ import SubmitBtn from "../../components/form/SubmitBtn";
 import { useAlert } from "../../config/AlertContext";
 // import { addSuggestion } from "../../api/suggestions"; // you'll create this endpoint
 import { useUser } from "../../config/UserContext";
+import { makeSuggestion } from "../../api/suggestion";
+import AppText from "../../config/AppText";
+import useThemedStyles from "../../hooks/useThemedStyles";
 
 // Suggestion categories
 const suggestionTypes = [
@@ -36,6 +39,7 @@ function Suggestions() {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
+  const styles = useThemedStyles(getStyles)
 
   const initialValues = {
     type: "",
@@ -43,7 +47,10 @@ function Suggestions() {
     details: "",
   };
 
-  const handleSubmit = async (values, { setSubmitting, resetForm, setStatus }) => {
+  const handleSubmit = async (
+    values,
+    { setSubmitting, resetForm, setStatus }
+  ) => {
     setLoading(true);
     try {
       const suggestionData = {
@@ -53,7 +60,7 @@ function Suggestions() {
         details: values.details,
       };
 
-      await addSuggestion(suggestionData);
+      await makeSuggestion(suggestionData);
 
       showInfo({
         title: "Thank you!",
@@ -68,13 +75,15 @@ function Suggestions() {
       showInfo({
         title: "Error",
         message:
-          err.response?.data?.message || "Failed to submit your suggestion. Please try again.",
+          err.response?.data?.message ||
+          "Failed to submit your suggestion. Please try again.",
         confirmText: "OK",
       });
       setStatus({
         type: "error",
         message:
-          err.response?.data?.message || "Failed to submit your suggestion. Please try again.",
+          err.response?.data?.message ||
+          "Failed to submit your suggestion. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -85,6 +94,9 @@ function Suggestions() {
   return (
     <SafeScreen>
       <KeyboardScrollScreen>
+        <AppText style={styles.text}>
+          Share your suggestions and help shape the platform!
+        </AppText>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -128,8 +140,17 @@ function Suggestions() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   container: {},
+  text: {
+    fontSize: 30,
+    fontWeight: "normal",
+    width: "90%",
+    marginHorizontal: "auto",
+    marginVertical: 40,
+    color: theme.main_text,
+    textAlign:'center'
+  },
 });
 
 export default Suggestions;
