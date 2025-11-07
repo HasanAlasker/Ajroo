@@ -2,17 +2,22 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import AppText from "../config/AppText";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
-import { usePosts } from "../config/PostContext";
 import { confirmRequest, deleteRequest } from "../api/request";
 import { useAlert } from "../config/AlertContext";
 import { useRoute } from "@react-navigation/native";
 import { confirmReturn, rejectConfirmation } from "../api/borrow";
+import { useState } from "react";
+import RatingModal from "./post_releated/RatingModal";
 
-function AcceptRejectBtn({ postId, requestId }) {
+function AcceptRejectBtn({ postId, requestId, ownerId, borrowerId, iGave }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
-  const { showAlert, showInfo } = useAlert();
+  const { showAlert } = useAlert();
+  const [visibleRating, setVisibleRating] = useState(false);
+
   const route = useRoute();
+
+  const passedUserId = iGave ? borrowerId : ownerId;
 
   const handleAccept = async () => {
     if (route.name === "Requests") {
@@ -46,6 +51,8 @@ function AcceptRejectBtn({ postId, requestId }) {
         onConfirm: async () => {
           try {
             await confirmReturn(requestId);
+            // Show rating modal after confirming return
+            setVisibleRating(true);
           } catch (error) {
             showAlert({
               title: "Error",
@@ -56,6 +63,10 @@ function AcceptRejectBtn({ postId, requestId }) {
         },
       });
     }
+  };
+
+  const handleRatingModalClose = () => {
+    setVisibleRating(false);
   };
 
   const handleReject = async () => {
@@ -78,7 +89,7 @@ function AcceptRejectBtn({ postId, requestId }) {
         },
       });
     }
-     if (route.name === "Book") {
+    if (route.name === "Book") {
       showAlert({
         title: "Didn't get item back?",
         message: "Are you sure you did not get this item back?",
@@ -96,18 +107,30 @@ function AcceptRejectBtn({ postId, requestId }) {
           }
         },
       });
-     }
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={[styles.accept]} onPress={handleAccept}>
-        <AppText style={styles.text}>Accept</AppText>
-      </TouchableOpacity>
-      <TouchableOpacity style={[styles.reject]} onPress={handleReject}>
-        <AppText style={[styles.text, { color: theme.purple }]}>Reject</AppText>
-      </TouchableOpacity>
-    </View>
+    <>
+      <View style={styles.container}>
+        <TouchableOpacity style={[styles.accept]} onPress={handleAccept}>
+          <AppText style={styles.text}>Accept</AppText>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.reject]} onPress={handleReject}>
+          <AppText style={[styles.text, { color: theme.purple }]}>
+            Reject
+          </AppText>
+        </TouchableOpacity>
+      </View>
+
+      <RatingModal
+        isOwner={iGave}
+        isVisible={visibleRating}
+        ratedItemId={postId}
+        ratedUserId={passedUserId}
+        onClose={handleRatingModalClose}
+      />
+    </>
   );
 }
 

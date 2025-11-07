@@ -140,7 +140,9 @@ function Post({
           </RowLableCont>
           <RowLableCont>
             {condition && <ItemCondition condition={formatText(condition)} />}
-            { route.name !== 'Book' && <ItemRating rating={rating ? rating : "Unrated Yet"} />}
+            {route.name !== "Book" && (
+              <ItemRating rating={rating ? rating : "Unrated Yet"} />
+            )}
           </RowLableCont>
           {!(
             (route.name === "Requests" &&
@@ -174,7 +176,13 @@ function Post({
           {route.name === "Book" &&
             status === "pending_return" &&
             iGave === true && (
-              <AcceptRejectBtn requestId={requestId} postId={id} />
+              <AcceptRejectBtn
+                requestId={requestId}
+                postId={id}
+                iGave={iGave}
+                ownerId={ownerId}
+                borrowerId={borrowerId}
+              />
             )}
         </LableContainer>
       </PostComponent>
