@@ -14,6 +14,7 @@ import { useAlert } from "../../config/AlertContext";
 import useApi from "../../hooks/useApi";
 import { getUserById, updateUser } from "../../api/user";
 import LoadingCircle from "../../components/general/LoadingCircle";
+import ErrorBox from "../../components/general/ErrorBox";
 import { uploadImage } from "../../api/upload";
 
 const validationSchema = Yup.object().shape({
@@ -50,6 +51,7 @@ const validationSchema = Yup.object().shape({
 function EditProfile({ rating, sep }) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [updateError, setUpdateError] = useState();
   const { user, error } = useUser();
   const { showInfo } = useAlert();
   const {
@@ -91,7 +93,7 @@ function EditProfile({ rating, sep }) {
         imageUrl = await uploadImage(values.image);
       } else if (!values.image) {
         // If no image provided, keep the existing one or set to null
-        imageUrl = profile?.image || null;
+        imageUrl = profile?.image || "https://res.cloudinary.com/dwiw2bprt/image/upload/v1762451339/bf496wsayryocrugd7kn.png";
       }
 
       // Pass the imageUrl (not values.image) to updateUser
@@ -115,6 +117,9 @@ function EditProfile({ rating, sep }) {
 
         // Update the profile data so it has the new image URL
         await fetchProfile(user.id);
+      }
+      else {
+        setUpdateError(result.data.message)
       }
     } catch (error) {
       console.error("Update error:", error);
@@ -189,6 +194,8 @@ function EditProfile({ rating, sep }) {
                 setHasBeenSubmitted={setHasBeenSubmitted}
               />
 
+              {updateError && <ErrorBox style={styles.error} firstTitle={'Update Failed'} fistDetail={updateError}/>}
+
               {/* Display context error if exists */}
               {error && <ErrorMessage error={error} />}
             </>
@@ -200,7 +207,10 @@ function EditProfile({ rating, sep }) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  error: {
+    width:"90%",
+    margin: 'auto'
+  },
 });
 
 export default EditProfile;

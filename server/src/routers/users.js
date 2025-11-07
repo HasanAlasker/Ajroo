@@ -51,6 +51,14 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
       .status(200)
       .send(_.pick(newUser, ["name", "email", "phone", "gender"]));
   } catch (err) {
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyValue)[0];
+      return res.status(400).send({
+        message: `${
+          field.charAt(0).toUpperCase() + field.slice(1)
+        } is already in use`,
+      });
+    }
     return res.status(500).send(err.message);
   }
 });
@@ -169,6 +177,14 @@ router.put("/edit/:id", auth, validate(userUpdateSchema), async (req, res) => {
         ])
       );
   } catch (err) {
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyValue)[0];
+      return res.status(400).send({
+        message: `${
+          field.charAt(0).toUpperCase() + field.slice(1)
+        } is already in use`,
+      });
+    }
     return res.status(500).send(err.message);
   }
 });
