@@ -13,6 +13,7 @@ import { getUserPosts } from "../../api/post";
 import { useEffect } from "react";
 import { useRoute } from "@react-navigation/native";
 import { getUserById } from "../../api/user";
+import LoadingCircle from "../../components/general/LoadingCircle";
 
 function Profile({ isNotification }) {
   const [isMenu, setIsMenu] = useState(false);
@@ -21,10 +22,16 @@ function Profile({ isNotification }) {
   const route = useRoute();
   const userId = route?.params?.userId || user.id;
   const myProfile = user.id === userId;
-  const {data: profile, request: fetchProfile} = useApi(getUserById)
+
+  const {
+    data: profile,
+    request: fetchProfile,
+    loading: userLoading,
+    error: userError,
+  } = useApi(getUserById);
 
   useEffect(() => {
-    fetchProfile(userId)
+    fetchProfile(userId);
   }, [userId]);
 
   const {
@@ -38,10 +45,14 @@ function Profile({ isNotification }) {
     fetchPosts(userId);
   }, [userId]);
 
+  if ((loading || userLoading) && (!posts || !profile)) {
+    return <LoadingCircle />;
+  }
+
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchPosts(userId);
-    await fetchProfile(userId)
+    await fetchProfile(userId);
     setRefreshing(false);
   };
 

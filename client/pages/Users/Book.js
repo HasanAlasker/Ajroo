@@ -7,6 +7,7 @@ import { useUser } from "../../config/UserContext";
 import PostRenderer from "../../components/PostRenderer";
 import useApi from "../../hooks/useApi";
 import { givenItems, takenItems } from "../../api/borrow";
+import LoadingCircle from "../../components/general/LoadingCircle";
 
 function Book(props) {
   const [activeTab, setActiveTab] = useState("Given");
@@ -14,10 +15,13 @@ function Book(props) {
   const { user } = useUser();
   const takenItemsApi = useApi(takenItems);
   const givenItemsApi = useApi(givenItems);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true)
     takenItemsApi.request();
     givenItemsApi.request();
+    setLoading(false)
   }, []);
 
   const handleRefresh = async () => {
@@ -26,6 +30,10 @@ function Book(props) {
     await givenItemsApi.request();
     setRefreshing(false);
   };
+
+  if (loading) {
+    return <LoadingCircle />;
+  }
 
   const renderContent = () => {
     switch (activeTab) {

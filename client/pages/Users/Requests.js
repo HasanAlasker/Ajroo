@@ -7,6 +7,7 @@ import { useUser } from "../../config/UserContext";
 import PostRenderer from "../../components/PostRenderer";
 import useApi from "../../hooks/useApi";
 import { gotRequests, sentRequests } from "../../api/request";
+import LoadingCircle from "../../components/general/LoadingCircle";
 
 function Requests(props) {
   const [activeTab, setActiveTab] = useState("Got");
@@ -19,6 +20,13 @@ function Requests(props) {
     sentRequestsApi.request();
     gotRequestsApi.request();
   }, []);
+
+  if (
+    (gotRequestsApi.loading || sentRequestsApi.loading) &&
+    (!gotRequestsApi.data || !sentRequestsApi.data)
+  ) {
+    return <LoadingCircle />;
+  }
 
   const handleRefresh = async () => {
     setRefreshing(true);

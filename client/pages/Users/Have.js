@@ -8,6 +8,7 @@ import { useState } from "react";
 import useApi from "../../hooks/useApi";
 import { availablePosts } from "../../api/post";
 import { useEffect } from "react";
+import LoadingCircle from "../../components/general/LoadingCircle";
 
 function Have(props) {
   const { user } = useUser();
@@ -29,6 +30,10 @@ function Have(props) {
     await fetchPosts();
     setRefreshing(false);
   };
+
+  if (loading && !posts) {
+    return <LoadingCircle />;
+  }
 
   return (
     <SafeScreen>
