@@ -43,7 +43,7 @@ router.delete("/delete/:id", [auth, admin], async (req, res) => {
 router.get("/", [auth, admin], async (req, res) => {
   try {
 
-    const suggestions = await SuggestionModel.find().sort("-createdAt")
+    const suggestions = await SuggestionModel.find().sort("-createdAt").populate('user', 'name image email phone')
 
     res.status(200).send(suggestions);
   } catch (err) {
