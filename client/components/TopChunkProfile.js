@@ -14,6 +14,7 @@ import useThemedStyles from "../hooks/useThemedStyles";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useTheme } from "../config/ThemeContext";
 import { useRoute } from "@react-navigation/native";
+import PhoneNumber from "./post_releated/PhoneNumber";
 
 function TopChunkProfile({
   myProfile,
@@ -25,6 +26,8 @@ function TopChunkProfile({
   settingsPress,
   onImageChange,
   userImage,
+  userEmail,
+  userPhone
 }) {
   const { user } = useUser();
   const styles = useThemedStyles(getStyles);
@@ -47,7 +50,15 @@ function TopChunkProfile({
             isPicDisabled={isPicDisabled}
             onImageChange={onImageChange}
           ></BigPicAndUsername>
-          {route.name === 'Profile' && <UserRate userRating={userRate}></UserRate>}
+          {user.role === "admin" && (
+            <>
+              <PhoneNumber phoneNumber={userPhone} />
+              <PhoneNumber email={userEmail} />
+            </>
+          )}
+          {route.name === "Profile" && (
+            <UserRate userRating={userRate}></UserRate>
+          )}
         </UserPicAndRateContainer>
         {myProfile ? (
           <SettingsBtn onPress={settingsPress}></SettingsBtn>
@@ -82,19 +93,19 @@ const getStyles = (theme) =>
       fontSize: 15,
       color: theme.darker_gray,
       fontWeight: "bold",
-      "textAlign":'center'
+      textAlign: "center",
     },
-    icon:{
-      alignSelf:'stretch',
-      paddingTop:4,
+    icon: {
+      alignSelf: "stretch",
+      paddingTop: 4,
     },
     iconAndTitle: {
       width: "90%",
-      marginHorizontal: 'auto',
-      marginTop:'20',
+      marginHorizontal: "auto",
+      marginTop: "20",
       flexDirection: "row",
       alignItems: "center",
-      gap:0,
+      gap: 0,
     },
   });
 

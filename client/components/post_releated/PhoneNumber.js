@@ -6,13 +6,13 @@ import { useTheme } from "../../config/ThemeContext";
 import AppText from "../../config/AppText";
 import { useAlert } from "../../config/AlertContext";
 
-function PhoneNumber({ phoneNumber }) {
+function PhoneNumber({ phoneNumber, email }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
   const { showInfo } = useAlert();
 
   const handleCopy = async () => {
-    await Clipboard.setStringAsync(phoneNumber);
+    await Clipboard.setStringAsync(phoneNumber || email);
     showInfo({
       title: "Copied!",
       message: "Phone number copied to clipboard.",
@@ -25,8 +25,8 @@ function PhoneNumber({ phoneNumber }) {
       style={({ pressed }) => [styles.container, pressed && styles.pressed]}
       onPress={handleCopy}
     >
-      <Feather name="phone-call" size={20} color={theme.main_text} />
-      <AppText style={styles.text}>{phoneNumber}</AppText>
+      <Feather name={phoneNumber ? "phone-call" : 'mail'} size={20} color={theme.main_text} />
+      <AppText style={styles.text}>{phoneNumber || email}</AppText>
       <Feather
         name="copy"
         size={16}

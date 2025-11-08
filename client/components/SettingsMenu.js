@@ -44,8 +44,8 @@ function SettingsMenu({ isVisible, onClose }) {
             color={'purple'}
             onPress={()=> navigation.navigate('Subscription')}
           />}
-          <SeparatorComp style={styles.sep} />
-          <MenuOption text={"Suggestions"} icon={"chat-outline"} color={"purple"} onPress={()=> navigation.navigate('AdminSuggestions')} />
+          {isAdmin && <SeparatorComp style={styles.sep} />}
+          {isAdmin && <MenuOption text={"Suggestions"} icon={"chat-outline"} color={"purple"} onPress={()=> navigation.navigate('AdminSuggestions')} />}
           <SeparatorComp style={styles.sep} />
           <MenuOption text={"Support"} icon={"headphones"} color={"green"} />
           <SeparatorComp style={styles.sep} />

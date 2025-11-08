@@ -67,6 +67,8 @@ function Profile({ isNotification }) {
           userImage={profile?.image || null}
           userName={profile?.name}
           userRate={profile?.rating || "Unrated"}
+          userPhone={profile?.phone}
+          userEmail={profile?.email}
           sep={"Items"}
           settingsPress={() => {
             setIsMenu(true);
