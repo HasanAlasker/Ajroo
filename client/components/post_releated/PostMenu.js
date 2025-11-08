@@ -19,6 +19,7 @@ import { useAlert } from "../../config/AlertContext";
 import { deletePost, getPostById, softDelete, unDelete } from "../../api/post";
 import { reportPost } from "../../api/report";
 import useApi from "../../hooks/useApi";
+import { deleteSuggestion } from "../../api/suggestion";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -30,6 +31,7 @@ function PostMenu({
   reportId,
   onEditPress,
   shareContent,
+  isSuggestion = false, // New prop to identify if it's a suggestion
 }) {
   const styles = useThemedStyles(getStyles);
   const [reportMenu, setReportMenu] = useState(false);
@@ -45,10 +47,10 @@ function PostMenu({
   const isAdmin = user.role === "admin";
 
   useEffect(() => {
-    if (postId) {
+    if (postId && !isSuggestion) {
       fetchPost(postId);
     }
-  }, []);
+  }, [postId, isSuggestion]);
 
   const handleShare = async () => {
     try {
@@ -59,11 +61,9 @@ function PostMenu({
       });
 
       if (result.action === Share.sharedAction) {
-        // User shared
-        onClose(); // Close AFTER sharing
+        onClose();
       } else if (result.action === Share.dismissedAction) {
-        // User dismissed
-        onClose(); // Still close if dismissed
+        onClose();
       }
     } catch (error) {
       Alert.alert("Error", "Something went wrong while sharing");
@@ -101,7 +101,7 @@ function PostMenu({
       onConfirm: async () => {
         try {
           await deletePost(postId);
-          onClose(); // Close the menu after deleting
+          onClose();
         } catch (error) {
           showInfo({
             title: "Error",
@@ -111,6 +111,11 @@ function PostMenu({
         }
       },
     });
+  };
+
+  const handleDeleteSuggestion = async () => {
+    await deleteSuggestion(postId);
+    onClose();
   };
 
   const handleSoftDelete = async () => {
@@ -130,50 +135,6 @@ function PostMenu({
       console.log("Error:", err);
     }
   };
-
-  // const handleSoftDelete = () => {
-  //   // for admin deletion
-  //   console.log(postId)
-  //   showAlert({
-  //     title: "Soft Delete item",
-  //     message: "Are you sure you want to delete this post?",
-  //     confirmText: "Delete",
-  //     cancelText: "Cancel",
-  //     onConfirm: async () => {
-  //       try {
-  //         await softDelete(postId);
-  //         onClose();
-  //       } catch (error) {
-  //         showInfo({
-  //           title: "Error",
-  //           message: "Post could not be deleted.",
-  //           confirmText: "Close",
-  //         });
-  //       }
-  //     },
-  //   });
-  // };
-
-  // const handleUnDelete = () => {
-  //   showAlert({
-  //     title: "UnDelete Item",
-  //     message: "Do you want to unDelete post?",
-  //     confirmText: "Yes",
-  //     cancelText: "Cancel",
-  //     onConfirm: async () => {
-  //       try {
-  //         await unDelete(postId);
-  //         onClose(); // Close the menu after deleting
-  //       } catch (error) {
-  //         showInfo({
-  //           title: "Error",
-  //           message: "Post could not be UnDeleted.",
-  //           confirmText: "Close",
-  //         });
-  //       }
-  //     },
-  //   });
-  // };
 
   if (!isVisible) return null;
 
@@ -195,52 +156,64 @@ function PostMenu({
           />
           {!reportMenu && (
             <>
-              {!isAdmin && (
-                <>
-                  <MenuOption
-                    text={"Share post"}
-                    icon={"share-outline"}
-                    onPress={handleShare}
-                  />
-                  <SeparatorComp style={styles.sep} />
-                </>
-              )}
-              {isMine && (
+              {/* For suggestions, only show delete option for admin */}
+              {isSuggestion && isAdmin ? (
                 <MenuOption
-                  text={"Edit post"}
-                  icon={"pencil-outline"}
-                  onPress={handleEditPost}
-                />
-              )}
-              {isMine && <SeparatorComp style={styles.sep} />}
-              {isMine ? (
-                <MenuOption
-                  text={"Delete post"}
+                  text={"Delete suggestion"}
                   icon={"delete-outline"}
                   color={"red"}
-                  onPress={handleDeletePost}
-                />
-              ) : isAdmin && !post.isDeleted ? (
-                <MenuOption
-                  text={"Delete post"}
-                  icon={"delete-outline"}
-                  color={"red"}
-                  onPress={handleSoftDelete}
-                />
-              ) : isAdmin && post.isDeleted ? (
-                <MenuOption
-                  text={"UnDelete post"}
-                  icon={"arrow-u-left-top"}
-                  color={"green"}
-                  onPress={handleUnDelete}
+                  onPress={handleDeleteSuggestion}
                 />
               ) : (
-                <MenuOption
-                  text={"Report post"}
-                  icon={"bullhorn-variant-outline"}
-                  color={"red"}
-                  onPress={handleReportMenu}
-                />
+                <>
+                  {!isAdmin && (
+                    <>
+                      <MenuOption
+                        text={"Share post"}
+                        icon={"share-outline"}
+                        onPress={handleShare}
+                      />
+                      <SeparatorComp style={styles.sep} />
+                    </>
+                  )}
+                  {isMine && (
+                    <MenuOption
+                      text={"Edit post"}
+                      icon={"pencil-outline"}
+                      onPress={handleEditPost}
+                    />
+                  )}
+                  {isMine && <SeparatorComp style={styles.sep} />}
+                  {isMine ? (
+                    <MenuOption
+                      text={"Delete post"}
+                      icon={"delete-outline"}
+                      color={"red"}
+                      onPress={handleDeletePost}
+                    />
+                  ) : isAdmin && post && !post.isDeleted ? (
+                    <MenuOption
+                      text={"Delete post"}
+                      icon={"delete-outline"}
+                      color={"red"}
+                      onPress={handleSoftDelete}
+                    />
+                  ) : isAdmin && post && post.isDeleted ? (
+                    <MenuOption
+                      text={"UnDelete post"}
+                      icon={"arrow-u-left-top"}
+                      color={"green"}
+                      onPress={handleUnDelete}
+                    />
+                  ) : (
+                    <MenuOption
+                      text={"Report post"}
+                      icon={"bullhorn-variant-outline"}
+                      color={"red"}
+                      onPress={handleReportMenu}
+                    />
+                  )}
+                </>
               )}
             </>
           )}
@@ -360,10 +333,10 @@ const getStyles = (theme) =>
       opacity: 0.5,
     },
     scrollContainer: {
-      maxHeight: screenHeight * 0.7, // Limit ScrollView height
+      maxHeight: screenHeight * 0.7,
     },
     scrollContent: {
-      paddingBottom: 10, // Add some padding at the bottom
+      paddingBottom: 10,
     },
   });
 

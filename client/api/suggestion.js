@@ -7,4 +7,4 @@ export const makeSuggestion = (data) => apiClient.post(endpoint, data);
 export const getSuggestions = () => apiClient.get(endpoint);
 
 export const deleteSuggestion = (id) =>
-  apiClient.post(`${endpoint}/delete/${id}`);
+  apiClient.delete(`${endpoint}/delete/${id}`);
