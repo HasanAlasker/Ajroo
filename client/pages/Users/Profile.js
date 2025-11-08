@@ -49,7 +49,7 @@ function Profile({ isNotification }) {
     <SafeScreen>
       <PostRenderer
         fetchedPosts={posts}
-        emptyMessage="You haven't posted yet"
+        emptyMessage="No available items to show"
         refreshing={refreshing}
         onRefresh={handleRefresh}
         currentUserId={user.id}
@@ -66,7 +66,7 @@ function Profile({ isNotification }) {
           myProfile={myProfile}
           userImage={profile?.image || null}
           userName={profile?.name}
-          userRate={profile?.rating || "Unrated"}
+          userRate={profile?.rating || "Unrated Yet"}
           userPhone={profile?.phone}
           userEmail={profile?.email}
           sep={"Items"}

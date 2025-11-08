@@ -16,6 +16,12 @@ import { useTheme } from "../config/ThemeContext";
 import { useRoute } from "@react-navigation/native";
 import PhoneNumber from "./post_releated/PhoneNumber";
 
+const formatRating = (rating) => {
+  if (rating !== "Unrated Yet") {
+    return rating.toFixed(2);
+  } else return rating;
+};
+
 function TopChunkProfile({
   myProfile,
   isNotification,
@@ -27,7 +33,7 @@ function TopChunkProfile({
   onImageChange,
   userImage,
   userEmail,
-  userPhone
+  userPhone,
 }) {
   const { user } = useUser();
   const styles = useThemedStyles(getStyles);
@@ -57,7 +63,7 @@ function TopChunkProfile({
             </>
           )}
           {route.name === "Profile" && (
-            <UserRate userRating={userRate}></UserRate>
+            <UserRate userRating={formatRating(userRate)}></UserRate>
           )}
         </UserPicAndRateContainer>
         {myProfile ? (

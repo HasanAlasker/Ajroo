@@ -140,7 +140,7 @@ function Post({
           </RowLableCont>
           <RowLableCont>
             {condition && <ItemCondition condition={formatText(condition)} />}
-            {route.name !== "Book" && (
+            {route.name !== "Book" && route.name !== "Requests" && (
               <ItemRating rating={rating ? rating : "Unrated Yet"} />
             )}
           </RowLableCont>
