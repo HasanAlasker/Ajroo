@@ -20,6 +20,7 @@ const suggestionTypes = [
   { label: "Feature Request", value: "feature" },
   { label: "Bug Report", value: "bug" },
   { label: "Improvement", value: "improvement" },
+  { label: "Question", value: "question" },
   { label: "Other", value: "other" },
 ];
 

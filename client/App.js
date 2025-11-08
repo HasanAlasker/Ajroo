@@ -126,12 +126,12 @@ export default function App() {
               <AppContent />
               {/* This modal shows for the item owner when the borrower
                 claims that he returned the item */}
-              <GetBackModal
-                isVisibile={backModal}
+              {/* <GetBackModal
+                isVisibile={true}
                 onClose={() => {
-                  setBackModal(false);
+                  setBackModal(backModal);
                 }}
-              />
+              /> */}
             </PostProvider>
           </UserProvider>
         </AlertProvider>

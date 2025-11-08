@@ -8,10 +8,17 @@ function ItemRating({rating}) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
 
+  const formatRating = (rating) => {
+    if(rating !== "Unrated Yet"){
+      return rating.toFixed(2)
+    }
+    else return rating
+  }
+
   return (
     <View style={styles.container}>
       <Octicons name="star-fill" size={20} color={theme.gold}></Octicons>
-      <AppText style={styles.text}>{rating}</AppText>
+      <AppText style={styles.text}>{formatRating(rating)}</AppText>
     </View>
   );
 }
