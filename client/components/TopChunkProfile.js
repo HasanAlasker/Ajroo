@@ -47,7 +47,7 @@ function TopChunkProfile({
             isPicDisabled={isPicDisabled}
             onImageChange={onImageChange}
           ></BigPicAndUsername>
-          <UserRate userRating={userRate}></UserRate>
+          {route.name === 'Profile' && <UserRate userRating={userRate}></UserRate>}
         </UserPicAndRateContainer>
         {myProfile ? (
           <SettingsBtn onPress={settingsPress}></SettingsBtn>

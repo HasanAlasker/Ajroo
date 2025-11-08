@@ -153,7 +153,7 @@ function EditProfile({ rating, sep }) {
               <TopChunkProfile
                 userName={profile?.name}
                 userImage={profile?.image}
-                userRate={user?.rating || "Unrated"}
+                userRate={profile?.rating || "Unrated"}
                 isPicDisabled={profile.gender === "female" ? true : false}
                 sep={sep || "Edit Info"}
                 onImageChange={(imageUri) => {
