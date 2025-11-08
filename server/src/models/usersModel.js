@@ -79,6 +79,10 @@ const userSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
+    pushNotificationTokens: {
+      type: [String],
+      default: null
+    }
   },
   { timestamps: true }
 );
