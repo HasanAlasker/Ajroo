@@ -45,6 +45,8 @@ function SettingsMenu({ isVisible, onClose }) {
             onPress={()=> navigation.navigate('Subscription')}
           />}
           <SeparatorComp style={styles.sep} />
+          <MenuOption text={"Suggestions"} icon={"chat-outline"} color={"purple"} onPress={()=> navigation.navigate('AdminSuggestions')} />
+          <SeparatorComp style={styles.sep} />
           <MenuOption text={"Support"} icon={"headphones"} color={"green"} />
           <SeparatorComp style={styles.sep} />
           <MenuOption text={"Log out"} icon={"logout"} color={"red"} onPress={logout}/>

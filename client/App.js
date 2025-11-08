@@ -32,6 +32,7 @@ import GetBackModal from "./components/GetBackModal";
 import { useState } from "react";
 import LoadingCircle from "./components/general/LoadingCircle";
 import Suggestions from "./pages/Users/Suggestions";
+import AdminSuggestions from "./pages/admin/AdminSuggestions";
 
 const Stack = createNativeStackNavigator();
 
@@ -66,6 +67,7 @@ const AdminStack = () => {
       <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="Reports" component={Reports} />
       <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="AdminSuggestions" component={AdminSuggestions} />
     </Stack.Navigator>
   );
 };
