@@ -46,10 +46,11 @@ function Subscription(props) {
             2- List items - Add photos, details and prices.{"\n"}
             3- Start earning - Accept rental requests and make money.{"\n"}
           </AppText>
-          <View style={styles.iconAndTitle}>
+          <View style={[styles.smallIconAndTitle]}>
             <FontAwesome6
               name="circle-exclamation"
               color={theme.darker_gray}
+              style={{paddingTop:5}}
             ></FontAwesome6>
             <AppText style={[styles.note, styles.small]}>
               Note: Businesses must choose a business plan. Misuse may lead to
@@ -64,7 +65,8 @@ function Subscription(props) {
           icon={"lock-reset"}
           size={32}
         >
-          List and borrow items for free, no rentals
+          List up to 2 posts for free, no rentals {"\n\n"}
+          Borrow items for free.
         </OfferCard>
         <OfferCard
           backColor={"purple"}
@@ -74,7 +76,7 @@ function Subscription(props) {
           btnText={"Subscribe now"}
           startNow={6}
         >
-          List up to 10 items for rental every month and make money.{"\n\n"}
+          List up to 6 items for rental every month and make money.{"\n\n"}
           The profit is all yours - We don’t take commesion.
         </OfferCard>
         <OfferCard
@@ -85,10 +87,11 @@ function Subscription(props) {
           btnText={"Subscribe now"}
           startNow={25}
         >
-          List up to 50 items for rental every month and make more money.
+          List up to 25 items for rental every month and make more money.
           {"\n\n"}
-          Get a store badge - Displayed next to your user name.{"\n\n"}
-          Featured placement - Your listings show more often.
+          Get a store badge - Displayed next to your user name.
+          {/* {"\n\n"} */}
+          {/* Featured placement - Your listings show more often. */}
         </OfferCard>
         <OfferCard
           backColor={"gold"}
@@ -100,9 +103,10 @@ function Subscription(props) {
         >
           List unlimited items and max out your profit every month.{"\n\n"}
           Get a store badge - Displayed next to your user name.{"\n\n"}
-          Priority search ranking - Your listings show on top to increase your
-          earning.{"\n\n"}
-          Get analytics to keep up with your business and maximize your wining.
+          {/* Priority search ranking - Your listings show on top to increase your
+          earning.{"\n\n"} */}
+          {/* Get analytics to keep up with your business and maximize your wining. */}
+          List Realestate and Transportation items.
         </OfferCard>
       </ScrollScreen>
       <Navbar></Navbar>
@@ -119,6 +123,11 @@ const getStyles = (theme) =>
       flexDirection: "row",
       alignItems: "center",
       gap: 5,
+    },
+    smallIconAndTitle: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 8,
     },
     text: {
       color: theme.purple,
