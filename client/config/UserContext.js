@@ -242,12 +242,12 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  // Register function
+  // Add this debugging version to your UserContext register function:
+
   const register = async (userData) => {
     dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: true });
 
     try {
-      // TODO: Replace with actual API call
       const response = await registerUser(userData);
 
       const user = {
@@ -256,12 +256,15 @@ export const UserProvider = ({ children }) => {
         email: response.email,
         phone: response.phone,
         gender: response.gender,
-        avatar: null,
-        router: response.role,
-        createdAt: response.createdAt,
+        avatar: response.image || null,
+        isRated: response.isRated || false,
+        rating: response.rating || null,
+        ratingCount: response.ratingCount || 0,
+        role: response.role || "user",
+        createdAt: response.createdAt || new Date().toISOString(),
       };
 
-      // store user data
+      // Store user data
       await storeUserData(user, response.token);
 
       dispatch({
@@ -271,8 +274,13 @@ export const UserProvider = ({ children }) => {
           token: response.token,
         },
       });
+
+      // Add a small delay to ensure state updates
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      return { success: true, user: user };
     } catch (error) {
-      // Handle different error types
+      console.log("ERROR in register:", error);
       let errorMessage = "Registration failed";
 
       if (error.message.includes("already registered")) {
@@ -291,8 +299,47 @@ export const UserProvider = ({ children }) => {
       });
 
       return { success: false, error: errorMessage };
+    } finally {
+      dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: false });
     }
   };
+
+  // Also add logs to your Signin handleSubmit:
+  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
+    console.log("=== SIGNIN SUBMIT START ===");
+    setHasBeenSubmitted(true);
+
+    const { confirmPassword, ...userData } = values;
+
+    try {
+      console.log("Calling register with:", userData);
+      const result = await register(userData);
+      console.log("Register returned:", result);
+
+      if (result && result.success) {
+        console.log("Registration successful! User:", result.user);
+        // Check the user state here
+        console.log("Current user context after register:", user);
+      } else {
+        console.log("Registration failed:", result?.error);
+        setStatus({
+          type: "error",
+          message: result?.error || "Failed to register.",
+        });
+      }
+    } catch (error) {
+      console.error("Exception in handleSubmit:", error);
+      setStatus({
+        type: "error",
+        message: error.message || "An unexpected error occurred.",
+      });
+    } finally {
+      setSubmitting(false);
+      console.log("=== SIGNIN SUBMIT END ===");
+    }
+  };
+
+  // Also check your reducer - add a log there:
 
   // Logout function
   const logout = async () => {
@@ -313,7 +360,6 @@ export const UserProvider = ({ children }) => {
 
       dispatch({
         type: USER_ACTION_TYPES.UPDATE_PROFILE,
-        
       });
 
       dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: false });

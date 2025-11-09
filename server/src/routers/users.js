@@ -50,7 +50,7 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
     return res
       .header("x-auth-token", token)
       .status(200)
-      .send(_.pick(newUser, ["name", "email", "phone", "gender"]));
+      .send(_.pick(newUser, ["_id","name", "email", "phone", "gender"]));
   } catch (err) {
     if (err.code === 11000) {
       const field = Object.keys(err.keyValue)[0];
