@@ -36,8 +36,6 @@ const postSchema = new mongoose.Schema(
         "realestate",
       ],
       required: true,
-      // maybe here i can add enum: ['sports', 'transportation', ...]
-      // or make a schema for categories?
     },
     pricePerDay: {
       type: Number,

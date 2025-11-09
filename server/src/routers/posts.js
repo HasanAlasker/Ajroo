@@ -170,7 +170,7 @@ router.get("/user/:id", auth, async (req, res) => {
 
     const posts = await PostModel.find({
       user: id,
-      status: { $in: ["available", "disabled" ] },
+      status: { $in: ["available", "disabled"] },
     })
       .sort({ createdAt: -1 })
       .populate("user", "name image");
@@ -345,6 +345,51 @@ router.put("/rate/:id", auth, async (req, res) => {
 });
 
 // get posts with search and filter, how to do that?
+
+router.get("/search", auth, async (req, res) => {
+  try {
+    const {
+      category,
+      name,
+      city,
+      area,
+      minPrice,
+      maxPrice,
+      rating,
+      condition,
+    } = req.query;
+
+    let query = { isDeleted: false, status: "available" };
+
+    if (category) query.category = category;
+
+    if (name) query.name = { $regex: name, $options: "i" };
+
+    if (city) query.city = city;
+
+    if (area) query.area = area;
+
+    if (minPrice || maxPrice) {
+      query.pricePerDay = {}; // Create empty object for price filters
+
+      if (minPrice) query.pricePerDay.$gte = Number(minPrice); // Convert string to number
+      if (maxPrice) query.pricePerDay.$lte = Number(maxPrice);
+    }
+
+    if (rating) query.rating = rating;
+
+    if (condition) query.condition = condition;
+
+    const filteredPosts = await PostModel.find(query)
+      .populate("user", "name image")
+      .sort("-createdAt");
+
+    return res.status(200).send(filteredPosts)
+    
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
 
 // enforce subscription limits
 
