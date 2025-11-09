@@ -9,11 +9,8 @@ import { useState, useEffect } from "react";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import BackContainer from "../BackContainer";
 import AppText from "../../config/AppText";
-import AppForm from "../form/AppForm";
 import {
-  areas,
   categories,
-  items,
   price,
   cities,
   condition,
@@ -26,26 +23,100 @@ import FormikDropBox from "../form/FormikDropBox";
 import SubmitBtn from "../form/SubmitBtn";
 import MenuBackBtn from "../MenuBackBtn";
 import FormBtn from "../FormBtn";
+import { searchPosts } from "../../api/post";
 
-function FilterModal({ isVisible, onClose }) {
+function FilterModal({ isVisible, onClose, onSearchResults }) {
   const styles = useThemedStyles(getStyles);
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
 
   const initialValues = {
     category: "",
     item: "",
-    price: "", // make it min / max price
+    price: "",
     city: "",
     area: "",
     condition: "",
-    // rating: ""
   };
 
   const handleSubmit = async (
     values,
     { setSubmitting, setStatus, resetForm }
   ) => {
-    setSubmitting(false);
+    try {
+      setHasBeenSubmitted(true);
+
+      // Build activeFilters from Formik values
+      const activeFilters = {};
+
+      // Category
+      if (values.category) {
+        activeFilters.category = values.category;
+      }
+
+      // Item (maps to "name" in backend)
+      if (values.item) {
+        activeFilters.name = values.item;
+      }
+
+      // Price - parse the price range (e.g., "10-50")
+      if (values.price) {
+        const priceStr = values.price.toString();
+        if (priceStr.includes("-")) {
+          const [min, max] = priceStr.split("-");
+          if (min) activeFilters.minPrice = min.trim();
+          if (max) activeFilters.maxPrice = max.trim();
+        }
+      }
+
+      // City
+      if (values.city) {
+        activeFilters.city = values.city;
+      }
+
+      // Area
+      if (values.area) {
+        activeFilters.area = values.area;
+      }
+
+      // Condition
+      if (values.condition) {
+        activeFilters.condition = values.condition;
+      }
+
+      console.log("FilterModal: Sending filters:", activeFilters);
+
+      // Check if at least one filter is selected
+      if (Object.keys(activeFilters).length === 0) {
+        console.log("FilterModal: No filters selected");
+        setStatus({ error: "Please select at least one filter" });
+        setSubmitting(false);
+        return;
+      }
+
+      // Make API call directly (not using useApi hook)
+      const response = await searchPosts(activeFilters);
+      console.log("FilterModal: Full API response:", response);
+
+      // Extract data from response
+      const results = response.data || response || [];
+      console.log("FilterModal: Extracted results:", results.length, "posts");
+
+      // Send results back to parent
+      if (onSearchResults) {
+        onSearchResults(results);
+        console.log("FilterModal: Results sent to parent");
+      }
+
+      // Close modal after successful search
+      onClose();
+      
+    } catch (error) {
+      console.log("FilterModal: Search error:", error);
+      console.log("FilterModal: Error details:", error.response || error.message);
+      setStatus({ error: "Search failed. Please try again." });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!isVisible) {
@@ -70,13 +141,16 @@ function FilterModal({ isVisible, onClose }) {
             errors,
             setFieldValue,
             setStatus,
+            status,
             resetForm,
             handleSubmit,
+            isSubmitting,
           }) => {
-            // Handle clear function - this gets access to resetForm
+            // Handle clear function
             const handleClear = () => {
-              resetForm(); // Reset to initial values
-              setHasBeenSubmitted(false); // Reset submission state
+              resetForm();
+              setHasBeenSubmitted(false);
+              setStatus(null);
             };
 
             const [availableItems, setAvailableItems] = useState([]);
@@ -139,12 +213,12 @@ function FilterModal({ isVisible, onClose }) {
                   hasBeenSubmitted={hasBeenSubmitted}
                 />
 
-                <FormikDropBox
+                {/* <FormikDropBox
                   name="price"
                   placeholder="Select Price Per Day"
                   items={price}
                   hasBeenSubmitted={hasBeenSubmitted}
-                />
+                /> */}
 
                 <FormikDropBox
                   name="city"
@@ -168,11 +242,16 @@ function FilterModal({ isVisible, onClose }) {
                   hasBeenSubmitted={hasBeenSubmitted}
                 />
 
+                {status && status.error && (
+                  <AppText style={styles.errorText}>{status.error}</AppText>
+                )}
+
                 <SubmitBtn
                   defaultText="Search"
                   submittingText="Searching..."
                   setHasBeenSubmitted={setHasBeenSubmitted}
                   onPress={handleSubmit}
+                  disabled={isSubmitting}
                 />
 
                 <FormBtn
@@ -226,6 +305,12 @@ const getStyles = (theme) =>
     },
     close: {
       marginBottom: 0,
+    },
+    errorText: {
+      color: "red",
+      textAlign: "center",
+      marginVertical: 10,
+      fontSize: 14,
     },
   });
 

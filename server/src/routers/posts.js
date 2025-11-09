@@ -196,36 +196,68 @@ router.get("/search", auth, async (req, res) => {
       maxPrice,
       rating,
       condition,
+      status,
     } = req.query;
 
-    let query = { isDeleted: false, status: "available" };
+    // Base query - always exclude deleted posts
+    let query = { isDeleted: false };
 
-    if (category) query.category = category;
+    // Only add status filter if explicitly provided
+    // Otherwise, default to available
+    if (status) {
+      query.status = status;
+    } else {
+      query.status = "available";
+    }
 
-    if (name) query.name = { $regex: name, $options: "i" };
+    // Category filter
+    if (category) {
+      query.category = category;
+    }
 
-    if (city) query.city = city;
+    // Name filter (partial match, case-insensitive)
+    if (name) {
+      query.name = { $regex: name, $options: "i" };
+    }
 
-    if (area) query.area = area;
+    // City filter
+    if (city) {
+      query.city = city;
+    }
 
+    // Area filter
+    if (area) {
+      query.area = area;
+    }
+
+    // Price range filter
     if (minPrice || maxPrice) {
-      query.pricePerDay = {}; // Create empty object for price filters
-
-      if (minPrice) query.pricePerDay.$gte = Number(minPrice); // Convert string to number
+      query.pricePerDay = {};
+      if (minPrice) query.pricePerDay.$gte = Number(minPrice);
       if (maxPrice) query.pricePerDay.$lte = Number(maxPrice);
     }
 
-    if (rating) query.rating = rating;
+    // Rating filter
+    if (rating) {
+      query.rating = { $gte: Number(rating) };
+    }
 
-    if (condition) query.condition = condition;
+    // Condition filter
+    if (condition) {
+      query.condition = condition;
+    }
+
+    console.log("Backend search query:", query);
 
     const filteredPosts = await PostModel.find(query)
       .populate("user", "name image")
       .sort("-createdAt");
 
-    return res.status(200).send(filteredPosts)
-    
+    console.log("Backend found posts:", filteredPosts.length);
+
+    return res.status(200).send(filteredPosts);
   } catch (err) {
+    console.log("Backend search error:", err);
     return res.status(500).send(err.message);
   }
 });

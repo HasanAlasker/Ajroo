@@ -29,42 +29,22 @@ export const rateItem = (id, rating) =>
   apiClient.put(`${endPoint}/rate/${id}`, { rating }); // ✅
 
 export const searchPosts = (filters = {}) => {
+  // Build query string from filters object
   const queryParams = new URLSearchParams();
 
-  if (filters.name) {
-    queryParams.append("name", filters.name);
-  }
+  // Only add parameters that have values
+  if (filters.name) queryParams.append("name", filters.name);
+  if (filters.category) queryParams.append("category", filters.category);
+  if (filters.minPrice) queryParams.append("minPrice", filters.minPrice);
+  if (filters.maxPrice) queryParams.append("maxPrice", filters.maxPrice);
+  if (filters.city) queryParams.append("city", filters.city);
+  if (filters.area) queryParams.append("area", filters.area);
+  if (filters.condition) queryParams.append("condition", filters.condition);
+  if (filters.status) queryParams.append("status", filters.status);
 
-  if (filters.category) {
-    queryParams.append("category", filters.category);
-  }
-
-  if (filters.city) {
-    queryParams.append("city", filters.city);
-  }
-
-  if (filters.area) {
-    queryParams.append("area", filters.category);
-  }
-
-  if (filters.rating) {
-    queryParams.append("rating", filters.rating);
-  }
-
-  if (filters.minPrice) {
-    queryParams.append("minPrice", filters.minPrice);
-  }
-
-  if (filters.maxPrice) {
-    queryParams.append("maxPrice", filters.maxPrice);
-  }
-
-  if (filters.city) {
-    queryParams.append("city", filters.city);
-  }
-
+  // Convert to string: "name=camera&city=Amman"
   const queryString = queryParams.toString();
-  const url = `/posts/search${queryString ? `?${queryString}` : ""}`;
 
-  return apiClient.get(url)
+  // Make request with query string
+  return apiClient.get(`${endPoint}/search${queryString ? `?${queryString}` : ""}`);
 };

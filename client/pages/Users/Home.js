@@ -17,9 +17,9 @@ function Home(props) {
 
   return (
     <SafeScreen>
-      <SearchBar></SearchBar>
+      {/* <SearchBar></SearchBar> */}
       <ScrollView >
-        <WelcomeCard name={getUserDisplayName()}></WelcomeCard>
+        <WelcomeCard />
         <AppText style={styles.text}>
           What kind of item are you looking for?
         </AppText>
