@@ -149,7 +149,8 @@ const getStyles = (theme) =>
     inputContainer: {
       borderWidth: 2,
       borderRadius: 50,
-      paddingHorizontal: 20,
+      paddingLeft: 20,
+      paddingRight:10,
       borderColor: theme.purple,
       flexDirection: "row",
       alignItems: "center",
@@ -160,7 +161,7 @@ const getStyles = (theme) =>
     },
     icon: {},
     actionButton: {
-      marginLeft: 10,
+      marginLeft: 15,
     },
     filter: {
       backgroundColor: theme.post,
