@@ -22,7 +22,6 @@ import {
 } from "../../constants/DropOptions";
 
 import { Formik } from "formik";
-import * as Yup from "yup";
 import FormikDropBox from "../form/FormikDropBox";
 import SubmitBtn from "../form/SubmitBtn";
 import MenuBackBtn from "../MenuBackBtn";
@@ -35,10 +34,11 @@ function FilterModal({ isVisible, onClose }) {
   const initialValues = {
     category: "",
     item: "",
-    price: "",
+    price: "", // make it min / max price
     city: "",
     area: "",
     condition: "",
+    // rating: ""
   };
 
   const handleSubmit = async (
@@ -79,6 +79,49 @@ function FilterModal({ isVisible, onClose }) {
               setHasBeenSubmitted(false); // Reset submission state
             };
 
+            const [availableItems, setAvailableItems] = useState([]);
+            const [availableAreas, setAvailableAreas] = useState([]);
+
+            // Update available items when category changes
+            useEffect(() => {
+              if (values.category) {
+                const categoryItems = getItemsByCategory(values.category);
+                setAvailableItems(categoryItems);
+
+                const currentItemValid = categoryItems.some(
+                  (item) => item.value === values.item
+                );
+                if (values.item && !currentItemValid) {
+                  setFieldValue("item", "");
+                }
+              } else {
+                setAvailableItems([]);
+                if (values.item) {
+                  setFieldValue("item", "");
+                }
+              }
+            }, [values.category]);
+
+            // Update available areas when city changes
+            useEffect(() => {
+              if (values.city) {
+                const cityAreas = getAreasByCity(values.city);
+                setAvailableAreas(cityAreas);
+
+                const currentAreaValid = cityAreas.some(
+                  (area) => area.value === values.area
+                );
+                if (values.area && !currentAreaValid) {
+                  setFieldValue("area", "");
+                }
+              } else {
+                setAvailableAreas([]);
+                if (values.area) {
+                  setFieldValue("area", "");
+                }
+              }
+            }, [values.city]);
+
             return (
               <ScrollView>
                 <FormikDropBox
@@ -91,7 +134,8 @@ function FilterModal({ isVisible, onClose }) {
                 <FormikDropBox
                   name="item"
                   placeholder="Select Item"
-                  items={items}
+                  items={availableItems}
+                  disabled={!values.category || availableItems.length === 0}
                   hasBeenSubmitted={hasBeenSubmitted}
                 />
 
@@ -112,7 +156,8 @@ function FilterModal({ isVisible, onClose }) {
                 <FormikDropBox
                   name="area"
                   placeholder="Select Area"
-                  items={areas}
+                  items={availableAreas}
+                  disabled={!values.city || availableAreas.length === 0}
                   hasBeenSubmitted={hasBeenSubmitted}
                 />
 
