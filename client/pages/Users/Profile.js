@@ -73,7 +73,7 @@ function Profile({ isNotification }) {
         ></SettingsMenu>
 
         <TopChunkProfile
-          isNotification={true} // change dynamicly
+          isNotification={false} // change dynamicly
           myProfile={myProfile}
           userImage={profile?.image || null}
           userName={profile?.name}

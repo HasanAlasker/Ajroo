@@ -28,8 +28,8 @@ function SettingsMenu({ isVisible, onClose }) {
         <BackContainer>
           <MenuBackBtn onClose={onClose} />
           <MenuOption text={isDarkMode ? 'Light mode': 'Dark mode'} icon={"circle-half-full"} onPress={toggleTheme}/>
-          <SeparatorComp style={styles.sep} />
-          <MenuOption text={"Change language"} icon={"earth"} />
+          {/* <SeparatorComp style={styles.sep} />
+          <MenuOption text={"Change language"} icon={"earth"} /> */}
           {!isAdmin && <SeparatorComp style={styles.sep} />}
           {!isAdmin && <MenuOption text={"Privacy policy"} icon={"shield-check-outline"} />}
           {!isAdmin && <SeparatorComp style={styles.sep} />}
@@ -47,7 +47,7 @@ function SettingsMenu({ isVisible, onClose }) {
           {isAdmin && <SeparatorComp style={styles.sep} />}
           {isAdmin && <MenuOption text={"Suggestions"} icon={"chat-outline"} color={"purple"} onPress={()=> navigation.navigate('AdminSuggestions')} />}
           <SeparatorComp style={styles.sep} />
-          <MenuOption text={"Support"} icon={"headphones"} color={"green"} />
+          <MenuOption text={"Support"} icon={"headphones"} color={"green"} onPress={()=>navigation.navigate('Suggestions')}/>
           <SeparatorComp style={styles.sep} />
           <MenuOption text={"Log out"} icon={"logout"} color={"red"} onPress={logout}/>
         </BackContainer>

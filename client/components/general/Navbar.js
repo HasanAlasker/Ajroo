@@ -49,7 +49,7 @@ function Navbar(props) {
               style={[styles.icon, route.name === "Have" && styles.active]}
             />
             <Text style={[styles.text, route.name === "Have" && styles.active]}>
-              Have
+              Items
             </Text>
           </TouchableOpacity>
 
