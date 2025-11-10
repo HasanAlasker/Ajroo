@@ -31,7 +31,7 @@ function AdminSuggestions(props) {
     setRefreshing(false)
   };
 
-  console.log("Suggestion data:", suggestion); // Better logging
+  // console.log("Suggestion data:", suggestion); // Better logging
 
   if (loading && !suggestion) { // Only show loading on initial load
     return <LoadingCircle />;
