@@ -60,7 +60,17 @@
 
 ## 📸 Screenshots
 
-> Coming soon — sneak peeks of the mobile app interface and user flows.
+<p align="center">
+<img src='./client/assets/pics/welcome.png' width="250">
+<img src='./client/assets/pics/home.png' width="250">
+<img src='./client/assets/pics/items.png' width="250">
+<img src='./client/assets/pics/post.png' width="250">
+<img src='./client/assets/pics/book.png' width="250">
+<img src='./client/assets/pics/requests.png' width="250">
+<img src='./client/assets/pics/profile.png' width="250">
+<img src='./client/assets/pics/edit.png' width="250">
+<img src='./client/assets/pics/subscription.png' width="250">
+</p>
 
 ---
 
