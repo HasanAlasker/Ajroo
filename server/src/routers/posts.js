@@ -52,11 +52,16 @@ router.get("/available", auth, async (req, res) => {
       isDeleted: false,
       status: { $in: ["available", "pending"] },
     })
-      .populate("user", "name image")
+      .populate("user", "name image isBlocked")
       .sort("-createdAt");
     if (!posts) return res.status(404).send("No posts found");
 
-    return res.status(200).send(posts);
+    // Filter out posts from blocked users
+    const filteredPosts = posts.filter(
+      (post) => post.user && !post.user.isBlocked
+    );
+
+    return res.status(200).send(filteredPosts);
   } catch (err) {
     return res.status(500).send(err.message);
   }
@@ -66,7 +71,7 @@ router.get("/available", auth, async (req, res) => {
 
 router.get("/deleted", [auth, admin], async (req, res) => {
   try {
-    const deletedPosts = await PostModel.find({ isDeleted: true })
+    const deletedPosts = await PostModel.find({ isDeleted: true });
     return res.status(200).send(deletedPosts);
   } catch (err) {
     return res.status(500).send(err);
@@ -192,7 +197,6 @@ router.get("/user/:id", auth, async (req, res) => {
     return res.status(500).send(err.message);
   }
 });
-
 
 // get posts with search and filter, how to do that?
 

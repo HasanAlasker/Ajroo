@@ -88,7 +88,7 @@ function Profile({ isNotification }) {
           }}
         ></TopChunkProfile>
 
-        <IndivisualPromo></IndivisualPromo>
+        {user.role !== 'admin' && <IndivisualPromo></IndivisualPromo>}
         {/* <BuisnessPromo></BuisnessPromo> */}
       </PostRenderer>
       <Navbar></Navbar>

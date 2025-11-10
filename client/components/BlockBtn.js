@@ -59,7 +59,7 @@ function BlockBtn({ onPress, profileId, isBlocked }) {
   return (
     <View>
       <TouchableOpacity onPress={isBlocked ? handleUnBlock :handleBlock} style={[styles.container, {backgroundColor: isBlocked ? theme.green : theme.red}]}>
-        <Octicons name={isBlocked ? "check-circle" : "circle-slash"} size={27} color={theme.always_white}></Octicons>
+        <Octicons name={isBlocked ? "unlock" : "lock"} size={27} color={theme.always_white}></Octicons>
       </TouchableOpacity>
     </View>
   );
