@@ -17,11 +17,13 @@ const router = express.Router();
 
 // ==================== PUBLIC ROUTES ====================
 
-// get all users
+// get all users (not blocked)
 
 router.get("/", auth, async (req, res) => {
   try {
-    const users = await UserModel.find().select("name role");
+    const users = await UserModel.find({ isBlocked: false }).select(
+      "name role"
+    );
     if (!users) return res.status(400).send("No users found");
 
     return res.status(200).send(users);
@@ -50,7 +52,7 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
     return res
       .header("x-auth-token", token)
       .status(200)
-      .send(_.pick(newUser, ["_id","name", "email", "phone", "gender"]));
+      .send(_.pick(newUser, ["_id", "name", "email", "phone", "gender"]));
   } catch (err) {
     if (err.code === 11000) {
       const field = Object.keys(err.keyValue)[0];
@@ -111,9 +113,23 @@ router.get("/me", auth, async (req, res) => {
   try {
     const user = await UserModel.findById(req.user._id).select("-password");
     if (!user) return res.status(400).send("user not found");
+    if (user.isBlocked) return res.status(404).send("User is Blocked");
     return res.status(200).send(user);
   } catch (error) {
     return res.status(500).send(error);
+  }
+});
+
+// Get blocked users
+
+router.get("/blocked", [auth, admin], async (req, res) => {
+  try {
+    const blockedUsers = await UserModel.find({ isBlocked: true }).select(
+      "-password"
+    );
+    return res.status(200).send(blockedUsers);
+  } catch (err) {
+    return res.status(500).send(err);
   }
 });
 
@@ -124,6 +140,7 @@ router.get("/:id", auth, async (req, res) => {
     const id = req.params.id;
     const user = await UserModel.findById(id).select("-password -strikes");
     if (!user) return res.status(404).send("user not found");
+    if (user.isBlocked) return res.status(404).send("User is Blocked");
 
     return res.status(200).send(user);
   } catch (error) {
@@ -204,9 +221,29 @@ router.delete("/delete/:id", [auth, admin], async (req, res) => {
   }
 });
 
-// forgot password
+// Block user (admin)
 
-// add subscription
+router.put("/block/:id", [auth, admin], async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).send("Invalid user ID");
+    }
+
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).send("User not found");
+
+    if (user.isBlocked) return res.status(400).send("User already blocked");
+
+    user.isBlocked = true;
+    user.save();
+
+    return res.status(200).send("User blocked successfully");
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
 
 // Rate a user
 
@@ -257,4 +294,7 @@ router.put("/rate/:id", auth, async (req, res) => {
   }
 });
 
+// forgot password
+
+// add subscription
 export default router;

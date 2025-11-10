@@ -62,6 +62,17 @@ router.get("/available", auth, async (req, res) => {
   }
 });
 
+// Get deleted posts (softly)
+
+router.get("/deleted", [auth, admin], async (req, res) => {
+  try {
+    const deletedPosts = await PostModel.find({ isDeleted: true })
+    return res.status(200).send(deletedPosts);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
+
 // create post (authinticatied users)
 // add (chech subscription limits)
 

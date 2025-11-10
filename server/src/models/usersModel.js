@@ -82,6 +82,10 @@ const userSchema = new mongoose.Schema(
     pushNotificationTokens: {
       type: [String],
       default: null
+    },
+    isBlocked:{
+      type: Boolean,
+      default: false,
     }
   },
   { timestamps: true }
