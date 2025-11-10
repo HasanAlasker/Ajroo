@@ -182,6 +182,7 @@ const getStyles = (theme) =>
       fontSize: 16,
       height: 40,
       textAlignVertical: "center",
+      color: theme.sec_text,
       margin: 0,
       padding: 0,
       flex: 1,

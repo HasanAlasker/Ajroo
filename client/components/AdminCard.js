@@ -9,7 +9,7 @@ function AdminCard({title, value, color, backColor='purple', borderColor}) {
     const {theme} = useTheme()
     const styles = useThemedStyles(getStyles)
   return (
-    <PostComponent style={[styles.card, {backgroundColor: theme[backColor], borderColor: theme[borderColor]}]}>
+    <PostComponent style={[styles.card, {backgroundColor: theme[backColor], borderColor: theme[borderColor], width: "95%"}]}>
         <View style={styles.container}>
             <AppText style={[styles.text, {color:theme[color]}]}>{title} :</AppText>
             <AppText style={[styles.text, {color:theme[color], flex:1}]}>{value != null ? value : 'No data yet'}</AppText>
