@@ -9,7 +9,7 @@ import useApi from "../../hooks/useApi";
 import { availablePosts, searchPosts } from "../../api/post";
 import LoadingCircle from "../../components/general/LoadingCircle";
 
-function Have(props) {
+function Have({ route }) {
   const { user } = useUser();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -20,6 +20,9 @@ function Have(props) {
   const [isFilterActive, setIsFilterActive] = useState(false);
   // Track the source of the search (text or filter)
   const searchSource = useRef(null); // 'text' or 'filter'
+
+  // Store initial category from navigation
+  const initialCategory = useRef(null);
 
   // Get all posts
   const {
@@ -33,6 +36,32 @@ function Have(props) {
     fetchPosts();
   }, []);
 
+  // Handle navigation params - apply filter when coming from Home
+  useEffect(() => {
+    if (route?.params?.category && route?.params?.applyFilter) {
+      const category = route.params.category;
+      initialCategory.current = category;
+      
+      // Apply the filter automatically
+      handleFilterByCategory(category);
+    }
+  }, [route?.params]);
+
+  const handleFilterByCategory = async (category) => {
+    searchSource.current = 'filter';
+    setIsSearching(true);
+    setIsFilterActive(true);
+    try {
+      const response = await searchPosts({ category: category });
+      setFilteredResults(response.data);
+    } catch (error) {
+      console.log("Filter error:", error);
+      setFilteredResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchPosts();
@@ -41,6 +70,7 @@ function Have(props) {
     setIsSearching(false);
     setIsFilterActive(false);
     searchSource.current = null;
+    initialCategory.current = null;
     setRefreshing(false);
   };
 
@@ -76,7 +106,6 @@ function Have(props) {
 
   // Handle filter results from FilterModal
   const handleFilterResults = useCallback((results) => {
-    console.log("Filter results received:", results);
     searchSource.current = 'filter';
     setFilteredResults(results);
     setIsFilterActive(true);
@@ -88,6 +117,7 @@ function Have(props) {
     setIsFilterActive(false);
     setIsSearching(false);
     searchSource.current = null;
+    initialCategory.current = null;
   }, []);
 
   // Determine which posts to display
@@ -115,6 +145,7 @@ function Have(props) {
           onFilterResults={handleFilterResults}
           onClearSearch={handleClearSearch}
           isFilterActive={isFilterActive}
+          initialCategory={initialCategory.current}
         />
       </PostRenderer>
       <Navbar />

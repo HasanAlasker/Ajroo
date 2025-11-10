@@ -5,7 +5,7 @@ import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import AppText from "../config/AppText";
 
-function SquareCard({ icon, name, cardnum }) {
+function SquareCard({ icon, name, cardnum, onPress }) {
   const { theme } = useTheme();
 
   const styles = useThemedStyles(getStyles);
@@ -31,7 +31,10 @@ function SquareCard({ icon, name, cardnum }) {
   };
 
   return (
-    <TouchableOpacity style={[styles.container, { backgroundColor: getBackgroundColor() }]}>
+    <TouchableOpacity 
+      style={[styles.container, { backgroundColor: getBackgroundColor() }]}
+      onPress={onPress}
+    >
       <MaterialCommunityIcons
         name={icon}
         size={90}

@@ -11,9 +11,17 @@ import SafeScreen from '../../components/general/SafeScreen';
 import { useUser } from '../../config/UserContext';
 import AlertModal from '../../components/general/AlertModal'
 
-function Home(props) {
+function Home({ navigation }) {
   const styles = useThemedStyles(getStyles);
   const {getUserDisplayName} = useUser()
+
+  const handleCardPress = (categoryName) => {
+    // Navigate to Have page with category filter
+    navigation.navigate('Have', { 
+      category: categoryName,
+      applyFilter: true 
+    });
+  };
 
   return (
     <SafeScreen>
@@ -24,14 +32,14 @@ function Home(props) {
           What kind of item are you looking for?
         </AppText>
         <View style={styles.grid}>
-          <SquareCard icon={'home'} name={'Household'} cardnum={1}></SquareCard>
-          <SquareCard icon={'flower'} name={'Garden'} cardnum={3}></SquareCard>
-          <SquareCard icon={'pliers'} name={'Tools'} cardnum={6}></SquareCard>
-          <SquareCard icon={'bicycle'} name={'Sports'} cardnum={4}></SquareCard>
-          <SquareCard icon={'tshirt-crew'} name={'Clothes'} cardnum={5}></SquareCard>
-          <SquareCard icon={'fridge'} name={'Electronics'} cardnum={2}></SquareCard>
-          <SquareCard icon={'calendar'} name={'Events'} cardnum={7}></SquareCard>
-          <SquareCard icon={'book'} name={'Books'} cardnum={8}></SquareCard>
+          <SquareCard icon={'home'} name={'Household'} cardnum={1} onPress={() => handleCardPress('Household')}></SquareCard>
+          <SquareCard icon={'flower'} name={'Garden'} cardnum={3} onPress={() => handleCardPress('Garden')}></SquareCard>
+          <SquareCard icon={'pliers'} name={'Tools'} cardnum={6} onPress={() => handleCardPress('Tools')}></SquareCard>
+          <SquareCard icon={'bicycle'} name={'Sports'} cardnum={4} onPress={() => handleCardPress('Sports')}></SquareCard>
+          <SquareCard icon={'tshirt-crew'} name={'Clothes'} cardnum={5} onPress={() => handleCardPress('Clothes')}></SquareCard>
+          <SquareCard icon={'fridge'} name={'Electronics'} cardnum={2} onPress={() => handleCardPress('Electronics')}></SquareCard>
+          <SquareCard icon={'calendar'} name={'Events'} cardnum={7} onPress={() => handleCardPress('Events')}></SquareCard>
+          <SquareCard icon={'book'} name={'Books'} cardnum={8} onPress={() => handleCardPress('Books')}></SquareCard>
         </View>
       </ScrollView>
       <AlertModal></AlertModal>
