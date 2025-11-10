@@ -15,6 +15,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { useTheme } from "../config/ThemeContext";
 import { useRoute } from "@react-navigation/native";
 import PhoneNumber from "./post_releated/PhoneNumber";
+import BlockBtn from "./BlockBtn";
 
 const formatRating = (rating) => {
   if (rating !== "Unrated Yet") {
@@ -34,6 +35,8 @@ function TopChunkProfile({
   userImage,
   userEmail,
   userPhone,
+  profileId,
+  isBlocked
 }) {
   const { user } = useUser();
   const styles = useThemedStyles(getStyles);
@@ -68,6 +71,8 @@ function TopChunkProfile({
         </UserPicAndRateContainer>
         {myProfile ? (
           <SettingsBtn onPress={settingsPress}></SettingsBtn>
+        ) : user.role === "admin" ? (
+          <BlockBtn profileId={profileId} isBlocked={isBlocked}></BlockBtn>
         ) : (
           <BlankBtn></BlankBtn>
         )}

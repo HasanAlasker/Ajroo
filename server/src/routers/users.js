@@ -140,7 +140,6 @@ router.get("/:id", auth, async (req, res) => {
     const id = req.params.id;
     const user = await UserModel.findById(id).select("-password -strikes");
     if (!user) return res.status(404).send("user not found");
-    if (user.isBlocked) return res.status(404).send("User is Blocked");
 
     return res.status(200).send(user);
   } catch (error) {
@@ -240,6 +239,30 @@ router.put("/block/:id", [auth, admin], async (req, res) => {
     user.save();
 
     return res.status(200).send("User blocked successfully");
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+// unBlock user (admin)
+
+router.put("/unblock/:id", [auth, admin], async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).send("Invalid user ID");
+    }
+
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).send("User not found");
+
+    if (user.isBlocked === false) return res.status(400).send("User already not blocked");
+
+    user.isBlocked = false;
+    user.save();
+
+    return res.status(200).send("User un blocked successfully");
   } catch (err) {
     return res.status(500).send(err.message);
   }

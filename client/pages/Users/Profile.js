@@ -75,6 +75,8 @@ function Profile({ isNotification }) {
         <TopChunkProfile
           isNotification={false} // change dynamicly
           myProfile={myProfile}
+          profileId={profile?._id}
+          isBlocked={profile?.isBlocked}
           userImage={profile?.image || null}
           userName={profile?.name}
           userRate={profile?.rating || "Unrated Yet"}

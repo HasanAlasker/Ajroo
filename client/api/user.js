@@ -75,6 +75,8 @@ export const rateUser = (id, rating) => apiClient.put(`${endPoint}/rate/${id}`, 
 
 export const blockUser = (id) => apiClient.put(`${endPoint}/block/${id}`)
 
+export const unBlockUser = (id) => apiClient.put(`${endPoint}/unblock/${id}`)
+
 export const getBlockedUsers = () => apiClient.get(`${endPoint}/blocked`)
 
 

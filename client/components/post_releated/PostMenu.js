@@ -114,26 +114,66 @@ function PostMenu({
   };
 
   const handleDeleteSuggestion = async () => {
-    await deleteSuggestion(postId);
-    onClose();
+    showAlert({
+      title: "Delete suggestion?",
+      message: "This action cannot be undone.",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        try {
+          await deleteSuggestion(postId);
+          onClose();
+        } catch (error) {
+          showInfo({
+            title: "Error",
+            message: "Post could not be deleted.",
+            confirmText: "Close",
+          });
+        }
+      },
+    });
   };
 
   const handleSoftDelete = async () => {
-    try {
-      await softDelete(postId);
-      onClose();
-    } catch (err) {
-      console.log("Error:", err);
-    }
+    showAlert({
+      title: "Delete post?",
+      message: "Are you sure, you can restore it later.",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        try {
+          await softDelete(postId);
+          onClose();
+        } catch (error) {
+          showInfo({
+            title: "Error",
+            message: "Post could not be deleted.",
+            confirmText: "Close",
+          });
+        }
+      },
+    });
   };
 
   const handleUnDelete = async () => {
-    try {
-      await unDelete(postId);
-      onClose();
-    } catch (err) {
-      console.log("Error:", err);
-    }
+    showAlert({
+      title: "Restore post?",
+      message: "Are you sure you want to bring it back?",
+      confirmText: "Yes",
+      cancelText: "No",
+      onConfirm: async () => {
+        try {
+          await unDelete(postId);
+          onClose();
+        } catch (error) {
+          showInfo({
+            title: "Error",
+            message: "Post could not be deleted.",
+            confirmText: "Close",
+          });
+        }
+      },
+    });
   };
 
   if (!isVisible) return null;

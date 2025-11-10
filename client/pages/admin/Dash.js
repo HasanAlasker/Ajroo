@@ -7,6 +7,7 @@ import AdminCard from "../../components/AdminCard";
 import LoadingCircle from "../../components/general/LoadingCircle";
 import useApi from "../../hooks/useApi";
 import { getStats } from "../../api/admin"; // New API function
+import AlertModal from '../../components/general/AlertModal'
 
 function Dash(props) {
   const [refreshing, setRefreshing] = useState(false);
@@ -166,6 +167,7 @@ function Dash(props) {
           /> */}
         </View>
       </ScrollScreen>
+      <AlertModal />
       <Navbar />
     </SafeScreen>
   );
