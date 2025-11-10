@@ -73,4 +73,9 @@ export const deleteUser = (id) => apiClient.delete(`${endPoint}/delete/${id}`)
 
 export const rateUser = (id, rating) => apiClient.put(`${endPoint}/rate/${id}`, {rating})
 
+export const blockUser = (id) => apiClient.put(`${endPoint}/block/${id}`)
+
+export const getBlockedUsers = () => apiClient.get(`${endPoint}/blocked`)
+
+
 

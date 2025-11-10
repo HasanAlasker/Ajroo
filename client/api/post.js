@@ -18,6 +18,8 @@ export const editPost = (id, data) =>
 export const softDelete = (id) =>
   apiClient.put(`${endPoint}/soft-delete/${id}`); // ✅
 
+export const getDeletedPosts = () => apiClient.get(`${endPoint}/deleted`);
+
 export const unDelete = (id) => apiClient.put(`${endPoint}/un-delete/${id}`); // ✅
 
 export const deletePost = (id) => apiClient.delete(`${endPoint}/delete/${id}`); // ✅
@@ -46,5 +48,7 @@ export const searchPosts = (filters = {}) => {
   const queryString = queryParams.toString();
 
   // Make request with query string
-  return apiClient.get(`${endPoint}/search${queryString ? `?${queryString}` : ""}`);
+  return apiClient.get(
+    `${endPoint}/search${queryString ? `?${queryString}` : ""}`
+  );
 };
