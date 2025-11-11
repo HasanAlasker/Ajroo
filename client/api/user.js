@@ -56,7 +56,7 @@ export const loginUser = async ({ email, password }) => {  // ✅
       token: token, // Add token to response
     };
   } catch (err) {
-    console.error("Login API error:", err);
+    // console.error("Login API error:", err);
     throw err;
   }
 };

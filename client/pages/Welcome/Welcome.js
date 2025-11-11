@@ -6,10 +6,14 @@ import Logo from "../../components/Logo";
 import RequestBtn from "../../components/RequestBtn";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useNavigation } from "@react-navigation/native";
+import ErrorBox from "../../components/general/ErrorBox";
+import { useUser } from "../../config/UserContext";
 
 function Welcome(props) {
   const styles = useThemedStyles(getStyles);
   const navigation = useNavigation();
+  const { error } = useUser();
+
   return (
     <SafeScreen>
       <ScrollScreen>
@@ -29,6 +33,13 @@ function Welcome(props) {
             title={"Create account"}
             onPress={() => navigation.navigate("Signin")}
           ></RequestBtn>
+          {error && (
+            <ErrorBox
+              style={styles.errorBox}
+              firstTitle={"Login Failed"}
+              fistDetail={error}
+            />
+          )}
         </View>
       </ScrollScreen>
     </SafeScreen>
@@ -49,6 +60,11 @@ const getStyles = (theme) =>
     cont: {
       gap: 20,
       marginTop: 100,
+    },
+    errorBox: {
+      width: "90%",
+      margin: "auto",
+      marginTop: 50,
     },
   });
 

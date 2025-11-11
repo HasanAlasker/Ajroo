@@ -114,14 +114,6 @@ function Login(props) {
               title={"Create account"}
               onPress={() => navigation.navigate("Signin")}
             ></RequestBtn>
-
-            {error && (
-              <ErrorBox
-                style={styles.errorBox}
-                firstTitle={"Login Failed"}
-                fistDetail={error}
-              />
-            )}
           </AppForm>
         </View>
       </KeyboardScrollScreen>

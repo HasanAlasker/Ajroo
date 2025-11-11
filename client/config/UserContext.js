@@ -225,6 +225,8 @@ export const UserProvider = ({ children }) => {
 
       if (error.message.includes("Invalid email or password")) {
         errorMessage = "Invalid email or password";
+      } else if (error.message.includes("Please enter a valid email address")) {
+        errorMessage = "Please enter a valid email address";
       } else if (error.message.includes("500")) {
         errorMessage = "Server error. Please try again";
       } else if (error.message.includes("Network")) {
@@ -285,6 +287,8 @@ export const UserProvider = ({ children }) => {
 
       if (error.message.includes("already registered")) {
         errorMessage = "This email is already registered";
+      } else if (error.message.includes("Please enter a valid email address")) {
+        errorMessage = "Please enter a valid email address";
       } else if (error.message.includes("500")) {
         errorMessage = "Server error. Please try again later";
       } else if (error.message.includes("Network")) {
