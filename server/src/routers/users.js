@@ -32,12 +32,94 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// register
+// // register
 
+// router.post("/register", validate(userRegistrationSchema), async (req, res) => {
+//   try {
+//     const user = await usersModel.findOne({ email: req.body.email });
+//     if (user) return res.status(400).send("This email is already registered");
+
+//     const newUser = new usersModel(
+//       _.pick(req.body, ["_id", "name", "password", "email", "phone", "gender"])
+//     );
+
+//     newUser.password = await newUser.hashPassword(req.body.password);
+
+//     await newUser.save();
+
+//     const token = newUser.generateAuthToken();
+
+//     return res
+//       .header("x-auth-token", token)
+//       .status(200)
+//       .send(_.pick(newUser, ["_id", "name", "email", "phone", "gender"]));
+//   } catch (err) {
+//     if (err.code === 11000) {
+//       const field = Object.keys(err.keyValue)[0];
+//       return res.status(400).send({
+//         message: `${
+//           field.charAt(0).toUpperCase() + field.slice(1)
+//         } is already in use`,
+//       });
+//     }
+//     return res.status(500).send(err.message);
+//   }
+// });
+
+// // login
+
+// router.post("/login", validate(userLoginSchema), async (req, res) => {
+//   try {
+//     const user = await UserModel.findOne({ email: req.body.email });
+//     if (!user) return res.status(400).send("Invalid email or password");
+
+//     const validPassword = await bcrypt.compare(
+//       req.body.password,
+//       user.password
+//     );
+
+//     if (!validPassword)
+//       return res.status(400).send("Invalid email or password");
+
+//     const token = user.generateAuthToken();
+
+//     return res
+//       .status(200)
+//       .header("x-auth-token", token)
+//       .send(
+//         _.pick(user, [
+//           "_id",
+//           "name",
+//           "image",
+//           "isRated",
+//           "rating",
+//           "ratingCount",
+//           "gender",
+//           "phone",
+//           "role",
+//         ])
+//       );
+//     // return res.status(200).send(_.pick(user, ['name', 'email', 'phone', 'gender', 'image', '_id', 'role']))
+//   } catch (err) {
+//     return res.status(500).send(err.message);
+//   }
+// });
+
+// Unified error response helper
+const createErrorResponse = (message, statusCode = 400) => ({
+  success: false,
+  message,
+});
+
+// register
 router.post("/register", validate(userRegistrationSchema), async (req, res) => {
   try {
     const user = await usersModel.findOne({ email: req.body.email });
-    if (user) return res.status(400).send("This email is already registered");
+    if (user) {
+      return res
+        .status(400)
+        .send(createErrorResponse("Email is already registered"));
+    }
 
     const newUser = new usersModel(
       _.pick(req.body, ["_id", "name", "password", "email", "phone", "gender"])
@@ -56,30 +138,37 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
   } catch (err) {
     if (err.code === 11000) {
       const field = Object.keys(err.keyValue)[0];
-      return res.status(400).send({
-        message: `${
-          field.charAt(0).toUpperCase() + field.slice(1)
-        } is already in use`,
-      });
+      const fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+      return res
+        .status(400)
+        .send(createErrorResponse(`${fieldName} is already registered`));
     }
-    return res.status(500).send(err.message);
+    return res
+      .status(500)
+      .send(createErrorResponse("Registration failed. Please try again"));
   }
 });
 
 // login
-
 router.post("/login", validate(userLoginSchema), async (req, res) => {
   try {
     const user = await UserModel.findOne({ email: req.body.email });
-    if (!user) return res.status(400).send("Invalid email or password");
+    if (!user) {
+      return res
+        .status(400)
+        .send(createErrorResponse("Invalid email or password"));
+    }
 
     const validPassword = await bcrypt.compare(
       req.body.password,
       user.password
     );
 
-    if (!validPassword)
-      return res.status(400).send("Invalid email or password");
+    if (!validPassword) {
+      return res
+        .status(400)
+        .send(createErrorResponse("Invalid email or password"));
+    }
 
     const token = user.generateAuthToken();
 
@@ -99,9 +188,10 @@ router.post("/login", validate(userLoginSchema), async (req, res) => {
           "role",
         ])
       );
-    // return res.status(200).send(_.pick(user, ['name', 'email', 'phone', 'gender', 'image', '_id', 'role']))
   } catch (err) {
-    return res.status(500).send(err.message);
+    return res
+      .status(500)
+      .send(createErrorResponse("Login failed. Please try again"));
   }
 });
 
@@ -257,7 +347,8 @@ router.put("/unblock/:id", [auth, admin], async (req, res) => {
     const user = await UserModel.findById(userId);
     if (!user) return res.status(404).send("User not found");
 
-    if (user.isBlocked === false) return res.status(400).send("User already not blocked");
+    if (user.isBlocked === false)
+      return res.status(400).send("User already not blocked");
 
     user.isBlocked = false;
     user.save();
