@@ -148,6 +148,22 @@ function Navbar(props) {
 
           <TouchableOpacity
             style={styles.navbarBtn}
+            onPress={() => navigation.navigate("Blocks")}
+          >
+            <Feather
+              name="x-circle"
+              size={30}
+              style={[styles.icon, route.name === "Blocks" && styles.active]}
+            />
+            <Text
+              style={[styles.text, route.name === "Blocks" && styles.active]}
+            >
+              Blocks
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navbarBtn}
             onPress={() => setIsMenu(true)} // Open menu here
           >
             <Feather name="settings" size={30} style={[styles.icon]} />

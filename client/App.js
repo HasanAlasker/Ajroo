@@ -33,6 +33,7 @@ import { useState } from "react";
 import LoadingCircle from "./components/general/LoadingCircle";
 import Suggestions from "./pages/Users/Suggestions";
 import AdminSuggestions from "./pages/admin/AdminSuggestions";
+import Blocks from "./pages/admin/Blocks";
 
 const Stack = createNativeStackNavigator();
 
@@ -67,6 +68,7 @@ const AdminStack = () => {
       <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="Reports" component={Reports} />
       <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Blocks" component={Blocks} />
       <Stack.Screen name="AdminSuggestions" component={AdminSuggestions} />
     </Stack.Navigator>
   );

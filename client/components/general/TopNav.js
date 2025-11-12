@@ -14,8 +14,8 @@ function TopNav({ activeTab, onTabChange }) {
   };
 
   // Determine the correct tab values based on route
-  const firstTab = route.name === "Book" ? "Given" : "Got";
-  const secondTab = route.name === "Book" ? "Taken" : "Sent";
+  const firstTab = route.name === "Book" ? "Given"  : route.name === "Requests" ? "Got" : "Users";
+  const secondTab = route.name === "Book" ? "Taken" : route.name === "Requests" ? "Sent" : "Posts";
 
   return (
     <View style={styles.container}>
