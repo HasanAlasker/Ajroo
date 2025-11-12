@@ -114,8 +114,8 @@ function Post({
         />
         {(reportReason || isDeleted) && isMine && (
           <ErrorBox
-            firstTitle={reportReason ? "Reason" : 'Note'}
-            fistDetail={reportReason ? formatText(reportReason): "This post was disabled by the admins for a suspected violation" }
+            firstTitle={reportReason ? "Reason" : 'Notice'}
+            fistDetail={reportReason ? formatText(reportReason): "This post has been temporarily disabled by the admins due to a suspected policy violation. It may be permanently removed." }
             secondTitle={reportReason ? "Reporter Id" : ''}
             secondDetail={formatText(reporter)}
           />
