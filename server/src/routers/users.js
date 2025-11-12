@@ -186,6 +186,8 @@ router.post("/login", validate(userLoginSchema), async (req, res) => {
           "gender",
           "phone",
           "role",
+          "isBlocked",
+          "strikes"
         ])
       );
   } catch (err) {
@@ -228,7 +230,7 @@ router.get("/blocked", [auth, admin], async (req, res) => {
 router.get("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
-    const user = await UserModel.findById(id).select("-password -strikes");
+    const user = await UserModel.findById(id).select("-password");
     if (!user) return res.status(404).send("user not found");
 
     return res.status(200).send(user);

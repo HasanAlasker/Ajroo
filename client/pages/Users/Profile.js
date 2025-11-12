@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { useRoute } from "@react-navigation/native";
 import { getUserById } from "../../api/user";
 import LoadingCircle from "../../components/general/LoadingCircle";
+import ErrorBox from "../../components/general/ErrorBox";
 
 function Profile({ isNotification }) {
   const [isMenu, setIsMenu] = useState(false);
@@ -88,7 +89,20 @@ function Profile({ isNotification }) {
           }}
         ></TopChunkProfile>
 
-        {user.role !== 'admin' && <IndivisualPromo></IndivisualPromo>}
+        {user.role !== "admin" && !profile?.isBlocked && (
+          <IndivisualPromo></IndivisualPromo>
+        )}
+        {profile?.isBlocked && myProfile && (
+          <ErrorBox
+            style={styles.err}
+            firstTitle={"Notice"}
+            fistDetail={
+              "Your account has been suspended for violating our policy.You can still return borrowed items and give back those listed on the Book page."
+            }
+            secondTitle={"What to do"}
+            secondDetail={"If you believe this is a mistake, contact us through Support in Settings."}
+          />
+        )}
         {/* <BuisnessPromo></BuisnessPromo> */}
       </PostRenderer>
       <Navbar></Navbar>
@@ -97,7 +111,10 @@ function Profile({ isNotification }) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  err: {
+    width: "90%",
+    margin: "auto",
+  },
 });
 
 export default Profile;

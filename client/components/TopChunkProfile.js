@@ -16,6 +16,7 @@ import { useTheme } from "../config/ThemeContext";
 import { useRoute } from "@react-navigation/native";
 import PhoneNumber from "./post_releated/PhoneNumber";
 import BlockBtn from "./BlockBtn";
+import BlockedTag from "./BlockedTag";
 
 const formatRating = (rating) => {
   if (rating !== "Unrated Yet") {
@@ -36,7 +37,7 @@ function TopChunkProfile({
   userEmail,
   userPhone,
   profileId,
-  isBlocked
+  isBlocked,
 }) {
   const { user } = useUser();
   const styles = useThemedStyles(getStyles);
@@ -65,8 +66,10 @@ function TopChunkProfile({
               <PhoneNumber email={userEmail} />
             </>
           )}
-          {route.name === "Profile" && (
-            <UserRate userRating={formatRating(userRate)}></UserRate>
+          {route.name === "Profile" && !isBlocked ? (
+            <UserRate userRating={formatRating(userRate)} />
+          ) : (
+            <BlockedTag />
           )}
         </UserPicAndRateContainer>
         {myProfile ? (

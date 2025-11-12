@@ -56,6 +56,7 @@ function PrimaryBtn({
   const shouldBeDisabled = () => {
     if (isAdmin) return false;
     if (isDeleted) return true;
+    if (user.isBlocked && route.name !== "Book") return true;
     if (isDisabled) return true;
     if (iBorrowed && status === "pending_return") return true;
     if (!isMine && status === "disabled") return true;

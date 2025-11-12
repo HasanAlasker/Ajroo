@@ -207,6 +207,7 @@ export const UserProvider = ({ children }) => {
         ratingCount: response.ratingCount || 0,
         role: response.role || "user",
         createdAt: response.createdAt || new Date().toISOString(),
+        isBlocked: response.isBlocked
       };
 
       await storeUserData(user, response.token);
