@@ -25,6 +25,8 @@ import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
 import { useAlert } from "../../config/AlertContext";
 import { uploadImage } from "../../api/upload";
+import useApi from "../../hooks/useApi";
+import { getUserById } from "../../api/user";
 
 const validationSchema = Yup.object().shape({
   category: Yup.string()
@@ -92,6 +94,17 @@ function Post(props) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const { showInfo } = useAlert();
+  const { user } = useUser();
+
+  const {
+    data: fetchedUser,
+    request: fethUser,
+    loading: fetching,
+  } = useApi(getUserById);
+
+  useEffect(() => {
+    fethUser(user.id);
+  }, [user]);
 
   const initialValues = {
     category: "",
@@ -263,7 +276,7 @@ function Post(props) {
                 />
 
                 <SubmitBtn
-                  disabled={loading}
+                  disabled={ fetchedUser.isBlocked||loading }
                   setHasBeenSubmitted={setHasBeenSubmitted}
                 ></SubmitBtn>
               </>

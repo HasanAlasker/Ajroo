@@ -4,7 +4,7 @@ import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
 import { useRoute } from "@react-navigation/native";
 import RequestModal from "./RequestModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RatingModal from "./RatingModal";
 import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
@@ -13,6 +13,8 @@ import { deletePost, updateStatus } from "../../api/post";
 import { deleteReport } from "../../api/report";
 import { deleteRequest } from "../../api/request";
 import { confirmReturn, markReturned } from "../../api/borrow";
+import useApi from "../../hooks/useApi";
+import { getUserById } from "../../api/user";
 
 function PrimaryBtn({
   title,
@@ -37,6 +39,7 @@ function PrimaryBtn({
   const { user } = useUser();
   const { showAlert, showInfo } = useAlert();
   const passedUserId = iGave ? borrowerId : ownerId;
+  const {data: fetchedUser, request: fethUser, loading} = useApi(getUserById)
 
   // console.log("PrimaryBtn - iGave:", iGave); // Add this
   // console.log("PrimaryBtn - ownerId:", ownerId); // Add this
@@ -47,16 +50,18 @@ function PrimaryBtn({
   const [visibleRating, setVisibileRating] = useState(false);
   const [pendingStatusUpdate, setPendingStatusUpdate] = useState(null);
 
-  // Get the actual post data to check request status
-  const currentPost = getPostById(postId);
   // const iRequested = currentPost?.requesterId === user.id;
   // const iBorrowed = currentPost?.borrowerId === user.id;
   const isAdmin = user.role === "admin";
 
+  useEffect(()=>{
+    fethUser(user.id)
+  },[user])
+
   const shouldBeDisabled = () => {
     if (isAdmin) return false;
     if (isDeleted) return true;
-    if (user.isBlocked && route.name !== "Book") return true;
+    if (fetchedUser.isBlocked && route.name !== "Book") return true;
     if (isDisabled) return true;
     if (iBorrowed && status === "pending_return") return true;
     if (!isMine && status === "disabled") return true;
