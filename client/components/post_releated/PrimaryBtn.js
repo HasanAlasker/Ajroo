@@ -28,6 +28,7 @@ function PrimaryBtn({
   iRequested,
   iGave,
   requestId,
+  isDeleted,
 }) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
@@ -54,6 +55,7 @@ function PrimaryBtn({
 
   const shouldBeDisabled = () => {
     if (isAdmin) return false;
+    if (isDeleted) return true;
     if (isDisabled) return true;
     if (iBorrowed && status === "pending_return") return true;
     if (!isMine && status === "disabled") return true;

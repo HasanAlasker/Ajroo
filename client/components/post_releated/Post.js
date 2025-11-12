@@ -74,6 +74,7 @@ function Post({
   reportReason,
   endDate,
   reporter,
+  isDeleted,
 }) {
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
@@ -111,11 +112,11 @@ function Post({
           isMine={isMine}
           userId={userId}
         />
-        {reportReason && (
+        {(reportReason || isDeleted) && isMine && (
           <ErrorBox
-            firstTitle={"Reason"}
-            fistDetail={formatText(reportReason)}
-            secondTitle={"Reporter Id"}
+            firstTitle={reportReason ? "Reason" : 'Note'}
+            fistDetail={reportReason ? formatText(reportReason): "This post was disabled by the admins for a suspected violation" }
+            secondTitle={reportReason ? "Reporter Id" : ''}
             secondDetail={formatText(reporter)}
           />
         )}
@@ -166,6 +167,7 @@ function Post({
               iGave={iGave}
               ownerId={ownerId}
               borrowerId={borrowerId}
+              isDeleted={isDeleted}
             />
           )}
           {route.name === "Requests" &&
@@ -193,6 +195,7 @@ function Post({
         onClose={() => setIsPostMenu(false)}
         postId={id}
         onEditPress={handleEditPost} // Pass the edit handler
+        isDeleted={isDeleted}
       />
 
       <EditPostModal

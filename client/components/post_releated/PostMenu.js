@@ -32,6 +32,7 @@ function PostMenu({
   onEditPress,
   shareContent,
   isSuggestion = false, // New prop to identify if it's a suggestion
+  isDeleted,
 }) {
   const styles = useThemedStyles(getStyles);
   const [reportMenu, setReportMenu] = useState(false);
@@ -206,7 +207,7 @@ function PostMenu({
                 />
               ) : (
                 <>
-                  {!isAdmin && (
+                  {!isAdmin && !isDeleted && (
                     <>
                       <MenuOption
                         text={"Share post"}
@@ -216,14 +217,14 @@ function PostMenu({
                       <SeparatorComp style={styles.sep} />
                     </>
                   )}
-                  {isMine && (
+                  {isMine && !isDeleted && (
                     <MenuOption
                       text={"Edit post"}
                       icon={"pencil-outline"}
                       onPress={handleEditPost}
                     />
                   )}
-                  {isMine && <SeparatorComp style={styles.sep} />}
+                  {isMine && !isDeleted && <SeparatorComp style={styles.sep} />}
                   {isMine ? (
                     <MenuOption
                       text={"Delete post"}

@@ -345,6 +345,7 @@ router.put("/un-delete/:id", [auth, admin], async (req, res) => {
     const deletedPost = await PostModel.findByIdAndUpdate(
       id,
       {
+        status: "available",
         isDeleted: false,
         deletedAt: null,
       },
