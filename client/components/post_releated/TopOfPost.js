@@ -11,7 +11,6 @@ function TopOfPost({
   date,
   image,
   onPressThree,
-  onPressProfile,
   postId,
   status,
   isMine,

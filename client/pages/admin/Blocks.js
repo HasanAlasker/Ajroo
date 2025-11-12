@@ -7,12 +7,15 @@ import PostRenderer from "../../components/PostRenderer";
 import useApi from "../../hooks/useApi";
 import { getDeletedPosts } from "../../api/post";
 import { useUser } from "../../config/UserContext";
+import UserCard from "../../components/UserCard";
+import { getBlockedUsers } from "../../api/user";
+import UserRenderer from "../../components/UserRenderer";
 
 function Blocks(props) {
   const [activeTab, setActiveTab] = useState("Users");
   const [refreshing, setRefreshing] = useState(false);
 
-  const {user} = useUser()
+  const { user } = useUser();
 
   const {
     data: deletedPosts,
@@ -21,12 +24,20 @@ function Blocks(props) {
     error,
   } = useApi(getDeletedPosts);
 
+  const {
+    data: blockedUsers,
+    request: fetchUsers,
+    loading: fetchingUsers,
+  } = useApi(getBlockedUsers);
+
   useEffect(() => {
     fetchPosts();
+    fetchUsers();
   }, []);
 
   const handleRefresh = async () => {
     await fetchPosts();
+    await fetchUsers();
   };
 
   if (loading && !deletedPosts) {
@@ -38,7 +49,12 @@ function Blocks(props) {
       case "Users":
         return (
           <>
-            <PostRenderer emptyMessage="No blocked users found"></PostRenderer>
+            <UserRenderer
+              onRefresh={handleRefresh}
+              refreshing={refreshing}
+              fetchedPosts={blockedUsers}
+              emptyMessage="No blocked users found"
+            />
           </>
         );
 
@@ -51,7 +67,7 @@ function Blocks(props) {
               onRefresh={handleRefresh}
               refreshing={refreshing}
               emptyMessage="No deleted posts found"
-            ></PostRenderer>
+            />
           </>
         );
       default:

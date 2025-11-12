@@ -20,6 +20,8 @@ import { deletePost, getPostById, softDelete, unDelete } from "../../api/post";
 import { reportPost } from "../../api/report";
 import useApi from "../../hooks/useApi";
 import { deleteSuggestion } from "../../api/suggestion";
+import { useRoute } from "@react-navigation/native";
+import { deleteUser } from "../../api/user";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -31,13 +33,16 @@ function PostMenu({
   reportId,
   onEditPress,
   shareContent,
-  isSuggestion = false, // New prop to identify if it's a suggestion
+  isSuggestion = false,
   isDeleted,
+  userId
 }) {
   const styles = useThemedStyles(getStyles);
   const [reportMenu, setReportMenu] = useState(false);
   const { showAlert, showInfo } = useAlert();
   const { user } = useUser();
+  const route = useRoute();
+
   const {
     data: post,
     request: fetchPost,
@@ -46,6 +51,7 @@ function PostMenu({
   } = useApi(getPostById);
 
   const isAdmin = user.role === "admin";
+  const isBlocksScreen = route.name === "Blocks";
 
   useEffect(() => {
     if (postId && !isSuggestion) {
@@ -177,6 +183,32 @@ function PostMenu({
     });
   };
 
+  const handleDeleteUserAccount = () => {
+    showAlert({
+      title: "Delete User Account",
+      message: "This will permanently delete the user's account and all their data. This action cannot be undone.",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        try {
+          await deleteUser(userId)
+          onClose();
+          showInfo({
+            title: "Success",
+            message: "User account has been deleted.",
+            confirmText: "Close",
+          });
+        } catch (error) {
+          showInfo({
+            title: "Error",
+            message: "Failed to delete user account.",
+            confirmText: "Close",
+          });
+        }
+      },
+    });
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -195,10 +227,19 @@ function PostMenu({
           <MenuBackBtn
             onClose={!reportMenu ? onClose : () => setReportMenu(!reportMenu)}
           />
+
           {!reportMenu && (
             <>
-              {/* For suggestions, only show delete option for admin */}
-              {isSuggestion && isAdmin ? (
+              {/* Blocks Screen - Admin Only */}
+              {isBlocksScreen && isAdmin ? (
+                <MenuOption
+                  text={"Delete user account"}
+                  icon={"account-off-outline"}
+                  color={"red"}
+                  onPress={handleDeleteUserAccount}
+                />
+              ) : isSuggestion && isAdmin ? (
+                /* Suggestion - Admin Only */
                 <MenuOption
                   text={"Delete suggestion"}
                   icon={"delete-outline"}
@@ -206,7 +247,9 @@ function PostMenu({
                   onPress={handleDeleteSuggestion}
                 />
               ) : (
+                /* Regular Post Menu */
                 <>
+                  {/* Share - Available to non-admins on non-deleted posts */}
                   {!isAdmin && !isDeleted && (
                     <>
                       <MenuOption
@@ -217,15 +260,22 @@ function PostMenu({
                       <SeparatorComp style={styles.sep} />
                     </>
                   )}
+
+                  {/* Edit - Only for owner on non-deleted posts */}
                   {isMine && !isDeleted && (
-                    <MenuOption
-                      text={"Edit post"}
-                      icon={"pencil-outline"}
-                      onPress={handleEditPost}
-                    />
+                    <>
+                      <MenuOption
+                        text={"Edit post"}
+                        icon={"pencil-outline"}
+                        onPress={handleEditPost}
+                      />
+                      <SeparatorComp style={styles.sep} />
+                    </>
                   )}
-                  {isMine && !isDeleted && <SeparatorComp style={styles.sep} />}
+
+                  {/* Delete Options */}
                   {isMine ? (
+                    // Owner: Hard delete
                     <MenuOption
                       text={"Delete post"}
                       icon={"delete-outline"}
@@ -233,6 +283,7 @@ function PostMenu({
                       onPress={handleDeletePost}
                     />
                   ) : isAdmin && post && !post.isDeleted ? (
+                    // Admin: Soft delete
                     <MenuOption
                       text={"Delete post"}
                       icon={"delete-outline"}
@@ -240,6 +291,7 @@ function PostMenu({
                       onPress={handleSoftDelete}
                     />
                   ) : isAdmin && post && post.isDeleted ? (
+                    // Admin: Restore
                     <MenuOption
                       text={"UnDelete post"}
                       icon={"arrow-u-left-top"}
@@ -247,6 +299,7 @@ function PostMenu({
                       onPress={handleUnDelete}
                     />
                   ) : (
+                    // Regular user: Report
                     <MenuOption
                       text={"Report post"}
                       icon={"bullhorn-variant-outline"}
@@ -259,89 +312,88 @@ function PostMenu({
             </>
           )}
 
+          {/* Report Menu */}
           {reportMenu && (
-            <>
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-                style={styles.scrollContainer}
-                contentContainerStyle={styles.scrollContent}
-              >
-                <MenuOption
-                  text={"Item doesn't exist/fake listing"}
-                  icon={"alert-circle-outline"}
-                  onPress={() =>
-                    handleReporReason("Item doesn't exist/fake listing")
-                  }
-                />
-                <SeparatorComp style={styles.sep} />
-                <MenuOption
-                  text={"Misleading item description"}
-                  icon={"information-off-outline"}
-                  onPress={() =>
-                    handleReporReason("Misleading item description")
-                  }
-                />
-                <SeparatorComp style={styles.sep} />
-                <MenuOption
-                  text={"Unsafe or damaged item"}
-                  icon={"shield-alert-outline"}
-                  onPress={() => handleReporReason("Unsafe or damaged item")}
-                />
-                <SeparatorComp style={styles.sep} />
-                <MenuOption
-                  text={"Spam or duplicate listing"}
-                  icon={"content-copy"}
-                  onPress={() => handleReporReason("Spam or duplicate listing")}
-                />
-                <SeparatorComp style={styles.sep} />
-                <MenuOption
-                  text={"Unreasonable pricing"}
-                  icon={"currency-usd-off"}
-                  onPress={() => handleReporReason("Unreasonable pricing")}
-                />
-                <SeparatorComp style={styles.sep} />
-                <MenuOption
-                  text={"Price doesn't match listing"}
-                  icon={"currency-usd"}
-                  onPress={() =>
-                    handleReporReason("Price doesn't match listing")
-                  }
-                />
-                <SeparatorComp style={styles.sep} />
-                <MenuOption
-                  text={"Prohibited item"}
-                  icon={"cancel"}
-                  onPress={() => handleReporReason("Prohibited item")}
-                />
-                <SeparatorComp style={styles.sep} />
-                <MenuOption
-                  text={"Harassment or rude behavior"}
-                  icon={"account-alert-outline"}
-                  onPress={() =>
-                    handleReporReason("Harassment or rude behavior")
-                  }
-                />
-                <SeparatorComp style={styles.sep} />
-                <MenuOption
-                  text={"Suspicious activity"}
-                  icon={"eye-off-outline"}
-                  onPress={() => handleReporReason("Suspicious activity")}
-                />
-                <SeparatorComp style={styles.sep} />
-                <MenuOption
-                  text={"Other"}
-                  icon={"dots-horizontal"}
-                  onPress={() => handleReporReason("Other")}
-                />
-                <SeparatorComp style={styles.sep} />
-                <MenuOption
-                  text={"Cancel"}
-                  icon={"close"}
-                  color={"red"}
-                  onPress={() => handleReportMenu("")}
-                />
-              </ScrollView>
-            </>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              style={styles.scrollContainer}
+              contentContainerStyle={styles.scrollContent}
+            >
+              <MenuOption
+                text={"Item doesn't exist/fake listing"}
+                icon={"alert-circle-outline"}
+                onPress={() =>
+                  handleReporReason("Item doesn't exist/fake listing")
+                }
+              />
+              <SeparatorComp style={styles.sep} />
+              <MenuOption
+                text={"Misleading item description"}
+                icon={"information-off-outline"}
+                onPress={() =>
+                  handleReporReason("Misleading item description")
+                }
+              />
+              <SeparatorComp style={styles.sep} />
+              <MenuOption
+                text={"Unsafe or damaged item"}
+                icon={"shield-alert-outline"}
+                onPress={() => handleReporReason("Unsafe or damaged item")}
+              />
+              <SeparatorComp style={styles.sep} />
+              <MenuOption
+                text={"Spam or duplicate listing"}
+                icon={"content-copy"}
+                onPress={() => handleReporReason("Spam or duplicate listing")}
+              />
+              <SeparatorComp style={styles.sep} />
+              <MenuOption
+                text={"Unreasonable pricing"}
+                icon={"currency-usd-off"}
+                onPress={() => handleReporReason("Unreasonable pricing")}
+              />
+              <SeparatorComp style={styles.sep} />
+              <MenuOption
+                text={"Price doesn't match listing"}
+                icon={"currency-usd"}
+                onPress={() =>
+                  handleReporReason("Price doesn't match listing")
+                }
+              />
+              <SeparatorComp style={styles.sep} />
+              <MenuOption
+                text={"Prohibited item"}
+                icon={"cancel"}
+                onPress={() => handleReporReason("Prohibited item")}
+              />
+              <SeparatorComp style={styles.sep} />
+              <MenuOption
+                text={"Harassment or rude behavior"}
+                icon={"account-alert-outline"}
+                onPress={() =>
+                  handleReporReason("Harassment or rude behavior")
+                }
+              />
+              <SeparatorComp style={styles.sep} />
+              <MenuOption
+                text={"Suspicious activity"}
+                icon={"eye-off-outline"}
+                onPress={() => handleReporReason("Suspicious activity")}
+              />
+              <SeparatorComp style={styles.sep} />
+              <MenuOption
+                text={"Other"}
+                icon={"dots-horizontal"}
+                onPress={() => handleReporReason("Other")}
+              />
+              <SeparatorComp style={styles.sep} />
+              <MenuOption
+                text={"Cancel"}
+                icon={"close"}
+                color={"red"}
+                onPress={() => handleReportMenu("")}
+              />
+            </ScrollView>
           )}
         </BackContainer>
       </View>
