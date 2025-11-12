@@ -56,7 +56,7 @@ function TopChunkProfile({
           <BigPicAndUsername
             initialImage={userImage}
             userName={userName}
-            isEdit={myProfile}
+            isEdit={myProfile && !isBlocked}
             isPicDisabled={isPicDisabled}
             onImageChange={onImageChange}
           ></BigPicAndUsername>
@@ -68,9 +68,9 @@ function TopChunkProfile({
           )}
           {route.name === "Profile" && !isBlocked ? (
             <UserRate userRating={formatRating(userRate)} />
-          ) : (
+          ) : route.name === "Profile" && isBlocked ? (
             <BlockedTag />
-          )}
+          ) : null}
         </UserPicAndRateContainer>
         {myProfile ? (
           <SettingsBtn onPress={settingsPress}></SettingsBtn>
