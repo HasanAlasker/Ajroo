@@ -71,7 +71,7 @@ router.get("/available", auth, async (req, res) => {
 
 router.get("/deleted", [auth, admin], async (req, res) => {
   try {
-    const deletedPosts = await PostModel.find({ isDeleted: true });
+    const deletedPosts = await PostModel.find({ isDeleted: true }).sort('-createdAt').populate('user', 'name image');
     return res.status(200).send(deletedPosts);
   } catch (err) {
     return res.status(500).send(err);
@@ -149,7 +149,7 @@ router.put(
   }
 );
 
-// delete post (post owner)
+// delete post (post owner/ admin)
 
 router.delete("/delete/:id", auth, async (req, res) => {
   try {
@@ -162,8 +162,8 @@ router.delete("/delete/:id", auth, async (req, res) => {
     const post = await PostModel.findById(id);
     if (!post) return res.status(404).send("Post not found");
 
-    if (req.user._id !== post.user.toString()) {
-      return res.status(403).send("Only post owner can delete post");
+    if (req.user.role !== 'admin' && req.user._id !== post.user.toString()) {
+      return res.status(403).send("Only post owner and admins can delete post");
     }
 
     const deletedPost = await PostModel.findByIdAndDelete(id);
@@ -314,6 +314,7 @@ router.put("/soft-delete/:id", [auth, admin], async (req, res) => {
     const deletedPost = await PostModel.findByIdAndUpdate(
       id,
       {
+        status:"disabled",
         isDeleted: true,
         deletedAt: new Date(),
       },

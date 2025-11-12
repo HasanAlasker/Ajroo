@@ -136,7 +136,7 @@ function PostMenu({
 
   const handleSoftDelete = async () => {
     showAlert({
-      title: "Delete post?",
+      title: "Soft-Delete post?",
       message: "Are you sure, you can restore it later.",
       confirmText: "Delete",
       cancelText: "Cancel",

@@ -9,7 +9,7 @@ import RatingModal from "./RatingModal";
 import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
 import { useAlert } from "../../config/AlertContext";
-import { updateStatus } from "../../api/post";
+import { deletePost, updateStatus } from "../../api/post";
 import { deleteReport } from "../../api/report";
 import { deleteRequest } from "../../api/request";
 import { confirmReturn, markReturned } from "../../api/borrow";
@@ -73,6 +73,9 @@ function PrimaryBtn({
     if (isAdmin && route.name === "Search") {
       return "Contact User";
     }
+    if (isAdmin && route.name === "Blocks") {
+      return "Delete Completely";
+    }
     if (isMine) {
       switch (status) {
         case "available":
@@ -122,8 +125,44 @@ function PrimaryBtn({
   const handlePress = async () => {
     const buttonText = renderBtnText();
 
+    if (buttonText === "Delete Completely") {
+      showAlert({
+        title: "Delete completely?",
+        message: "Are you sure you delete post? this can't be undone.",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            await deletePost(postId);
+          } catch (error) {
+            showAlert({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
+    }
+
     if (buttonText === "Delete Report") {
-      await deleteReport(reportId);
+      showAlert({
+        title: "Delete Report?",
+        message: "Are you sure you want to delete report?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            await deleteReport(reportId);
+          } catch (error) {
+            showAlert({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
     }
 
     if (buttonText === "Request") {
