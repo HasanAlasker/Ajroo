@@ -80,10 +80,16 @@ const userSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
-    pushNotificationTokens: {
-      type: [String],
-      default: null,
-    },
+    pushNotificationTokens: [
+      {
+        token: String,
+        platform: String, // 'ios' or 'android'
+        addedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
     isBlocked: {
       type: Boolean,
       default: false,
