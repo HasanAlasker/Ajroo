@@ -45,7 +45,8 @@ const userSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      default: "https://res.cloudinary.com/dwiw2bprt/image/upload/v1762451339/bf496wsayryocrugd7kn.png",
+      default:
+        "https://res.cloudinary.com/dwiw2bprt/image/upload/v1762451339/bf496wsayryocrugd7kn.png",
     },
     gender: {
       type: String,
@@ -81,12 +82,22 @@ const userSchema = new mongoose.Schema(
     },
     pushNotificationTokens: {
       type: [String],
-      default: null
+      default: null,
     },
-    isBlocked:{
+    isBlocked: {
       type: Boolean,
       default: false,
-    }
+    },
+    subscription: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subscription",
+    },
+    // RevenueCat App User ID (important!)
+    revenueCatUserId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
   },
   { timestamps: true }
 );
