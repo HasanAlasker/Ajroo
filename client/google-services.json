@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11350724500",
+    "project_id": "ajroo-6c866",
+    "storage_bucket": "ajroo-6c866.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11350724500:android:31cd0ad204bddd313f4981",
+        "android_client_info": {
+          "package_name": "com.hasan_alasker.Ajroo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqjhel2h8SZj2ZpvdNPPxOmlafpV86lKA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
