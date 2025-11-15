@@ -52,7 +52,7 @@ export const NotificationProvider = ({ children }) => {
 
       // Get the token
       const token = await Notifications.getExpoPushTokenAsync({
-        projectId: "YOUR_EXPO_PROJECT_ID", // Get this from app.json
+        projectId: "", // Get this from app.json
       });
 
       console.log("Push notification token:", token.data);

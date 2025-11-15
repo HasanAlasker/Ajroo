@@ -83,11 +83,11 @@ function FilterModal({ isVisible, onClose, onSearchResults }) {
         activeFilters.condition = values.condition;
       }
 
-      console.log("FilterModal: Sending filters:", activeFilters);
+      // console.log("FilterModal: Sending filters:", activeFilters);
 
       // Check if at least one filter is selected
       if (Object.keys(activeFilters).length === 0) {
-        console.log("FilterModal: No filters selected");
+        // console.log("FilterModal: No filters selected");
         setStatus({ error: "Please select at least one filter" });
         setSubmitting(false);
         return;
@@ -95,24 +95,24 @@ function FilterModal({ isVisible, onClose, onSearchResults }) {
 
       // Make API call directly (not using useApi hook)
       const response = await searchPosts(activeFilters);
-      console.log("FilterModal: Full API response:", response);
+      // console.log("FilterModal: Full API response:", response);
 
       // Extract data from response
       const results = response.data || response || [];
-      console.log("FilterModal: Extracted results:", results.length, "posts");
+      // console.log("FilterModal: Extracted results:", results.length, "posts");
 
       // Send results back to parent
       if (onSearchResults) {
         onSearchResults(results);
-        console.log("FilterModal: Results sent to parent");
+        // console.log("FilterModal: Results sent to parent");
       }
 
       // Close modal after successful search
       onClose();
       
     } catch (error) {
-      console.log("FilterModal: Search error:", error);
-      console.log("FilterModal: Error details:", error.response || error.message);
+      // console.log("FilterModal: Search error:", error);
+      // console.log("FilterModal: Error details:", error.response || error.message);
       setStatus({ error: "Search failed. Please try again." });
     } finally {
       setSubmitting(false);

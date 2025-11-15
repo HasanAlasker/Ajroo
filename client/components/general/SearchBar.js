@@ -20,7 +20,7 @@ function SearchBar({
 
   // Handle search execution
   const handleSearch = useCallback(() => {
-    console.log("SearchBar: Executing search with:", searchItem);
+    // console.log("SearchBar: Executing search with:", searchItem);
     if (onSearch && searchItem.trim() !== "") {
       lastSearchSource.current = "text";
       onSearch(searchItem.trim());
@@ -34,7 +34,7 @@ function SearchBar({
 
   // Handle clearing search
   const handleClearInput = useCallback(() => {
-    console.log("SearchBar: Clearing search");
+    // console.log("SearchBar: Clearing search");
     setSearchItem("");
     lastSearchSource.current = null;
     if (onClearSearch) {
@@ -44,18 +44,18 @@ function SearchBar({
 
   // Handle modal close
   const handleCloseModal = useCallback(() => {
-    console.log("SearchBar: Closing filter modal");
+    // console.log("SearchBar: Closing filter modal");
     setFilter(false);
   }, []);
 
   // Handle filter results - track that it came from filter
   const handleFilterResults = useCallback(
     (results) => {
-      console.log(
-        "SearchBar: Received filter results:",
-        results.length,
-        "posts"
-      );
+      // console.log(
+      //   "SearchBar: Received filter results:",
+      //   results.length,
+      //   "posts"
+      // );
       lastSearchSource.current = "filter";
       if (onFilterResults) {
         onFilterResults(results);

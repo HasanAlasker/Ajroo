@@ -29,16 +29,33 @@ import Dash from "./pages/admin/Dash";
 import Search from "./pages/admin/Search";
 import Reports from "./pages/admin/Reports";
 import GetBackModal from "./components/GetBackModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingCircle from "./components/general/LoadingCircle";
 import Suggestions from "./pages/Users/Suggestions";
 import AdminSuggestions from "./pages/admin/AdminSuggestions";
 import Blocks from "./pages/admin/Blocks";
 
+import * as Notifications from "expo-notifications";
+
 const Stack = createNativeStackNavigator();
 
 // Authenticated user navigation stack
 const AuthenticatedStack = () => {
+  useEffect(()=>{
+    registerForPushNotifications()
+  },[])
+  const registerForPushNotifications = async () => {
+    try {
+      const permission = await Notifications.requestPermissionsAsync();
+      if (!permission.granted) return;
+
+      const token = await Notifications.getExpoPushTokenAsync();
+      console.log(token);
+
+    } catch (err) {
+      console.log("Error getting notification token", err);
+    }
+  };
   return (
     <Stack.Navigator
       initialRouteName="Home"
