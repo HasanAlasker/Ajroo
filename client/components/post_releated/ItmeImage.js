@@ -13,7 +13,7 @@ const getStyles = (theme) => StyleSheet.create({
   itemImage: {
       width: "100%",
       aspectRatio: 4/3.5,
-      backgroundColor: theme.sec_text,
+      backgroundColor: theme.post,
       borderRadius: 15,
       overflow:'hidden'
     },

@@ -29,9 +29,11 @@
     "react": "19.0.0",
     "react-native": "0.79.5",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-purchases": "^9.6.5",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
-    "yup": "^1.7.0"
+    "yup": "^1.7.0",
+    "expo-dev-client": "~5.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
