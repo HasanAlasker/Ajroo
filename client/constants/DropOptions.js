@@ -467,7 +467,7 @@ export const price = [
   { label: "1 JD", value: "1" },
   { label: "2 JD", value: "2" },
   { label: "3 JD", value: "3" },
-  { label: "4 JD", value: "3" },
+  { label: "4 JD", value: "4" },
   { label: "5 JD", value: "5" },
   { label: "7 JD", value: "7" },
   { label: "10 JD", value: "10" },
