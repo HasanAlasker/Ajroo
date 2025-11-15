@@ -21,14 +21,14 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.hasan_alasker.Ajroo"
+      "package": "com.hasan_alasker.Ajroo",
+      "googleServicesFile": "./ajroo-6c866-firebase-adminsdk-fbsvc-fff7aedf6a.json",
+      "permissions": ["NOTIFICATIONS", "RECEIVE_BOOT_COMPLETED"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-font"
-    ],
+    "plugins": ["expo-font"],
     "extra": {
       "eas": {
         "projectId": "bb9f9982-0bf3-4826-8057-d9217e2a2772"
