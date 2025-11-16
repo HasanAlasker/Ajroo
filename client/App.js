@@ -3,7 +3,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 import { ThemeProvider, useTheme } from "./config/ThemeContext";
 import { PostProvider } from "./config/PostContext";
@@ -34,9 +34,21 @@ import Suggestions from "./pages/Users/Suggestions";
 import AdminSuggestions from "./pages/admin/AdminSuggestions";
 import Blocks from "./pages/admin/Blocks";
 
+import * as Notifications from "expo-notifications";
 import { registerForPushNotifications } from "./functions/notificationToken";
+import { useRef } from "react";
 
 const Stack = createNativeStackNavigator();
+
+// Get android channel id for notifications
+if (Platform.OS === "android") {
+  Notifications.setNotificationChannelAsync("default", {
+    name: "Default",
+    importance: Notifications.AndroidImportance.MAX,
+    vibrationPattern: [0, 250, 250, 250],
+    lightColor: '#FF231F7C',
+  });
+}
 
 // Authenticated user navigation stack
 const AuthenticatedStack = () => {
@@ -90,10 +102,41 @@ const AuthStack = () => (
 const AppNavigator = () => {
   const { isAuthenticated, isAdmin, isLoading } = useUser();
   const { isDarkMode } = useTheme();
+const notificationListener = useRef();
+  const responseListener = useRef();
 
   useEffect(() => {
-    if (isAuthenticated) registerForPushNotifications();
+    if (isAuthenticated) {
+      // Register for push notifications
+      registerForPushNotifications();
+
+      // Listen for notifications received while app is foregrounded
+      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+        console.log('📬 Notification received!');
+        console.log('Title:', notification.request.content.title);
+        console.log('Body:', notification.request.content.body);
+        console.log('Data:', notification.request.content.data);
+      });
+
+      // Listen for user interactions with notifications
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+        console.log('👆 Notification tapped!');
+        console.log('Response:', response);
+        // TODO: Handle navigation based on notification data
+        // Example: if (response.notification.request.content.data.screen) { navigate(...) }
+      });
+
+      return () => {
+        if (notificationListener.current) {
+          Notifications.subscription.remove(notificationListener.current);
+        }
+        if (responseListener.current) {
+          Notifications.subscription.remove(responseListener.current);
+        }
+      };
+    }
   }, [isAuthenticated]);
+
   // Show loading screen while checking authentication
   if (isLoading) {
     return <LoadingCircle />;
