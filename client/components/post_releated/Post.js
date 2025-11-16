@@ -75,6 +75,7 @@ function Post({
   endDate,
   reporter,
   isDeleted,
+  showUndelete
 }) {
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
@@ -196,6 +197,7 @@ function Post({
         postId={id}
         onEditPress={handleEditPost} // Pass the edit handler
         isDeleted={isDeleted}
+        showUndelete={showUndelete}
       />
 
       <EditPostModal

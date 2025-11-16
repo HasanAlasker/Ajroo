@@ -9,6 +9,7 @@ function PostRenderer({
   onRefresh,
   refreshing = false,
   children,
+  showUndelete
 }) {
   const renderPost = ({ item: post }) => {
     let isMine = false;
@@ -84,6 +85,7 @@ function PostRenderer({
         iBorrowed={post?.borrower === currentUserId}
         iGave={post?.owner === currentUserId}
         isDeleted = {post?.isDeleted}
+        showUndelete={showUndelete}
       />
     );
   };

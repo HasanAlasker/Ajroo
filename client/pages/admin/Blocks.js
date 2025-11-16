@@ -67,6 +67,7 @@ function Blocks(props) {
               onRefresh={handleRefresh}
               refreshing={refreshing}
               emptyMessage="No deleted posts found"
+              showUndelete={true}
             />
           </>
         );

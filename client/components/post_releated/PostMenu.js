@@ -35,7 +35,8 @@ function PostMenu({
   shareContent,
   isSuggestion = false,
   isDeleted,
-  userId
+  userId,
+  showUndelete
 }) {
   const styles = useThemedStyles(getStyles);
   const [reportMenu, setReportMenu] = useState(false);
@@ -186,12 +187,13 @@ function PostMenu({
   const handleDeleteUserAccount = () => {
     showAlert({
       title: "Delete User Account",
-      message: "This will permanently delete the user's account and all their data. This action cannot be undone.",
+      message:
+        "This will permanently delete the user's account and all their data. This action cannot be undone.",
       confirmText: "Delete",
       cancelText: "Cancel",
       onConfirm: async () => {
         try {
-          await deleteUser(userId)
+          await deleteUser(userId);
           onClose();
           showInfo({
             title: "Success",
@@ -232,12 +234,21 @@ function PostMenu({
             <>
               {/* Blocks Screen - Admin Only */}
               {isBlocksScreen && isAdmin ? (
-                <MenuOption
-                  text={"Delete user account"}
-                  icon={"account-off-outline"}
-                  color={"red"}
-                  onPress={handleDeleteUserAccount}
-                />
+                <>
+                  {showUndelete && <MenuOption
+                    text={"UnDelete post"}
+                    icon={"arrow-u-left-top"}
+                    color={"green"}
+                    onPress={handleUnDelete}
+                  />}
+                  {showUndelete && <SeparatorComp style={styles.sep} />}
+                  <MenuOption
+                    text={"Delete user account"}
+                    icon={"account-off-outline"}
+                    color={"red"}
+                    onPress={handleDeleteUserAccount}
+                  />
+                </>
               ) : isSuggestion && isAdmin ? (
                 /* Suggestion - Admin Only */
                 <MenuOption
@@ -330,9 +341,7 @@ function PostMenu({
               <MenuOption
                 text={"Misleading item description"}
                 icon={"information-off-outline"}
-                onPress={() =>
-                  handleReporReason("Misleading item description")
-                }
+                onPress={() => handleReporReason("Misleading item description")}
               />
               <SeparatorComp style={styles.sep} />
               <MenuOption
@@ -356,9 +365,7 @@ function PostMenu({
               <MenuOption
                 text={"Price doesn't match listing"}
                 icon={"currency-usd"}
-                onPress={() =>
-                  handleReporReason("Price doesn't match listing")
-                }
+                onPress={() => handleReporReason("Price doesn't match listing")}
               />
               <SeparatorComp style={styles.sep} />
               <MenuOption
@@ -370,9 +377,7 @@ function PostMenu({
               <MenuOption
                 text={"Harassment or rude behavior"}
                 icon={"account-alert-outline"}
-                onPress={() =>
-                  handleReporReason("Harassment or rude behavior")
-                }
+                onPress={() => handleReporReason("Harassment or rude behavior")}
               />
               <SeparatorComp style={styles.sep} />
               <MenuOption
