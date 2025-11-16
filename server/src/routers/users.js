@@ -410,6 +410,81 @@ router.put("/rate/:id", auth, async (req, res) => {
   }
 });
 
+// Add push notification token
+router.post("/push-token", auth, async (req, res) => {
+  try {
+    const { token, platform } = req.body;
+    const userId = req.user._id;
+
+    // Validation
+    if (!token || !platform) {
+      return res.status(400).send("Token and platform are required");
+    }
+
+    if (!["ios", "android"].includes(platform)) {
+      return res.status(400).send("Platform must be 'ios' or 'android'");
+    }
+
+    // Remove old token if it exists (same token, different device)
+    await usersModel.findByIdAndUpdate(userId, {
+      $pull: {
+        pushNotificationTokens: { token: token },
+      },
+    });
+
+    // Add new token
+    const updatedUser = await usersModel.findByIdAndUpdate(
+      userId,
+      {
+        $addToSet: {
+          pushNotificationTokens: {
+            token: token,
+            platform: platform,
+            addedAt: new Date(),
+          },
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) return res.status(404).send("User not found");
+
+    return res.status(200).send({
+      message: "Push token added successfully",
+      tokens: updatedUser.pushNotificationTokens,
+    });
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+// Remove push notification token (when user logs out on a device)
+router.delete("/push-token/:token", auth, async (req, res) => {
+  try {
+    const { token } = req.params;
+    const userId = req.user._id;
+
+    const updatedUser = await usersModel.findByIdAndUpdate(
+      userId,
+      {
+        $pull: {
+          pushNotificationTokens: { token: token },
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) return res.status(404).send("User not found");
+
+    return res.status(200).send({
+      message: "Push token removed successfully",
+      tokens: updatedUser.pushNotificationTokens,
+    });
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
 // forgot password
 
 // add subscription

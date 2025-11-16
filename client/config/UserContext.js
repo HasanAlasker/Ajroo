@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerUser, loginUser, updateUser } from "../api/user";
+import { unregisterPushToken } from "../functions/notificationToken";
 
 // Define action types for the reducer
 const USER_ACTION_TYPES = {
@@ -207,7 +208,7 @@ export const UserProvider = ({ children }) => {
         ratingCount: response.ratingCount || 0,
         role: response.role || "user",
         createdAt: response.createdAt || new Date().toISOString(),
-        isBlocked: response.isBlocked
+        isBlocked: response.isBlocked,
       };
 
       await storeUserData(user, response.token);
@@ -349,6 +350,7 @@ export const UserProvider = ({ children }) => {
   // Logout function
   const logout = async () => {
     try {
+      await unregisterPushToken();
       await clearUserData();
       dispatch({ type: USER_ACTION_TYPES.LOGOUT });
     } catch (error) {

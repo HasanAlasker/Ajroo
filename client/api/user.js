@@ -1,9 +1,10 @@
 import { apiClient } from "./client";
 import { BASE_URL } from "../constants/baseUrl";
 
-const endPoint = '/api/users'
+const endPoint = "/api/users";
 
-export const registerUser = async (data) => {  // ✅
+export const registerUser = async (data) => {
+  // ✅
   try {
     const response = await fetch(`${BASE_URL}/api/users/register`, {
       method: "POST",
@@ -32,7 +33,8 @@ export const registerUser = async (data) => {  // ✅
   }
 };
 
-export const loginUser = async ({ email, password }) => {  // ✅
+export const loginUser = async ({ email, password }) => {
+  // ✅
   try {
     const response = await fetch(`${BASE_URL}/api/users/login`, {
       method: "POST",
@@ -63,21 +65,26 @@ export const loginUser = async ({ email, password }) => {  // ✅
 
 // export const loginUser = (email, password) => apiClient.post(`${endPoint}/login`, {email, password})
 
-export const updateUser = (id, data) => apiClient.put(`${endPoint}/edit/${id}`, data) // ✅
+export const updateUser = (id, data) =>
+  apiClient.put(`${endPoint}/edit/${id}`, data); // ✅
 
-export const getAllusers = () => apiClient.get(endPoint)  
+export const getAllusers = () => apiClient.get(endPoint);
 
-export const getUserById = (id) => apiClient.get(`${endPoint}/${id}`) // ✅
+export const getUserById = (id) => apiClient.get(`${endPoint}/${id}`); // ✅
 
-export const deleteUser = (id) => apiClient.delete(`${endPoint}/delete/${id}`)
+export const deleteUser = (id) => apiClient.delete(`${endPoint}/delete/${id}`);
 
-export const rateUser = (id, rating) => apiClient.put(`${endPoint}/rate/${id}`, {rating})
+export const rateUser = (id, rating) =>
+  apiClient.put(`${endPoint}/rate/${id}`, { rating });
 
-export const blockUser = (id) => apiClient.put(`${endPoint}/block/${id}`)
+export const blockUser = (id) => apiClient.put(`${endPoint}/block/${id}`);
 
-export const unBlockUser = (id) => apiClient.put(`${endPoint}/unblock/${id}`)
+export const unBlockUser = (id) => apiClient.put(`${endPoint}/unblock/${id}`);
 
-export const getBlockedUsers = () => apiClient.get(`${endPoint}/blocked`)
+export const getBlockedUsers = () => apiClient.get(`${endPoint}/blocked`);
 
+export const addPushToken = (token, platform) =>
+  apiClient.post(`${endPoint}/push-token`, { token, platform });
 
-
+export const removePushToken = (token) =>
+  apiClient.delete(`${endPoint}/push-token/${token}`);

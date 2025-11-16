@@ -163,7 +163,7 @@ export const userLoginSchema = Joi.object({
 
 // Validation for updating user profile
 export const userUpdateSchema = Joi.object({
-  image: Joi.string().uri().required().messages({
+  image: Joi.string().uri().messages({
     "string.uri": "Image must be a valid URL",
     "any.required": "Image is required",
   }),
@@ -200,4 +200,14 @@ export const userUpdateSchema = Joi.object({
       "string.pattern.base":
         "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (@$!%*?&)",
     }),
+
+  pushNotificationTokens: Joi.array()
+    .items(
+      Joi.object({
+        token: Joi.string().required(),
+        platform: Joi.string().valid("ios", "android").required(),
+        addedAt: Joi.date(),
+      })
+    )
+    .optional(),
 }).min(1); // At least one field must be provided for update
