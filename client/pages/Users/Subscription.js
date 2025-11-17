@@ -1,9 +1,10 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+// In Subscription.js - Update your component
+
+import React, { useState, useEffect } from "react"; // Add useEffect
+import { View, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import ScrollScreen from "../../components/general/ScrollScreen";
 import SafeScreen from "../../components/general/SafeScreen";
 import Navbar from "../../components/general/Navbar";
-import IndivisualPromo from "../../components/IndivisualPromo";
 import OfferCard from "../../components/OfferCard";
 import PostComponent from "../../components/post_releated/PostComponent";
 import useThemedStyles from "../../hooks/useThemedStyles";
@@ -11,15 +12,133 @@ import { useTheme } from "../../config/ThemeContext";
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import AppText from "../../config/AppText";
 import Logo from "../../components/Logo";
+import { useRevenueCat } from "../../hooks/RevenueCat";
+import RequestBtn from "../../components/RequestBtn";
 
 function Subscription(props) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
+  const {
+    offerings,
+    customerInfo,
+    loading,
+    purchasePackage,
+    restorePurchases,
+    hasActiveSubscription,
+    getActiveSubscriptionType,
+    getPackageWithJDPrice,
+    refreshCustomerInfo,
+  } = useRevenueCat();
+
+  const [purchasing, setPurchasing] = useState(false);
+  const [localActiveSubscription, setLocalActiveSubscription] = useState(null);
+
+  // Update local state whenever customerInfo changes
+  useEffect(() => {
+    const activeSub = getActiveSubscriptionType();
+    setLocalActiveSubscription(activeSub);
+    console.log("🔄 Active subscription updated:", activeSub);
+  }, [customerInfo]);
+
+  const handlePurchase = async (packageToPurchase, planName) => {
+    setPurchasing(true);
+    const result = await purchasePackage(packageToPurchase);
+    setPurchasing(false);
+
+    if (result.success) {
+      // Force refresh to get latest entitlements
+      await refreshCustomerInfo();
+
+      // Update local state
+      const newActiveSub = getActiveSubscriptionType();
+      setLocalActiveSubscription(newActiveSub);
+
+      Alert.alert(
+        "Success! 🎉",
+        `You've successfully subscribed to ${planName}!`,
+        [{ text: "OK" }]
+      );
+    } else if (!result.error?.userCancelled) {
+      Alert.alert(
+        "Purchase Failed",
+        "Something went wrong. Please try again.",
+        [{ text: "OK" }]
+      );
+    }
+  };
+
+  const handleRestore = async () => {
+    setPurchasing(true);
+    const result = await restorePurchases();
+    setPurchasing(false);
+
+    if (result.success) {
+      // Update local state after restore
+      const newActiveSub = getActiveSubscriptionType();
+      setLocalActiveSubscription(newActiveSub);
+
+      if (result.hasActiveEntitlement) {
+        Alert.alert(
+          "Purchases Restored! ✅",
+          `Your ${
+            newActiveSub?.toUpperCase() || "subscription"
+          } plan has been restored successfully!`,
+          [{ text: "OK" }]
+        );
+      } else {
+        Alert.alert(
+          "No Active Subscriptions",
+          "No active subscriptions were found to restore.",
+          [{ text: "OK" }]
+        );
+      }
+    } else {
+      Alert.alert(
+        "Restore Failed",
+        "Unable to restore purchases. Please try again.",
+        [{ text: "OK" }]
+      );
+    }
+  };
+
+  // Get packages with JD prices
+  const proPackage = getPackageWithJDPrice("pro_monthly");
+  const starterPackage = getPackageWithJDPrice("business_starter");
+  const premiumPackage = getPackageWithJDPrice("business_premium");
+
+  if (loading) {
+    return (
+      <SafeScreen>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.purple} />
+          <AppText style={styles.loadingText}>Loading subscriptions...</AppText>
+        </View>
+        <Navbar />
+      </SafeScreen>
+    );
+  }
 
   return (
     <SafeScreen>
       <ScrollScreen>
         <Logo slogan style={styles.logo} />
+
+        {/* Active Subscription Banner - Use local state */}
+        {localActiveSubscription && (
+          <PostComponent style={[styles.container, styles.activeBanner]}>
+            <View style={styles.iconAndTitle}>
+              <MaterialIcons
+                name="check-circle"
+                size={24}
+                color={theme.green}
+              />
+              <AppText style={[styles.text, { color: theme.green }]}>
+                Active: {localActiveSubscription.toUpperCase()} Plan
+              </AppText>
+            </View>
+          </PostComponent>
+        )}
+
         <PostComponent style={styles.container}>
           <View style={styles.iconAndTitle}>
             <MaterialIcons
@@ -42,7 +161,7 @@ function Subscription(props) {
           </AppText>
           <AppText style={[styles.text]}>How It Works?</AppText>
           <AppText style={[styles.text, styles.faded, styles.height]}>
-            1- Subscirbe - Choose a plan that fits you.{"\n"}
+            1- Subscribe - Choose a plan that fits you.{"\n"}
             2- List items - Add photos, details and prices.{"\n"}
             3- Start earning - Accept rental requests and make money.{"\n"}
           </AppText>
@@ -50,7 +169,7 @@ function Subscription(props) {
             <FontAwesome6
               name="circle-exclamation"
               color={theme.darker_gray}
-              style={{paddingTop:5}}
+              style={{ paddingTop: 5 }}
             ></FontAwesome6>
             <AppText style={[styles.note, styles.small]}>
               Note: Businesses must choose a business plan. Misuse may lead to
@@ -58,6 +177,8 @@ function Subscription(props) {
             </AppText>
           </View>
         </PostComponent>
+
+        {/* Free Plan */}
         <OfferCard
           backColor={"post"}
           color={"purple"}
@@ -68,46 +189,94 @@ function Subscription(props) {
           List up to 2 posts for free, no rentals {"\n\n"}
           Borrow items for free.
         </OfferCard>
+
+        {/* Pro Plan */}
         <OfferCard
           backColor={"purple"}
           color={"always_white"}
           title={"Individual - Pro"}
           icon={"currency-exchange"}
-          btnText={"Subscribe now"}
-          startNow={6}
+          btnText={
+            purchasing
+              ? "Processing..."
+              : localActiveSubscription === "pro"
+              ? "Current Plan"
+              : "Subscribe now"
+          }
+          startNow={proPackage ? proPackage.jdPrice.replace(" JD", "") : 6}
+          onPress={() => {
+            if (localActiveSubscription === "pro") return;
+            if (proPackage) handlePurchase(proPackage, "Individual - Pro");
+          }}
         >
           List up to 6 items for rental every month and make money.{"\n\n"}
-          The profit is all yours - We don’t take commesion.
+          The profit is all yours - We don't take commission.
         </OfferCard>
+
+        {/* Starter Plan */}
         <OfferCard
           backColor={"green"}
           color={"always_white"}
           title={"Business - Starter"}
           icon={"museum"}
-          btnText={"Subscribe now"}
-          startNow={25}
+          btnText={
+            purchasing
+              ? "Processing..."
+              : localActiveSubscription === "starter"
+              ? "Current Plan"
+              : "Subscribe now"
+          }
+          startNow={
+            starterPackage ? starterPackage.jdPrice.replace(" JD", "") : 25
+          }
+          onPress={() => {
+            if (localActiveSubscription === "starter") return;
+            if (starterPackage)
+              handlePurchase(starterPackage, "Business - Starter");
+          }}
         >
           List up to 25 items for rental every month and make more money.
           {"\n\n"}
           Get a store badge - Displayed next to your user name.
-          {/* {"\n\n"} */}
-          {/* Featured placement - Your listings show more often. */}
         </OfferCard>
+
+        {/* Premium Plan */}
         <OfferCard
           backColor={"gold"}
           color={"always_white"}
           title={"Business - Premium"}
           icon={"warehouse"}
-          btnText={"Subscribe now"}
-          startNow={50}
+          btnText={
+            purchasing
+              ? "Processing..."
+              : localActiveSubscription === "premium"
+              ? "Current Plan"
+              : "Subscribe now"
+          }
+          startNow={
+            premiumPackage ? premiumPackage.jdPrice.replace(" JD", "") : 50
+          }
+          onPress={() => {
+            if (localActiveSubscription === "premium") return;
+            if (premiumPackage)
+              handlePurchase(premiumPackage, "Business - Premium");
+          }}
         >
           List unlimited items and max out your profit every month.{"\n\n"}
           Get a store badge - Displayed next to your user name.{"\n\n"}
-          {/* Priority search ranking - Your listings show on top to increase your
-          earning.{"\n\n"} */}
-          {/* Get analytics to keep up with your business and maximize your wining. */}
           List Realestate and Transportation items.
         </OfferCard>
+
+        {/* Restore Purchases Button */}
+        <PostComponent style={styles.container}>
+          <RequestBtn
+            title="Restore Purchases"
+            color="post"
+            backColor="purple"
+            onPress={handleRestore}
+            style={styles.restoreBtn}
+          />
+        </PostComponent>
       </ScrollScreen>
       <Navbar></Navbar>
     </SafeScreen>
@@ -118,6 +287,11 @@ const getStyles = (theme) =>
   StyleSheet.create({
     container: {
       marginVertical: 15,
+    },
+    activeBanner: {
+      backgroundColor: theme.post,
+      borderColor: theme.green,
+      borderWidth: 2,
     },
     iconAndTitle: {
       flexDirection: "row",
@@ -153,6 +327,21 @@ const getStyles = (theme) =>
     },
     logo: {
       marginVertical: 20,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 10,
+    },
+    loadingText: {
+      color: theme.main_text,
+      fontSize: 16,
+    },
+    restoreBtn: {
+      padding: 2,
+      borderRadius: 10,
+      width: "100%",
     },
   });
 

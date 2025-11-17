@@ -36,6 +36,7 @@ import Blocks from "./pages/admin/Blocks";
 
 import * as Notifications from "expo-notifications";
 import { registerForPushNotifications } from "./functions/notificationToken";
+import Purchases, { LOG_LEVEL } from "react-native-purchases";
 import { useRef } from "react";
 
 const Stack = createNativeStackNavigator();
@@ -46,7 +47,7 @@ if (Platform.OS === "android") {
     name: "Default",
     importance: Notifications.AndroidImportance.MAX,
     vibrationPattern: [0, 250, 250, 250],
-    lightColor: '#FF231F7C',
+    lightColor: "#FF231F7C",
   });
 }
 
@@ -102,7 +103,7 @@ const AuthStack = () => (
 const AppNavigator = () => {
   const { isAuthenticated, isAdmin, isLoading } = useUser();
   const { isDarkMode } = useTheme();
-const notificationListener = useRef();
+  const notificationListener = useRef();
   const responseListener = useRef();
 
   useEffect(() => {
@@ -111,29 +112,31 @@ const notificationListener = useRef();
       registerForPushNotifications();
 
       // Listen for notifications received while app is foregrounded
-      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-        console.log('📬 Notification received!');
-        console.log('Title:', notification.request.content.title);
-        console.log('Body:', notification.request.content.body);
-        console.log('Data:', notification.request.content.data);
-      });
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+          console.log("📬 Notification received!");
+          console.log("Title:", notification.request.content.title);
+          console.log("Body:", notification.request.content.body);
+          console.log("Data:", notification.request.content.data);
+        });
 
       // Listen for user interactions with notifications
-      responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-        console.log('👆 Notification tapped!');
-        console.log('Response:', response);
-        // TODO: Handle navigation based on notification data
-        // Example: if (response.notification.request.content.data.screen) { navigate(...) }
-      });
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          console.log("👆 Notification tapped!");
+          console.log("Response:", response);
+          // TODO: Handle navigation based on notification data
+          // Example: if (response.notification.request.content.data.screen) { navigate(...) }
+        });
 
-      return () => {
-        if (notificationListener.current) {
-          Notifications.subscription.remove(notificationListener.current);
-        }
-        if (responseListener.current) {
-          Notifications.subscription.remove(responseListener.current);
-        }
-      };
+      // return () => {
+      //   if (notificationListener.current) {
+      //     Notifications.subscription.remove(notificationListener.current);
+      //   }
+      //   if (responseListener.current) {
+      //     Notifications.subscription.remove(responseListener.current);
+      //   }
+      // };
     }
   }, [isAuthenticated]);
 
@@ -165,6 +168,20 @@ const AppContent = () => {
 
 export default function App() {
   const [backModal, setBackModal] = useState(false);
+
+  useEffect(() => {
+    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+
+    // Platform-specific API keys
+    const iosApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp";
+    const androidApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp"; // i have a real key should i put it here?
+
+    if (Platform.OS === "ios") {
+      Purchases.configure({ apiKey: iosApiKey });
+    } else if (Platform.OS === "android") {
+      Purchases.configure({ apiKey: androidApiKey });
+    }
+  }, []);
 
   return (
     <SafeAreaProvider>

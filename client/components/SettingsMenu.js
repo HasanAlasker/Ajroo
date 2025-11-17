@@ -1,4 +1,10 @@
-import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Alert,
+  Linking,
+} from "react-native";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import Constants from "expo-constants";
@@ -10,13 +16,41 @@ import SeparatorComp from "./SeparatorComp";
 import { useNavigation } from "@react-navigation/native";
 import { useUser } from "../config/UserContext";
 import { Modal } from "react-native";
+import { useAlert } from "../config/AlertContext";
 
 function SettingsMenu({ isVisible, onClose }) {
   const styles = useThemedStyles(getStyles);
-  const {toggleTheme, isDarkMode} = useTheme()
-  const navigation = useNavigation()
-  const {logout, isAdmin} = useUser()
-  
+  const { toggleTheme, isDarkMode } = useTheme();
+  const navigation = useNavigation();
+  const { logout, isAdmin } = useUser();
+  const { showAlert } = useAlert();
+
+  // Function to open URLs
+  const openURL = async (url) => {
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      showAlert({
+        title: "Leave App?",
+        message: `Your are leaving the app and going to\n ${url}`,
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            await Linking.openURL(url);
+          } catch (error) {
+            showAlert({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
+    } else {
+      Alert.alert("Error", `Cannot open URL: ${url}`);
+    }
+  };
+
   if (!isVisible) return null;
   return (
     <Modal transparent animationType="slide">
@@ -27,29 +61,67 @@ function SettingsMenu({ isVisible, onClose }) {
       <View style={styles.container}>
         <BackContainer>
           <MenuBackBtn onClose={onClose} />
-          <MenuOption text={isDarkMode ? 'Light mode': 'Dark mode'} icon={"circle-half-full"} onPress={toggleTheme}/>
+          <MenuOption
+            text={isDarkMode ? "Light mode" : "Dark mode"}
+            icon={"circle-half-full"}
+            onPress={toggleTheme}
+          />
           {/* <SeparatorComp style={styles.sep} />
           <MenuOption text={"Change language"} icon={"earth"} /> */}
           {!isAdmin && <SeparatorComp style={styles.sep} />}
-          {!isAdmin && <MenuOption text={"Privacy policy"} icon={"shield-check-outline"} />}
+          {!isAdmin && (
+            <MenuOption
+              text={"Privacy policy"}
+              icon={"shield-check-outline"}
+              onPress={() =>
+                openURL("https://ajroo.netlify.app/privacy-policy")
+              }
+            />
+          )}
           {!isAdmin && <SeparatorComp style={styles.sep} />}
-          {!isAdmin && <MenuOption
-            text={"Terms of service"}
-            icon={"newspaper-variant-outline"}
-          />}
+          {!isAdmin && (
+            <MenuOption
+              text={"Terms of service"}
+              icon={"newspaper-variant-outline"}
+              onPress={() =>
+                openURL("https://ajroo.netlify.app/terms-of-service")
+              }
+            />
+          )}
           {!isAdmin && <SeparatorComp style={styles.sep} />}
-          {!isAdmin && <MenuOption
-            text={"Subscription"}
-            icon={"card-account-details-star-outline"}
-            color={'purple'}
-            onPress={()=> navigation.navigate('Subscription')}
-          />}
+          {!isAdmin && (
+            <MenuOption
+              text={"Subscription"}
+              icon={"card-account-details-star-outline"}
+              color={"purple"}
+              onPress={() => navigation.navigate("Subscription")}
+            />
+          )}
           {isAdmin && <SeparatorComp style={styles.sep} />}
-          {isAdmin && <MenuOption text={"Suggestions"} icon={"chat-outline"} color={"green"} onPress={()=> navigation.navigate('AdminSuggestions')} />}
+          {isAdmin && (
+            <MenuOption
+              text={"Suggestions"}
+              icon={"chat-outline"}
+              color={"green"}
+              onPress={() => navigation.navigate("AdminSuggestions")}
+            />
+          )}
           {!isAdmin && <SeparatorComp style={styles.sep} />}
-          {!isAdmin &&<MenuOption text={"Support"} icon={"headphones"} color={"green"} onPress={()=>navigation.navigate('Suggestions')}/>}
+          {!isAdmin && (
+            <MenuOption
+              text={"Support"}
+              icon={"headphones"}
+              color={"green"}
+              onPress={() => navigation.navigate("Suggestions")}
+            />
+          )}
           <SeparatorComp style={styles.sep} />
-          <MenuOption text={"Log out"} icon={"logout"} color={"red"} onPress={logout}/>
+          <MenuOption
+            text={"Log out"}
+            icon={"logout"}
+            color={"red"}
+            onPress={logout}
+          />
         </BackContainer>
       </View>
     </Modal>
@@ -67,7 +139,6 @@ const getStyles = (theme) =>
       borderBottomRightRadius: 22,
       borderBottomLeftRadius: 22,
       paddingBottom: 20,
-      
     },
     sep: {
       width: "100%",

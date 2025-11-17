@@ -32,6 +32,7 @@
     "react-native": "0.79.6",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-purchases": "^9.6.5",
+    "react-native-purchases-ui": "^9.6.5",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "yup": "^1.7.0"
