@@ -147,7 +147,7 @@ const subscriptionSchema = new mongoose.Schema(
 // Indexes for performance
 subscriptionSchema.index({ userId: 1 });
 subscriptionSchema.index({ status: 1 });
-subscriptionSchema.index({ revenueCatId: 1 });
+// subscriptionSchema.index({ revenueCatId: 1 });
 subscriptionSchema.index({ endDate: 1 });
 
 // Virtual to check if subscription is active

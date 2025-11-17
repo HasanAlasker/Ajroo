@@ -12,6 +12,7 @@ import usersModel from "../models/usersModel.js";
 import UserModel from "../models/usersModel.js";
 import auth from "../middleware/auth.js";
 import admin from "../middleware/admin.js";
+import SubscriptionModel from "../models/subscriptionModel.js";
 
 const router = express.Router();
 
@@ -129,6 +130,29 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
 
     await newUser.save();
 
+    // Initialize RevenueCat ID
+    newUser.revenueCatUserId = newUser._id;
+    await newUser.save();
+
+    // Create default free subscription
+    const defaultSubscription = new SubscriptionModel({
+      userId: newUser._id,
+      type: "individual_free",
+      status: "active",
+      features: {
+        maxPosts: 2,
+        maxActiveRequests: 3,
+        prioritySupport: false,
+        analytics: false,
+        customBranding: false,
+      },
+    });
+    await defaultSubscription.save();
+
+    // Link subscription to user
+    newUser.subscription = defaultSubscription._id;
+    await newUser.save();
+
     const token = newUser.generateAuthToken();
 
     return res
@@ -152,7 +176,7 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
 // login
 router.post("/login", validate(userLoginSchema), async (req, res) => {
   try {
-    const user = await UserModel.findOne({ email: req.body.email });
+    const user = await UserModel.findOne({ email: req.body.email }).populate('Subscriptions');
     if (!user) {
       return res
         .status(400)
@@ -187,7 +211,8 @@ router.post("/login", validate(userLoginSchema), async (req, res) => {
           "phone",
           "role",
           "isBlocked",
-          "strikes"
+          "strikes",
+          "revenueCatUserId",
         ])
       );
   } catch (err) {
@@ -485,7 +510,8 @@ router.delete("/push-token/:token", auth, async (req, res) => {
   }
 });
 
-// forgot password
-
 // add subscription
+
+// cancel sub
+
 export default router;

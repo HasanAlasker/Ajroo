@@ -163,25 +163,63 @@ const AppNavigator = () => {
 
 // App content wrapper
 const AppContent = () => {
+  const { user, isAuthenticated } = useUser(); // Get user from context
+
+  useEffect(() => {
+    const initializeRevenueCat = async () => {
+      try {
+        // Configure RevenueCat
+        Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+
+        const iosApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp";
+        const androidApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp";
+
+        if (Platform.OS === "ios") {
+          await Purchases.configure({ apiKey: iosApiKey });
+        } else if (Platform.OS === "android") {
+          await Purchases.configure({ apiKey: androidApiKey });
+        }
+
+        // IMPORTANT: Log in user to RevenueCat after authentication
+        if (isAuthenticated && user?._id) {
+          const revenueCatUserId = `user_${user._id}`;
+          console.log('🔐 Logging in to RevenueCat with ID:', revenueCatUserId);
+          
+          await Purchases.logIn(revenueCatUserId);
+          console.log('✅ RevenueCat user logged in');
+          
+          // Optional: Sync with backend to ensure user has RevenueCat ID
+          await syncRevenueCatId(revenueCatUserId);
+        }
+      } catch (error) {
+        console.error('❌ RevenueCat initialization error:', error);
+      }
+    };
+
+    initializeRevenueCat();
+  }, [isAuthenticated, user?._id]);
+
+  const syncRevenueCatId = async (revenueCatUserId) => {
+    try {
+      // Call your backend to ensure RevenueCat ID is set
+      await fetch(`${API_URL}/subscriptions/init-revenuecat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': yourAuthToken, // Get from your auth context
+        },
+      });
+      console.log('✅ RevenueCat ID synced with backend');
+    } catch (error) {
+      console.error('❌ Failed to sync RevenueCat ID:', error);
+    }
+  };
+
   return <AppNavigator />;
 };
 
 export default function App() {
   const [backModal, setBackModal] = useState(false);
-
-  useEffect(() => {
-    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
-
-    // Platform-specific API keys
-    const iosApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp";
-    const androidApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp"; // i have a real key should i put it here?
-
-    if (Platform.OS === "ios") {
-      Purchases.configure({ apiKey: iosApiKey });
-    } else if (Platform.OS === "android") {
-      Purchases.configure({ apiKey: androidApiKey });
-    }
-  }, []);
 
   return (
     <SafeAreaProvider>

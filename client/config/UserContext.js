@@ -265,6 +265,7 @@ export const UserProvider = ({ children }) => {
         rating: response.rating || null,
         ratingCount: response.ratingCount || 0,
         role: response.role || "user",
+        revenueCatUserId: response.revenueCatUserId,
         createdAt: response.createdAt || new Date().toISOString(),
       };
 

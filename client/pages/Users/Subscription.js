@@ -1,5 +1,3 @@
-// In Subscription.js - Update your component
-
 import React, { useState, useEffect } from "react"; // Add useEffect
 import { View, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import ScrollScreen from "../../components/general/ScrollScreen";
@@ -14,6 +12,7 @@ import AppText from "../../config/AppText";
 import Logo from "../../components/Logo";
 import { useRevenueCat } from "../../hooks/RevenueCat";
 import RequestBtn from "../../components/RequestBtn";
+import LoadingCircle from "../../components/general/LoadingCircle";
 
 function Subscription(props) {
   const styles = useThemedStyles(getStyles);
@@ -108,13 +107,7 @@ function Subscription(props) {
 
   if (loading) {
     return (
-      <SafeScreen>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme.purple} />
-          <AppText style={styles.loadingText}>Loading subscriptions...</AppText>
-        </View>
-        <Navbar />
-      </SafeScreen>
+      <LoadingCircle/>
     );
   }
 
