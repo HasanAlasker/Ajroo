@@ -176,7 +176,9 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
 // login
 router.post("/login", validate(userLoginSchema), async (req, res) => {
   try {
-    const user = await UserModel.findOne({ email: req.body.email }).populate('Subscriptions');
+    const user = await UserModel.findOne({ email: req.body.email })
+      .populate('subscription'); // Add this to get subscription data
+    
     if (!user) {
       return res
         .status(400)
@@ -196,26 +198,31 @@ router.post("/login", validate(userLoginSchema), async (req, res) => {
 
     const token = user.generateAuthToken();
 
+    // Include subscription info in response
+    const responseData = {
+      ..._.pick(user, [
+        "_id",
+        "name",
+        "image",
+        "isRated",
+        "rating",
+        "ratingCount",
+        "gender",
+        "phone",
+        "role",
+        "isBlocked",
+        "strikes",
+        "revenueCatUserId",
+      ]),
+      subscription: user.subscription || null,
+    };
+
     return res
       .status(200)
       .header("x-auth-token", token)
-      .send(
-        _.pick(user, [
-          "_id",
-          "name",
-          "image",
-          "isRated",
-          "rating",
-          "ratingCount",
-          "gender",
-          "phone",
-          "role",
-          "isBlocked",
-          "strikes",
-          "revenueCatUserId",
-        ])
-      );
+      .send(responseData);
   } catch (err) {
+    console.error("Login error:", err); // Add logging
     return res
       .status(500)
       .send(createErrorResponse("Login failed. Please try again"));

@@ -182,7 +182,7 @@ const AppContent = () => {
 
         // IMPORTANT: Log in user to RevenueCat after authentication
         if (isAuthenticated && user?._id) {
-          const revenueCatUserId = `user_${user._id}`;
+          const revenueCatUserId = user._id;
           console.log('🔐 Logging in to RevenueCat with ID:', revenueCatUserId);
           
           await Purchases.logIn(revenueCatUserId);
