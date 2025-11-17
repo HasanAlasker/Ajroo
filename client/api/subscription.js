@@ -1,0 +1,17 @@
+import { apiClient } from "./client";
+
+const endPoint = '/api/subscriptions';
+
+// Get current user's subscription
+export const getMySubscription = () => apiClient.get(`${endPoint}/me`);
+
+// Initialize RevenueCat user
+export const syncRevenueCatId = () => apiClient.post(`${endPoint}/init-revenuecat`);
+
+// Check if user can perform an action (based on limits)
+export const checkSubscriptionLimit = (action, currentCount) => 
+  apiClient.post(`${endPoint}/check-limit`, { action, currentCount });
+
+// Get subscription history (admin only)
+export const getSubscriptionHistory = (userId) => 
+  apiClient.get(`${endPoint}/history/${userId}`);

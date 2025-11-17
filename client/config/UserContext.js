@@ -3,6 +3,7 @@ import React, { createContext, useContext, useReducer, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerUser, loginUser, updateUser } from "../api/user";
 import { unregisterPushToken } from "../functions/notificationToken";
+import Purchases from "react-native-purchases";
 
 // Define action types for the reducer
 const USER_ACTION_TYPES = {
@@ -353,6 +354,10 @@ export const UserProvider = ({ children }) => {
   const logout = async () => {
     try {
       await unregisterPushToken();
+      const current = await Purchases.getAppUserID();
+      if (current !== "anonymous") {
+        await Purchases.logOut();
+      }
       await clearUserData();
       dispatch({ type: USER_ACTION_TYPES.LOGOUT });
     } catch (error) {

@@ -28,7 +28,7 @@ import OfflineModal from "./components/general/OfflineModal";
 import Dash from "./pages/admin/Dash";
 import Search from "./pages/admin/Search";
 import Reports from "./pages/admin/Reports";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import LoadingCircle from "./components/general/LoadingCircle";
 import Suggestions from "./pages/Users/Suggestions";
 import AdminSuggestions from "./pages/admin/AdminSuggestions";
@@ -37,7 +37,7 @@ import Blocks from "./pages/admin/Blocks";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotifications } from "./functions/notificationToken";
 import Purchases, { LOG_LEVEL } from "react-native-purchases";
-import { useRef } from "react";
+import { syncRevenueCatId } from "./api/subscription";
 
 const Stack = createNativeStackNavigator();
 
@@ -71,7 +71,8 @@ const AuthenticatedStack = () => {
     </Stack.Navigator>
   );
 };
-// Authenticated user navigation stack
+
+// Admin navigation stack
 const AdminStack = () => {
   return (
     <Stack.Navigator
@@ -87,6 +88,7 @@ const AdminStack = () => {
     </Stack.Navigator>
   );
 };
+
 // Non-authenticated user navigation stack
 const AuthStack = () => (
   <Stack.Navigator
@@ -101,11 +103,65 @@ const AuthStack = () => (
 
 // Main navigation component that switches based on auth state
 const AppNavigator = () => {
-  const { isAuthenticated, isAdmin, isLoading } = useUser();
+  const { isAuthenticated, isAdmin, isLoading, user } = useUser();
   const { isDarkMode } = useTheme();
   const notificationListener = useRef();
   const responseListener = useRef();
 
+  // Initialize RevenueCat
+  useEffect(() => {
+    const initializeRevenueCat = async () => {
+      try {
+        // Configure RevenueCat
+        Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+
+        const iosApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp";
+        const androidApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp";
+
+        if (Platform.OS === "ios") {
+          await Purchases.configure({ apiKey: iosApiKey });
+        } else if (Platform.OS === "android") {
+          await Purchases.configure({ apiKey: androidApiKey });
+        }
+
+        console.log('✅ RevenueCat configured');
+      } catch (error) {
+        console.error('❌ RevenueCat configuration error:', error);
+      }
+    };
+
+    initializeRevenueCat();
+  }, []);
+
+  // Handle user authentication and RevenueCat login
+  useEffect(() => {
+    const handleUserAuthentication = async () => {
+      if (isAuthenticated && user?.id) {
+        try {
+          const revenueCatUserId = user.id;
+          console.log('🔐 Logging in to RevenueCat with ID:', revenueCatUserId);
+          
+          // Log in user to RevenueCat
+          await Purchases.logIn(revenueCatUserId);
+          console.log('✅ RevenueCat user logged in');
+          
+          // Sync with backend to ensure user has RevenueCat ID
+          const response = await syncRevenueCatId();
+          if (response.ok) {
+            console.log('✅ RevenueCat ID synced with backend');
+          } else {
+            console.error('❌ Failed to sync RevenueCat ID:', response.data);
+          }
+        } catch (error) {
+          console.error('❌ RevenueCat login error:', error);
+        }
+      }
+    };
+
+    handleUserAuthentication();
+  }, [isAuthenticated, user?.id]);
+
+  // Handle push notifications
   useEffect(() => {
     if (isAuthenticated) {
       // Register for push notifications
@@ -129,14 +185,14 @@ const AppNavigator = () => {
           // Example: if (response.notification.request.content.data.screen) { navigate(...) }
         });
 
-      // return () => {
-      //   if (notificationListener.current) {
-      //     Notifications.subscription.remove(notificationListener.current);
-      //   }
-      //   if (responseListener.current) {
-      //     Notifications.subscription.remove(responseListener.current);
-      //   }
-      // };
+      return () => {
+        if (notificationListener.current) {
+          Notifications.removeNotificationSubscription(notificationListener.current);
+        }
+        if (responseListener.current) {
+          Notifications.removeNotificationSubscription(responseListener.current);
+        }
+      };
     }
   }, [isAuthenticated]);
 
@@ -161,63 +217,6 @@ const AppNavigator = () => {
   );
 };
 
-// App content wrapper
-const AppContent = () => {
-  const { user, isAuthenticated } = useUser(); // Get user from context
-
-  useEffect(() => {
-    const initializeRevenueCat = async () => {
-      try {
-        // Configure RevenueCat
-        Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
-
-        const iosApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp";
-        const androidApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp";
-
-        if (Platform.OS === "ios") {
-          await Purchases.configure({ apiKey: iosApiKey });
-        } else if (Platform.OS === "android") {
-          await Purchases.configure({ apiKey: androidApiKey });
-        }
-
-        // IMPORTANT: Log in user to RevenueCat after authentication
-        if (isAuthenticated && user?._id) {
-          const revenueCatUserId = user._id;
-          console.log('🔐 Logging in to RevenueCat with ID:', revenueCatUserId);
-          
-          await Purchases.logIn(revenueCatUserId);
-          console.log('✅ RevenueCat user logged in');
-          
-          // Optional: Sync with backend to ensure user has RevenueCat ID
-          await syncRevenueCatId(revenueCatUserId);
-        }
-      } catch (error) {
-        console.error('❌ RevenueCat initialization error:', error);
-      }
-    };
-
-    initializeRevenueCat();
-  }, [isAuthenticated, user?._id]);
-
-  const syncRevenueCatId = async (revenueCatUserId) => {
-    try {
-      // Call your backend to ensure RevenueCat ID is set
-      await fetch(`${API_URL}/subscriptions/init-revenuecat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-auth-token': yourAuthToken, // Get from your auth context
-        },
-      });
-      console.log('✅ RevenueCat ID synced with backend');
-    } catch (error) {
-      console.error('❌ Failed to sync RevenueCat ID:', error);
-    }
-  };
-
-  return <AppNavigator />;
-};
-
 export default function App() {
   const [backModal, setBackModal] = useState(false);
 
@@ -227,7 +226,7 @@ export default function App() {
         <AlertProvider>
           <UserProvider>
             <PostProvider>
-              <AppContent />
+              <AppNavigator />
               {/* This modal shows for the item owner when the borrower
                 claims that he returned the item */}
               {/* <GetBackModal
