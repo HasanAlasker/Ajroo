@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import ScrollScreen from "../../components/general/ScrollScreen";
 import Navbar from "../../components/general/Navbar";
@@ -11,9 +11,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import {
-  areas,
   categories,
-  items,
   price,
   cities,
   condition,
@@ -21,12 +19,17 @@ import {
   getItemsByCategory,
 } from "../../constants/DropOptions";
 import SubmitBtn from "../../components/form/SubmitBtn";
-import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
 import { useAlert } from "../../config/AlertContext";
 import { uploadImage } from "../../api/upload";
 import useApi from "../../hooks/useApi";
 import { getUserById } from "../../api/user";
+import Purchases from "react-native-purchases";
+import {
+  SUBSCRIPTION_LIMITS,
+  canUserPost,
+  getPostLimit,
+} from "../../constants/subscriptionLimits";
 
 const validationSchema = Yup.object().shape({
   category: Yup.string()
@@ -35,7 +38,6 @@ const validationSchema = Yup.object().shape({
       categories.map((cat) => cat.value),
       "Please select a valid category"
     ),
-
   item: Yup.string()
     .required("Please select an item")
     .test(
@@ -44,19 +46,16 @@ const validationSchema = Yup.object().shape({
       function (value) {
         const { category } = this.parent;
         if (!category || !value) return true;
-
         const categoryItems = getItemsByCategory(category);
         return categoryItems.some((item) => item.value === value);
       }
     ),
-
   city: Yup.string()
     .required("Please select a city")
     .oneOf(
       cities.map((city) => city.value),
       "Please select a valid city"
     ),
-
   area: Yup.string()
     .required("Please select an area")
     .test(
@@ -65,46 +64,106 @@ const validationSchema = Yup.object().shape({
       function (value) {
         const { city } = this.parent;
         if (!city || !value) return true;
-
         const cityAreas = getAreasByCity(city);
         return cityAreas.some((area) => area.value === value);
       }
     ),
-
   condition: Yup.string()
     .required("Please select item condition")
     .oneOf(
       condition.map((cond) => cond.value),
       "Please select a valid condition"
     ),
-
   image: Yup.string()
     .nullable()
     .required("Please add an image")
     .test("valid-uri", "Please select a valid image", (value) => {
       if (!value) return false;
-      // Check if it's a valid URI string
       return typeof value === "string" && value.length > 0;
     }),
-
   price: Yup.string().required("Please choose pricing"),
 });
 
 function Post(props) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [userPlan, setUserPlan] = useState("free");
+  const [canPost, setCanPost] = useState(true);
+  const [subscriptionError, setSubscriptionError] = useState(null);
   const { showInfo } = useAlert();
   const { user } = useUser();
 
   const {
     data: fetchedUser,
-    request: fethUser,
+    request: fetchUser,
     loading: fetching,
   } = useApi(getUserById);
 
   useEffect(() => {
-    fethUser(user.id);
-  }, [user]);
+    if (user?.id) {
+      fetchUser(user.id);
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    const checkUserSubscription = async () => {
+      try {
+        console.log("🔍 Checking subscription status...");
+        const customerInfo = await Purchases.getCustomerInfo();
+        
+        console.log("📦 Customer Info:", JSON.stringify(customerInfo, null, 2));
+        console.log("🎯 Active Entitlements:", Object.keys(customerInfo.entitlements.active));
+
+        const entitlements = customerInfo.entitlements.active;
+        
+        let planType = "free"; // default to free
+        
+        // Check entitlements in priority order (highest to lowest)
+        if (entitlements["premium"]) {
+          planType = "premium";
+          console.log("✅ Premium plan detected");
+        } else if (entitlements["starter"]) {
+          planType = "starter";
+          console.log("✅ Starter plan detected");
+        } else if (entitlements["pro"]) {
+          planType = "pro";
+          console.log("✅ Pro plan detected");
+        } else {
+          console.log("ℹ️ No active subscription - using free plan");
+        }
+        
+        setUserPlan(planType);
+        setSubscriptionError(null);
+        
+        // Check if user can post
+        if (fetchedUser?.postCount !== undefined) {
+          const canUserPostNow = canUserPost(fetchedUser.postCount, planType);
+          setCanPost(canUserPostNow);
+          
+          const limit = getPostLimit(planType);
+          console.log(`📊 Post Count: ${fetchedUser.postCount}/${limit === -1 ? '∞' : limit}`);
+          
+          // Show warning if at limit
+          if (limit !== -1 && fetchedUser.postCount >= limit) {
+            showInfo({
+              title: "Post Limit Reached",
+              message: `You've reached your ${SUBSCRIPTION_LIMITS[planType].name} limit of ${limit} posts. Please upgrade to post more items.`,
+              confirmText: "Upgrade"
+            });
+          }
+        }
+      } catch (error) {
+        console.error("❌ Error checking subscription:", error);
+        setSubscriptionError(error.message);
+        setUserPlan("free");
+        setCanPost(fetchedUser?.postCount < 2); // Free plan limit
+      }
+    };
+
+    if (fetchedUser) {
+      checkUserSubscription();
+    }
+  }, [fetchedUser]);
 
   const initialValues = {
     category: "",
@@ -120,6 +179,17 @@ function Post(props) {
     values,
     { setSubmitting, setStatus, resetForm }
   ) => {
+    // Check post limit before submitting
+    if (!canPost) {
+      showInfo({
+        title: "Post Limit Reached",
+        message: `You've reached your posting limit. Please upgrade your subscription to post more items.`,
+        confirmText: "Upgrade"
+      });
+      setSubmitting(false);
+      return;
+    }
+
     setLoading(true);
     try {
       const imageUrl = await uploadImage(values.image);
@@ -134,13 +204,16 @@ function Post(props) {
         condition: values.condition,
       };
 
-      const response = await addPost(postData);
+      await addPost(postData);
 
       showInfo({
         title: "Success",
         message: "Post added successfully.",
         confirmText: "Got it",
       });
+
+      // Refresh user data to update post count
+      await fetchUser(user.id);
 
       resetForm();
       setHasBeenSubmitted(false);
@@ -163,12 +236,37 @@ function Post(props) {
       });
     } finally {
       setSubmitting(false);
+      setLoading(false);
     }
-    setLoading(false);
+  };
+
+  // Show post count and limit info
+  const renderPostLimitInfo = () => {
+    if (!fetchedUser) return null;
+    
+    const limit = getPostLimit(userPlan);
+    const remaining = limit === -1 ? '∞' : Math.max(0, limit - (fetchedUser.postCount || 0));
+    
+    return (
+      <View style={styles.limitInfo}>
+        <Text style={styles.limitText}>
+          Posts: {fetchedUser.postCount || 0} / {limit === -1 ? "∞" : limit}
+        </Text>
+        <Text style={styles.planText}>
+          Plan: {SUBSCRIPTION_LIMITS[userPlan]?.name || "Free Plan"}
+        </Text>
+        {subscriptionError && (
+          <Text style={styles.errorText}>
+            ⚠️ Subscription check failed - using free plan
+          </Text>
+        )}
+      </View>
+    );
   };
 
   return (
     <SafeScreen>
+      
       <ScrollScreen>
         <Formik
           initialValues={initialValues}
@@ -179,7 +277,6 @@ function Post(props) {
             const [availableItems, setAvailableItems] = useState([]);
             const [availableAreas, setAvailableAreas] = useState([]);
 
-            // Update available items when category changes
             useEffect(() => {
               if (values.category) {
                 const categoryItems = getItemsByCategory(values.category);
@@ -199,7 +296,6 @@ function Post(props) {
               }
             }, [values.category]);
 
-            // Update available areas when city changes
             useEffect(() => {
               if (values.city) {
                 const cityAreas = getAreasByCity(values.city);
@@ -222,7 +318,7 @@ function Post(props) {
             return (
               <>
                 <AddImageBtn
-                  image={values.image} // This will now correctly show the image
+                  image={values.image}
                   onImageChange={(imageUri) => {
                     setFieldValue("image", imageUri);
                     setStatus(null);
@@ -276,9 +372,9 @@ function Post(props) {
                 />
 
                 <SubmitBtn
-                  disabled={ fetchedUser.isBlocked||loading }
+                  disabled={fetchedUser?.isBlocked || loading || !canPost}
                   setHasBeenSubmitted={setHasBeenSubmitted}
-                ></SubmitBtn>
+                />
               </>
             );
           }}
@@ -291,6 +387,28 @@ function Post(props) {
 
 const styles = StyleSheet.create({
   container: {},
+  limitInfo: {
+    padding: 15,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 8,
+    marginBottom: 15,
+    marginHorizontal: 10,
+  },
+  limitText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#333",
+  },
+  planText: {
+    fontSize: 12,
+    color: "#666",
+    marginTop: 4,
+  },
+  errorText: {
+    fontSize: 11,
+    color: "#ff6b6b",
+    marginTop: 4,
+  },
 });
 
 export default Post;
