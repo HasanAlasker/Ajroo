@@ -28,7 +28,7 @@ mongoose
   .then(() => console.log("Connected to mongoDB... ✅"))
   .catch((err) => console.error("Error connecting to mongoDB... ❌", err.message));
 
-app.use(logger); // my first custom middleware
+// app.use(logger); // my first custom middleware
 app.use(express.json());
 app.use("/api/users", users);
 app.use("/api/posts", posts);
