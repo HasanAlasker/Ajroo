@@ -30,6 +30,8 @@ import {
   canUserPost,
   getPostLimit,
 } from "../../constants/subscriptionLimits";
+import { useTheme } from "../../config/ThemeContext";
+import useThemedStyles from "../../hooks/useThemedStyles";
 
 const validationSchema = Yup.object().shape({
   category: Yup.string()
@@ -92,6 +94,7 @@ function Post(props) {
   const [subscriptionError, setSubscriptionError] = useState(null);
   const { showInfo } = useAlert();
   const { user } = useUser();
+  const styles = useThemedStyles(getStyles);
 
   const {
     data: fetchedUser,
@@ -110,14 +113,17 @@ function Post(props) {
       try {
         console.log("🔍 Checking subscription status...");
         const customerInfo = await Purchases.getCustomerInfo();
-        
+
         console.log("📦 Customer Info:", JSON.stringify(customerInfo, null, 2));
-        console.log("🎯 Active Entitlements:", Object.keys(customerInfo.entitlements.active));
+        console.log(
+          "🎯 Active Entitlements:",
+          Object.keys(customerInfo.entitlements.active)
+        );
 
         const entitlements = customerInfo.entitlements.active;
-        
+
         let planType = "free"; // default to free
-        
+
         // Check entitlements in priority order (highest to lowest)
         if (entitlements["premium"]) {
           planType = "premium";
@@ -131,24 +137,28 @@ function Post(props) {
         } else {
           console.log("ℹ️ No active subscription - using free plan");
         }
-        
+
         setUserPlan(planType);
         setSubscriptionError(null);
-        
+
         // Check if user can post
         if (fetchedUser?.postCount !== undefined) {
           const canUserPostNow = canUserPost(fetchedUser.postCount, planType);
           setCanPost(canUserPostNow);
-          
+
           const limit = getPostLimit(planType);
-          console.log(`📊 Post Count: ${fetchedUser.postCount}/${limit === -1 ? '∞' : limit}`);
-          
+          console.log(
+            `📊 Post Count: ${fetchedUser.postCount}/${
+              limit === -1 ? "∞" : limit
+            }`
+          );
+
           // Show warning if at limit
           if (limit !== -1 && fetchedUser.postCount >= limit) {
             showInfo({
               title: "Post Limit Reached",
               message: `You've reached your ${SUBSCRIPTION_LIMITS[planType].name} limit of ${limit} posts. Please upgrade to post more items.`,
-              confirmText: "Upgrade"
+              confirmText: "Upgrade",
             });
           }
         }
@@ -184,7 +194,7 @@ function Post(props) {
       showInfo({
         title: "Post Limit Reached",
         message: `You've reached your posting limit. Please upgrade your subscription to post more items.`,
-        confirmText: "Upgrade"
+        confirmText: "Upgrade",
       });
       setSubmitting(false);
       return;
@@ -243,10 +253,11 @@ function Post(props) {
   // Show post count and limit info
   const renderPostLimitInfo = () => {
     if (!fetchedUser) return null;
-    
+
     const limit = getPostLimit(userPlan);
-    const remaining = limit === -1 ? '∞' : Math.max(0, limit - (fetchedUser.postCount || 0));
-    
+    const remaining =
+      limit === -1 ? "∞" : Math.max(0, limit - (fetchedUser.postCount || 0));
+
     return (
       <View style={styles.limitInfo}>
         <Text style={styles.limitText}>
@@ -266,7 +277,6 @@ function Post(props) {
 
   return (
     <SafeScreen>
-      
       <ScrollScreen>
         <Formik
           initialValues={initialValues}
@@ -375,6 +385,7 @@ function Post(props) {
                   disabled={fetchedUser?.isBlocked || loading || !canPost}
                   setHasBeenSubmitted={setHasBeenSubmitted}
                 />
+                {renderPostLimitInfo()}
               </>
             );
           }}
@@ -385,30 +396,33 @@ function Post(props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {},
-  limitInfo: {
-    padding: 15,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 8,
-    marginBottom: 15,
-    marginHorizontal: 10,
-  },
-  limitText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#333",
-  },
-  planText: {
-    fontSize: 12,
-    color: "#666",
-    marginTop: 4,
-  },
-  errorText: {
-    fontSize: 11,
-    color: "#ff6b6b",
-    marginTop: 4,
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {},
+    limitInfo: {
+      padding: 15,
+      backgroundColor: theme.post,
+      borderRadius: 8,
+      marginBottom: 15,
+      marginTop: 35,
+      width:'90%',
+      marginHorizontal: 'auto',
+    },
+    limitText: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: theme.darker_gray,
+    },
+    planText: {
+      fontSize: 12,
+      color: theme.sec_text,
+      marginTop: 4,
+    },
+    errorText: {
+      fontSize: 11,
+      color: "#ff6b6b",
+      marginTop: 4,
+    },
+  });
 
 export default Post;
