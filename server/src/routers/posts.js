@@ -10,6 +10,7 @@ import {
   updatePostValidation,
 } from "../validation/postValidation.js";
 import admin from "../middleware/admin.js";
+import UserModel from "../models/usersModel.js";
 
 const router = express.Router();
 
@@ -71,7 +72,9 @@ router.get("/available", auth, async (req, res) => {
 
 router.get("/deleted", [auth, admin], async (req, res) => {
   try {
-    const deletedPosts = await PostModel.find({ isDeleted: true }).sort('-createdAt').populate('user', 'name image');
+    const deletedPosts = await PostModel.find({ isDeleted: true })
+      .sort("-createdAt")
+      .populate("user", "name image");
     return res.status(200).send(deletedPosts);
   } catch (err) {
     return res.status(500).send(err);
@@ -99,6 +102,11 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
     const newPost = new PostModel(data);
     if (!newPost)
       return res.status(400).send("Post not added, something went wrong");
+
+    const userId = req.user._id;
+    await UserModel.findByIdAndUpdate(userId, {
+      $inc: { postCount: 1 },
+    });
 
     const savedPost = await newPost.save();
     return res.status(201).send(savedPost); // just to make sure it sends the saved post
@@ -162,11 +170,16 @@ router.delete("/delete/:id", auth, async (req, res) => {
     const post = await PostModel.findById(id);
     if (!post) return res.status(404).send("Post not found");
 
-    if (req.user.role !== 'admin' && req.user._id !== post.user.toString()) {
+    if (req.user.role !== "admin" && req.user._id !== post.user.toString()) {
       return res.status(403).send("Only post owner and admins can delete post");
     }
 
     const deletedPost = await PostModel.findByIdAndDelete(id);
+
+    const userId = req.user._id;
+    await UserModel.findByIdAndUpdate(userId, {
+      $inc: { postCount: -1 },
+    });
 
     return res.status(200).send(deletedPost);
   } catch (err) {
@@ -314,7 +327,7 @@ router.put("/soft-delete/:id", [auth, admin], async (req, res) => {
     const deletedPost = await PostModel.findByIdAndUpdate(
       id,
       {
-        status:"disabled",
+        status: "disabled",
         isDeleted: true,
         deletedAt: new Date(),
       },

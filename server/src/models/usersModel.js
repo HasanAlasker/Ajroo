@@ -94,6 +94,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    postCount:{
+      type: Number,
+      default:0
+    },
     subscription: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Subscription",
