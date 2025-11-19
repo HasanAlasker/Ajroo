@@ -46,7 +46,7 @@ export const NotificationProvider = ({ children }) => {
       }
 
       if (finalStatus !== "granted") {
-        console.log("Failed to get push token for push notification!");
+        // console.log("Failed to get push token for push notification!");
         return null;
       }
 
@@ -55,7 +55,7 @@ export const NotificationProvider = ({ children }) => {
         projectId: "", // Get this from app.json
       });
 
-      console.log("Push notification token:", token.data);
+      // console.log("Push notification token:", token.data);
       return token.data;
     } catch (error) {
       console.error("Error getting push token:", error);
@@ -69,7 +69,7 @@ export const NotificationProvider = ({ children }) => {
 
     try {
       await saveNotificationToken(user.id, token);
-      console.log("Token saved to backend");
+      // console.log("Token saved to backend");
     } catch (error) {
       console.error("Error saving token:", error);
     }
@@ -88,7 +88,7 @@ export const NotificationProvider = ({ children }) => {
       // Listen for notifications received while app is in foreground
       notificationListener.current = Notifications.addNotificationReceivedListener(
         (notification) => {
-          console.log("Notification received:", notification);
+          // console.log("Notification received:", notification);
           setNotification(notification);
         }
       );
@@ -96,7 +96,7 @@ export const NotificationProvider = ({ children }) => {
       // Listen for user interactions with notifications
       responseListener.current = Notifications.addNotificationResponseReceivedListener(
         (response) => {
-          console.log("Notification tapped:", response);
+          // console.log("Notification tapped:", response);
           handleNotificationTap(response);
         }
       );

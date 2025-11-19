@@ -18,11 +18,11 @@ export const useRevenueCat = () => {
   const fetchOfferings = async () => {
     try {
       const offerings = await Purchases.getOfferings();
-      console.log('📦 Offerings fetched:', offerings);
+      // console.log('📦 Offerings fetched:', offerings);
       
       if (offerings.current !== null) {
-        console.log('📦 Current offering:', offerings.current);
-        console.log('📦 Available packages:', offerings.current.availablePackages);
+        // console.log('📦 Current offering:', offerings.current);
+        // console.log('📦 Available packages:', offerings.current.availablePackages);
         setOfferings(offerings.current);
       } else {
         console.log('⚠️ No current offering found');
@@ -36,10 +36,10 @@ export const useRevenueCat = () => {
 
   const fetchCustomerInfo = async (forceRefresh = false) => {
     try {
-      console.log(`👤 Fetching customer info (force refresh: ${forceRefresh})...`);
+      // console.log(`👤 Fetching customer info (force refresh: ${forceRefresh})...`);
       const customerInfo = await Purchases.getCustomerInfo();
-      console.log('👤 Customer info:', customerInfo);
-      console.log('🎯 Active entitlements:', customerInfo.entitlements.active);
+      // console.log('👤 Customer info:', customerInfo);
+      // console.log('🎯 Active entitlements:', customerInfo.entitlements.active);
       setCustomerInfo(customerInfo);
       return customerInfo;
     } catch (error) {
@@ -50,14 +50,14 @@ export const useRevenueCat = () => {
 
   const purchasePackage = async (packageToPurchase) => {
     try {
-      console.log('💳 Attempting to purchase:', packageToPurchase.identifier);
+      // console.log('💳 Attempting to purchase:', packageToPurchase.identifier);
       const { customerInfo } = await Purchases.purchasePackage(packageToPurchase);
       
       // Force update local state with fresh data
       setCustomerInfo(customerInfo);
       
-      console.log('✅ Purchase successful!');
-      console.log('🎯 Active entitlements:', customerInfo.entitlements.active);
+      // console.log('✅ Purchase successful!');
+      // console.log('🎯 Active entitlements:', customerInfo.entitlements.active);
       
       // Check if user has active subscription - FIXED entitlement names
       if (customerInfo.entitlements.active['pro'] !== undefined) {
@@ -83,7 +83,7 @@ export const useRevenueCat = () => {
 
   const restorePurchases = async () => {
     try {
-      console.log('🔄 Restoring purchases...');
+      // console.log('🔄 Restoring purchases...');
       
       // This forces RevenueCat to sync with Apple/Google servers
       const restoredInfo = await Purchases.restorePurchases();
@@ -91,7 +91,7 @@ export const useRevenueCat = () => {
       // Update local state immediately
       setCustomerInfo(restoredInfo);
       
-      console.log('✅ Purchases restored');
+      // console.log('✅ Purchases restored');
       console.log('🎯 Active entitlements after restore:', restoredInfo.entitlements.active);
       
       // Check if user has any active entitlements
@@ -143,15 +143,15 @@ export const useRevenueCat = () => {
       return null;
     }
     
-    console.log('🔍 Looking for package:', identifier);
-    console.log('📦 Available packages:', offerings.availablePackages.map(p => p.identifier));
+    // console.log('🔍 Looking for package:', identifier);
+    // console.log('📦 Available packages:', offerings.availablePackages.map(p => p.identifier));
     
     const pkg = offerings.availablePackages.find(
       (p) => p.identifier === identifier
     );
     
     if (pkg) {
-      console.log('✅ Found package:', pkg.identifier, pkg.product.priceString);
+      // console.log('✅ Found package:', pkg.identifier, pkg.product.priceString);
       return {
         ...pkg,
         jdPrice: convertToJD(pkg.product.priceString),
@@ -164,7 +164,7 @@ export const useRevenueCat = () => {
 
   // Force refresh customer info (useful after external subscription changes)
   const refreshCustomerInfo = async () => {
-    console.log('🔄 Force refreshing customer info...');
+    // console.log('🔄 Force refreshing customer info...');
     return await fetchCustomerInfo(true);
   };
 

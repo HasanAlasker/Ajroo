@@ -37,7 +37,7 @@ function Subscription(props) {
   useEffect(() => {
     const activeSub = getActiveSubscriptionType();
     setLocalActiveSubscription(activeSub);
-    console.log("🔄 Active subscription updated:", activeSub);
+    // console.log("🔄 Active subscription updated:", activeSub);
   }, [customerInfo]);
 
   // Map RevenueCat entitlement to backend subscription type
@@ -92,14 +92,14 @@ function Subscription(props) {
           originalPurchaseDate: new Date().toISOString(),
         };
 
-        console.log("🔍 Active entitlement:", newActiveSub);
-        console.log("🔍 Mapped subscription type:", subscriptionType);
-        console.log("📤 Updating backend with:", updateData);
+        // console.log("🔍 Active entitlement:", newActiveSub);
+        // console.log("🔍 Mapped subscription type:", subscriptionType);
+        // console.log("📤 Updating backend with:", updateData);
 
         const apiResponse = await updateSubscription(updateData);
 
         if (apiResponse.ok) {
-          console.log("✅ Backend subscription updated successfully");
+          // console.log("✅ Backend subscription updated successfully");
           Alert.alert(
             "Success! 🎉",
             `You've successfully subscribed to ${planName}!`,
@@ -155,12 +155,12 @@ function Subscription(props) {
             expirationDate: expirationDate || null,
           };
 
-          console.log("📤 Restoring backend with:", restoreData);
+          // console.log("📤 Restoring backend with:", restoreData);
 
           const apiResponse = await restoreSubscription(restoreData);
 
           if (apiResponse.ok) {
-            console.log("✅ Backend subscription restored successfully");
+            // console.log("✅ Backend subscription restored successfully");
             Alert.alert(
               "Purchases Restored! ✅",
               `Your ${newActiveSub?.toUpperCase() || "subscription"} plan has been restored successfully!`,

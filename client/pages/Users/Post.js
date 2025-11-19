@@ -111,14 +111,14 @@ function Post(props) {
   useEffect(() => {
     const checkUserSubscription = async () => {
       try {
-        console.log("🔍 Checking subscription status...");
+        // console.log("🔍 Checking subscription status...");
         const customerInfo = await Purchases.getCustomerInfo();
 
-        console.log("📦 Customer Info:", JSON.stringify(customerInfo, null, 2));
-        console.log(
-          "🎯 Active Entitlements:",
-          Object.keys(customerInfo.entitlements.active)
-        );
+        // console.log("📦 Customer Info:", JSON.stringify(customerInfo, null, 2));
+        // console.log(
+        //   "🎯 Active Entitlements:",
+        //   Object.keys(customerInfo.entitlements.active)
+        // );
 
         const entitlements = customerInfo.entitlements.active;
 
@@ -127,15 +127,15 @@ function Post(props) {
         // Check entitlements in priority order (highest to lowest)
         if (entitlements["premium"]) {
           planType = "premium";
-          console.log("✅ Premium plan detected");
+          // console.log("✅ Premium plan detected");
         } else if (entitlements["starter"]) {
           planType = "starter";
-          console.log("✅ Starter plan detected");
+          // console.log("✅ Starter plan detected");
         } else if (entitlements["pro"]) {
           planType = "pro";
-          console.log("✅ Pro plan detected");
+          // console.log("✅ Pro plan detected");
         } else {
-          console.log("ℹ️ No active subscription - using free plan");
+          // console.log("ℹ️ No active subscription - using free plan");
         }
 
         setUserPlan(planType);
@@ -147,11 +147,11 @@ function Post(props) {
           setCanPost(canUserPostNow);
 
           const limit = getPostLimit(planType);
-          console.log(
-            `📊 Post Count: ${fetchedUser.postCount}/${
-              limit === -1 ? "∞" : limit
-            }`
-          );
+          // console.log(
+          //   `📊 Post Count: ${fetchedUser.postCount}/${
+          //     limit === -1 ? "∞" : limit
+          //   }`
+          // );
 
           // Show warning if at limit
           if (limit !== -1 && fetchedUser.postCount >= limit) {

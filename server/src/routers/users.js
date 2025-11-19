@@ -262,7 +262,7 @@ router.get("/blocked", [auth, admin], async (req, res) => {
 router.get("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
-    const user = await UserModel.findById(id).select("-password");
+    const user = await UserModel.findById(id).select("-password").populate('subscription', 'productId');
     if (!user) return res.status(404).send("user not found");
 
     return res.status(200).send(user);

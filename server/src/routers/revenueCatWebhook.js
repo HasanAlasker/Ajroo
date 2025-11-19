@@ -55,7 +55,7 @@ const handleInitialPurchase = async (event) => {
     is_trial_period,
   } = event;
 
-  console.log("🎉 Processing initial purchase for:", app_user_id);
+  // console.log("🎉 Processing initial purchase for:", app_user_id);
 
   try {
     // Find user by RevenueCat ID
@@ -96,7 +96,7 @@ const handleInitialPurchase = async (event) => {
       // Update existing subscription
       Object.assign(subscription, subscriptionData);
       await subscription.save();
-      console.log("✅ Subscription updated:", subscription._id);
+      // console.log("✅ Subscription updated:", subscription._id);
     } else {
       // Create new subscription
       subscription = new SubscriptionModel(subscriptionData);
@@ -105,7 +105,7 @@ const handleInitialPurchase = async (event) => {
       // Link subscription to user
       user.subscription = subscription._id;
       await user.save();
-      console.log("✅ New subscription created:", subscription._id);
+      // console.log("✅ New subscription created:", subscription._id);
     }
   } catch (error) {
     console.error("❌ Error handling initial purchase:", error);
@@ -116,7 +116,7 @@ const handleInitialPurchase = async (event) => {
 const handleRenewal = async (event) => {
   const { app_user_id, expiration_at_ms, purchase_date } = event;
 
-  console.log("🔄 Processing renewal for:", app_user_id);
+  // console.log("🔄 Processing renewal for:", app_user_id);
 
   try {
     const user = await UserModel.findOne({ revenueCatUserId: app_user_id });
@@ -134,7 +134,7 @@ const handleRenewal = async (event) => {
     subscription.lastWebhookDate = new Date();
 
     await subscription.save();
-    console.log("✅ Subscription renewed:", subscription._id);
+    // console.log("✅ Subscription renewed:", subscription._id);
   } catch (error) {
     console.error("❌ Error handling renewal:", error);
   }
@@ -144,7 +144,7 @@ const handleRenewal = async (event) => {
 const handleCancellation = async (event) => {
   const { app_user_id, expiration_at_ms } = event;
 
-  console.log("❌ Processing cancellation for:", app_user_id);
+  // console.log("❌ Processing cancellation for:", app_user_id);
 
   try {
     const user = await UserModel.findOne({ revenueCatUserId: app_user_id });
@@ -162,7 +162,7 @@ const handleCancellation = async (event) => {
     subscription.lastWebhookDate = new Date();
 
     await subscription.save();
-    console.log("✅ Subscription canceled:", subscription._id);
+    // console.log("✅ Subscription canceled:", subscription._id);
   } catch (error) {
     console.error("❌ Error handling cancellation:", error);
   }
@@ -172,7 +172,7 @@ const handleCancellation = async (event) => {
 const handleExpiration = async (event) => {
   const { app_user_id } = event;
 
-  console.log("⏰ Processing expiration for:", app_user_id);
+  // console.log("⏰ Processing expiration for:", app_user_id);
 
   try {
     const user = await UserModel.findOne({ revenueCatUserId: app_user_id });
@@ -191,7 +191,7 @@ const handleExpiration = async (event) => {
     subscription.features = getFeaturesByType("individual_free");
 
     await subscription.save();
-    console.log("✅ Subscription expired:", subscription._id);
+    // console.log("✅ Subscription expired:", subscription._id);
   } catch (error) {
     console.error("❌ Error handling expiration:", error);
   }
@@ -235,7 +235,7 @@ const getFeaturesByType = (type) => {
 
 // Main webhook endpoint
 router.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
-  console.log("📨 RevenueCat webhook received");
+  // console.log("📨 RevenueCat webhook received");
 
   // Verify signature (important for production!)
   if (process.env.NODE_ENV === "production") {
@@ -250,8 +250,8 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
     const event = body.event;
 
-    console.log("📋 Event type:", event.type);
-    console.log("👤 App user ID:", event.app_user_id);
+    // console.log("📋 Event type:", event.type);
+    // console.log("👤 App user ID:", event.app_user_id);
 
     // Handle different event types
     switch (event.type) {

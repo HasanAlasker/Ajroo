@@ -80,11 +80,11 @@ function TopOfPost({
               subscriptionType === "Premium") && (
               <MaterialCommunityIcons
                 name={subscriptionType === "Starter" ? "check-circle" : "crown"}
-                size={20}
+                size={subscriptionType === "Starter" ? 17 : 22}
                 color={
                   subscriptionType === "Starter" ? theme.blue : theme.purple
                 }
-                style={{ paddingTop: 1 }}
+                style={{ paddingTop: subscriptionType === "Starter" ? 5 : 0 }}
               ></MaterialCommunityIcons>
             )}
           </View>

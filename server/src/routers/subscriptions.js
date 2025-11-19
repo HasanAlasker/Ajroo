@@ -94,13 +94,13 @@ router.post("/update", auth, async (req, res) => {
       originalPurchaseDate 
     } = req.body;
 
-    console.log("📥 Received subscription update request:", {
-      subscriptionType,
-      revenueCatId,
-      productId,
-      store,
-      userId: req.user._id
-    });
+    // console.log("📥 Received subscription update request:", {
+    //   subscriptionType,
+    //   revenueCatId,
+    //   productId,
+    //   store,
+    //   userId: req.user._id
+    // });
 
     // Validate subscription type
     const validTypes = [
@@ -156,11 +156,11 @@ router.post("/update", auth, async (req, res) => {
       userId: req.user._id 
     });
 
-    console.log("🔍 Found existing subscription:", subscription ? "Yes" : "No");
+    // console.log("🔍 Found existing subscription:", subscription ? "Yes" : "No");
 
     if (subscription) {
       // FIXED: Use capital S to match schema
-      console.log("📝 Updating subscription from", subscription.SubscriptionType, "to", subscriptionType);
+      // console.log("📝 Updating subscription from", subscription.SubscriptionType, "to", subscriptionType);
       
       subscription.SubscriptionType = subscriptionType;  // Changed from .type
       subscription.status = "active";
@@ -175,10 +175,10 @@ router.post("/update", auth, async (req, res) => {
       subscription.willRenew = true;
       
       await subscription.save();
-      console.log("✅ Subscription updated successfully:", subscription.SubscriptionType);
+      // console.log("✅ Subscription updated successfully:", subscription.SubscriptionType);
     } else {
       // Create new subscription
-      console.log("📝 Creating new subscription:", subscriptionType);
+      // console.log("📝 Creating new subscription:", subscriptionType);
       
       subscription = new SubscriptionModel({
         userId: req.user._id,
@@ -196,13 +196,13 @@ router.post("/update", auth, async (req, res) => {
       });
       
       await subscription.save();
-      console.log("✅ Subscription created successfully:", subscription.SubscriptionType);
+      // console.log("✅ Subscription created successfully:", subscription.SubscriptionType);
 
       // Link subscription to user
       await UserModel.findByIdAndUpdate(req.user._id, {
         subscription: subscription._id,
       });
-      console.log("✅ Subscription linked to user");
+      // console.log("✅ Subscription linked to user");
     }
 
     res.status(200).send({

@@ -50,7 +50,7 @@ function PostRenderer({
     
     const subscriptionDisplayName = getSubscriptionDisplayName(productId);
 
-    console.log("📦 Rendering post - productId:", productId, "→ displayName:", subscriptionDisplayName);
+    // console.log("📦 Rendering post - productId:", productId, "→ displayName:", subscriptionDisplayName);
 
     return (
       <Post

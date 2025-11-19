@@ -25,7 +25,7 @@ export const registerForPushNotifications = async () => {
     }
 
     if (finalStatus !== "granted") {
-      console.log("Permission not granted for push notifications");
+      // console.log("Permission not granted for push notifications");
       return;
     }
 
@@ -33,7 +33,7 @@ export const registerForPushNotifications = async () => {
 
     if (token?.data) {
       await addPushToken(token.data, Platform.OS);
-      console.log("Push token registered:", token.data);
+      // console.log("Push token registered:", token.data);
     }
   } catch (err) {
     console.log("Error getting notification token:", err);
