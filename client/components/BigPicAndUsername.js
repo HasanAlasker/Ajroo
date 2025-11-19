@@ -1,4 +1,11 @@
-import { View, StyleSheet, Image, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Alert,
+  Text,
+} from "react-native";
 import AppText from "../config/AppText";
 import useThemedStyles from "../hooks/useThemedStyles";
 import EditBtn from "./EditBtn";
@@ -13,11 +20,12 @@ import { useUser } from "../config/UserContext";
 
 function BigPicAndUsername({
   userName,
-  initialImage = null, // Optional initial image from parent
+  initialImage = null,
   isEdit,
   isPicDisabled = true,
-  onImageChange, // Optional callback to inform parent of changes
+  onImageChange,
   allowCamera = true,
+  subscriptionType,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
@@ -26,7 +34,7 @@ function BigPicAndUsername({
   const { user, updateProfile } = useUser();
 
   useEffect(() => {
-    setSelectedImage(initialImage)
+    setSelectedImage(initialImage);
   }, [initialImage]);
 
   const handleImageSelection = () => {
@@ -60,12 +68,10 @@ function BigPicAndUsername({
       });
 
       if (imageUri) {
-        setSelectedImage(imageUri); // Set local state
-
+        setSelectedImage(imageUri);
         await updateProfile({ avatar: imageUri });
-
         if (onImageChange) {
-          onImageChange(imageUri); // Notify parent if callback exists
+          onImageChange(imageUri);
         }
       }
     } catch (error) {
@@ -85,12 +91,10 @@ function BigPicAndUsername({
       });
 
       if (imageUri) {
-        setSelectedImage(imageUri); // Set local state
-
+        setSelectedImage(imageUri);
         await updateProfile({ avatar: imageUri });
-
         if (onImageChange) {
-          onImageChange(imageUri); // Notify parent if callback exists
+          onImageChange(imageUri);
         }
       }
     } catch (error) {
@@ -107,20 +111,6 @@ function BigPicAndUsername({
           text: "Change Image",
           onPress: handleImageSelection,
         },
-        // {
-        //   text: "Remove Image",
-        //   onPress: async () => {
-        //     setSelectedImage(null);
-            
-        //     await updateProfile({ avatar: null });
-            
-        //     // Notify parent if callback exists
-        //     if (onImageChange) {
-        //       onImageChange(null);
-        //     }
-        //   },
-        //   style: "destructive",
-        // },
         {
           text: "Cancel",
           style: "cancel",
@@ -132,7 +122,6 @@ function BigPicAndUsername({
   };
 
   const imageToShow = selectedImage || user?.avatar;
-
 
   return (
     <View style={styles.container}>
@@ -153,7 +142,7 @@ function BigPicAndUsername({
               name="loading"
               color={theme.purple}
               size={80}
-            ></MaterialCommunityIcons>
+            />
           </View>
         )}
         {initialImage === null && (
@@ -162,11 +151,33 @@ function BigPicAndUsername({
               name="account"
               color={theme.light_gray}
               size={80}
-            ></MaterialCommunityIcons>
+            />
           </View>
         )}
       </TouchableOpacity>
-      <AppText numberOfLines={2} style={styles.text}>{userName}</AppText>
+
+      {/* Using Text component to properly inline the badge */}
+      <Text style={styles.nameContainer}>
+        <Text style={styles.text}>{userName}</Text>
+        {(subscriptionType === "business_starter" ||
+          subscriptionType === "business_premium") && (
+          <Text style={styles.badgeText}>
+            <MaterialCommunityIcons
+              name={
+                subscriptionType === "business_starter"
+                  ? "check-circle"
+                  : "crown"
+              }
+              size={subscriptionType === "business_starter" ? 24 : 26}
+              color={
+                subscriptionType === "business_starter"
+                  ? theme.blue
+                  : theme.purple
+              }
+            />
+          </Text>
+        )}
+      </Text>
     </View>
   );
 }
@@ -184,7 +195,7 @@ const getStyles = (theme) =>
       height: 150,
       backgroundColor: theme.sec_text,
       borderRadius: 75,
-      position: "relative", // For loading overlay
+      position: "relative",
     },
     image: {
       width: 150,
@@ -192,12 +203,18 @@ const getStyles = (theme) =>
       borderRadius: 75,
       resizeMode: "cover",
     },
+    nameContainer: {
+      textAlign: "center",
+      maxWidth: "90%",
+    },
     text: {
       fontSize: 28,
       fontWeight: "bold",
       textAlign: "center",
       color: theme.main_text,
-      
+    },
+    badgeText: {
+      // lineHeight: 32, // Match with text line height
     },
     loadingOverlay: {
       position: "absolute",
@@ -217,7 +234,6 @@ const getStyles = (theme) =>
       justifyContent: "center",
       alignItems: "center",
     },
-    
     loadingText: {
       color: "white",
       fontSize: 12,

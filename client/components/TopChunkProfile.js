@@ -38,6 +38,7 @@ function TopChunkProfile({
   userPhone,
   profileId,
   isBlocked,
+  subscriptionType,
 }) {
   const { user } = useUser();
   const styles = useThemedStyles(getStyles);
@@ -59,6 +60,7 @@ function TopChunkProfile({
             isEdit={myProfile && !isBlocked}
             isPicDisabled={isPicDisabled}
             onImageChange={onImageChange}
+            subscriptionType={subscriptionType}
           ></BigPicAndUsername>
           {user.role === "admin" && (
             <>
@@ -67,7 +69,10 @@ function TopChunkProfile({
             </>
           )}
           {route.name === "Profile" && !isBlocked ? (
-            <UserRate userRating={formatRating(userRate)} />
+            <>
+              <UserRate userRating={formatRating(userRate)} />
+              {/* <UserRate userRating={subscriptionType} /> */}
+            </>
           ) : route.name === "Profile" && isBlocked ? (
             <BlockedTag />
           ) : null}

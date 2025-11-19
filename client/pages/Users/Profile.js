@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import Navbar from "../../components/general/Navbar";
 import TopChunkProfile from "../../components/TopChunkProfile";
@@ -15,6 +15,7 @@ import { useRoute } from "@react-navigation/native";
 import { getUserById } from "../../api/user";
 import LoadingCircle from "../../components/general/LoadingCircle";
 import ErrorBox from "../../components/general/ErrorBox";
+import AppText from "../../config/AppText";
 
 function Profile({ isNotification }) {
   const [isMenu, setIsMenu] = useState(false);
@@ -57,8 +58,11 @@ function Profile({ isNotification }) {
     setRefreshing(false);
   };
 
+  const subscriptionType = profile.subscription?.productId
+
   return (
     <SafeScreen>
+      {/* <AppText>{subscriptionType}</AppText> */}
       <PostRenderer
         fetchedPosts={posts}
         emptyMessage="No available items to show"
@@ -87,10 +91,14 @@ function Profile({ isNotification }) {
           settingsPress={() => {
             setIsMenu(true);
           }}
+          subscriptionType={subscriptionType}
         ></TopChunkProfile>
 
-        {user.role !== "admin" && !profile?.isBlocked && (
-          <IndivisualPromo></IndivisualPromo>
+        {user.role !== "admin" && !profile?.isBlocked && !subscriptionType && (
+          <IndivisualPromo />
+        )}{/* <BuisnessPromo></BuisnessPromo> */}
+        {user.role !== "admin" && !profile?.isBlocked && subscriptionType ==="pro_monthly"  && (
+          <BuisnessPromo />
         )}
         {profile?.isBlocked && myProfile && (
           <ErrorBox
@@ -103,7 +111,7 @@ function Profile({ isNotification }) {
             secondDetail={"If you believe this is a mistake, contact us through Support in Settings."}
           />
         )}
-        {/* <BuisnessPromo></BuisnessPromo> */}
+        
       </PostRenderer>
       <Navbar></Navbar>
     </SafeScreen>
