@@ -86,11 +86,11 @@ function AddImageBtn({
           text: "Change Image",
           onPress: handleImageSelection,
         },
-        {
-          text: "Remove Image",
-          onPress: () => onImageChange && onImageChange(null),
-          style: "destructive",
-        },
+        // {
+        //   text: "Remove Image",
+        //   onPress: () => onImageChange && onImageChange(null),
+        //   style: "destructive",
+        // },
         {
           text: "Cancel",
           style: "cancel",

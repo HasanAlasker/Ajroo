@@ -107,20 +107,20 @@ function BigPicAndUsername({
           text: "Change Image",
           onPress: handleImageSelection,
         },
-        {
-          text: "Remove Image",
-          onPress: async () => {
-            setSelectedImage(null);
+        // {
+        //   text: "Remove Image",
+        //   onPress: async () => {
+        //     setSelectedImage(null);
             
-            await updateProfile({ avatar: null });
+        //     await updateProfile({ avatar: null });
             
-            // Notify parent if callback exists
-            if (onImageChange) {
-              onImageChange(null);
-            }
-          },
-          style: "destructive",
-        },
+        //     // Notify parent if callback exists
+        //     if (onImageChange) {
+        //       onImageChange(null);
+        //     }
+        //   },
+        //   style: "destructive",
+        // },
         {
           text: "Cancel",
           style: "cancel",
