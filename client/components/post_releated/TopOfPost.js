@@ -1,10 +1,15 @@
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import AppText from "../../config/AppText";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Feather,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
 import { usePosts } from "../../config/PostContext";
 import { useNavigation } from "@react-navigation/native";
+import RowLableCont from "./RowLableCont";
 
 function TopOfPost({
   name,
@@ -15,14 +20,15 @@ function TopOfPost({
   status,
   isMine,
   userId,
+  subscriptionType = "Premium",
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
-  const navigate = useNavigation()
+  const navigate = useNavigation();
 
   const handelOpenProfile = () => {
-    navigate.navigate('Profile', {userId: userId})
-  }
+    navigate.navigate("Profile", { userId: userId });
+  };
 
   const renderProfileImage = () => {
     // Check if image is a valid URI string
@@ -60,10 +66,28 @@ function TopOfPost({
 
   return (
     <View style={styles.topPart}>
-      <TouchableOpacity onPress={handelOpenProfile} style={styles.picAndNameAndDate}>
+      <TouchableOpacity
+        onPress={handelOpenProfile}
+        style={styles.picAndNameAndDate}
+      >
         <View style={styles.imageHolder}>{renderProfileImage()}</View>
         <View style={styles.nameAndDate}>
-          <AppText style={styles.name}>{name}</AppText>
+          <View style={styles.nameAndBadge}>
+            <AppText numberOfLines={1} style={styles.name}>
+              {name}
+            </AppText>
+            {(subscriptionType === "Starter" ||
+              subscriptionType === "Premium") && (
+              <MaterialCommunityIcons
+                name={subscriptionType === "Starter" ? "check-circle" : "crown"}
+                size={20}
+                color={
+                  subscriptionType === "Starter" ? theme.blue : theme.purple
+                }
+                style={{ paddingTop: 1 }}
+              ></MaterialCommunityIcons>
+            )}
+          </View>
           <AppText style={styles.date}>{date}</AppText>
         </View>
       </TouchableOpacity>
@@ -83,9 +107,11 @@ const getStyles = (theme) =>
       flexDirection: "row",
       gap: 10,
       alignItems: "center",
+      flex: 1,
     },
     nameAndDate: {
       gap: 0,
+      flex: 1,
     },
     imageHolder: {
       width: 40,
@@ -98,6 +124,15 @@ const getStyles = (theme) =>
       fontSize: 17,
       fontWeight: "bold",
       color: theme.main_text,
+      // flex: 1,
+      flexWrap: "wrap",
+    },
+    nameAndBadge: {
+      flex: 1,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      paddingRight: 35,
     },
     date: {
       fontSize: 14,
@@ -108,6 +143,7 @@ const getStyles = (theme) =>
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
+      flex: 1,
     },
     more: {
       left: 10,

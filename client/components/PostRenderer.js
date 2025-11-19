@@ -11,33 +11,51 @@ function PostRenderer({
   children,
   showUndelete
 }) {
+  // Helper function to get display name from productId
+  const getSubscriptionDisplayName = (productId) => {
+    if (!productId) return null;
+    
+    const mapping = {
+      individual_free: null,        // No badge for free users
+      individual_pro: "Pro",
+      business_starter: "Starter",
+      business_premium: "Premium",
+    };
+    
+    return mapping[productId] || null;
+  };
+
   const renderPost = ({ item: post }) => {
     let isMine = false;
 
-    // console.log("PostRenderer - borrowerId:", post?.borrower?._id); // Add this
-    // console.log("PostRenderer - ownerId:", post?.owner?._id); // Add this
-
-    // For regular posts
+    // Determine ownership
     if (post.user?._id) {
       isMine = post.user._id === currentUserId;
     }
-    // For borrows (I'm the owner)
     else if (post.owner?._id) {
       isMine = post.owner._id === currentUserId;
     }
-    // For requests (I'm the requester)
     else if (post.requester?._id) {
       isMine = post.requester._id !== currentUserId;
     }
-    // For reported posts
     else if (post.reportedPost?.user?._id) {
       isMine = post.reportedPost.user._id === currentUserId;
     }
 
+    // Get productId from subscription and convert to display name
+    const productId = post.user?.subscription?.productId || 
+                     post.reportedPost?.user?.subscription?.productId ||
+                     post.owner?.subscription?.productId ||
+                     null;
+    
+    const subscriptionDisplayName = getSubscriptionDisplayName(productId);
+
+    console.log("📦 Rendering post - productId:", productId, "→ displayName:", subscriptionDisplayName);
+
     return (
       <Post
         id={post?.reportedPost?._id || post?.item?._id || post._id}
-        reportId={post._id} // this one the the 3 under are the difenition of: if it works dont touch it, here is and explination: the response from DB for rendering posts has 4 posibilities: normal post in have.js/ a request in requests.js / a borrow in borrow.js / and a report. so the order of them is not stupidity but studied carefully also i have three with the same value but different names to not confuse my self in other places (the main purpose is to not have the post id = to the report/ request/ borrow id and not be able to fetch data i need)
+        reportId={post._id}
         requestId={post._id}
         borrowId={post._id}
         phoneNumber={post?.owner?.phone || post?.borrower?.phone}
@@ -84,8 +102,9 @@ function PostRenderer({
         iRequested={post?.requester === currentUserId}
         iBorrowed={post?.borrower === currentUserId}
         iGave={post?.owner === currentUserId}
-        isDeleted = {post?.isDeleted}
+        isDeleted={post?.isDeleted}
         showUndelete={showUndelete}
+        subscriptionType={subscriptionDisplayName}
       />
     );
   };

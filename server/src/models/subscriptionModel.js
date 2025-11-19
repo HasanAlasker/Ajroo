@@ -2,15 +2,15 @@ import mongoose from "mongoose";
 
 const subscriptionSchema = new mongoose.Schema(
   {
-    // User reference (alternative to having it in User model)
+    // User reference
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
-    // Subscription Type
-    type: {
+    // Subscription Type - FIXED: Changed to lowercase
+    subscriptionType: {  // Changed from SubscriptionType
       type: String,
       enum: [
         "individual_free",
@@ -64,7 +64,7 @@ const subscriptionSchema = new mongoose.Schema(
     revenueCatId: {
       type: String,
       unique: true,
-      sparse: true, // Allows multiple null values
+      sparse: true,
     },
     originalPurchaseDate: {
       type: Date,
@@ -76,7 +76,7 @@ const subscriptionSchema = new mongoose.Schema(
       type: Date,
     },
     productId: {
-      type: String, // e.g., "pro_monthly", "business_annual"
+      type: String,
     },
     store: {
       type: String,
@@ -105,7 +105,7 @@ const subscriptionSchema = new mongoose.Schema(
     features: {
       maxPosts: {
         type: Number,
-        default: 2, // Unlimited = -1
+        default: 2,
       },
       maxActiveRequests: {
         type: Number,
@@ -140,14 +140,13 @@ const subscriptionSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Adds createdAt and updatedAt
+    timestamps: true,
   }
 );
 
 // Indexes for performance
 subscriptionSchema.index({ userId: 1 });
 subscriptionSchema.index({ status: 1 });
-// subscriptionSchema.index({ revenueCatId: 1 });
 subscriptionSchema.index({ endDate: 1 });
 
 // Virtual to check if subscription is active
@@ -184,7 +183,7 @@ subscriptionSchema.methods.hasFeature = function (featureName) {
 // Method to check if user can perform action based on limits
 subscriptionSchema.methods.canPerformAction = function (action, currentCount) {
   const limit = this.features[action];
-  if (limit === -1) return true; // Unlimited
+  if (limit === -1) return true;
   return currentCount < limit;
 };
 

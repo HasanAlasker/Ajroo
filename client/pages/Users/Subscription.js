@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // Add useEffect
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import ScrollScreen from "../../components/general/ScrollScreen";
 import SafeScreen from "../../components/general/SafeScreen";
@@ -13,6 +13,7 @@ import Logo from "../../components/Logo";
 import { useRevenueCat } from "../../hooks/RevenueCat";
 import RequestBtn from "../../components/RequestBtn";
 import LoadingCircle from "../../components/general/LoadingCircle";
+import { updateSubscription, restoreSubscription } from "../../api/subscription";
 
 function Subscription(props) {
   const styles = useThemedStyles(getStyles);
@@ -39,24 +40,87 @@ function Subscription(props) {
     console.log("🔄 Active subscription updated:", activeSub);
   }, [customerInfo]);
 
+  // Map RevenueCat entitlement to backend subscription type
+  const mapEntitlementToSubscriptionType = (entitlement) => {
+    const mapping = {
+      pro: "individual_pro",
+      starter: "business_starter",
+      premium: "business_premium",
+    };
+    return mapping[entitlement] || "individual_free";
+  };
+
+  // Map product ID to store format
+  const mapProductIdToStore = (productId) => {
+    if (productId?.includes("ios") || productId?.includes("apple")) {
+      return "app_store";
+    }
+    if (productId?.includes("android") || productId?.includes("google")) {
+      return "play_store";
+    }
+    return "app_store"; // default
+  };
+
   const handlePurchase = async (packageToPurchase, planName) => {
     setPurchasing(true);
     const result = await purchasePackage(packageToPurchase);
     setPurchasing(false);
 
     if (result.success) {
-      // Force refresh to get latest entitlements
-      await refreshCustomerInfo();
+      try {
+        // Force refresh to get latest entitlements
+        await refreshCustomerInfo();
 
-      // Update local state
-      const newActiveSub = getActiveSubscriptionType();
-      setLocalActiveSubscription(newActiveSub);
+        // Get the active entitlement
+        const newActiveSub = getActiveSubscriptionType();
+        setLocalActiveSubscription(newActiveSub);
 
-      Alert.alert(
-        "Success! 🎉",
-        `You've successfully subscribed to ${planName}!`,
-        [{ text: "OK" }]
-      );
+        // Update backend subscription
+        const subscriptionType = mapEntitlementToSubscriptionType(newActiveSub);
+        
+        // Get expiration date from customerInfo
+        const activeEntitlements = result.customerInfo?.entitlements?.active || {};
+        const activeEntitlement = activeEntitlements[newActiveSub];
+        const expirationDate = activeEntitlement?.expirationDate;
+
+        const updateData = {
+          subscriptionType,
+          revenueCatId: result.customerInfo?.originalAppUserId,
+          productId: packageToPurchase.product.identifier,
+          expirationDate: expirationDate || null,
+          store: mapProductIdToStore(packageToPurchase.product.identifier),
+          originalPurchaseDate: new Date().toISOString(),
+        };
+
+        console.log("🔍 Active entitlement:", newActiveSub);
+        console.log("🔍 Mapped subscription type:", subscriptionType);
+        console.log("📤 Updating backend with:", updateData);
+
+        const apiResponse = await updateSubscription(updateData);
+
+        if (apiResponse.ok) {
+          console.log("✅ Backend subscription updated successfully");
+          Alert.alert(
+            "Success! 🎉",
+            `You've successfully subscribed to ${planName}!`,
+            [{ text: "OK" }]
+          );
+        } else {
+          console.error("❌ Backend update failed:", apiResponse.data);
+          Alert.alert(
+            "Warning",
+            "Purchase successful but failed to update your account. Please contact support.",
+            [{ text: "OK" }]
+          );
+        }
+      } catch (error) {
+        console.error("❌ Error updating backend:", error);
+        Alert.alert(
+          "Warning",
+          "Purchase successful but failed to update your account. Please contact support.",
+          [{ text: "OK" }]
+        );
+      }
     } else if (!result.error?.userCancelled) {
       Alert.alert(
         "Purchase Failed",
@@ -72,22 +136,56 @@ function Subscription(props) {
     setPurchasing(false);
 
     if (result.success) {
-      // Update local state after restore
-      const newActiveSub = getActiveSubscriptionType();
-      setLocalActiveSubscription(newActiveSub);
+      try {
+        // Update local state after restore
+        const newActiveSub = getActiveSubscriptionType();
+        setLocalActiveSubscription(newActiveSub);
 
-      if (result.hasActiveEntitlement) {
+        if (result.hasActiveEntitlement && newActiveSub) {
+          // Update backend with restored subscription
+          const subscriptionType = mapEntitlementToSubscriptionType(newActiveSub);
+          
+          const activeEntitlements = result.customerInfo?.entitlements?.active || {};
+          const activeEntitlement = activeEntitlements[newActiveSub];
+          const expirationDate = activeEntitlement?.expirationDate;
+
+          const restoreData = {
+            subscriptionType,
+            revenueCatId: result.customerInfo?.originalAppUserId,
+            expirationDate: expirationDate || null,
+          };
+
+          console.log("📤 Restoring backend with:", restoreData);
+
+          const apiResponse = await restoreSubscription(restoreData);
+
+          if (apiResponse.ok) {
+            console.log("✅ Backend subscription restored successfully");
+            Alert.alert(
+              "Purchases Restored! ✅",
+              `Your ${newActiveSub?.toUpperCase() || "subscription"} plan has been restored successfully!`,
+              [{ text: "OK" }]
+            );
+          } else {
+            console.error("❌ Backend restore failed:", apiResponse.data);
+            Alert.alert(
+              "Warning",
+              "Purchases restored but failed to update your account. Please contact support.",
+              [{ text: "OK" }]
+            );
+          }
+        } else {
+          Alert.alert(
+            "No Active Subscriptions",
+            "No active subscriptions were found to restore.",
+            [{ text: "OK" }]
+          );
+        }
+      } catch (error) {
+        console.error("❌ Error restoring backend:", error);
         Alert.alert(
-          "Purchases Restored! ✅",
-          `Your ${
-            newActiveSub?.toUpperCase() || "subscription"
-          } plan has been restored successfully!`,
-          [{ text: "OK" }]
-        );
-      } else {
-        Alert.alert(
-          "No Active Subscriptions",
-          "No active subscriptions were found to restore.",
+          "Warning",
+          "Purchases restored but failed to update your account. Please contact support.",
           [{ text: "OK" }]
         );
       }
@@ -106,9 +204,7 @@ function Subscription(props) {
   const premiumPackage = getPackageWithJDPrice("business_premium");
 
   if (loading) {
-    return (
-      <LoadingCircle/>
-    );
+    return <LoadingCircle />;
   }
 
   return (
@@ -116,7 +212,7 @@ function Subscription(props) {
       <ScrollScreen>
         <Logo slogan style={styles.logo} />
 
-        {/* Active Subscription Banner - Use local state */}
+        {/* Active Subscription Banner */}
         {localActiveSubscription && (
           <PostComponent style={[styles.container, styles.activeBanner]}>
             <View style={styles.iconAndTitle}>
@@ -138,7 +234,7 @@ function Subscription(props) {
               name={"paid"}
               size={28}
               color={theme.purple}
-            ></MaterialIcons>
+            />
             <AppText style={[styles.text, styles.title]}>
               Start Earning with Ajroo
             </AppText>
@@ -163,7 +259,7 @@ function Subscription(props) {
               name="circle-exclamation"
               color={theme.darker_gray}
               style={{ paddingTop: 5 }}
-            ></FontAwesome6>
+            />
             <AppText style={[styles.note, styles.small]}>
               Note: Businesses must choose a business plan. Misuse may lead to
               account suspension.
@@ -271,7 +367,7 @@ function Subscription(props) {
           />
         </PostComponent>
       </ScrollScreen>
-      <Navbar></Navbar>
+      <Navbar />
     </SafeScreen>
   );
 }

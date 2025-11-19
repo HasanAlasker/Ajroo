@@ -14,47 +14,76 @@ import UserModel from "../models/usersModel.js";
 
 const router = express.Router();
 
-// get all posts (admin)
-// use pagination
+// Helper function to get display name from subscription type
+const getSubscriptionDisplayName = (subscriptionType) => {
+  if (!subscriptionType) return null;
+  
+  const mapping = {
+    individual_free: null,
+    individual_pro: "Pro",
+    business_starter: "Starter",
+    business_premium: "Premium",
+  };
+  
+  return mapping[subscriptionType] || null;
+};
 
-// router.get("/", [auth, admin], async (req, res) => {
-//   try {
-//     const posts = await PostModel.find();
-//     if (!posts) return res.status(404).send("No posts found");
+// Helper function to transform posts with subscription data
+const transformPostsWithSubscription = (posts) => {
+  return posts.map(post => {
+    const postObj = post.toObject();
+    
+    // Get subscription display name
+    const subscriptionType = postObj.user?.subscription?.type;
+    const displayName = getSubscriptionDisplayName(subscriptionType);
+    
+    return {
+      ...postObj,
+      subscriptionDisplayName: displayName
+    };
+  });
+};
 
-//     return res.status(200).send(posts);
-//   } catch (err) {
-//     return res.status(500).send(err.message);
-//   }
-// });
-
-// get all posts (authinticatied users)
-// use pagination
-
+// get all posts (authenticated users)
 router.get("/", auth, async (req, res) => {
   try {
     const posts = await PostModel.find({ isDeleted: false })
-      .populate("user", "name image")
+      .populate({
+        path: "user",
+        select: "name image subscription",
+        populate: {
+          path: "subscription",
+          select: "productId status"
+        }
+      })
       .sort("-createdAt");
+      
     if (!posts) return res.status(404).send("No posts found");
 
-    return res.status(200).send(posts);
+    const transformedPosts = transformPostsWithSubscription(posts);
+    return res.status(200).send(transformedPosts);
   } catch (err) {
     return res.status(500).send(err.message);
   }
 });
 
-// get all requestable posts (authinticatied users)
-// use pagination
-
+// get all requestable posts (authenticated users)
 router.get("/available", auth, async (req, res) => {
   try {
     const posts = await PostModel.find({
       isDeleted: false,
       status: { $in: ["available", "pending"] },
     })
-      .populate("user", "name image isBlocked")
+      .populate({
+        path: "user",
+        select: "name image isBlocked subscription",
+        populate: {
+          path: "subscription",
+          select: "productId status"
+        }
+      })
       .sort("-createdAt");
+      
     if (!posts) return res.status(404).send("No posts found");
 
     // Filter out posts from blocked users
@@ -62,28 +91,35 @@ router.get("/available", auth, async (req, res) => {
       (post) => post.user && !post.user.isBlocked
     );
 
-    return res.status(200).send(filteredPosts);
+    const transformedPosts = transformPostsWithSubscription(filteredPosts);
+    return res.status(200).send(transformedPosts);
   } catch (err) {
     return res.status(500).send(err.message);
   }
 });
 
 // Get deleted posts (softly)
-
 router.get("/deleted", [auth, admin], async (req, res) => {
   try {
     const deletedPosts = await PostModel.find({ isDeleted: true })
       .sort("-createdAt")
-      .populate("user", "name image");
-    return res.status(200).send(deletedPosts);
+      .populate({
+        path: "user",
+        select: "name image subscription",
+        populate: {
+          path: "subscription",
+          select: "productId status"
+        }
+      });
+      
+    const transformedPosts = transformPostsWithSubscription(deletedPosts);
+    return res.status(200).send(transformedPosts);
   } catch (err) {
     return res.status(500).send(err);
   }
 });
 
-// create post (authinticatied users)
-// add (chech subscription limits)
-
+// create post (authenticated users)
 router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
   try {
     const data = _.pick(req.body, [
@@ -109,14 +145,13 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
     });
 
     const savedPost = await newPost.save();
-    return res.status(201).send(savedPost); // just to make sure it sends the saved post
+    return res.status(201).send(savedPost);
   } catch (err) {
     return res.status(500).send(err.message);
   }
 });
 
 // edit post (post owner)
-
 router.put(
   "/edit/:id",
   [auth, validate(updatePostValidation)],
@@ -158,7 +193,6 @@ router.put(
 );
 
 // delete post (post owner/ admin)
-
 router.delete("/delete/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
@@ -188,7 +222,6 @@ router.delete("/delete/:id", auth, async (req, res) => {
 });
 
 // get the posts of a user (you or others)
-
 router.get("/user/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
@@ -202,17 +235,25 @@ router.get("/user/:id", auth, async (req, res) => {
       status: { $in: ["available", "disabled"] },
     })
       .sort({ createdAt: -1 })
-      .populate("user", "name image");
+      .populate({
+        path: "user",
+        select: "name image subscription",
+        populate: {
+          path: "subscription",
+          select: "productId status"
+        }
+      });
+      
     if (posts.length === 0) return res.status(404).send("No posts found");
 
-    return res.status(200).send(posts);
+    const transformedPosts = transformPostsWithSubscription(posts);
+    return res.status(200).send(transformedPosts);
   } catch (err) {
     return res.status(500).send(err.message);
   }
 });
 
-// get posts with search and filter, how to do that?
-
+// get posts with search and filter
 router.get("/search", auth, async (req, res) => {
   try {
     const {
@@ -278,12 +319,20 @@ router.get("/search", auth, async (req, res) => {
     console.log("Backend search query:", query);
 
     const filteredPosts = await PostModel.find(query)
-      .populate("user", "name image")
+      .populate({
+        path: "user",
+        select: "name image subscription",
+        populate: {
+          path: "subscription",
+          select: "productId status"
+        }
+      })
       .sort("-createdAt");
 
     console.log("Backend found posts:", filteredPosts.length);
 
-    return res.status(200).send(filteredPosts);
+    const transformedPosts = transformPostsWithSubscription(filteredPosts);
+    return res.status(200).send(transformedPosts);
   } catch (err) {
     console.log("Backend search error:", err);
     return res.status(500).send(err.message);
@@ -291,7 +340,6 @@ router.get("/search", auth, async (req, res) => {
 });
 
 // get post with id (shared post)
-
 router.get("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
@@ -300,17 +348,32 @@ router.get("/:id", auth, async (req, res) => {
       return res.status(400).send("Invalid post ID");
     }
 
-    const post = await PostModel.findById(id);
+    const post = await PostModel.findById(id)
+      .populate({
+        path: "user",
+        select: "name image subscription",
+        populate: {
+          path: "subscription",
+          select: "productId status"
+        }
+      });
+      
     if (!post) return res.status(404).send("No posts found");
 
-    return res.status(200).send(post);
+    const postObj = post.toObject();
+    const subscriptionType = postObj.user?.subscription?.subscriptionType;
+    const displayName = getSubscriptionDisplayName(subscriptionType);
+    
+    return res.status(200).send({
+      ...postObj,
+      subscriptionDisplayName: displayName
+    });
   } catch (err) {
     return res.status(500).send(err.message);
   }
 });
 
 // soft-delete post (admin only)
-
 router.put("/soft-delete/:id", [auth, admin], async (req, res) => {
   try {
     const id = req.params.id;
@@ -341,7 +404,6 @@ router.put("/soft-delete/:id", [auth, admin], async (req, res) => {
 });
 
 // Undelete post (admin only)
-
 router.put("/un-delete/:id", [auth, admin], async (req, res) => {
   try {
     const id = req.params.id;
@@ -367,12 +429,11 @@ router.put("/un-delete/:id", [auth, admin], async (req, res) => {
 
     return res.status(200).send(deletedPost);
   } catch (error) {
-    return res.status(500).send(err);
+    return res.status(500).send(error.message);
   }
 });
 
 // update state ( available /taken )
-
 router.put(
   "/status/:id",
   [auth, validate(updatePostStatusValidation)],
@@ -406,34 +467,28 @@ router.put(
 );
 
 // compute rating
-
 router.put("/rate/:id", auth, async (req, res) => {
   try {
     const postId = req.params.id;
-    const { rating } = req.body; // Get the rating from request body (1-5)
+    const { rating } = req.body;
 
-    // Validate user ID
     if (!postId || !mongoose.Types.ObjectId.isValid(postId)) {
       return res.status(400).send("Invalid post ID");
     }
 
-    // Validate rating value
     if (!rating || rating < 1 || rating > 5) {
       return res.status(400).send("Rating must be between 1 and 5");
     }
 
-    // Get current user data
     const post = await PostModel.findById(postId);
     if (!post) {
       return res.status(404).send("Post not found");
     }
 
-    // Calculate new average rating
     const currentTotal = post.rating * post.ratingCount;
     const newRatingCount = post.ratingCount + 1;
     const newAverageRating = (currentTotal + rating) / newRatingCount;
 
-    // Update post with new rating
     const ratedPost = await PostModel.findByIdAndUpdate(
       postId,
       {
@@ -453,7 +508,5 @@ router.put("/rate/:id", auth, async (req, res) => {
     return res.status(500).send(err.message);
   }
 });
-
-// enforce subscription limits
 
 export default router;

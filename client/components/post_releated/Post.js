@@ -75,7 +75,8 @@ function Post({
   endDate,
   reporter,
   isDeleted,
-  showUndelete
+  showUndelete,
+  subscriptionType
 }) {
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
@@ -112,6 +113,7 @@ function Post({
           status={status}
           isMine={isMine}
           userId={userId}
+          subscriptionType={subscriptionType}
         />
         {(reportReason || isDeleted) && isMine && (
           <ErrorBox

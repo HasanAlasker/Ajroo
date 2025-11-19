@@ -15,3 +15,21 @@ export const checkSubscriptionLimit = (action, currentCount) =>
 // Get subscription history (admin only)
 export const getSubscriptionHistory = (userId) => 
   apiClient.get(`${endPoint}/history/${userId}`);
+
+// Update subscription after purchase
+export const updateSubscription = (data) => 
+  apiClient.post(`${endPoint}/update`, data);
+
+// Cancel subscription
+export const cancelSubscription = () => 
+  apiClient.post(`${endPoint}/cancel`);
+
+// Restore subscription
+export const restoreSubscription = (data) => 
+  apiClient.post(`${endPoint}/restore`, data);
+
+// Get subscription by user ID (for badges on posts)
+export const getUserSubscription = (userId) =>
+  apiClient.get(`${endPoint}/user/${userId}`);
+
+

@@ -9,12 +9,13 @@ export const lightTheme = {
   red: "#FF5959",
   error_text: "#d33434ff",
   error_back: "#FEE2E2",
-  error_border: '#FCA5A5',
+  error_border: "#FCA5A5",
   always_white: "white",
   gold: "#FFBF00",
   green: "#09B700",
   ghost: "#ac2fff77",
   orange: "#FC7600",
+  blue: "#007bffff",
 
   card1: "#FFE188",
   card2: "#FF8888",
@@ -43,6 +44,7 @@ export const darkTheme = {
   green: "#09B700",
   ghost: "#ac2fff77",
   orange: "#FC7600",
+  blue: "#007bffff",
 
   card1: "#FFE188",
   card2: "#FF8888",
