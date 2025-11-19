@@ -7,6 +7,8 @@ import BorrowModel from "../models/borrowsModel.js";
 import validate from "../middleware/joiValidation.js";
 import { createRequestValidation } from "../validation/requestValidation.js";
 import { createBorrowValidation } from "../validation/borrowValidation.js";
+import UserModel from "../models/usersModel.js";
+import { sendPushNotification } from "../utils/notifications.js";
 
 const router = express.Router();
 
@@ -68,7 +70,39 @@ router.post(
         totalPrice,
       });
 
+      // Save the request FIRST
       const savedRequest = await newRequest.save();
+
+      // Try to send notification (but don't block request creation if it fails)
+      try {
+        const owner = await UserModel.findById(post.user);
+
+        if (
+          owner &&
+          owner.pushNotificationTokens &&
+          owner.pushNotificationTokens.length > 0
+        ) {
+          // Extract token strings from the array of objects
+          const tokens = owner.pushNotificationTokens.map(
+            (tokenObj) => tokenObj.token
+          );
+
+          await sendPushNotification(
+            tokens,
+            "New Request",
+            `${req.user.name} requested your item!`
+          );
+          console.log("📤 Attempting to send notification to:", tokens);
+          console.log("📧 Notification content:", {
+            title: "New Request",
+            body: `${req.user.name} requested your item!`,
+          });
+        }
+        // In your route after sending notification
+      } catch (notificationError) {
+        console.error("Failed to send push notification:", notificationError);
+      }
+
       return res.status(201).send(savedRequest);
     } catch (err) {
       return res.status(500).send(err.message);

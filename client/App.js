@@ -44,12 +44,20 @@ const Stack = createNativeStackNavigator();
 // Get android channel id for notifications
 if (Platform.OS === "android") {
   Notifications.setNotificationChannelAsync("default", {
-    name: "Default",
+    name: "Default Notifications",
     importance: Notifications.AndroidImportance.MAX,
     vibrationPattern: [0, 250, 250, 250],
     lightColor: "#FF231F7C",
   });
 }
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 // Authenticated user navigation stack
 const AuthenticatedStack = () => {
@@ -124,9 +132,9 @@ const AppNavigator = () => {
           await Purchases.configure({ apiKey: androidApiKey });
         }
 
-        console.log('✅ RevenueCat configured');
+        console.log("✅ RevenueCat configured");
       } catch (error) {
-        console.error('❌ RevenueCat configuration error:', error);
+        console.error("❌ RevenueCat configuration error:", error);
       }
     };
 
@@ -139,21 +147,21 @@ const AppNavigator = () => {
       if (isAuthenticated && user?.id) {
         try {
           const revenueCatUserId = user.id;
-          console.log('🔐 Logging in to RevenueCat with ID:', revenueCatUserId);
-          
+          console.log("🔐 Logging in to RevenueCat with ID:", revenueCatUserId);
+
           // Log in user to RevenueCat
           await Purchases.logIn(revenueCatUserId);
-          console.log('✅ RevenueCat user logged in');
-          
+          console.log("✅ RevenueCat user logged in");
+
           // Sync with backend to ensure user has RevenueCat ID
           const response = await syncRevenueCatId();
           if (response.ok) {
-            console.log('✅ RevenueCat ID synced with backend');
+            console.log("✅ RevenueCat ID synced with backend");
           } else {
-            console.error('❌ Failed to sync RevenueCat ID:', response.data);
+            console.error("❌ Failed to sync RevenueCat ID:", response.data);
           }
         } catch (error) {
-          console.error('❌ RevenueCat login error:', error);
+          console.error("❌ RevenueCat login error:", error);
         }
       }
     };
@@ -187,10 +195,14 @@ const AppNavigator = () => {
 
       return () => {
         if (notificationListener.current) {
-          Notifications.removeNotificationSubscription(notificationListener.current);
+          Notifications.removeNotificationSubscription(
+            notificationListener.current
+          );
         }
         if (responseListener.current) {
-          Notifications.removeNotificationSubscription(responseListener.current);
+          Notifications.removeNotificationSubscription(
+            responseListener.current
+          );
         }
       };
     }

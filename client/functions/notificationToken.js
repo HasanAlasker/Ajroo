@@ -29,7 +29,9 @@ export const registerForPushNotifications = async () => {
       return;
     }
 
-    const token = await Notifications.getExpoPushTokenAsync();
+    const token = await Notifications.getExpoPushTokenAsync({
+      projectId: "bb9f9982-0bf3-4826-8057-d9217e2a2772",
+    });
 
     if (token?.data) {
       await addPushToken(token.data, Platform.OS);
@@ -43,7 +45,7 @@ export const registerForPushNotifications = async () => {
 // When user logs out
 export const unregisterPushToken = async () => {
   try {
-    const token = await Notifications.getExpoPushTokenAsync()
+    const token = await Notifications.getExpoPushTokenAsync();
 
     if (token?.data) {
       await removePushToken(token.data);
