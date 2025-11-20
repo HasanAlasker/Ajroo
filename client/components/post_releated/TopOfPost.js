@@ -131,7 +131,7 @@ const getStyles = (theme) =>
       flex: 1,
       flexDirection: "row",
       alignItems: "center",
-      gap: 6,
+      gap: 4,
       paddingRight: 35,
     },
     date: {
