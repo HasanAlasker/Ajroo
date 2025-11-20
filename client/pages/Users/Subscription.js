@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+  Platform,
+} from "react-native";
 import ScrollScreen from "../../components/general/ScrollScreen";
 import SafeScreen from "../../components/general/SafeScreen";
 import Navbar from "../../components/general/Navbar";
@@ -13,7 +19,13 @@ import Logo from "../../components/Logo";
 import { useRevenueCat } from "../../hooks/RevenueCat";
 import RequestBtn from "../../components/RequestBtn";
 import LoadingCircle from "../../components/general/LoadingCircle";
-import { updateSubscription, restoreSubscription } from "../../api/subscription";
+import {
+  updateSubscription,
+  restoreSubscription,
+} from "../../api/subscription";
+import SeparatorComp from "../../components/SeparatorComp";
+import { openURL } from "../../functions/openURL";
+import { useAlert } from "../../config/AlertContext";
 
 function Subscription(props) {
   const styles = useThemedStyles(getStyles);
@@ -29,6 +41,8 @@ function Subscription(props) {
     getPackageWithJDPrice,
     refreshCustomerInfo,
   } = useRevenueCat();
+
+  const { showAlert } = useAlert();
 
   const [purchasing, setPurchasing] = useState(false);
   const [localActiveSubscription, setLocalActiveSubscription] = useState(null);
@@ -77,9 +91,10 @@ function Subscription(props) {
 
         // Update backend subscription
         const subscriptionType = mapEntitlementToSubscriptionType(newActiveSub);
-        
+
         // Get expiration date from customerInfo
-        const activeEntitlements = result.customerInfo?.entitlements?.active || {};
+        const activeEntitlements =
+          result.customerInfo?.entitlements?.active || {};
         const activeEntitlement = activeEntitlements[newActiveSub];
         const expirationDate = activeEntitlement?.expirationDate;
 
@@ -143,9 +158,11 @@ function Subscription(props) {
 
         if (result.hasActiveEntitlement && newActiveSub) {
           // Update backend with restored subscription
-          const subscriptionType = mapEntitlementToSubscriptionType(newActiveSub);
-          
-          const activeEntitlements = result.customerInfo?.entitlements?.active || {};
+          const subscriptionType =
+            mapEntitlementToSubscriptionType(newActiveSub);
+
+          const activeEntitlements =
+            result.customerInfo?.entitlements?.active || {};
           const activeEntitlement = activeEntitlements[newActiveSub];
           const expirationDate = activeEntitlement?.expirationDate;
 
@@ -163,7 +180,9 @@ function Subscription(props) {
             // console.log("✅ Backend subscription restored successfully");
             Alert.alert(
               "Purchases Restored! ✅",
-              `Your ${newActiveSub?.toUpperCase() || "subscription"} plan has been restored successfully!`,
+              `Your ${
+                newActiveSub?.toUpperCase() || "subscription"
+              } plan has been restored successfully!`,
               [{ text: "OK" }]
             );
           } else {
@@ -230,11 +249,7 @@ function Subscription(props) {
 
         <PostComponent style={styles.container}>
           <View style={styles.iconAndTitle}>
-            <MaterialIcons
-              name={"paid"}
-              size={28}
-              color={theme.purple}
-            />
+            <MaterialIcons name={"paid"} size={28} color={theme.purple} />
             <AppText style={[styles.text, styles.title]}>
               Start Earning with Ajroo
             </AppText>
@@ -356,13 +371,50 @@ function Subscription(props) {
           List Realestate and Transportation items.
         </OfferCard>
 
+        <SeparatorComp children={"Manage Subscription"} />
+
         {/* Restore Purchases Button */}
         <PostComponent style={styles.container}>
+          <AppText style={[styles.title, { color: theme.purple }]}>
+            Sync Subscription
+          </AppText>
+          <AppText style={[styles.text, { color: theme.main_text }]}>
+            Use this to sync your subscription across your devices
+          </AppText>
           <RequestBtn
             title="Restore Purchases"
             color="post"
             backColor="purple"
             onPress={handleRestore}
+            style={styles.restoreBtn}
+          />
+        </PostComponent>
+
+        <PostComponent style={styles.container}>
+          <AppText style={[styles.title, { color: theme.purple }]}>
+            Want to cancel your subscription?
+          </AppText>
+          <AppText style={[styles.text, { color: theme.main_text }]}>
+            Note: Subscriptions are managed by{" "}
+            {Platform.OS === "android"
+              ? "Google Play Store"
+              : "Apple App Store"}
+            .{"\n\n"}
+            To cancel, you need to do so through your{" "}
+            {Platform.OS === "android" ? "Google Play" : "App Store"} account
+            settings, not within the Ajroo app.
+          </AppText>
+          <RequestBtn
+            title="Manage Subscription"
+            color="post"
+            backColor="purple"
+            onPress={() => {
+              const url =
+                Platform.OS === "android"
+                  ? "https://play.google.com/store/account/subscriptions"
+                  : "https://apps.apple.com/account/subscriptions";
+              openURL(url, showAlert);
+            }}
             style={styles.restoreBtn}
           />
         </PostComponent>

@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useUser } from "../config/UserContext";
 import { Modal } from "react-native";
 import { useAlert } from "../config/AlertContext";
+import { openURL } from "../functions/openURL";
 
 function SettingsMenu({ isVisible, onClose }) {
   const styles = useThemedStyles(getStyles);
@@ -24,32 +25,6 @@ function SettingsMenu({ isVisible, onClose }) {
   const navigation = useNavigation();
   const { logout, isAdmin } = useUser();
   const { showAlert } = useAlert();
-
-  // Function to open URLs
-  const openURL = async (url) => {
-    const supported = await Linking.canOpenURL(url);
-    if (supported) {
-      showAlert({
-        title: "Leave App?",
-        message: `Your are leaving the app and going to\n ${url}`,
-        confirmText: "Yes",
-        cancelText: "No",
-        onConfirm: async () => {
-          try {
-            await Linking.openURL(url);
-          } catch (error) {
-            showAlert({
-              title: "Error",
-              message: "Something went wrong.",
-              confirmText: "Close",
-            });
-          }
-        },
-      });
-    } else {
-      Alert.alert("Error", `Cannot open URL: ${url}`);
-    }
-  };
 
   if (!isVisible) return null;
   return (
@@ -74,7 +49,7 @@ function SettingsMenu({ isVisible, onClose }) {
               text={"Privacy policy"}
               icon={"shield-check-outline"}
               onPress={() =>
-                openURL("https://ajroo.netlify.app/privacy-policy")
+                openURL("https://ajroo.netlify.app/privacy-policy", showAlert)
               }
             />
           )}
@@ -84,7 +59,7 @@ function SettingsMenu({ isVisible, onClose }) {
               text={"Terms of service"}
               icon={"newspaper-variant-outline"}
               onPress={() =>
-                openURL("https://ajroo.netlify.app/terms-of-service")
+                openURL("https://ajroo.netlify.app/terms-of-service", showAlert)
               }
             />
           )}
