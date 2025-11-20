@@ -8,6 +8,10 @@ export const getMySubscription = () => apiClient.get(`${endPoint}/me`);
 // Initialize RevenueCat user
 export const syncRevenueCatId = () => apiClient.post(`${endPoint}/init-revenuecat`);
 
+// Sync subscription data from RevenueCat to database
+export const syncSubscriptionFromRevenueCat = (data) => 
+  apiClient.post(`${endPoint}/sync-revenuecat`, data);
+
 // Check if user can perform an action (based on limits)
 export const checkSubscriptionLimit = (action, currentCount) => 
   apiClient.post(`${endPoint}/check-limit`, { action, currentCount });

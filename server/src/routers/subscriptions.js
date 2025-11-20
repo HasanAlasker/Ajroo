@@ -30,9 +30,9 @@ router.get("/me", auth, async (req, res) => {
 
     res.status(200).send(subscription);
   } catch (error) {
-    res.status(500).send({ 
-      message: "Failed to fetch subscription", 
-      error: error.message 
+    res.status(500).send({
+      message: "Failed to fetch subscription",
+      error: error.message,
     });
   }
 });
@@ -54,7 +54,7 @@ router.post("/init-revenuecat", auth, async (req, res) => {
     if (!subscription) {
       subscription = new SubscriptionModel({
         userId: user._id,
-        SubscriptionType: "individual_free",  // Capital S to match schema
+        SubscriptionType: "individual_free", // Capital S to match schema
         status: "active",
         features: {
           maxPosts: 2,
@@ -75,9 +75,9 @@ router.post("/init-revenuecat", auth, async (req, res) => {
       subscription,
     });
   } catch (error) {
-    res.status(500).send({ 
-      message: "Failed to initialize RevenueCat", 
-      error: error.message 
+    res.status(500).send({
+      message: "Failed to initialize RevenueCat",
+      error: error.message,
     });
   }
 });
@@ -85,13 +85,13 @@ router.post("/init-revenuecat", auth, async (req, res) => {
 // Update subscription after RevenueCat purchase
 router.post("/update", auth, async (req, res) => {
   try {
-    const { 
-      subscriptionType, 
-      revenueCatId, 
-      productId, 
+    const {
+      subscriptionType,
+      revenueCatId,
+      productId,
       expirationDate,
       store,
-      originalPurchaseDate 
+      originalPurchaseDate,
     } = req.body;
 
     // console.log("📥 Received subscription update request:", {
@@ -106,16 +106,16 @@ router.post("/update", auth, async (req, res) => {
     const validTypes = [
       "individual_free",
       "individual_pro",
-      "business_starter", 
-      "business_premium"
+      "business_starter",
+      "business_premium",
     ];
-    
+
     if (!subscriptionType || !validTypes.includes(subscriptionType)) {
       console.error("❌ Invalid subscription type:", subscriptionType);
-      return res.status(400).send({ 
+      return res.status(400).send({
         message: "Invalid subscription type",
         received: subscriptionType,
-        valid: validTypes
+        valid: validTypes,
       });
     }
 
@@ -152,8 +152,8 @@ router.post("/update", auth, async (req, res) => {
     };
 
     // Find existing subscription
-    let subscription = await SubscriptionModel.findOne({ 
-      userId: req.user._id 
+    let subscription = await SubscriptionModel.findOne({
+      userId: req.user._id,
     });
 
     // console.log("🔍 Found existing subscription:", subscription ? "Yes" : "No");
@@ -161,8 +161,8 @@ router.post("/update", auth, async (req, res) => {
     if (subscription) {
       // FIXED: Use capital S to match schema
       // console.log("📝 Updating subscription from", subscription.SubscriptionType, "to", subscriptionType);
-      
-      subscription.SubscriptionType = subscriptionType;  // Changed from .type
+
+      subscription.subscriptionType = subscriptionType; // Changed from .type
       subscription.status = "active";
       subscription.features = subscriptionFeatures[subscriptionType];
       subscription.revenueCatId = revenueCatId;
@@ -173,16 +173,16 @@ router.post("/update", auth, async (req, res) => {
       subscription.latestPurchaseDate = new Date();
       subscription.autoRenew = true;
       subscription.willRenew = true;
-      
+
       await subscription.save();
       // console.log("✅ Subscription updated successfully:", subscription.SubscriptionType);
     } else {
       // Create new subscription
       // console.log("📝 Creating new subscription:", subscriptionType);
-      
+
       subscription = new SubscriptionModel({
         userId: req.user._id,
-        SubscriptionType: subscriptionType,  // Changed from type
+        subscriptionType: subscriptionType, // Changed from type
         status: "active",
         features: subscriptionFeatures[subscriptionType],
         revenueCatId,
@@ -194,7 +194,7 @@ router.post("/update", auth, async (req, res) => {
         autoRenew: true,
         willRenew: true,
       });
-      
+
       await subscription.save();
       // console.log("✅ Subscription created successfully:", subscription.SubscriptionType);
 
@@ -211,9 +211,9 @@ router.post("/update", auth, async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Subscription update error:", error);
-    res.status(500).send({ 
-      message: "Failed to update subscription", 
-      error: error.message 
+    res.status(500).send({
+      message: "Failed to update subscription",
+      error: error.message,
     });
   }
 });
@@ -241,9 +241,9 @@ router.post("/cancel", auth, async (req, res) => {
       subscription,
     });
   } catch (error) {
-    res.status(500).send({ 
-      message: "Failed to cancel subscription", 
-      error: error.message 
+    res.status(500).send({
+      message: "Failed to cancel subscription",
+      error: error.message,
     });
   }
 });
@@ -251,19 +251,15 @@ router.post("/cancel", auth, async (req, res) => {
 // Restore subscription
 router.post("/restore", auth, async (req, res) => {
   try {
-    const { 
-      revenueCatId, 
-      expirationDate,
-      subscriptionType 
-    } = req.body;
+    const { revenueCatId, expirationDate, subscriptionType } = req.body;
 
     let subscription = await SubscriptionModel.findOne({
       userId: req.user._id,
     });
 
     if (!subscription) {
-      return res.status(404).send({ 
-        message: "No subscription found to restore" 
+      return res.status(404).send({
+        message: "No subscription found to restore",
       });
     }
 
@@ -292,7 +288,7 @@ router.post("/restore", auth, async (req, res) => {
     };
 
     subscription.status = "active";
-    subscription.SubscriptionType = subscriptionType;  // Changed from .type
+    subscription.SubscriptionType = subscriptionType; // Changed from .type
     subscription.features = subscriptionFeatures[subscriptionType];
     subscription.revenueCatId = revenueCatId;
     subscription.expirationDate = expirationDate;
@@ -307,9 +303,9 @@ router.post("/restore", auth, async (req, res) => {
       subscription,
     });
   } catch (error) {
-    res.status(500).send({ 
-      message: "Failed to restore subscription", 
-      error: error.message 
+    res.status(500).send({
+      message: "Failed to restore subscription",
+      error: error.message,
     });
   }
 });
@@ -350,9 +346,9 @@ router.post("/check-limit", auth, async (req, res) => {
       upgradeRequired: !canPerform,
     });
   } catch (error) {
-    res.status(500).send({ 
-      message: "Failed to check limit", 
-      error: error.message 
+    res.status(500).send({
+      message: "Failed to check limit",
+      error: error.message,
     });
   }
 });
@@ -379,14 +375,14 @@ router.get("/user/:userId", auth, async (req, res) => {
     };
 
     res.status(200).send({
-      subscriptionType: subscription.SubscriptionType,  // Changed from .type
+      subscriptionType: subscription.SubscriptionType, // Changed from .type
       displayName: displayNames[subscription.SubscriptionType] || "Free Plan",
       status: subscription.status,
     });
   } catch (error) {
-    res.status(500).send({ 
-      message: "Failed to fetch subscription", 
-      error: error.message 
+    res.status(500).send({
+      message: "Failed to fetch subscription",
+      error: error.message,
     });
   }
 });
@@ -404,8 +400,136 @@ router.get("/history/:userId", [auth, admin], async (req, res) => {
 
     res.status(200).send(subscriptions);
   } catch (error) {
+    res.status(500).send({
+      message: "Failed to fetch history",
+      error: error.message,
+    });
+  }
+});
+
+// sync subscription
+
+router.post("/sync-revenuecat", auth, async (req, res) => {
+  try {
+    const { 
+      subscriptionType, 
+      revenueCatId, 
+      productId, 
+      expirationDate,
+      store,
+      originalPurchaseDate,
+      willRenew,
+      autoRenew
+    } = req.body;
+
+    console.log("🔄 Syncing subscription from RevenueCat:", {
+      subscriptionType,
+      productId: productId || "none (free plan)",
+      userId: req.user._id
+    });
+
+    // Validate subscription type
+    const validTypes = [
+      "individual_free",
+      "individual_pro",
+      "business_starter", 
+      "business_premium"
+    ];
+    
+    if (!subscriptionType || !validTypes.includes(subscriptionType)) {
+      return res.status(400).send({ 
+        message: "Invalid subscription type",
+        received: subscriptionType,
+        valid: validTypes
+      });
+    }
+
+    // Find existing subscription
+    let subscription = await SubscriptionModel.findOne({ 
+      userId: req.user._id 
+    });
+
+    const subscriptionFeatures = {
+      individual_free: {
+        maxPosts: 2,
+        maxActiveRequests: 3,
+        prioritySupport: false,
+        analytics: false,
+        customBranding: false,
+      },
+      individual_pro: {
+        maxPosts: 6,
+        maxActiveRequests: 10,
+        prioritySupport: false,
+        analytics: false,
+        customBranding: false,
+      },
+      business_starter: {
+        maxPosts: 25,
+        maxActiveRequests: 20,
+        prioritySupport: true,
+        analytics: true,
+        customBranding: true,
+      },
+      business_premium: {
+        maxPosts: -1,
+        maxActiveRequests: -1,
+        prioritySupport: true,
+        analytics: true,
+        customBranding: true,
+      },
+    };
+
+    if (subscription) {
+      // Update existing subscription
+      subscription.subscriptionType = subscriptionType;
+      subscription.status = subscriptionType === "individual_free" ? "inactive" : "active";
+      subscription.features = subscriptionFeatures[subscriptionType];
+      subscription.revenueCatId = revenueCatId;
+      subscription.productId = productId || null; // ✅ Set to null for free plan
+      subscription.expirationDate = expirationDate || null;
+      subscription.store = store || null;
+      subscription.originalPurchaseDate = originalPurchaseDate || null;
+      subscription.latestPurchaseDate = subscriptionType === "individual_free" ? null : new Date();
+      subscription.autoRenew = autoRenew || false;
+      subscription.willRenew = willRenew || false;
+      
+      await subscription.save();
+      console.log(`✅ Subscription synced to ${subscriptionType}`);
+    } else {
+      // Create new subscription
+      subscription = new SubscriptionModel({
+        userId: req.user._id,
+        subscriptionType,
+        status: subscriptionType === "individual_free" ? "inactive" : "active",
+        features: subscriptionFeatures[subscriptionType],
+        revenueCatId,
+        productId: productId || null, // ✅ Set to null for free plan
+        expirationDate: expirationDate || null,
+        store: store || null,
+        originalPurchaseDate: originalPurchaseDate || null,
+        latestPurchaseDate: subscriptionType === "individual_free" ? null : new Date(),
+        autoRenew: autoRenew || false,
+        willRenew: willRenew || false,
+      });
+      
+      await subscription.save();
+      
+      await UserModel.findByIdAndUpdate(req.user._id, {
+        subscription: subscription._id,
+      });
+      
+      console.log(`✅ New subscription created: ${subscriptionType}`);
+    }
+
+    res.status(200).send({
+      message: "Subscription synced from RevenueCat successfully",
+      subscription,
+    });
+  } catch (error) {
+    console.error("❌ RevenueCat sync error:", error);
     res.status(500).send({ 
-      message: "Failed to fetch history", 
+      message: "Failed to sync subscription from RevenueCat", 
       error: error.message 
     });
   }

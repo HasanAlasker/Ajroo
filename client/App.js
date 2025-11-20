@@ -37,7 +37,7 @@ import Blocks from "./pages/admin/Blocks";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotifications } from "./functions/notificationToken";
 import Purchases, { LOG_LEVEL } from "react-native-purchases";
-import { syncRevenueCatId } from "./api/subscription";
+import { syncRevenueCatId, updateSubscription } from "./api/subscription";
 
 const Stack = createNativeStackNavigator();
 
@@ -150,7 +150,7 @@ const AppNavigator = () => {
           console.log("🔐 Logging in to RevenueCat with ID:", revenueCatUserId);
 
           // Log in user to RevenueCat
-          await Purchases.logIn(revenueCatUserId);
+          const { customerInfo } = await Purchases.logIn(revenueCatUserId);
           console.log("✅ RevenueCat user logged in");
 
           // Sync with backend to ensure user has RevenueCat ID
@@ -160,6 +160,9 @@ const AppNavigator = () => {
           } else {
             console.error("❌ Failed to sync RevenueCat ID:", response.data);
           }
+
+          // **NEW: Sync subscription data from RevenueCat**
+          await syncSubscriptionData(customerInfo);
         } catch (error) {
           console.error("❌ RevenueCat login error:", error);
         }
@@ -168,6 +171,81 @@ const AppNavigator = () => {
 
     handleUserAuthentication();
   }, [isAuthenticated, user?.id]);
+
+  // **NEW: Add this helper function**
+  // In App.js, update the syncSubscriptionData function:
+
+const syncSubscriptionData = async (customerInfo) => {
+  try {
+    const activeEntitlements = customerInfo?.entitlements?.active || {};
+    
+    // Check if user has any active subscription
+    const hasActiveSub = Object.keys(activeEntitlements).length > 0;
+    
+    if (hasActiveSub) {
+      // Get the first active entitlement
+      const entitlementKey = Object.keys(activeEntitlements)[0];
+      const entitlement = activeEntitlements[entitlementKey];
+      
+      // Map entitlement to subscription type
+      const mapping = {
+        pro: "individual_pro",
+        starter: "business_starter",
+        premium: "business_premium",
+      };
+      
+      const subscriptionType = mapping[entitlementKey] || "individual_free";
+      
+      // Prepare sync data
+      const syncData = {
+        subscriptionType,
+        revenueCatId: customerInfo.originalAppUserId,
+        productId: entitlement.productIdentifier,
+        expirationDate: entitlement.expirationDate,
+        store: entitlement.store === "APP_STORE" ? "app_store" : "play_store",
+        originalPurchaseDate: entitlement.originalPurchaseDate,
+        willRenew: entitlement.willRenew,
+        autoRenew: !entitlement.billingIssuesDetectedAt,
+      };
+      
+      console.log("🔄 Syncing subscription data:", syncData);
+      
+      const { syncSubscriptionFromRevenueCat } = await import("./api/subscription");
+      const result = await syncSubscriptionFromRevenueCat(syncData);
+      
+      if (result.ok) {
+        console.log("✅ Subscription synced from RevenueCat");
+      } else {
+        console.error("❌ Failed to sync subscription:", result.data);
+      }
+    } else {
+      // **NEW: No active subscription, update to individual_free**
+      console.log("ℹ️ No active subscription found, updating to individual_free");
+      
+      const freeData = {
+        subscriptionType: "individual_free",
+        revenueCatId: customerInfo.originalAppUserId,
+        productId: null, // No product ID for free plan
+        expirationDate: null,
+        store: null,
+        originalPurchaseDate: null,
+        willRenew: false,
+        autoRenew: false,
+      };
+      
+      const { syncSubscriptionFromRevenueCat } = await import("./api/subscription");
+      const result = await syncSubscriptionFromRevenueCat(freeData);
+      
+      if (result.ok) {
+        console.log("✅ Updated to individual_free plan");
+      } else {
+        console.error("❌ Failed to update to free plan:", result.data);
+      }
+    }
+  } catch (error) {
+    console.error("❌ Error syncing subscription data:", error);
+  }
+};
 
   // Handle push notifications
   useEffect(() => {

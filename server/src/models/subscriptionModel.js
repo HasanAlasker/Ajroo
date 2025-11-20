@@ -31,6 +31,7 @@ const subscriptionSchema = new mongoose.Schema(
         "in_trial",
         "past_due",
         "paused",
+        "inactive"
       ],
       default: "active",
     },
