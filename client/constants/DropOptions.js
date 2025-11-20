@@ -10,6 +10,7 @@ export const categories = [
   { label: "Furniture", value: "furniture" },
   { label: "Baby & Kids", value: "baby_kids" },
   { label: "Automotive", value: "automotive" },
+  { label: "Real estate", value: "realestate" },
 ];
 
 export const items = [
@@ -47,14 +48,22 @@ export const items = [
 
   // Electronics
   { label: "Laptop", value: "laptop", category: "electronics" },
-  { label: "Desktop Computer", value: "desktop_computer", category: "electronics" },
+  {
+    label: "Desktop Computer",
+    value: "desktop_computer",
+    category: "electronics",
+  },
   { label: "iPad/Tablet", value: "tablet", category: "electronics" },
   { label: "Monitor", value: "monitor", category: "electronics" },
   { label: "Printer", value: "printer", category: "electronics" },
   { label: "Scanner", value: "scanner", category: "electronics" },
   { label: "Camera", value: "camera", category: "electronics" },
   { label: "Video Camera", value: "video_camera", category: "electronics" },
-  { label: "GoPro/Action Camera", value: "action_camera", category: "electronics" },
+  {
+    label: "GoPro/Action Camera",
+    value: "action_camera",
+    category: "electronics",
+  },
   { label: "Television", value: "television", category: "electronics" },
   { label: "Speakers", value: "speakers", category: "electronics" },
   { label: "Gaming Console", value: "gaming_console", category: "electronics" },
@@ -63,7 +72,11 @@ export const items = [
   { label: "Phone Charger", value: "phone_charger", category: "electronics" },
   { label: "Power Bank", value: "power_bank", category: "electronics" },
   { label: "Router", value: "router", category: "electronics" },
-  { label: "External Hard Drive", value: "external_hard_drive", category: "electronics" },
+  {
+    label: "External Hard Drive",
+    value: "external_hard_drive",
+    category: "electronics",
+  },
   { label: "Keyboard", value: "keyboard", category: "electronics" },
   { label: "Mouse", value: "mouse", category: "electronics" },
   { label: "Webcam", value: "webcam", category: "electronics" },
@@ -71,7 +84,11 @@ export const items = [
 
   // Garden
   { label: "Lawnmower", value: "lawnmower", category: "garden" },
-  { label: "Electric Lawnmower", value: "electric_lawnmower", category: "garden" },
+  {
+    label: "Electric Lawnmower",
+    value: "electric_lawnmower",
+    category: "garden",
+  },
   { label: "Garden Hose", value: "garden_hose", category: "garden" },
   { label: "Hedge Trimmer", value: "hedge_trimmer", category: "garden" },
   { label: "Chainsaw", value: "chainsaw", category: "garden" },
@@ -110,7 +127,11 @@ export const items = [
   { label: "Foosball Table", value: "foosball_table", category: "sports" },
   { label: "Pool Table", value: "pool_table", category: "sports" },
   { label: "Exercise Bike", value: "exercise_bike", category: "sports" },
-  { label: "Elliptical Machine", value: "elliptical_machine", category: "sports" },
+  {
+    label: "Elliptical Machine",
+    value: "elliptical_machine",
+    category: "sports",
+  },
   { label: "Rowing Machine", value: "rowing_machine", category: "sports" },
   { label: "Golf Clubs", value: "golf_clubs", category: "sports" },
   { label: "Camping Tent", value: "camping_tent", category: "sports" },
@@ -126,7 +147,11 @@ export const items = [
   { label: "Leather Jacket", value: "leather_jacket", category: "clothes" },
   { label: "Formal Suit", value: "formal_suit", category: "clothes" },
   { label: "Evening Dress", value: "evening_dress", category: "clothes" },
-  { label: "Traditional Dress", value: "traditional_dress", category: "clothes" },
+  {
+    label: "Traditional Dress",
+    value: "traditional_dress",
+    category: "clothes",
+  },
   { label: "Thobe", value: "thobe", category: "clothes" },
   { label: "Abaya", value: "abaya", category: "clothes" },
   { label: "Winter Boots", value: "winter_boots", category: "clothes" },
@@ -172,9 +197,17 @@ export const items = [
   { label: "Folding Chairs", value: "folding_chairs", category: "events" },
   { label: "Tent", value: "tent", category: "events" },
   { label: "Microphone", value: "microphone", category: "events" },
-  { label: "Wireless Microphone", value: "wireless_microphone", category: "events" },
+  {
+    label: "Wireless Microphone",
+    value: "wireless_microphone",
+    category: "events",
+  },
   { label: "Decorations", value: "decorations", category: "events" },
-  { label: "Lighting Equipment", value: "lighting_equipment", category: "events" },
+  {
+    label: "Lighting Equipment",
+    value: "lighting_equipment",
+    category: "events",
+  },
   { label: "LED Lights", value: "led_lights", category: "events" },
   { label: "Tablecloth", value: "tablecloth", category: "events" },
   { label: "Canopy", value: "canopy", category: "events" },
@@ -183,8 +216,16 @@ export const items = [
   { label: "Fog Machine", value: "fog_machine", category: "events" },
   { label: "Bubble Machine", value: "bubble_machine", category: "events" },
   { label: "Popcorn Machine", value: "popcorn_machine", category: "events" },
-  { label: "Cotton Candy Machine", value: "cotton_candy_machine", category: "events" },
-  { label: "Chocolate Fountain", value: "chocolate_fountain", category: "events" },
+  {
+    label: "Cotton Candy Machine",
+    value: "cotton_candy_machine",
+    category: "events",
+  },
+  {
+    label: "Chocolate Fountain",
+    value: "chocolate_fountain",
+    category: "events",
+  },
   { label: "Bouncy Castle", value: "bouncy_castle", category: "events" },
 
   // Books
@@ -255,7 +296,6 @@ export const items = [
   { label: "Car Cover", value: "car_cover", category: "automotive" },
   { label: "Dash Cam", value: "dash_cam", category: "automotive" },
   { label: "GPS Navigator", value: "gps_navigator", category: "automotive" },
-
 ];
 
 export const cities = [
@@ -270,11 +310,11 @@ export const cities = [
   { label: "Karak", value: "karak" },
   { label: "Tafilah", value: "tafilah" },
   { label: "Ma'an", value: "maan" },
-  { label: "Ajloun", value: "ajloun" }
+  { label: "Ajloun", value: "ajloun" },
 ];
 
 export const areas = [
-    { label: "Abdoun Al Janobi (S)", value: "abdoun_al_janobi", city: "amman" },
+  { label: "Abdoun Al Janobi (S)", value: "abdoun_al_janobi", city: "amman" },
   { label: "Abdoun Alshamali (N)", value: "abdoun_alshamali", city: "amman" },
   { label: "Abu Alanda", value: "abu_alanda", city: "amman" },
   { label: "Abu Alya", value: "abu_alya", city: "amman" },
@@ -287,7 +327,11 @@ export const areas = [
   { label: "Al Amanah", value: "al_amanah", city: "amman" },
   { label: "Al Bnyat Al Shamali", value: "al_bnyat_al_shamali", city: "amman" },
   { label: "Al Bsha'Er", value: "al_bshaer", city: "amman" },
-  { label: "Al Bunayyat Al Janubiyah", value: "al_bunayyat_al_janubiyah", city: "amman" },
+  {
+    label: "Al Bunayyat Al Janubiyah",
+    value: "al_bunayyat_al_janubiyah",
+    city: "amman",
+  },
   { label: "Al Dalelah", value: "al_dalelah", city: "amman" },
   { label: "Al Dia", value: "al_dia", city: "amman" },
   { label: "Al Dmenah", value: "al_dmenah", city: "amman" },
@@ -297,8 +341,16 @@ export const areas = [
   { label: "Al Feisal", value: "al_feisal", city: "amman" },
   { label: "Al Ghrous", value: "al_ghrous", city: "amman" },
   { label: "Al Ghubaiyah", value: "al_ghubaiyah", city: "amman" },
-  { label: "Al Hashmi Al Janoubi", value: "al_hashmi_al_janoubi", city: "amman" },
-  { label: "Al Hashmi Al Shamali", value: "al_hashmi_al_shamali", city: "amman" },
+  {
+    label: "Al Hashmi Al Janoubi",
+    value: "al_hashmi_al_janoubi",
+    city: "amman",
+  },
+  {
+    label: "Al Hashmi Al Shamali",
+    value: "al_hashmi_al_shamali",
+    city: "amman",
+  },
   { label: "Al Hay Al Sharqi", value: "al_hay_al_sharqi", city: "amman" },
   { label: "Al Heri", value: "al_heri", city: "amman" },
   { label: "Al Hidayeh", value: "al_hidayeh", city: "amman" },
@@ -306,7 +358,11 @@ export const areas = [
   { label: "Al Horreyya", value: "al_horreyya", city: "amman" },
   { label: "Al Hraij", value: "al_hraij", city: "amman" },
   { label: "Al Husnyah", value: "al_husnyah", city: "amman" },
-  { label: "AI Hussein Medical City", value: "al_hussein_medical_city", city: "amman" },
+  {
+    label: "AI Hussein Medical City",
+    value: "al_hussein_medical_city",
+    city: "amman",
+  },
   { label: "Al Ihsan", value: "al_ihsan", city: "amman" },
   { label: "Al lman", value: "al_iman", city: "amman" },
   { label: "Al Jandweal", value: "al_jandweal", city: "amman" },
@@ -314,13 +370,25 @@ export const areas = [
   { label: "Al Jubeiha", value: "al_jubeiha", city: "amman" },
   { label: "Al Khaledin", value: "al_khaledin", city: "amman" },
   { label: "Al Khaznah", value: "al_khaznah", city: "amman" },
-  { label: "Al Kolyah Aleslamyah", value: "al_kolyah_aleslamyah", city: "amman" },
+  {
+    label: "Al Kolyah Aleslamyah",
+    value: "al_kolyah_aleslamyah",
+    city: "amman",
+  },
   { label: "Al Kursi", value: "al_kursi", city: "amman" },
   { label: "Al Kutaifah", value: "al_kutaifah", city: "amman" },
   { label: "Al Lubban", value: "al_lubban", city: "amman" },
   { label: "Al Madenah Altebyah", value: "al_madenah_altebyah", city: "amman" },
-  { label: "Al Madinah Al Riyadiah", value: "al_madinah_al_riyadiah", city: "amman" },
-  { label: "Al Maghaba Al Sharqi", value: "al_maghaba_al_sharqi", city: "amman" },
+  {
+    label: "Al Madinah Al Riyadiah",
+    value: "al_madinah_al_riyadiah",
+    city: "amman",
+  },
+  {
+    label: "Al Maghaba Al Sharqi",
+    value: "al_maghaba_al_sharqi",
+    city: "amman",
+  },
   { label: "Al Mahattah", value: "al_mahattah", city: "amman" },
   { label: "Al Majd", value: "al_majd", city: "amman" },
   { label: "Al Mansour", value: "al_mansour", city: "amman" },
@@ -354,10 +422,22 @@ export const areas = [
   { label: "Al Salehien", value: "al_salehien", city: "amman" },
   { label: "Al Sayfiyah", value: "al_sayfiyah", city: "amman" },
   { label: "Al Sena'A", value: "al_senaa", city: "amman" },
-  { label: "Al Shaheed Al Janobi", value: "al_shaheed_al_janobi", city: "amman" },
-  { label: "Al Shaheed Al Shamali", value: "al_shaheed_al_shamali", city: "amman" },
+  {
+    label: "Al Shaheed Al Janobi",
+    value: "al_shaheed_al_janobi",
+    city: "amman",
+  },
+  {
+    label: "Al Shaheed Al Shamali",
+    value: "al_shaheed_al_shamali",
+    city: "amman",
+  },
   { label: "Al Swaisah", value: "al_swaisah", city: "amman" },
-  { label: "Al Tajamouat Industrial City", value: "al_tajamouat_industrial_city", city: "amman" },
+  {
+    label: "Al Tajamouat Industrial City",
+    value: "al_tajamouat_industrial_city",
+    city: "amman",
+  },
   { label: "Al Tatwir", value: "al_tatwir", city: "amman" },
   { label: "Al Thahir", value: "al_thahir", city: "amman" },
   { label: "Al Thra'", value: "al_thra", city: "amman" },
@@ -390,7 +470,11 @@ export const areas = [
   { label: "Alzaytonah", value: "alzaytonah", city: "amman" },
   { label: "Amman City Center", value: "amman_city_center", city: "amman" },
   { label: "Amman Mall", value: "amman_mall", city: "amman" },
-  { label: "Applied Science University", value: "applied_science_university", city: "amman" },
+  {
+    label: "Applied Science University",
+    value: "applied_science_university",
+    city: "amman",
+  },
   { label: "Arenbah Algharbyah", value: "arenbah_algharbyah", city: "amman" },
   { label: "Arenbah Alsharqyah", value: "arenbah_alsharqyah", city: "amman" },
   { label: "As Samik", value: "as_samik", city: "amman" },
@@ -404,8 +488,16 @@ export const areas = [
   { label: "Hay Al-Musleh", value: "hay_al_musleh", city: "zarqa" },
   { label: "Al-Falah", value: "al_falah", city: "zarqa" },
   { label: "Al-Hashemi", value: "al_hashemi_zarqa", city: "zarqa" },
-  { label: "Al-Hashemi Al-Shamali", value: "al_hashemi_al_shamali", city: "zarqa" },
-  { label: "Al-Hashemi Al-Janoubi", value: "al_hashemi_al_janoubi", city: "zarqa" },
+  {
+    label: "Al-Hashemi Al-Shamali",
+    value: "al_hashemi_al_shamali",
+    city: "zarqa",
+  },
+  {
+    label: "Al-Hashemi Al-Janoubi",
+    value: "al_hashemi_al_janoubi",
+    city: "zarqa",
+  },
   { label: "Al-Jazirah", value: "al_jazirah", city: "zarqa" },
   { label: "Russeifa", value: "russeifa", city: "zarqa" },
   { label: "Hay Nazzal", value: "hay_nazzal", city: "zarqa" },
@@ -424,8 +516,16 @@ export const areas = [
   { label: "Al-Mazar", value: "al_mazar", city: "irbid" },
   { label: "Beit Ras", value: "beit_ras", city: "irbid" },
   { label: "Kufr Asad", value: "kufr_asad", city: "irbid" },
-  { label: "University Street Irbid", value: "university_street_irbid", city: "irbid" },
-  { label: "Princess Basma Street", value: "princess_basma_street", city: "irbid" },
+  {
+    label: "University Street Irbid",
+    value: "university_street_irbid",
+    city: "irbid",
+  },
+  {
+    label: "Princess Basma Street",
+    value: "princess_basma_street",
+    city: "irbid",
+  },
   { label: "Al-Naseem", value: "al_naseem", city: "irbid" },
 
   // Aqaba areas
@@ -460,7 +560,11 @@ export const areas = [
 
   // Mafraq areas
   { label: "Mafraq City Center", value: "mafraq_center", city: "mafraq" },
-  { label: "Al-Mafraq Al-Jadida", value: "al_mafraq_al_jadida", city: "mafraq" },
+  {
+    label: "Al-Mafraq Al-Jadida",
+    value: "al_mafraq_al_jadida",
+    city: "mafraq",
+  },
   { label: "Safawi", value: "safawi", city: "mafraq" },
   { label: "Ruwaished", value: "ruwaished", city: "mafraq" },
   { label: "Badia", value: "badia", city: "mafraq" },
@@ -507,7 +611,7 @@ export const areas = [
   { label: "Buseira", value: "buseira", city: "tafilah" },
   { label: "Al-Hasa", value: "al_hasa", city: "tafilah" },
   { label: "Aima", value: "aima", city: "tafilah" },
-  { label: "Qadesiyah", value: "qadesiyah_tafilah", city: "tafilah" }
+  { label: "Qadesiyah", value: "qadesiyah_tafilah", city: "tafilah" },
 ];
 
 export const condition = [
@@ -515,7 +619,7 @@ export const condition = [
   { label: "Very Good", value: "very_good" },
   { label: "Good", value: "good" },
   { label: "Fair", value: "fair" },
-  { label: "Needs Repair", value: "needs_repair" }
+  { label: "Needs Repair", value: "needs_repair" },
 ];
 
 export const gender = [
@@ -548,46 +652,46 @@ export const price = [
 
 // Helper functions to filter items by category and areas by city
 export const getItemsByCategory = (categoryValue) => {
-  return items.filter(item => item.category === categoryValue);
+  return items.filter((item) => item.category === categoryValue);
 };
 
 export const getAreasByCity = (cityValue) => {
-  return areas.filter(area => area.city === cityValue);
+  return areas.filter((area) => area.city === cityValue);
 };
 
 // Helper functions to get labels from values
 export const getCategoryLabel = (categoryValue) => {
   if (!categoryValue) return categoryValue;
-  const category = categories.find(cat => cat.value === categoryValue);
+  const category = categories.find((cat) => cat.value === categoryValue);
   return category ? category.label : categoryValue;
 };
 
 export const getItemLabel = (itemValue) => {
   if (!itemValue) return itemValue;
-  const item = items.find(itm => itm.value === itemValue);
+  const item = items.find((itm) => itm.value === itemValue);
   return item ? item.label : itemValue;
 };
 
 export const getCityLabel = (cityValue) => {
   if (!cityValue) return cityValue;
-  const city = cities.find(cty => cty.value === cityValue);
+  const city = cities.find((cty) => cty.value === cityValue);
   return city ? city.label : cityValue;
 };
 
 export const getAreaLabel = (areaValue) => {
   if (!areaValue) return areaValue;
-  const area = areas.find(ar => ar.value === areaValue);
+  const area = areas.find((ar) => ar.value === areaValue);
   return area ? area.label : areaValue;
 };
 
 export const getConditionLabel = (conditionValue) => {
   if (!conditionValue) return conditionValue;
-  const cond = condition.find(c => c.value === conditionValue);
+  const cond = condition.find((c) => c.value === conditionValue);
   return cond ? cond.label : conditionValue;
 };
 
 export const getPriceLabel = (priceValue) => {
   if (!priceValue) return priceValue;
-  const pr = price.find(p => p.value === priceValue);
+  const pr = price.find((p) => p.value === priceValue);
   return pr ? pr.label : `${priceValue} JD`;
 };

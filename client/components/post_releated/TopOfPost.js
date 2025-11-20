@@ -20,7 +20,7 @@ function TopOfPost({
   status,
   isMine,
   userId,
-  subscriptionType = "Premium",
+  subscriptionType,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();

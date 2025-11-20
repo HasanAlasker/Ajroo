@@ -1,24 +1,36 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import AppText from "../config/AppText";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 
-function MenuOption({ text, icon, color, onPress }) {
+function MenuOption({ text, icon, color, onPress, disabled, showLock }) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <AppText style={[styles.text, { color: color ? theme[color] : theme['main_text']}]}>{text}</AppText>
-      {icon && (
-        <MaterialCommunityIcons
-          name={icon}
-          size={26}
-          color={color ? theme[color] : theme['main_text']}
-        ></MaterialCommunityIcons>
-      )}
+    <TouchableOpacity 
+      style={[styles.container, disabled && styles.disabledContainer]} 
+      onPress={onPress} 
+      disabled={disabled}
+    >
+      <AppText style={[styles.text, { color: color ? theme[color] : theme['main_text']}, disabled && styles.disabledText]}>
+        {text}
+      </AppText>
+      <View style={styles.iconContainer}>
+        {showLock && (
+          <Feather name="lock" size={20} color={theme.sec_text} />
+        )}
+        {icon && (
+          <MaterialCommunityIcons
+            name={icon}
+            size={26}
+            color={color ? theme[color] : theme['main_text']}
+          />
+        )}
+      </View>
     </TouchableOpacity>
   );
 }
@@ -43,6 +55,17 @@ const getStyles = (theme) =>
     text: {
       fontSize: 20,
       fontWeight: "bold",
+    },
+    disabledContainer: {
+      opacity: 0.4,
+    },
+    disabledText: {
+      color: theme.sec_text,
+    },
+    iconContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
     },
   });
 

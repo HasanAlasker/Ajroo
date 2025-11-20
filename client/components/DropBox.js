@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -14,6 +14,10 @@ import BackContainer from "../components/BackContainer";
 import MenuBackBtn from "../components/MenuBackBtn";
 import MenuOption from "../components/MenuOption";
 import SeparatorComp from "../components/SeparatorComp";
+import useApi from "../hooks/useApi";
+import { getUserById } from "../api/user";
+import { useUser } from "../config/UserContext";
+import LoadingCircle from "./general/LoadingCircle";
 
 function DropBox({
   placeholder,
@@ -26,11 +30,29 @@ function DropBox({
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
+  const { user } = useUser();
 
   const [modal, setModal] = useState(false);
 
   const selectedItem = items.find((item) => item.value === selectedValue);
   const displayText = selectedItem ? selectedItem.label : placeholder;
+
+  const {
+    data: fetchedUser,
+    request: fetchUser,
+    loading,
+    error: userError,
+  } = useApi(getUserById);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchUser(user.id);
+    }
+  }, [user?.id]);
+
+  if (loading && !fetchedUser) {
+    return <LoadingCircle />;
+  }
 
   const handlePress = () => {
     if (!disabled) {
@@ -38,9 +60,50 @@ function DropBox({
     }
   };
 
+  const userSubscription = fetchedUser?.subscription?.productId;
+
+  const isSelectionDisabled = (placeholderText, label, value) => {
+    // Free users can only post free items
+    if (
+      (userSubscription !== "business_premium" ||
+        "business_premium" ||
+        "pro_monthly") &&
+      placeholderText === "Select Price Per Day" &&
+      value !== "0"
+    ) {
+      return true;
+    }
+
+    // Only business_premium users can post in automotive or real estate categories
+    if (
+      userSubscription !== "business_premium" &&
+      placeholderText === "Select Category" &&
+      (value === "automotive" || value === "realestate")
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   const handleSelectItem = (item) => {
-    setModal(false);
-    onSelectItem(item.value);
+    if (!isSelectionDisabled(placeholder, item.label, item.value)) {
+      setModal(false);
+      onSelectItem(item.value);
+    }
+  };
+
+  const renderItem = ({ item }) => {
+    const isDisabled = isSelectionDisabled(placeholder, item.label, item.value);
+
+    return (
+      <MenuOption
+        text={item.label}
+        onPress={() => handleSelectItem(item)}
+        disabled={isDisabled}
+        showLock={isDisabled}
+      />
+    );
   };
 
   return (
@@ -83,12 +146,7 @@ function DropBox({
           <FlatList
             data={items}
             keyExtractor={(item) => item.value.toString()}
-            renderItem={({ item }) => (
-              <MenuOption
-                text={item.label}
-                onPress={() => handleSelectItem(item)}
-              />
-            )}
+            renderItem={renderItem}
             ItemSeparatorComponent={() => <SeparatorComp style={styles.sep} />}
             contentContainerStyle={styles.list}
           />
