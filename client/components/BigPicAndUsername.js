@@ -162,6 +162,7 @@ function BigPicAndUsername({
         {(subscriptionType === "business_starter" ||
           subscriptionType === "business_premium") && (
           <Text style={styles.badgeText}>
+            {" "}
             <MaterialCommunityIcons
               name={
                 subscriptionType === "business_starter"
