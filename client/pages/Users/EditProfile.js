@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Alert } from "react-native";
+import { StyleSheet, Alert, View } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import TopChunkProfile from "../../components/TopChunkProfile";
 import FormikInput from "../../components/form/FormikInput";
@@ -16,6 +16,10 @@ import { getUserById, updateUser } from "../../api/user";
 import LoadingCircle from "../../components/general/LoadingCircle";
 import ErrorBox from "../../components/general/ErrorBox";
 import { uploadImage } from "../../api/upload";
+import { FontAwesome6 } from "@expo/vector-icons";
+import AppText from "../../config/AppText";
+import { useTheme } from "../../config/ThemeContext";
+import useThemedStyles from "../../hooks/useThemedStyles";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -54,11 +58,15 @@ function EditProfile({ rating, sep }) {
   const [updateError, setUpdateError] = useState();
   const { user, error } = useUser();
   const { showInfo } = useAlert();
+  
   const {
     data: profile,
     request: fetchProfile,
     loading: fetchingProfile,
   } = useApi(getUserById);
+  
+  const styles = useThemedStyles(getStyles)
+  const { theme } = useTheme();
 
   useEffect(() => {
     fetchProfile(user.id);
@@ -93,7 +101,9 @@ function EditProfile({ rating, sep }) {
         imageUrl = await uploadImage(values.image);
       } else if (!values.image) {
         // If no image provided, keep the existing one or set to null
-        imageUrl = profile?.image || "https://res.cloudinary.com/dwiw2bprt/image/upload/v1762451339/bf496wsayryocrugd7kn.png";
+        imageUrl =
+          profile?.image ||
+          "https://res.cloudinary.com/dwiw2bprt/image/upload/v1762451339/bf496wsayryocrugd7kn.png";
       }
 
       // Pass the imageUrl (not values.image) to updateUser
@@ -117,9 +127,8 @@ function EditProfile({ rating, sep }) {
 
         // Update the profile data so it has the new image URL
         await fetchProfile(user.id);
-      }
-      else {
-        setUpdateError(result.data.message)
+      } else {
+        setUpdateError(result.data.message);
       }
     } catch (error) {
       console.error("Update error:", error);
@@ -194,7 +203,24 @@ function EditProfile({ rating, sep }) {
                 setHasBeenSubmitted={setHasBeenSubmitted}
               />
 
-              {updateError && <ErrorBox style={styles.error} firstTitle={'Update Failed'} fistDetail={updateError}/>}
+              <View style={styles.iconAndTitle}>
+                <FontAwesome6
+                  name="circle-exclamation"
+                  color={theme.darker_gray}
+                  style={styles.icon}
+                ></FontAwesome6>
+                <AppText style={[styles.note, styles.small]}>
+                  Note: Only users you approve to borrow your items can see your phone number.
+                </AppText>
+              </View>
+
+              {updateError && (
+                <ErrorBox
+                  style={styles.error}
+                  firstTitle={"Update Failed"}
+                  fistDetail={updateError}
+                />
+              )}
 
               {/* Display context error if exists */}
               {error && <ErrorMessage error={error} />}
@@ -206,11 +232,31 @@ function EditProfile({ rating, sep }) {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   error: {
-    width:"90%",
-    margin: 'auto'
+    width: "90%",
+    margin: "auto",
   },
+      container: {
+      width: "100%",
+    },
+    small: {
+      fontSize: 15,
+      color: theme.darker_gray,
+      fontWeight: "bold",
+      textAlign: "center",
+    },
+    icon: {
+      alignSelf: "stretch",
+      paddingTop: 4,
+    },
+    iconAndTitle: {
+      width: "90%",
+      marginHorizontal: "auto",
+      marginTop: "40",
+      flexDirection: "row",
+      alignItems: "center",
+    },
 });
 
 export default EditProfile;

@@ -111,14 +111,14 @@ function Post(props) {
   useEffect(() => {
     const checkUserSubscription = async () => {
       try {
-        // console.log("🔍 Checking subscription status...");
+        console.log("🔍 Checking subscription status...");
         const customerInfo = await Purchases.getCustomerInfo();
 
-        // console.log("📦 Customer Info:", JSON.stringify(customerInfo, null, 2));
-        // console.log(
-        //   "🎯 Active Entitlements:",
-        //   Object.keys(customerInfo.entitlements.active)
-        // );
+        console.log("📦 Customer Info:", JSON.stringify(customerInfo, null, 2));
+        console.log(
+          "🎯 Active Entitlements:",
+          Object.keys(customerInfo.entitlements.active)
+        );
 
         const entitlements = customerInfo.entitlements.active;
 
