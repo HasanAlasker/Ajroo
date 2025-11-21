@@ -276,7 +276,7 @@ router.post(
 router.get("/got", auth, async (req, res) => {
   try {
     const requests = await RequestModel.find({ owner: req.user._id })
-      .populate("requester", "name image")
+      .populate("requester", "name image isBlocked")
       .populate("item", "image");
     // if(requests.length === 0) return res.status(404).send("You haven't received any requests");
     return res.status(200).send(requests);
@@ -290,7 +290,7 @@ router.get("/got", auth, async (req, res) => {
 router.get("/sent", auth, async (req, res) => {
   try {
     const requests = await RequestModel.find({ requester: req.user._id })
-      .populate("owner", "name image")
+      .populate("owner", "name image isBlocked")
       .populate("item", "image");
     // if(requests.length === 0) return res.status(404).send("You haven't sent any requests");
     return res.status(200).send(requests);
