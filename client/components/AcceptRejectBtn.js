@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import AppText from "../config/AppText";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
@@ -6,8 +6,11 @@ import { confirmRequest, deleteRequest } from "../api/request";
 import { useAlert } from "../config/AlertContext";
 import { useRoute } from "@react-navigation/native";
 import { confirmReturn, rejectConfirmation } from "../api/borrow";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RatingModal from "./post_releated/RatingModal";
+import useApi from "../hooks/useApi";
+import { getUserById } from "../api/user";
+import { useUser } from "../config/UserContext";
 
 function AcceptRejectBtn({
   postId,
@@ -16,16 +19,66 @@ function AcceptRejectBtn({
   borrowerId,
   iGave,
   isRequesterBlocked,
-  isOwnerBlocked
+  isOwnerBlocked,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
-  const { showAlert } = useAlert();
+  const { showAlert, showInfo } = useAlert();
   const [visibleRating, setVisibleRating] = useState(false);
+  const [alertShown, setAlertShown] = useState(false);
+  const { user } = useUser();
+
+  const {
+    data: fetchedUser,
+    loading,
+    request: fetchUser,
+  } = useApi(getUserById);
+
+  useEffect(() => {
+    fetchUser(user.id);
+  }, [user]);
+
+  const userSubscription = fetchedUser.productId;
+  const userPostCount = fetchedUser.postCount;
+
+  const postLimit = () => {
+    if (userSubscription === "pro_monthly") return 6;
+    else if (userSubscription === "business_starter") return 25;
+    else if (userSubscription === "business_premium") return -1; // unlimited
+    else return 2;
+  };
+
+  const hasUserExeededLimit = () => {
+    return userPostCount > postLimit();
+  };
 
   const route = useRoute();
 
   const passedUserId = iGave ? borrowerId : ownerId;
+
+  const shouldBeDisabled = () => {
+    if (route.name === "Requests") {
+      if (hasUserExeededLimit()) return true;
+      if (isOwnerBlocked) return true;
+      if (isRequesterBlocked) return true;
+    }
+    return false; // Add explicit false return
+  };
+
+  useEffect(() => {
+    if (hasUserExeededLimit() && !alertShown) {
+      setAlertShown(true);
+
+      setTimeout(() => {
+        showInfo({
+          title: "Post Limit",
+          message:
+            "You have more posts than your plan allows, delete some posts or upgrade your plan!",
+          confirmText: "Close",
+        });
+      }, 200);
+    }
+  }, [fetchedUser]);
 
   const handleAccept = async () => {
     if (route.name === "Requests") {
@@ -122,8 +175,8 @@ function AcceptRejectBtn({
     <>
       <View style={styles.container}>
         <TouchableOpacity
-          disabled={isRequesterBlocked || isOwnerBlocked}
-          style={[styles.accept, { opacity: isRequesterBlocked ? 0.5 : 1 }]}
+          disabled={shouldBeDisabled()}
+          style={[styles.accept, { opacity: shouldBeDisabled() ? 0.5 : 1 }]}
           onPress={handleAccept}
         >
           <AppText style={styles.text}>Accept</AppText>
