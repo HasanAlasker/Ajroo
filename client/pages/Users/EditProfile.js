@@ -210,7 +210,7 @@ function EditProfile({ rating, sep }) {
                   style={styles.icon}
                 ></FontAwesome6>
                 <AppText style={[styles.note, styles.small]}>
-                  Note: Only users you approve to borrow your items can see your phone number.
+                  Note: Only admins and users you approve to borrow your items can see your phone number.
                 </AppText>
               </View>
 
