@@ -105,7 +105,7 @@ function Profile({ isNotification }) {
             style={styles.err}
             firstTitle={"Notice"}
             fistDetail={
-              "Your account has been suspended for violating our policy.You can still return borrowed items and give back those listed on the Book page."
+              "Your account has been suspended for violating our policy. You can still return borrowed items and give back those listed on the Book page."
             }
             secondTitle={"What to do"}
             secondDetail={"If you believe this is a mistake, contact us through Support in Settings."}
