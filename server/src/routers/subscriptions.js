@@ -422,11 +422,11 @@ router.post("/sync-revenuecat", auth, async (req, res) => {
       autoRenew
     } = req.body;
 
-    console.log("🔄 Syncing subscription from RevenueCat:", {
-      subscriptionType,
-      productId: productId || "none (free plan)",
-      userId: req.user._id
-    });
+    // console.log("🔄 Syncing subscription from RevenueCat:", {
+    //   subscriptionType,
+    //   productId: productId || "none (free plan)",
+    //   userId: req.user._id
+    // });
 
     // Validate subscription type
     const validTypes = [
@@ -495,7 +495,7 @@ router.post("/sync-revenuecat", auth, async (req, res) => {
       subscription.willRenew = willRenew || false;
       
       await subscription.save();
-      console.log(`✅ Subscription synced to ${subscriptionType}`);
+      // console.log(`✅ Subscription synced to ${subscriptionType}`);
     } else {
       // Create new subscription
       subscription = new SubscriptionModel({
@@ -519,7 +519,7 @@ router.post("/sync-revenuecat", auth, async (req, res) => {
         subscription: subscription._id,
       });
       
-      console.log(`✅ New subscription created: ${subscriptionType}`);
+      // console.log(`✅ New subscription created: ${subscriptionType}`);
     }
 
     res.status(200).send({
