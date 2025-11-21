@@ -9,7 +9,7 @@ export async function sendPushNotification(pushTokens, title, body) {
   const validTokens = tokensArray.filter(token => Expo.isExpoPushToken(token));
   
   if (validTokens.length === 0) {
-    console.log("No valid Expo push tokens found");
+    // console.log("No valid Expo push tokens found");
     return;
   }
 
@@ -28,7 +28,7 @@ export async function sendPushNotification(pushTokens, title, body) {
   for (let chunk of chunks) {
     try {
       let result = await expo.sendPushNotificationsAsync(chunk);
-      console.log("Expo result", result);
+      // console.log("Expo result", result);
     } catch (error) {
       console.error("Push notification error:", error);
     }

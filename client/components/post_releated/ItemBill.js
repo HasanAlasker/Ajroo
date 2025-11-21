@@ -39,12 +39,12 @@ function ItemBill({ postId, billId }) {
   }
 
   if (activeApi.error) {
-    console.log("API Error:", activeApi.error);
+    // console.log("API Error:", activeApi.error);
     return null;
   }
 
   if (!activeApi.data) {
-    console.log("No data available");
+    // console.log("No data available");
     return null;
   }
 

@@ -53,9 +53,9 @@ function DropBox({
   // Add debug logging
   useEffect(() => {
     if (fetchedUser) {
-      console.log("Fetched User:", fetchedUser);
-      console.log("Subscription:", fetchedUser.subscription);
-      console.log("Product ID:", fetchedUser.subscription?.productId);
+      // console.log("Fetched User:", fetchedUser);
+      // console.log("Subscription:", fetchedUser.subscription);
+      // console.log("Product ID:", fetchedUser.subscription?.productId);
     }
   }, [fetchedUser]);
 
@@ -74,11 +74,11 @@ function DropBox({
   const isSelectionDisabled = (placeholderText, label, value) => {
     // If user data is still loading, don't disable anything
     if (!fetchedUser) {
-      console.log("User data still loading, allowing all options");
+      // console.log("User data still loading, allowing all options");
       return false;
     }
 
-    console.log("Checking subscription:", userSubscription, "for placeholder:", placeholderText, "value:", value);
+    // console.log("Checking subscription:", userSubscription, "for placeholder:", placeholderText, "value:", value);
 
     // Free users (productId is null) can only post free items
     if (placeholderText === "Select Price Per Day" && value !== "0") {
@@ -89,7 +89,7 @@ function DropBox({
          userSubscription !== "business_premium" &&
          userSubscription !== "business_starter")
       ) {
-        console.log("Price restriction applied - free users can only post free items");
+        // console.log("Price restriction applied - free users can only post free items");
         return true;
       }
     }
@@ -100,7 +100,7 @@ function DropBox({
       (value === "automotive" || value === "realestate")
     ) {
       if (userSubscription !== "business_premium") {
-        console.log("Category restriction applied - only business_premium can access automotive/realestate");
+        // console.log("Category restriction applied - only business_premium can access automotive/realestate");
         return true;
       }
     }

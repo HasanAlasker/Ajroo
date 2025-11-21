@@ -92,7 +92,7 @@ export const useRevenueCat = () => {
       setCustomerInfo(restoredInfo);
       
       // console.log('✅ Purchases restored');
-      console.log('🎯 Active entitlements after restore:', restoredInfo.entitlements.active);
+      // console.log('🎯 Active entitlements after restore:', restoredInfo.entitlements.active);
       
       // Check if user has any active entitlements
       const hasActiveEntitlement = Object.keys(restoredInfo.entitlements.active).length > 0;
@@ -139,7 +139,7 @@ export const useRevenueCat = () => {
   // Get package by identifier with JD price
   const getPackageWithJDPrice = (identifier) => {
     if (!offerings) {
-      console.log('⚠️ No offerings available');
+      // console.log('⚠️ No offerings available');
       return null;
     }
     

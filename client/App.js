@@ -132,7 +132,7 @@ const AppNavigator = () => {
           await Purchases.configure({ apiKey: androidApiKey });
         }
 
-        console.log("✅ RevenueCat configured");
+        // console.log("✅ RevenueCat configured");
       } catch (error) {
         console.error("❌ RevenueCat configuration error:", error);
       }
@@ -147,16 +147,16 @@ const AppNavigator = () => {
       if (isAuthenticated && user?.id) {
         try {
           const revenueCatUserId = user.id;
-          console.log("🔐 Logging in to RevenueCat with ID:", revenueCatUserId);
+          // console.log("🔐 Logging in to RevenueCat with ID:", revenueCatUserId);
 
           // Log in user to RevenueCat
           const { customerInfo } = await Purchases.logIn(revenueCatUserId);
-          console.log("✅ RevenueCat user logged in");
+          // console.log("✅ RevenueCat user logged in");
 
           // Sync with backend to ensure user has RevenueCat ID
           const response = await syncRevenueCatId();
           if (response.ok) {
-            console.log("✅ RevenueCat ID synced with backend");
+            // console.log("✅ RevenueCat ID synced with backend");
           } else {
             console.error("❌ Failed to sync RevenueCat ID:", response.data);
           }
@@ -208,19 +208,19 @@ const syncSubscriptionData = async (customerInfo) => {
         autoRenew: !entitlement.billingIssuesDetectedAt,
       };
       
-      console.log("🔄 Syncing subscription data:", syncData);
+      // console.log("🔄 Syncing subscription data:", syncData);
       
       const { syncSubscriptionFromRevenueCat } = await import("./api/subscription");
       const result = await syncSubscriptionFromRevenueCat(syncData);
       
       if (result.ok) {
-        console.log("✅ Subscription synced from RevenueCat");
+        // console.log("✅ Subscription synced from RevenueCat");
       } else {
         console.error("❌ Failed to sync subscription:", result.data);
       }
     } else {
       // **NEW: No active subscription, update to individual_free**
-      console.log("ℹ️ No active subscription found, updating to individual_free");
+      // console.log("ℹ️ No active subscription found, updating to individual_free");
       
       const freeData = {
         subscriptionType: "individual_free",
@@ -237,7 +237,7 @@ const syncSubscriptionData = async (customerInfo) => {
       const result = await syncSubscriptionFromRevenueCat(freeData);
       
       if (result.ok) {
-        console.log("✅ Updated to individual_free plan");
+        // console.log("✅ Updated to individual_free plan");
       } else {
         console.error("❌ Failed to update to free plan:", result.data);
       }
@@ -256,17 +256,17 @@ const syncSubscriptionData = async (customerInfo) => {
       // Listen for notifications received while app is foregrounded
       notificationListener.current =
         Notifications.addNotificationReceivedListener((notification) => {
-          console.log("📬 Notification received!");
-          console.log("Title:", notification.request.content.title);
-          console.log("Body:", notification.request.content.body);
-          console.log("Data:", notification.request.content.data);
+          // console.log("📬 Notification received!");
+          // console.log("Title:", notification.request.content.title);
+          // console.log("Body:", notification.request.content.body);
+          // console.log("Data:", notification.request.content.data);
         });
 
       // Listen for user interactions with notifications
       responseListener.current =
         Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log("👆 Notification tapped!");
-          console.log("Response:", response);
+          // console.log("👆 Notification tapped!");
+          // console.log("Response:", response);
           // TODO: Handle navigation based on notification data
           // Example: if (response.notification.request.content.data.screen) { navigate(...) }
         });
