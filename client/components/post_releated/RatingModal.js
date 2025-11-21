@@ -30,7 +30,7 @@ function RatingModal({ isVisible, onClose, isOwner, ratedUserId, ratedItemId }) 
       if (itemRating > 0 && userRating > 0) {
         const responseOne = await rateUser(ratedUserId, userRating)
         await rateItem(ratedItemId, itemRating)
-        console.log(responseOne)
+        // console.log(responseOne)
 
         onClose({ itemRating, userRating });
       }

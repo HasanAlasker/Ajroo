@@ -76,7 +76,7 @@ function Search(props) {
 
   // Handle filter results from FilterModal
   const handleFilterResults = useCallback((results) => {
-    console.log("Filter results received:", results);
+    // console.log("Filter results received:", results);
     searchSource.current = 'filter';
     setFilteredResults(results);
     setIsFilterActive(true);

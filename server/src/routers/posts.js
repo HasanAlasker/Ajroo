@@ -316,7 +316,7 @@ router.get("/search", auth, async (req, res) => {
       query.condition = condition;
     }
 
-    console.log("Backend search query:", query);
+    // console.log("Backend search query:", query);
 
     const filteredPosts = await PostModel.find(query)
       .populate({
@@ -329,7 +329,7 @@ router.get("/search", auth, async (req, res) => {
       })
       .sort("-createdAt");
 
-    console.log("Backend found posts:", filteredPosts.length);
+    // console.log("Backend found posts:", filteredPosts.length);
 
     const transformedPosts = transformPostsWithSubscription(filteredPosts);
     return res.status(200).send(transformedPosts);

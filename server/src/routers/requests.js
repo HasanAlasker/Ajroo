@@ -92,11 +92,11 @@ router.post(
             "New Request",
             `${req.user.name} requested your item!`
           );
-          console.log("📤 Attempting to send notification to:", tokens);
-          console.log("📧 Notification content:", {
-            title: "New Request",
-            body: `${req.user.name} requested your item!`,
-          });
+          // console.log("📤 Attempting to send notification to:", tokens);
+          // console.log("📧 Notification content:", {
+          //   title: "New Request",
+          //   body: `${req.user.name} requested your item!`,
+          // });
         }
         // In your route after sending notification
       } catch (notificationError) {
