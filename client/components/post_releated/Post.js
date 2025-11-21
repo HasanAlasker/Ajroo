@@ -117,6 +117,7 @@ function Post({
           userId={userId}
           subscriptionType={subscriptionType}
           isRequesterBlocked={isRequesterBlocked}
+          
         />
         {(reportReason || isDeleted) && isMine && (
           <ErrorBox

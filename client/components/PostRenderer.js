@@ -105,6 +105,8 @@ function PostRenderer({
         isDeleted={post?.isDeleted}
         showUndelete={showUndelete}
         subscriptionType={subscriptionDisplayName}
+        isRequesterBlocked={post?.requester?.isBlocked }
+        // isOwnerBlocked={post?.owner?.isBlocked}
       />
     );
   };

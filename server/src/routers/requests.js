@@ -277,7 +277,7 @@ router.get("/got", auth, async (req, res) => {
   try {
     const requests = await RequestModel.find({ owner: req.user._id })
       .populate("requester", "name image isBlocked")
-      .populate("item", "image");
+      .populate("item", "image").populate('owner', 'isBlocked');
     // if(requests.length === 0) return res.status(404).send("You haven't received any requests");
     return res.status(200).send(requests);
   } catch (err) {
