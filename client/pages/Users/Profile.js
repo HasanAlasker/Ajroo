@@ -47,7 +47,7 @@ function Profile({ isNotification }) {
     fetchPosts(userId);
   }, [userId]);
 
-  if ((loading || userLoading) && (!posts || !profile)) {
+  if ((loading && userLoading) || (!posts && !profile)) {
     return <LoadingCircle />;
   }
 

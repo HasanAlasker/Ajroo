@@ -45,13 +45,13 @@ function Subscription(props) {
   const { showAlert } = useAlert();
 
   const [purchasing, setPurchasing] = useState(false);
+  const [restoring, setRestoring] = useState(false);
   const [localActiveSubscription, setLocalActiveSubscription] = useState(null);
 
   // Update local state whenever customerInfo changes
   useEffect(() => {
     const activeSub = getActiveSubscriptionType();
     setLocalActiveSubscription(activeSub);
-    // console.log("🔄 Active subscription updated:", activeSub);
   }, [customerInfo]);
 
   // Map RevenueCat entitlement to backend subscription type
@@ -72,148 +72,167 @@ function Subscription(props) {
     if (productId?.includes("android") || productId?.includes("google")) {
       return "play_store";
     }
-    return "app_store"; // default
+    return Platform.OS === "ios" ? "app_store" : "play_store";
   };
 
   const handlePurchase = async (packageToPurchase, planName) => {
+    if (purchasing) return; // Prevent double-tap
+
     setPurchasing(true);
-    const result = await purchasePackage(packageToPurchase);
-    setPurchasing(false);
 
-    if (result.success) {
-      try {
-        // Force refresh to get latest entitlements
-        await refreshCustomerInfo();
+    try {
+      const result = await purchasePackage(packageToPurchase);
 
-        // Get the active entitlement
-        const newActiveSub = getActiveSubscriptionType();
-        setLocalActiveSubscription(newActiveSub);
+      if (result.success) {
+        try {
+          // Force refresh to get latest entitlements
+          await refreshCustomerInfo();
 
-        // Update backend subscription
-        const subscriptionType = mapEntitlementToSubscriptionType(newActiveSub);
+          // Get the active entitlement
+          const newActiveSub = getActiveSubscriptionType();
+          setLocalActiveSubscription(newActiveSub);
 
-        // Get expiration date from customerInfo
-        const activeEntitlements =
-          result.customerInfo?.entitlements?.active || {};
-        const activeEntitlement = activeEntitlements[newActiveSub];
-        const expirationDate = activeEntitlement?.expirationDate;
-
-        const updateData = {
-          subscriptionType,
-          revenueCatId: result.customerInfo?.originalAppUserId,
-          productId: packageToPurchase.product.identifier,
-          expirationDate: expirationDate || null,
-          store: mapProductIdToStore(packageToPurchase.product.identifier),
-          originalPurchaseDate: new Date().toISOString(),
-        };
-
-        // console.log("🔍 Active entitlement:", newActiveSub);
-        // console.log("🔍 Mapped subscription type:", subscriptionType);
-        // console.log("📤 Updating backend with:", updateData);
-
-        const apiResponse = await updateSubscription(updateData);
-
-        if (apiResponse.ok) {
-          // console.log("✅ Backend subscription updated successfully");
-          Alert.alert(
-            "Success! 🎉",
-            `You've successfully subscribed to ${planName}!`,
-            [{ text: "OK" }]
-          );
-        } else {
-          console.error("❌ Backend update failed:", apiResponse.data);
-          Alert.alert(
-            "Warning",
-            "Purchase successful but failed to update your account. Please contact support.",
-            [{ text: "OK" }]
-          );
-        }
-      } catch (error) {
-        console.error("❌ Error updating backend:", error);
-        Alert.alert(
-          "Warning",
-          "Purchase successful but failed to update your account. Please contact support.",
-          [{ text: "OK" }]
-        );
-      }
-    } else if (!result.error?.userCancelled) {
-      Alert.alert(
-        "Purchase Failed",
-        "Something went wrong. Please try again.",
-        [{ text: "OK" }]
-      );
-    }
-  };
-
-  const handleRestore = async () => {
-    setPurchasing(true);
-    const result = await restorePurchases();
-    setPurchasing(false);
-
-    if (result.success) {
-      try {
-        // Update local state after restore
-        const newActiveSub = getActiveSubscriptionType();
-        setLocalActiveSubscription(newActiveSub);
-
-        if (result.hasActiveEntitlement && newActiveSub) {
-          // Update backend with restored subscription
+          // Update backend subscription
           const subscriptionType =
             mapEntitlementToSubscriptionType(newActiveSub);
 
+          // Get expiration date from customerInfo
           const activeEntitlements =
             result.customerInfo?.entitlements?.active || {};
           const activeEntitlement = activeEntitlements[newActiveSub];
           const expirationDate = activeEntitlement?.expirationDate;
 
-          const restoreData = {
+          const updateData = {
             subscriptionType,
             revenueCatId: result.customerInfo?.originalAppUserId,
+            productId: packageToPurchase.product.identifier,
             expirationDate: expirationDate || null,
+            store: mapProductIdToStore(packageToPurchase.product.identifier),
+            originalPurchaseDate: new Date().toISOString(),
           };
 
-          // console.log("📤 Restoring backend with:", restoreData);
-
-          const apiResponse = await restoreSubscription(restoreData);
+          const apiResponse = await updateSubscription(updateData);
 
           if (apiResponse.ok) {
-            // console.log("✅ Backend subscription restored successfully");
             Alert.alert(
-              "Purchases Restored! ✅",
-              `Your ${
-                newActiveSub?.toUpperCase() || "subscription"
-              } plan has been restored successfully!`,
+              "Success! 🎉",
+              `You've successfully subscribed to ${planName}!`,
               [{ text: "OK" }]
             );
           } else {
-            console.error("❌ Backend restore failed:", apiResponse.data);
+            console.error("Backend update failed:", apiResponse.data);
             Alert.alert(
               "Warning",
-              "Purchases restored but failed to update your account. Please contact support.",
+              "Purchase successful but failed to update your account. Please contact support if the issue persists.",
               [{ text: "OK" }]
             );
           }
-        } else {
+        } catch (error) {
+          console.error("Error updating backend:", error);
           Alert.alert(
-            "No Active Subscriptions",
-            "No active subscriptions were found to restore.",
+            "Warning",
+            "Purchase successful but failed to sync with server. Your subscription is active. If issues persist, try 'Restore Purchases'.",
             [{ text: "OK" }]
           );
         }
-      } catch (error) {
-        console.error("❌ Error restoring backend:", error);
+      } else if (!result.error?.userCancelled) {
         Alert.alert(
-          "Warning",
-          "Purchases restored but failed to update your account. Please contact support.",
+          "Purchase Failed",
+          result.error?.message || "Something went wrong. Please try again.",
           [{ text: "OK" }]
         );
       }
-    } else {
+    } catch (error) {
+      console.error("Purchase error:", error);
       Alert.alert(
-        "Restore Failed",
-        "Unable to restore purchases. Please try again.",
+        "Purchase Failed",
+        "An unexpected error occurred. Please try again.",
         [{ text: "OK" }]
       );
+    } finally {
+      setPurchasing(false);
+    }
+  };
+
+  const handleRestore = async () => {
+    if (restoring) return; // Prevent double-tap
+
+    setRestoring(true);
+
+    try {
+      const result = await restorePurchases();
+
+      if (result.success) {
+        try {
+          // Update local state after restore
+          const newActiveSub = getActiveSubscriptionType();
+          setLocalActiveSubscription(newActiveSub);
+
+          if (result.hasActiveEntitlement && newActiveSub) {
+            // Update backend with restored subscription
+            const subscriptionType =
+              mapEntitlementToSubscriptionType(newActiveSub);
+
+            const activeEntitlements =
+              result.customerInfo?.entitlements?.active || {};
+            const activeEntitlement = activeEntitlements[newActiveSub];
+            const expirationDate = activeEntitlement?.expirationDate;
+
+            const restoreData = {
+              subscriptionType,
+              revenueCatId: result.customerInfo?.originalAppUserId,
+              expirationDate: expirationDate || null,
+            };
+
+            const apiResponse = await restoreSubscription(restoreData);
+
+            if (apiResponse.ok) {
+              Alert.alert(
+                "Purchases Restored! ✅",
+                `Your ${
+                  newActiveSub?.toUpperCase() || "subscription"
+                } plan has been restored successfully!`,
+                [{ text: "OK" }]
+              );
+            } else {
+              console.error("Backend restore failed:", apiResponse.data);
+              Alert.alert(
+                "Partially Restored",
+                "Purchases restored locally but failed to sync with server. Please try again or contact support if the issue persists.",
+                [{ text: "OK" }]
+              );
+            }
+          } else {
+            Alert.alert(
+              "No Active Subscriptions",
+              "No active subscriptions were found to restore.",
+              [{ text: "OK" }]
+            );
+          }
+        } catch (error) {
+          console.error("Error restoring backend:", error);
+          Alert.alert(
+            "Partially Restored",
+            "Purchases restored locally but failed to sync. Please try again later.",
+            [{ text: "OK" }]
+          );
+        }
+      } else {
+        Alert.alert(
+          "Restore Failed",
+          "Unable to restore purchases. Please check your internet connection and try again.",
+          [{ text: "OK" }]
+        );
+      }
+    } catch (error) {
+      console.error("Restore error:", error);
+      Alert.alert(
+        "Restore Failed",
+        "An unexpected error occurred. Please try again.",
+        [{ text: "OK" }]
+      );
+    } finally {
+      setRestoring(false);
     }
   };
 
@@ -225,6 +244,9 @@ function Subscription(props) {
   if (loading) {
     return <LoadingCircle />;
   }
+
+  // Check if packages are available
+  const packagesAvailable = proPackage || starterPackage || premiumPackage;
 
   return (
     <SafeScreen>
@@ -247,6 +269,21 @@ function Subscription(props) {
           </PostComponent>
         )}
 
+        {/* No Packages Available Warning */}
+        {!packagesAvailable && (
+          <PostComponent style={[styles.container, styles.warningBanner]}>
+            <View style={styles.iconAndTitle}>
+              <MaterialIcons name="warning" size={24} color={theme.orange} />
+              <AppText style={[styles.text, { color: theme.orange }]}>
+                Subscription packages temporarily unavailable
+              </AppText>
+            </View>
+            <AppText style={[styles.text, styles.faded, { marginTop: 10 }]}>
+              Please check your internet connection or try again later.
+            </AppText>
+          </PostComponent>
+        )}
+
         <PostComponent style={styles.container}>
           <View style={styles.iconAndTitle}>
             <MaterialIcons name={"paid"} size={28} color={theme.purple} />
@@ -260,14 +297,14 @@ function Subscription(props) {
           </AppText>
           <AppText style={[styles.text]}>Why Join Ajroo?</AppText>
           <AppText style={[styles.text, styles.faded, styles.height]}>
-            - Turn unused items into cash.{"\n"}- Earn 1 JD/day up to 300
-            JD/day.{"\n"}- Control your pricing and availability.{"\n"}
+            • Turn unused items into cash{"\n"}• Earn 1 JD/day up to 300 JD/day
+            {"\n"}• Control your pricing and availability
           </AppText>
-          <AppText style={[styles.text]}>How It Works?</AppText>
+          <AppText style={[styles.text]}>How It Works</AppText>
           <AppText style={[styles.text, styles.faded, styles.height]}>
-            1- Subscribe - Choose a plan that fits you.{"\n"}
-            2- List items - Add photos, details and prices.{"\n"}
-            3- Start earning - Accept rental requests and make money.{"\n"}
+            1. Subscribe - Choose a plan that fits you{"\n"}
+            2. List items - Add photos, details and prices{"\n"}
+            3. Start earning - Accept rental requests and make money
           </AppText>
           <View style={[styles.smallIconAndTitle]}>
             <FontAwesome6
@@ -290,7 +327,7 @@ function Subscription(props) {
           icon={"lock-reset"}
           size={32}
         >
-          List up to 2 posts for free, no rentals {"\n\n"}
+          List up to 2 posts for free, no rentals.{"\n\n"}
           Borrow items for free.
         </OfferCard>
 
@@ -305,13 +342,22 @@ function Subscription(props) {
               ? "Processing..."
               : localActiveSubscription === "pro"
               ? "Current Plan"
-              : "Subscribe now"
+              : "Subscribe Now"
           }
-          startNow={proPackage ? proPackage.jdPrice.replace(" JD", "") : 6}
+          startNow={proPackage ? proPackage.jdPrice.replace(" JD", "") : "6"}
           onPress={() => {
             if (localActiveSubscription === "pro") return;
-            if (proPackage) handlePurchase(proPackage, "Individual - Pro");
+            if (proPackage) {
+              handlePurchase(proPackage, "Individual - Pro");
+            } else {
+              Alert.alert(
+                "Unavailable",
+                "This package is temporarily unavailable. Please try again later.",
+                [{ text: "OK" }]
+              );
+            }
           }}
+          disabled={purchasing || !proPackage}
         >
           List up to 6 items for rental every month and make money.{"\n\n"}
           The profit is all yours - We don't take commission.
@@ -328,16 +374,24 @@ function Subscription(props) {
               ? "Processing..."
               : localActiveSubscription === "starter"
               ? "Current Plan"
-              : "Subscribe now"
+              : "Subscribe Now"
           }
           startNow={
-            starterPackage ? starterPackage.jdPrice.replace(" JD", "") : 25
+            starterPackage ? starterPackage.jdPrice.replace(" JD", "") : "25"
           }
           onPress={() => {
             if (localActiveSubscription === "starter") return;
-            if (starterPackage)
+            if (starterPackage) {
               handlePurchase(starterPackage, "Business - Starter");
+            } else {
+              Alert.alert(
+                "Unavailable",
+                "This package is temporarily unavailable. Please try again later.",
+                [{ text: "OK" }]
+              );
+            }
           }}
+          disabled={purchasing || !starterPackage}
         >
           List up to 25 items for rental every month and make more money.
           {"\n\n"}
@@ -355,20 +409,28 @@ function Subscription(props) {
               ? "Processing..."
               : localActiveSubscription === "premium"
               ? "Current Plan"
-              : "Subscribe now"
+              : "Subscribe Now"
           }
           startNow={
-            premiumPackage ? premiumPackage.jdPrice.replace(" JD", "") : 50
+            premiumPackage ? premiumPackage.jdPrice.replace(" JD", "") : "50"
           }
           onPress={() => {
             if (localActiveSubscription === "premium") return;
-            if (premiumPackage)
+            if (premiumPackage) {
               handlePurchase(premiumPackage, "Business - Premium");
+            } else {
+              Alert.alert(
+                "Unavailable",
+                "This package is temporarily unavailable. Please try again later.",
+                [{ text: "OK" }]
+              );
+            }
           }}
+          disabled={purchasing || !premiumPackage}
         >
           List unlimited items and max out your profit every month.{"\n\n"}
           Get a store badge - Displayed next to your user name.{"\n\n"}
-          List Realestate and Transportation items.
+          List Real Estate and Transportation items.
         </OfferCard>
 
         <SeparatorComp children={"Manage Subscription"} />
@@ -378,15 +440,16 @@ function Subscription(props) {
           <AppText style={[styles.title, { color: theme.purple }]}>
             Sync Subscription
           </AppText>
-          <AppText style={[styles.text, { color: theme.main_text }]}>
+          <AppText style={[styles.text, styles.faded]}>
             Use this to sync your subscription across your devices
           </AppText>
           <RequestBtn
-            title="Restore Purchases"
-            color="post"
+            title={restoring ? "Restoring..." : "Restore Purchases"}
+            color="always_white"
             backColor="purple"
             onPress={handleRestore}
             style={styles.restoreBtn}
+            disabled={restoring}
           />
         </PostComponent>
 
@@ -394,7 +457,7 @@ function Subscription(props) {
           <AppText style={[styles.title, { color: theme.purple }]}>
             Want to cancel your subscription?
           </AppText>
-          <AppText style={[styles.text, { color: theme.main_text }]}>
+          <AppText style={[styles.text, styles.faded]}>
             Note: Subscriptions are managed by{" "}
             {Platform.OS === "android"
               ? "Google Play Store"
@@ -406,7 +469,7 @@ function Subscription(props) {
           </AppText>
           <RequestBtn
             title="Manage Subscription"
-            color="post"
+            color="always_white"
             backColor="purple"
             onPress={() => {
               const url =
@@ -415,6 +478,36 @@ function Subscription(props) {
                   : "https://apps.apple.com/account/subscriptions";
               openURL(url, showAlert);
             }}
+            style={styles.restoreBtn}
+          />
+        </PostComponent>
+
+        {/* Privacy & Terms */}
+        <PostComponent style={styles.container}>
+          <AppText style={[styles.text, styles.faded, { fontSize: 14 }]}>
+            By subscribing, you agree to our Terms of Service and Privacy
+            Policy.
+            {"\n\n"}• Subscriptions automatically renew unless cancelled{"\n"}•
+            Payment charged to your store account{"\n"}• Auto-renewal can be
+            turned off in account settings{"\n"}• Cancellation takes effect at
+            end of billing period
+          </AppText>
+          <RequestBtn
+            color="always_white"
+            backColor="purple"
+            title="Privacy Policy"
+            onPress={() =>
+              openURL("https://ajroo.netlify.app/privacy-policy", showAlert)
+            }
+            style={styles.restoreBtn}
+          />
+          <RequestBtn
+            color="always_white"
+            backColor="purple"
+            title="Terms of Service"
+            onPress={() =>
+              openURL("https://ajroo.netlify.app/terms-of-service", showAlert)
+            }
             style={styles.restoreBtn}
           />
         </PostComponent>
@@ -432,6 +525,11 @@ const getStyles = (theme) =>
     activeBanner: {
       backgroundColor: theme.post,
       borderColor: theme.green,
+      borderWidth: 2,
+    },
+    warningBanner: {
+      backgroundColor: theme.post,
+      borderColor: theme.orange || "#FF9500",
       borderWidth: 2,
     },
     iconAndTitle: {
@@ -453,10 +551,11 @@ const getStyles = (theme) =>
     title: {
       fontSize: 22,
       fontWeight: "bold",
+      color: theme.purple,
     },
     faded: {
       color: theme.main_text,
-      fontWeight: "regular",
+      fontWeight: "normal",
     },
     height: {
       lineHeight: 25,
@@ -466,23 +565,17 @@ const getStyles = (theme) =>
       color: theme.darker_gray,
       fontWeight: "bold",
     },
+    note: {
+      flex: 1,
+    },
     logo: {
       marginVertical: 20,
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      gap: 10,
-    },
-    loadingText: {
-      color: theme.main_text,
-      fontSize: 16,
     },
     restoreBtn: {
       padding: 2,
       borderRadius: 10,
       width: "100%",
+      marginTop: 10,
     },
   });
 
