@@ -124,7 +124,7 @@ const AppNavigator = () => {
         Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
 
         const iosApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp";
-        const androidApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp";
+        const androidApiKey = "goog_fjKLVlYgLyEfqqcFoVtyoTBwrsp";
 
         if (Platform.OS === "ios") {
           await Purchases.configure({ apiKey: iosApiKey });
