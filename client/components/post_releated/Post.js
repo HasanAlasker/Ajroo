@@ -76,7 +76,8 @@ function Post({
   reporter,
   isDeleted,
   showUndelete,
-  subscriptionType
+  subscriptionType,
+  isRequesterBlocked
 }) {
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
@@ -114,6 +115,7 @@ function Post({
           isMine={isMine}
           userId={userId}
           subscriptionType={subscriptionType}
+          isRequesterBlocked={isRequesterBlocked}
         />
         {(reportReason || isDeleted) && isMine && (
           <ErrorBox

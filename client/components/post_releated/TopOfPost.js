@@ -7,9 +7,7 @@ import {
 } from "@expo/vector-icons";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
-import { usePosts } from "../../config/PostContext";
 import { useNavigation } from "@react-navigation/native";
-import RowLableCont from "./RowLableCont";
 
 function TopOfPost({
   name,
@@ -21,6 +19,7 @@ function TopOfPost({
   isMine,
   userId,
   subscriptionType,
+  isRequesterBlocked,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
@@ -76,16 +75,27 @@ function TopOfPost({
             <AppText numberOfLines={1} style={styles.name}>
               {name}
             </AppText>
-            {(subscriptionType === "Starter" ||
-              subscriptionType === "Premium") && (
+            {!isRequesterBlocked &&
+              (subscriptionType === "Starter" ||
+                subscriptionType === "Premium") && (
+                <MaterialCommunityIcons
+                  name={
+                    subscriptionType === "Starter" ? "check-circle" : "crown"
+                  }
+                  size={subscriptionType === "Starter" ? 17 : 22}
+                  color={
+                    subscriptionType === "Starter" ? theme.blue : theme.purple
+                  }
+                  style={{ paddingTop: subscriptionType === "Starter" ? 5 : 0 }}
+                />
+              )}
+            {isRequesterBlocked && (
               <MaterialCommunityIcons
-                name={subscriptionType === "Starter" ? "check-circle" : "crown"}
-                size={subscriptionType === "Starter" ? 17 : 22}
-                color={
-                  subscriptionType === "Starter" ? theme.blue : theme.purple
-                }
+                name={"account-remove"}
+                size={22}
+                color={theme.red}
                 style={{ paddingTop: subscriptionType === "Starter" ? 5 : 0 }}
-              ></MaterialCommunityIcons>
+              />
             )}
           </View>
           <AppText style={styles.date}>{date}</AppText>

@@ -105,6 +105,7 @@ function PostRenderer({
         isDeleted={post?.isDeleted}
         showUndelete={showUndelete}
         subscriptionType={subscriptionDisplayName}
+        isRequesterBlocked={post?.requester?.isBlocked || post?.owner?.isBlocked || post?.borrower?.isBlocked }
       />
     );
   };
