@@ -62,6 +62,7 @@ function RequestModal({
     return disableIncrease() ? 0.2 : 1;
   };
   const showPrice = () => {
+    if (pricePerDay === 0) return 0;
     if (baseUnit === "hours") {
       return pricePerDay <= 25
         ? pricePerDay
@@ -81,40 +82,56 @@ function RequestModal({
       : baseUnit
     : "";
 
-  const handleRequest = async () => {
-  const startDate = new Date();
-  const endDate = new Date(startDate);
+const handleRequest = async () => {
+  try {
+    const startDate = new Date();
+    const endDate = new Date(startDate);
 
-  // Calculate end date based on duration and unit
-  switch (baseUnit) {
-    case "hours":
-      endDate.setHours(endDate.getHours() + duration);
-      break;
-    case "days":
-      endDate.setDate(endDate.getDate() + duration);
-      break;
-    case "weeks":
-      endDate.setDate(endDate.getDate() + duration * 7);
-      break;
-    case "months":
-      endDate.setMonth(endDate.getMonth() + duration);
-      break;
+    // Calculate end date based on duration and unit
+    switch (baseUnit) {
+      case "hours":
+        endDate.setHours(endDate.getHours() + duration);
+        break;
+      case "days":
+        endDate.setDate(endDate.getDate() + duration);
+        break;
+      case "weeks":
+        endDate.setDate(endDate.getDate() + duration * 7);
+        break;
+      case "months":
+        endDate.setMonth(endDate.getMonth() + duration);
+        break;
+    }
+
+    const apiUnit = baseUnit.slice(0, -1);
+    const totalPrice = showPrice();
+
+    // console.log("Request data:", {
+    //   durationValue: duration,
+    //   durationUnit: apiUnit,
+    //   pricePerDay: pricePerDay,
+    //   totalPrice: totalPrice,
+    //   endDate: endDate.toISOString(),
+    // });
+
+    const data = {
+      durationValue: duration,
+      durationUnit: apiUnit,
+      pricePerDay: pricePerDay,
+      totalPrice: totalPrice,
+      endDate: endDate.toISOString(),
+    };
+
+    await createRequest(postId, data);
+    // console.log("Request created successfully:", response);
+
+    onRequestSubmit();
+    onClose();
+  } catch (error) {
+    // console.error("Error creating request:", error);
+    // Optionally show an error message to the user
+    alert("Failed to create request. Please try again.");
   }
-
-  const apiUnit = baseUnit.slice(0, -1);
-
-  const data = {
-    durationValue: duration,
-    durationUnit: apiUnit,
-    pricePerDay: pricePerDay,
-    totalPrice: showPrice(),
-    endDate: endDate.toISOString(),
-  };
-
-  await createRequest(postId, data);
-
-  onRequestSubmit();
-  onClose();
 };
 
   return (

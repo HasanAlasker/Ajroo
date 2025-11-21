@@ -165,7 +165,7 @@ function Post({
               isMine={isMine}
               iRequested={iRequested}
               iBorrowed={iBorrowed}
-              pricePerDay={pricePerDay}
+              pricePerDay={pricePerDay || 0}
               postId={id}
               reportId={reportId}
               requestId={requestId}
