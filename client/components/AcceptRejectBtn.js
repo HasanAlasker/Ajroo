@@ -9,7 +9,15 @@ import { confirmReturn, rejectConfirmation } from "../api/borrow";
 import { useState } from "react";
 import RatingModal from "./post_releated/RatingModal";
 
-function AcceptRejectBtn({ postId, requestId, ownerId, borrowerId, iGave }) {
+function AcceptRejectBtn({
+  postId,
+  requestId,
+  ownerId,
+  borrowerId,
+  iGave,
+  isRequesterBlocked,
+  isOwnerBlocked
+}) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
   const { showAlert } = useAlert();
@@ -113,7 +121,11 @@ function AcceptRejectBtn({ postId, requestId, ownerId, borrowerId, iGave }) {
   return (
     <>
       <View style={styles.container}>
-        <TouchableOpacity style={[styles.accept]} onPress={handleAccept}>
+        <TouchableOpacity
+          disabled={isRequesterBlocked || isOwnerBlocked}
+          style={[styles.accept, { opacity: isRequesterBlocked ? 0.5 : 1 }]}
+          onPress={handleAccept}
+        >
           <AppText style={styles.text}>Accept</AppText>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.reject]} onPress={handleReject}>

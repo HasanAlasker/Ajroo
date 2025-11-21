@@ -78,7 +78,7 @@ function Post({
   showUndelete,
   subscriptionType,
   isRequesterBlocked,
-  isOwnerBlocked
+  isOwnerBlocked,
 }) {
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
@@ -117,13 +117,16 @@ function Post({
           userId={userId}
           subscriptionType={subscriptionType}
           isRequesterBlocked={isRequesterBlocked}
-          
         />
         {(reportReason || isDeleted) && isMine && (
           <ErrorBox
-            firstTitle={reportReason ? "Reason" : 'Notice'}
-            fistDetail={reportReason ? formatText(reportReason): "This post has been temporarily disabled by the admins due to a suspected policy violation. It may be permanently removed." }
-            secondTitle={reportReason ? "Reporter Id" : ''}
+            firstTitle={reportReason ? "Reason" : "Notice"}
+            fistDetail={
+              reportReason
+                ? formatText(reportReason)
+                : "This post has been temporarily disabled by the admins due to a suspected policy violation. It may be permanently removed."
+            }
+            secondTitle={reportReason ? "Reporter Id" : ""}
             secondDetail={formatText(reporter)}
           />
         )}
@@ -180,7 +183,12 @@ function Post({
           {route.name === "Requests" &&
             status === "pending" &&
             isMine === true && (
-              <AcceptRejectBtn requestId={requestId} postId={id} />
+              <AcceptRejectBtn
+                requestId={requestId}
+                postId={id}
+                isRequesterBlocked={isRequesterBlocked}
+                isOwnerBlocked={isOwnerBlocked}
+              />
             )}
           {route.name === "Book" &&
             status === "pending_return" &&

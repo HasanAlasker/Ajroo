@@ -9,19 +9,19 @@ function PostRenderer({
   onRefresh,
   refreshing = false,
   children,
-  showUndelete
+  showUndelete,
 }) {
   // Helper function to get display name from productId
   const getSubscriptionDisplayName = (productId) => {
     if (!productId) return null;
-    
+
     const mapping = {
-      individual_free: null,        // No badge for free users
+      individual_free: null, // No badge for free users
       individual_pro: "Pro",
       business_starter: "Starter",
       business_premium: "Premium",
     };
-    
+
     return mapping[productId] || null;
   };
 
@@ -31,23 +31,21 @@ function PostRenderer({
     // Determine ownership
     if (post.user?._id) {
       isMine = post.user._id === currentUserId;
-    }
-    else if (post.owner?._id) {
+    } else if (post.owner?._id) {
       isMine = post.owner._id === currentUserId;
-    }
-    else if (post.requester?._id) {
+    } else if (post.requester?._id) {
       isMine = post.requester._id !== currentUserId;
-    }
-    else if (post.reportedPost?.user?._id) {
+    } else if (post.reportedPost?.user?._id) {
       isMine = post.reportedPost.user._id === currentUserId;
     }
 
     // Get productId from subscription and convert to display name
-    const productId = post.user?.subscription?.productId || 
-                     post.reportedPost?.user?.subscription?.productId ||
-                     post.owner?.subscription?.productId ||
-                     null;
-    
+    const productId =
+      post.user?.subscription?.productId ||
+      post.reportedPost?.user?.subscription?.productId ||
+      post.owner?.subscription?.productId ||
+      null;
+
     const subscriptionDisplayName = getSubscriptionDisplayName(productId);
 
     // console.log("📦 Rendering post - productId:", productId, "→ displayName:", subscriptionDisplayName);
@@ -74,11 +72,11 @@ function PostRenderer({
           post?.borrower?.name
         }
         userId={
+          post?.requester?._id ||
+          post?.borrower?._id ||
           post.user?._id ||
           post.reportedPost?.user?._id ||
-          post?.owner?._id ||
-          post?.requester?._id ||
-          post?.borrower?._id
+          post?.owner?._id
         }
         ownerId={post?.owner?._id}
         borrowerId={post?.borrower?._id}
@@ -105,8 +103,8 @@ function PostRenderer({
         isDeleted={post?.isDeleted}
         showUndelete={showUndelete}
         subscriptionType={subscriptionDisplayName}
-        isRequesterBlocked={post?.requester?.isBlocked }
-        // isOwnerBlocked={post?.owner?.isBlocked}
+        isRequesterBlocked={post?.requester?.isBlocked}
+        isOwnerBlocked={post?.owner?.isBlocked}
       />
     );
   };
