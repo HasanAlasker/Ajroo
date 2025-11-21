@@ -19,7 +19,7 @@ function TopOfPost({
   isMine,
   userId,
   subscriptionType,
-  isRequesterBlocked,
+  isRequesterBlocked
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
@@ -75,27 +75,16 @@ function TopOfPost({
             <AppText numberOfLines={1} style={styles.name}>
               {name}
             </AppText>
-            {!isRequesterBlocked &&
-              (subscriptionType === "Starter" ||
-                subscriptionType === "Premium") && (
-                <MaterialCommunityIcons
-                  name={
-                    subscriptionType === "Starter" ? "check-circle" : "crown"
-                  }
-                  size={subscriptionType === "Starter" ? 17 : 22}
-                  color={
-                    subscriptionType === "Starter" ? theme.blue : theme.purple
-                  }
-                  style={{ paddingTop: subscriptionType === "Starter" ? 5 : 0 }}
-                />
-              )}
-            {isRequesterBlocked && (
+            {!isRequesterBlocked && (subscriptionType === "Starter" ||
+              subscriptionType === "Premium") && (
               <MaterialCommunityIcons
-                name={"account-remove"}
-                size={22}
-                color={theme.red}
+                name={subscriptionType === "Starter" ? "check-circle" : "crown"}
+                size={subscriptionType === "Starter" ? 17 : 22}
+                color={
+                  subscriptionType === "Starter" ? theme.blue : theme.purple
+                }
                 style={{ paddingTop: subscriptionType === "Starter" ? 5 : 0 }}
-              />
+              ></MaterialCommunityIcons>
             )}
           </View>
           <AppText style={styles.date}>{date}</AppText>

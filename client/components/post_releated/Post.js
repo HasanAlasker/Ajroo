@@ -77,7 +77,8 @@ function Post({
   isDeleted,
   showUndelete,
   subscriptionType,
-  isRequesterBlocked
+  isRequesterBlocked,
+  isOwnerBlocked
 }) {
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
