@@ -187,14 +187,14 @@ function EditProfile({ rating, sep }) {
                 keyboardType="phone-pad"
               />
 
-              <FormikInput
+              {/* <FormikInput
                 name="email"
                 placeholder="Email"
                 hasBeenSubmitted={hasBeenSubmitted}
                 penOn={true}
                 keyboardType="email-address"
                 autoCapitalize="none"
-              />
+              /> */}
 
               <SubmitBtn
                 defaultText="Save"
