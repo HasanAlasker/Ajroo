@@ -32,24 +32,71 @@ const generateOTP = () => {
 export const sendOTPEmail = async (email, otp) => {
   try {
     const mailOptions = {
-      from: `"Ajroo Application" <${process.env.EMAIL_USER}>`,
+      from: `"Ajroo" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: "Your OTP Code",
+      subject: "Verify your sign-up",
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333;">Verification Code</h2>
-          <p>Your OTP code is:</p>
-          <div style="background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
-            ${otp}
-          </div>
-          <p style="color: #666;">This code will expire in 10 minutes.</p>
-          <p style="color: #666;">If you didn't request this code, please ignore this email.</p>
+      <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 16px;">
+        
+        <!-- Logo -->
+        <div style="text-align: center; margin-bottom: 24px;">
+          <img src="https://ajroo.netlify.app/assets/logo-O5aReYiM.png" alt="Ajroo Logo" style="width: 90px; margin-bottom: 6px;" />
+          <h1 style="font-size: 32px; font-weight: 700; margin: 0; color: #000;">Ajroo</h1>
         </div>
+
+        <hr style="border: none; border-top: 1px solid #e6e6e6; margin-bottom: 28px;" />
+
+        <!-- Title -->
+        <h2 style="text-align: center; font-size: 22px; color: #000; margin-bottom: 12px;">
+          Verify your sign-up
+        </h2>
+
+        <!-- Subtitle -->
+        <p style="text-align: center; color: #555; font-size: 15px; margin-top: 0;">
+          We have received a sign-up attempt with your email address
+        </p>
+
+        <!-- OTP Box -->
+        <div style="
+          background: #f2f2f2;
+          padding: 20px;
+          text-align: center;
+          margin: 28px 0;
+          border-radius: 14px;
+          font-size: 32px;
+          font-weight: bold;
+          letter-spacing: 4px;
+          color: #000;
+        ">
+          ${otp}
+        </div>
+
+        <!-- Expire note -->
+        <p style="text-align: center; color: #666; font-size: 14px; margin: 0;">
+          This code will expire in 10 minutes.
+        </p>
+        <p style="text-align: center; color: #666; font-size: 14px;">
+          If you didn't request this code, please ignore this email.
+        </p>
+
+        <hr style="border: none; border-top: 1px solid #e6e6e6; margin: 32px 0;" />
+
+        <!-- Footer -->
+        <p style="text-align: center; color: #777; font-size: 13px; margin: 0;">
+          Share more, waste less, earn together
+        </p>
+
+        <p style="text-align: center; color: #777; font-size: 12px; margin-top: 16px;">
+          Ajroo All rights reserved
+        </p>
+
+      </div>
       `,
     };
 
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent:", info.messageId);
+
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error("Error sending email:", error);
