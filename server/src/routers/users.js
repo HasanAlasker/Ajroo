@@ -127,6 +127,7 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
     );
 
     newUser.password = await newUser.hashPassword(req.body.password);
+    newUser.isVerified = false; // User must verify email via OTP
 
     await newUser.save();
 
@@ -153,12 +154,20 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
     newUser.subscription = defaultSubscription._id;
     await newUser.save();
 
-    const token = newUser.generateAuthToken();
+    return res.status(200).send({
+      success: true,
+      message: "Registration successful. Please verify your email with OTP.",
+      user: _.pick(newUser, ["_id", "name", "email", "phone", "gender"]),
+      requiresVerification: true
+    });
 
-    return res
-      .header("x-auth-token", token)
-      .status(200)
-      .send(_.pick(newUser, ["_id", "name", "email", "phone", "gender"]));
+    // const token = newUser.generateAuthToken();
+
+    // return res
+    //   .header("x-auth-token", token)
+    //   .status(200)
+    //   .send(_.pick(newUser, ["_id", "name", "email", "phone", "gender"]));
+
   } catch (err) {
     if (err.code === 11000) {
       const field = Object.keys(err.keyValue)[0];

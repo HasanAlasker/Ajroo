@@ -94,9 +94,9 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    postCount:{
+    postCount: {
       type: Number,
-      default:0
+      default: 0,
     },
     subscription: {
       type: mongoose.Schema.Types.ObjectId,
@@ -108,9 +108,21 @@ const userSchema = new mongoose.Schema(
       unique: true,
       sparse: true,
     },
+    otp: {
+      type: String,
+    },
+    otpExpiry: {
+      type: Date,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
+
+userSchema.index({ otpExpiry: 1 }, { expireAfterSeconds: 0 });
 
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
