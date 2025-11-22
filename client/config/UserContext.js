@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerUser, loginUser, updateUser } from "../api/user";
 import { unregisterPushToken } from "../functions/notificationToken";
 import Purchases from "react-native-purchases";
+import { verifyOtp } from "../api/auth";
 
 // Define action types for the reducer
 const USER_ACTION_TYPES = {
@@ -395,10 +396,20 @@ export const UserProvider = ({ children }) => {
   const logout = async () => {
     try {
       await unregisterPushToken();
-      const current = await Purchases.getAppUserID();
-      if (current !== "anonymous") {
-        await Purchases.logOut();
+      
+      // Check if user is logged in to RevenueCat
+      try {
+        const current = await Purchases.getAppUserID();
+        const isAnonymous = current.startsWith("$RCAnonymousID:") || current === "anonymous";
+        
+        if (!isAnonymous) {
+          await Purchases.logOut();
+        }
+      } catch (rcError) {
+        // If RevenueCat logout fails, continue with app logout
+        console.log("RevenueCat logout skipped:", rcError.message);
       }
+      
       await clearUserData();
       dispatch({ type: USER_ACTION_TYPES.LOGOUT });
     } catch (error) {

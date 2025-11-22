@@ -17,6 +17,7 @@ import KeyboardScrollScreen from "../../components/general/KeyboardScrollScreen"
 import AppText from "../../config/AppText";
 import { verifyOtp, resendOtp } from "../../api/auth";
 import { registerUser } from "../../api/user";
+import { useUser } from "../../config/UserContext";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -103,7 +104,10 @@ function Signin(props) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const [registerError, setRegisterError] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
-  
+
+  // Get verifyOtpAndLogin from UserContext
+  const { verifyOtpAndLogin } = useUser();
+
   // OTP State
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState("");
@@ -112,7 +116,7 @@ function Signin(props) {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  
+
   // Refs for OTP inputs
   const otpInputs = useRef([]);
 
@@ -129,7 +133,7 @@ function Signin(props) {
     setHasBeenSubmitted(true);
     setIsRegistering(true);
     setRegisterError("");
-    
+
     const { confirmPassword, ...userData } = values;
 
     try {
@@ -146,7 +150,7 @@ function Signin(props) {
       }
     } catch (error) {
       let errorMessage = "Registration failed";
-      
+
       if (error.message) {
         if (error.message.includes("already registered")) {
           errorMessage = "This email is already registered";
@@ -156,7 +160,7 @@ function Signin(props) {
           errorMessage = error.message;
         }
       }
-      
+
       setRegisterError(errorMessage);
     } finally {
       setIsRegistering(false);
@@ -188,7 +192,7 @@ function Signin(props) {
 
   const handleVerifyOtp = async () => {
     const otpCode = otp.join("");
-    
+
     if (otpCode.length !== 6) {
       setOtpError("Please enter complete OTP code");
       return;
@@ -198,48 +202,20 @@ function Signin(props) {
     setOtpError("");
 
     try {
-      const result = await verifyOtp({
-        email: registeredEmail,
-        otp: otpCode,
-      });
+      // Use the UserContext function instead of handling locally
+      const result = await verifyOtpAndLogin(registeredEmail, otpCode);
 
-      if (result.success && result.token && result.user) {
-        // Build user object
-        const userData = {
-          id: result.user.id,
-          name: result.user.name,
-          email: result.user.email,
-          phone: result.user.phone || null,
-          gender: result.user.gender || null,
-          avatar: null,
-          isRated: false,
-          rating: null,
-          ratingCount: 0,
-          role: "user",
-          createdAt: new Date().toISOString(),
-          revenueCatUserId: result.user.id,
-          isBlocked: false,
-        };
-
-        // Save to AsyncStorage
-        await AsyncStorage.setItem("@ajroo_user", JSON.stringify(userData));
-        await AsyncStorage.setItem("@ajroo_token", result.token);
-
-        // Navigate to Welcome which will trigger UserContext to restore user
-        // Then immediately to Home (this is a bit hacky but works)
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Welcome' }],
-        });
-        
+      if (result.success) {
+        // Navigation will happen automatically via UserContext state change
+        // The AppNavigator will detect isAuthenticated: true and navigate
       } else {
-        setOtpError(result.message || "Invalid OTP code");
+        setOtpError(result.error || "Invalid OTP code");
         setOtp(["", "", "", "", "", ""]);
         otpInputs.current[0]?.focus();
       }
     } catch (error) {
       let errorMessage = "Failed to verify OTP";
-      
+
       if (error.message) {
         if (error.message.includes("Invalid OTP")) {
           errorMessage = "Invalid OTP code";
@@ -249,7 +225,7 @@ function Signin(props) {
           errorMessage = error.message;
         }
       }
-      
+
       setOtpError(errorMessage);
       setOtp(["", "", "", "", "", ""]);
       otpInputs.current[0]?.focus();
@@ -266,7 +242,7 @@ function Signin(props) {
 
     try {
       const result = await resendOtp({ email: registeredEmail });
-      
+
       if (result.success) {
         setCountdown(60);
         setOtp(["", "", "", "", "", ""]);
@@ -296,7 +272,7 @@ function Signin(props) {
               <FormikInput
                 name={"name"}
                 placeholder={"Name"}
-                autoCapitalize={'none'}
+                autoCapitalize={"none"}
                 icon={"user"}
                 hasBeenSubmitted={hasBeenSubmitted}
               />
@@ -304,7 +280,7 @@ function Signin(props) {
               <FormikInput
                 name={"email"}
                 placeholder={"Email"}
-                autoCapitalize={'none'}
+                autoCapitalize={"none"}
                 icon={"mail"}
                 hasBeenSubmitted={hasBeenSubmitted}
               />
@@ -312,7 +288,7 @@ function Signin(props) {
               <FormikInput
                 name={"phone"}
                 placeholder={"Phone"}
-                autoCapitalize={'none'}
+                autoCapitalize={"none"}
                 icon={"phone"}
                 hasBeenSubmitted={hasBeenSubmitted}
               />
@@ -328,7 +304,7 @@ function Signin(props) {
               <FormikInput
                 name={"password"}
                 placeholder={"Password"}
-                autoCapitalize={'none'}
+                autoCapitalize={"none"}
                 icon={"lock"}
                 isPassword
                 hasBeenSubmitted={hasBeenSubmitted}
@@ -337,7 +313,7 @@ function Signin(props) {
               <FormikInput
                 name={"confirmPassword"}
                 placeholder={"Confirm password"}
-                autoCapitalize={'none'}
+                autoCapitalize={"none"}
                 icon={"lock"}
                 isPassword
                 hasBeenSubmitted={hasBeenSubmitted}
@@ -369,7 +345,8 @@ function Signin(props) {
             <View style={styles.otpContainer}>
               <AppText style={styles.otpTitle}>Verify Your Email</AppText>
               <AppText style={styles.otpSubtitle}>
-                We've sent a 6-digit code to {registeredEmail}
+                We've sent a 6-digit code to {"\n"}
+                {registeredEmail}
               </AppText>
 
               <View style={styles.otpInputContainer}>
@@ -409,7 +386,7 @@ function Signin(props) {
                 </AppText>
                 <RequestBtn
                   style={styles.resendBtn}
-                  backColor={"transparent"}
+                  backColor={"background"}
                   color={"purple"}
                   title={
                     countdown > 0
@@ -444,8 +421,8 @@ const getStyles = (theme) =>
       borderRadius: 18,
       marginTop: 10,
     },
-    border: { 
-      borderColor: theme.purple 
+    border: {
+      borderColor: theme.purple,
     },
     errorText: {
       color: "red",
@@ -465,19 +442,21 @@ const getStyles = (theme) =>
       color: theme.purple,
     },
     otpSubtitle: {
-      fontSize: 14,
+      fontSize: 18,
+      flex: 1,
       textAlign: "center",
       marginBottom: 30,
       color: theme.main_text,
     },
     otpInputContainer: {
+      width: "100%",
       flexDirection: "row",
       justifyContent: "center",
       gap: 10,
       marginBottom: 20,
     },
     otpInput: {
-      width: 45,
+      flex: 1,
       height: 55,
       borderWidth: 2,
       borderColor: theme.purple,
@@ -496,14 +475,17 @@ const getStyles = (theme) =>
     resendContainer: {
       flexDirection: "row",
       alignItems: "center",
-      marginTop: 20,
+      marginTop: 25,
+      width: "100%",
+      justifyContent: "space-around",
     },
     resendText: {
-      fontSize: 14,
+      fontSize: 16,
       color: theme.main_text,
     },
     resendBtn: {
       padding: 0,
+      width: "auto ",
     },
   });
 

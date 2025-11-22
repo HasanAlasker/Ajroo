@@ -181,6 +181,9 @@ router.post("/verify-otp", async (req, res) => {
           id: user._id,
           email: user.email,
           name: user.name,
+          role: user.role,
+          gender:user.gender,
+          postCount: user.postCount,
           isVerified: user.isVerified,
         },
       });
