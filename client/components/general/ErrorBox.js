@@ -2,6 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import AppText from "../../config/AppText";
 import useThemedStyles from "../../hooks/useThemedStyles";
+import { useTheme } from "../../config/ThemeContext";
 
 function ErrorBox({
   firstTitle,
@@ -9,11 +10,14 @@ function ErrorBox({
   secondTitle,
   secondDetail,
   style,
+  color
 }) {
   const styles = useThemedStyles(getStyles);
+  const {theme} = useTheme()
+
   return (
     <View style={[styles.display, style]}>
-      <AppText style={styles.reportReason}>
+      <AppText style={[styles.reportReason, {color: theme[color]}]}>
         {firstTitle}: {fistDetail}
       </AppText>
       {secondTitle && (

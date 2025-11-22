@@ -34,6 +34,7 @@ function Login(props) {
   const navigation = useNavigation();
   const { login, error, isLoading, clearError } = useUser();
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
+  const [forgot, setForgot] = useState(false);
 
   useEffect(() => {
     // clear errors when component mounts
@@ -101,7 +102,7 @@ function Login(props) {
             ></SubmitBtn>
 
             {/* Add forgot password logic later when clear */}
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=> setForgot(!forgot)}>
               <AppText style={styles.forgot}>Forgot password?</AppText>
             </TouchableOpacity>
 
@@ -114,6 +115,8 @@ function Login(props) {
               title={"Create account"}
               onPress={() => navigation.navigate("Signin")}
             ></RequestBtn>
+
+            { forgot && <ErrorBox color={'orange'} style={styles.errorBox} firstTitle={"Forgot Password"} fistDetail={"Contact us at ajroo.contact@gmail.com"}/>}
           </AppForm>
         </View>
       </KeyboardScrollScreen>
@@ -150,6 +153,7 @@ const getStyles = (theme) =>
       width: "90%",
       margin: "auto",
       marginTop: 50,
+      backgroundColor: theme.orange + 30,
     },
   });
 
