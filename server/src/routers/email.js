@@ -29,10 +29,10 @@ const generateOTP = () => {
 };
 
 // Send OTP Email Function
-const sendOTPEmail = async (email, otp) => {
+export const sendOTPEmail = async (email, otp) => {
   try {
     const mailOptions = {
-      from: `"Your App Name" <${process.env.EMAIL_USER}>`,
+      from: `"Ajroo Application" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Your OTP Code",
       html: `

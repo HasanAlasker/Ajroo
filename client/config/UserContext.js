@@ -256,36 +256,16 @@ export const UserProvider = ({ children }) => {
     try {
       const response = await registerUser(userData);
 
-      const user = {
-        id: response._id,
-        name: response.name,
+      // DON'T log them in yet - they need to verify OTP first
+      // Just return success with the email for OTP verification
+
+      dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: false });
+
+      return {
+        success: true,
         email: response.email,
-        phone: response.phone,
-        gender: response.gender,
-        avatar: response.image || null,
-        isRated: response.isRated || false,
-        rating: response.rating || null,
-        ratingCount: response.ratingCount || 0,
-        role: response.role || "user",
-        revenueCatUserId: response.revenueCatUserId,
-        createdAt: response.createdAt || new Date().toISOString(),
+        requiresVerification: response.requiresVerification,
       };
-
-      // Store user data
-      await storeUserData(user, response.token);
-
-      dispatch({
-        type: USER_ACTION_TYPES.REGISTER_SUCCESS,
-        payload: {
-          user: user,
-          token: response.token,
-        },
-      });
-
-      // Add a small delay to ensure state updates
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      return { success: true, user: user };
     } catch (error) {
       console.log("ERROR in register:", error);
       let errorMessage = "Registration failed";
@@ -304,6 +284,67 @@ export const UserProvider = ({ children }) => {
 
       dispatch({
         type: USER_ACTION_TYPES.REGISTER_FAILURE,
+        payload: errorMessage,
+      });
+
+      return { success: false, error: errorMessage };
+    } finally {
+      dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: false });
+    }
+  };
+
+  const verifyOtpAndLogin = async (email, otp) => {
+    dispatch({ type: USER_ACTION_TYPES.SET_LOADING, payload: true });
+
+    try {
+      const response = await verifyOtp({ email, otp });
+
+      if (!response || !response.user || !response.token) {
+        throw new Error("Invalid response from server");
+      }
+
+      const user = {
+        id: response.user.id,
+        name: response.user.name,
+        email: response.user.email,
+        phone: response.user.phone || null,
+        gender: response.user.gender || null,
+        avatar: null,
+        isRated: false,
+        rating: null,
+        ratingCount: 0,
+        role: "user",
+        createdAt: new Date().toISOString(),
+        revenueCatUserId: response.user.id,
+        isBlocked: false,
+      };
+
+      await storeUserData(user, response.token);
+
+      dispatch({
+        type: USER_ACTION_TYPES.LOGIN_SUCCESS,
+        payload: {
+          user: user,
+          token: response.token,
+        },
+      });
+
+      return { success: true };
+    } catch (error) {
+      let errorMessage = "OTP verification failed";
+
+      if (error.message.includes("Invalid OTP")) {
+        errorMessage = "Invalid OTP code";
+      } else if (error.message.includes("expired")) {
+        errorMessage = "OTP has expired. Please request a new one";
+      } else if (error.message.includes("Network")) {
+        errorMessage = "Network error. Check your connection";
+      } else {
+        errorMessage = error.message || "Something went wrong";
+      }
+
+      dispatch({
+        type: USER_ACTION_TYPES.SET_ERROR,
         payload: errorMessage,
       });
 
@@ -456,6 +497,7 @@ export const UserProvider = ({ children }) => {
     login,
     register,
     logout,
+    verifyOtpAndLogin,
     updateProfile,
     clearError,
 

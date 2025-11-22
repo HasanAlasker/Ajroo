@@ -13,6 +13,7 @@ import UserModel from "../models/usersModel.js";
 import auth from "../middleware/auth.js";
 import admin from "../middleware/admin.js";
 import SubscriptionModel from "../models/subscriptionModel.js";
+import { sendOTPEmail } from "./email.js";
 
 const router = express.Router();
 
@@ -113,6 +114,7 @@ const createErrorResponse = (message, statusCode = 400) => ({
 });
 
 // register
+
 router.post("/register", validate(userRegistrationSchema), async (req, res) => {
   try {
     const user = await usersModel.findOne({ email: req.body.email });
@@ -127,7 +129,7 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
     );
 
     newUser.password = await newUser.hashPassword(req.body.password);
-    newUser.isVerified = false; // User must verify email via OTP
+    newUser.isVerified = false;
 
     await newUser.save();
 
@@ -150,23 +152,31 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
     });
     await defaultSubscription.save();
 
-    // Link subscription to user
     newUser.subscription = defaultSubscription._id;
     await newUser.save();
 
+    // ✅ NEW: Generate and send OTP automatically
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    
+    newUser.otp = otp;
+    newUser.otpExpiry = otpExpiry;
+    await newUser.save();
+
+    // Send OTP email (you'll need to import your sendOTPEmail function)
+    try {
+      await sendOTPEmail(newUser.email, otp);
+    } catch (emailError) {
+      console.error("Failed to send OTP email:", emailError);
+      // Still return success but note email failed
+    }
+
     return res.status(200).send({
       success: true,
-      message: "Registration successful. Please verify your email with OTP.",
-      user: _.pick(newUser, ["_id", "name", "email", "phone", "gender"]),
+      message: "Registration successful. Please check your email for OTP.",
+      email: newUser.email,
       requiresVerification: true
     });
-
-    // const token = newUser.generateAuthToken();
-
-    // return res
-    //   .header("x-auth-token", token)
-    //   .status(200)
-    //   .send(_.pick(newUser, ["_id", "name", "email", "phone", "gender"]));
 
   } catch (err) {
     if (err.code === 11000) {

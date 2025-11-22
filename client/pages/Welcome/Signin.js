@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { View, StyleSheet, TextInput } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import SafeScreen from "../../components/general/SafeScreen";
 import AppForm from "../../components/form/AppForm";
 import Logo from "../../components/Logo";
@@ -13,9 +14,9 @@ import SeparatorComp from "../../components/SeparatorComp";
 import FormikDropBox from "../../components/form/FormikDropBox";
 import { gender } from "../../constants/DropOptions";
 import KeyboardScrollScreen from "../../components/general/KeyboardScrollScreen";
-
-import { useUser } from "../../config/UserContext";
 import AppText from "../../config/AppText";
+import { verifyOtp, resendOtp } from "../../api/auth";
+import { registerUser } from "../../api/user";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -46,44 +47,15 @@ const validationSchema = Yup.object().shape({
       "Password cannot contain common patterns",
       function (value) {
         if (!value) return true;
-
-        // Check for common weak patterns
         const weakPatterns = [
-          /(.)\1{2,}/, // 3+ repeated characters (aaa, 111)
-          /123|234|345|456|567|678|789|890/, // Sequential numbers
-          /abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz/i, // Sequential letters
-          /qwer|asdf|zxcv|1234|admin|pass/i, // Common keyboard patterns and words
+          /(.)\1{2,}/,
+          /123|234|345|456|567|678|789|890/,
+          /abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz/i,
+          /qwer|asdf|zxcv|1234|admin|pass/i,
         ];
-
         return !weakPatterns.some((pattern) => pattern.test(value));
       }
     )
-    // .test(
-    //   "no-personal-info",
-    //   "Password should not contain personal information",
-    //   function (value) {
-    //     if (!value) return true;
-
-    //     // Get other form values to check against
-    //     const { name, email } = this.parent;
-
-    //     if (
-    //       name &&
-    //       value.toLowerCase().includes(name.toLowerCase().split(" ")[0])
-    //     ) {
-    //       return false;
-    //     }
-
-    //     if (
-    //       email &&
-    //       value.toLowerCase().includes(email.toLowerCase().split("@")[0])
-    //     ) {
-    //       return false;
-    //     }
-
-    //     return true;
-    //   }
-    // )
     .trim(),
 
   confirmPassword: Yup.string()
@@ -115,6 +87,7 @@ const validationSchema = Yup.object().shape({
     ),
   gender: Yup.string().required("Gender is required"),
 });
+
 const initialValues = {
   password: "",
   email: "",
@@ -127,38 +100,184 @@ const initialValues = {
 function Signin(props) {
   const styles = useThemedStyles(getStyles);
   const navigation = useNavigation();
-  const { register, error, isLoading, clearError } = useUser();
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
+  const [registerError, setRegisterError] = useState("");
+  const [isRegistering, setIsRegistering] = useState(false);
+  
+  // OTP State
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otpError, setOtpError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  
+  // Refs for OTP inputs
+  const otpInputs = useRef([]);
 
-  // Clear any previous errors when component mounts
+  // Countdown timer for resend
   useEffect(() => {
-    clearError();
-  }, []);
+    let timer;
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown]);
 
-  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     setHasBeenSubmitted(true);
-
-    // Remove confirmPassword before sending to API
+    setIsRegistering(true);
+    setRegisterError("");
+    
     const { confirmPassword, ...userData } = values;
 
     try {
-      const result = await register(userData);
+      // Call register API directly (not through context)
+      const response = await registerUser(userData);
 
-      if (result.success) {
-        // Navigation will happen automatically via UserContext state change
+      if (response && response.email) {
+        // Registration successful, show OTP input
+        setRegisteredEmail(values.email);
+        setShowOtpInput(true);
+        setCountdown(60);
       } else {
-        setStatus({
-          type: "error",
-          message: result.error || "Failed to register.",
-        });
+        setRegisterError("Registration failed. Please try again.");
       }
     } catch (error) {
-      setStatus({
-        type: "error",
-        message: error.message || "An unexpected error occurred.",
-      });
+      let errorMessage = "Registration failed";
+      
+      if (error.message) {
+        if (error.message.includes("already registered")) {
+          errorMessage = "This email is already registered";
+        } else if (error.message.includes("email address")) {
+          errorMessage = "Please enter a valid email address";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      setRegisterError(errorMessage);
     } finally {
+      setIsRegistering(false);
       setSubmitting(false);
+    }
+  };
+
+  const handleOtpChange = (index, value) => {
+    // Only allow numbers
+    if (value && !/^\d+$/.test(value)) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+    setOtpError("");
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      otpInputs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpKeyPress = (index, key) => {
+    // Handle backspace
+    if (key === "Backspace" && !otp[index] && index > 0) {
+      otpInputs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    const otpCode = otp.join("");
+    
+    if (otpCode.length !== 6) {
+      setOtpError("Please enter complete OTP code");
+      return;
+    }
+
+    setIsVerifying(true);
+    setOtpError("");
+
+    try {
+      const result = await verifyOtp({
+        email: registeredEmail,
+        otp: otpCode,
+      });
+
+      if (result.success && result.token && result.user) {
+        // Build user object
+        const userData = {
+          id: result.user.id,
+          name: result.user.name,
+          email: result.user.email,
+          phone: result.user.phone || null,
+          gender: result.user.gender || null,
+          avatar: null,
+          isRated: false,
+          rating: null,
+          ratingCount: 0,
+          role: "user",
+          createdAt: new Date().toISOString(),
+          revenueCatUserId: result.user.id,
+          isBlocked: false,
+        };
+
+        // Save to AsyncStorage
+        await AsyncStorage.setItem("@ajroo_user", JSON.stringify(userData));
+        await AsyncStorage.setItem("@ajroo_token", result.token);
+
+        // Navigate to Welcome which will trigger UserContext to restore user
+        // Then immediately to Home (this is a bit hacky but works)
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Welcome' }],
+        });
+        
+      } else {
+        setOtpError(result.message || "Invalid OTP code");
+        setOtp(["", "", "", "", "", ""]);
+        otpInputs.current[0]?.focus();
+      }
+    } catch (error) {
+      let errorMessage = "Failed to verify OTP";
+      
+      if (error.message) {
+        if (error.message.includes("Invalid OTP")) {
+          errorMessage = "Invalid OTP code";
+        } else if (error.message.includes("expired")) {
+          errorMessage = "OTP has expired. Please request a new one";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      setOtpError(errorMessage);
+      setOtp(["", "", "", "", "", ""]);
+      otpInputs.current[0]?.focus();
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (countdown > 0) return;
+
+    setIsResending(true);
+    setOtpError("");
+
+    try {
+      const result = await resendOtp({ email: registeredEmail });
+      
+      if (result.success) {
+        setCountdown(60);
+        setOtp(["", "", "", "", "", ""]);
+        otpInputs.current[0]?.focus();
+      } else {
+        setOtpError(result.message || "Failed to resend OTP");
+      }
+    } catch (error) {
+      setOtpError(error.message || "Failed to resend OTP");
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -167,81 +286,144 @@ function Signin(props) {
       <KeyboardScrollScreen>
         <Logo style={styles.logo}></Logo>
         <View style={styles.cont}>
-          <AppForm
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            <FormikInput
-              name={"name"}
-              placeholder={"Name"}
-              autoCapitalize={'none'}
-              icon={"user"}
-              hasBeenSubmitted={hasBeenSubmitted}
-            ></FormikInput>
+          {!showOtpInput ? (
+            // Registration Form
+            <AppForm
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              <FormikInput
+                name={"name"}
+                placeholder={"Name"}
+                autoCapitalize={'none'}
+                icon={"user"}
+                hasBeenSubmitted={hasBeenSubmitted}
+              />
 
-            <FormikInput
-              name={"email"}
-              placeholder={"Email"}
-              autoCapitalize={'none'}
-              icon={"mail"}
-              hasBeenSubmitted={hasBeenSubmitted}
-            ></FormikInput>
+              <FormikInput
+                name={"email"}
+                placeholder={"Email"}
+                autoCapitalize={'none'}
+                icon={"mail"}
+                hasBeenSubmitted={hasBeenSubmitted}
+              />
 
-            <FormikInput
-              name={"phone"}
-              placeholder={"Phone"}
-              autoCapitalize={'none'}
-              icon={"phone"}
-              hasBeenSubmitted={hasBeenSubmitted}
-            ></FormikInput>
+              <FormikInput
+                name={"phone"}
+                placeholder={"Phone"}
+                autoCapitalize={'none'}
+                icon={"phone"}
+                hasBeenSubmitted={hasBeenSubmitted}
+              />
 
-            <FormikDropBox
-              name={"gender"}
-              placeholder={"Gender"}
-              hasBeenSubmitted={hasBeenSubmitted}
-              items={gender}
-              icon={"divide"}
-            ></FormikDropBox>
+              <FormikDropBox
+                name={"gender"}
+                placeholder={"Gender"}
+                hasBeenSubmitted={hasBeenSubmitted}
+                items={gender}
+                icon={"divide"}
+              />
 
-            <FormikInput
-              name={"password"}
-              placeholder={"Password"}
-              autoCapitalize={'none'}
-              icon={"lock"}
-              isPassword
-              hasBeenSubmitted={hasBeenSubmitted}
-            ></FormikInput>
+              <FormikInput
+                name={"password"}
+                placeholder={"Password"}
+                autoCapitalize={'none'}
+                icon={"lock"}
+                isPassword
+                hasBeenSubmitted={hasBeenSubmitted}
+              />
 
-            <FormikInput
-              name={"confirmPassword"}
-              placeholder={"Confirm password"}
-              autoCapitalize={'none'}
-              icon={"lock"}
-              isPassword
-              hasBeenSubmitted={hasBeenSubmitted}
-            ></FormikInput>
+              <FormikInput
+                name={"confirmPassword"}
+                placeholder={"Confirm password"}
+                autoCapitalize={'none'}
+                icon={"lock"}
+                isPassword
+                hasBeenSubmitted={hasBeenSubmitted}
+              />
 
-            {/* Display context error if exists */}
-            {error && <AppText style={styles.errorText}>{error}</AppText>}
+              {registerError && (
+                <AppText style={styles.errorText}>{registerError}</AppText>
+              )}
 
-            <SubmitBtn
-              defaultText="Register"
-              submittingText="Registering..."
-              disabled={isLoading}
-              setHasBeenSubmitted={setHasBeenSubmitted}
-            ></SubmitBtn>
+              <SubmitBtn
+                defaultText="Register"
+                submittingText="Registering..."
+                disabled={isRegistering}
+                setHasBeenSubmitted={setHasBeenSubmitted}
+              />
 
-            <SeparatorComp style={styles.sep}>Or</SeparatorComp>
+              <SeparatorComp style={styles.sep}>Or</SeparatorComp>
 
-            <RequestBtn
-              style={[styles.btn, styles.border]}
-              backColor={"post"}
-              color={"purple"}
-              title={"I have an account"}
-              onPress={() => navigation.navigate("Login")}
-            ></RequestBtn>
-          </AppForm>
+              <RequestBtn
+                style={[styles.btn, styles.border]}
+                backColor={"post"}
+                color={"purple"}
+                title={"I have an account"}
+                onPress={() => navigation.navigate("Login")}
+              />
+            </AppForm>
+          ) : (
+            // OTP Verification Section
+            <View style={styles.otpContainer}>
+              <AppText style={styles.otpTitle}>Verify Your Email</AppText>
+              <AppText style={styles.otpSubtitle}>
+                We've sent a 6-digit code to {registeredEmail}
+              </AppText>
+
+              <View style={styles.otpInputContainer}>
+                {otp.map((digit, index) => (
+                  <TextInput
+                    key={index}
+                    ref={(ref) => (otpInputs.current[index] = ref)}
+                    style={styles.otpInput}
+                    value={digit}
+                    onChangeText={(value) => handleOtpChange(index, value)}
+                    onKeyPress={({ nativeEvent: { key } }) =>
+                      handleOtpKeyPress(index, key)
+                    }
+                    keyboardType="number-pad"
+                    maxLength={1}
+                    selectTextOnFocus
+                  />
+                ))}
+              </View>
+
+              {otpError && (
+                <AppText style={styles.errorText}>{otpError}</AppText>
+              )}
+
+              <RequestBtn
+                style={styles.verifyBtn}
+                backColor={"purple"}
+                color={"post"}
+                title={isVerifying ? "Verifying..." : "Verify OTP"}
+                onPress={handleVerifyOtp}
+                disabled={isVerifying || otp.join("").length !== 6}
+              />
+
+              <View style={styles.resendContainer}>
+                <AppText style={styles.resendText}>
+                  Didn't receive the code?{" "}
+                </AppText>
+                <RequestBtn
+                  style={styles.resendBtn}
+                  backColor={"transparent"}
+                  color={"purple"}
+                  title={
+                    countdown > 0
+                      ? `Resend in ${countdown}s`
+                      : isResending
+                      ? "Sending..."
+                      : "Resend OTP"
+                  }
+                  onPress={handleResendOtp}
+                  disabled={countdown > 0 || isResending}
+                />
+              </View>
+            </View>
+          )}
         </View>
       </KeyboardScrollScreen>
     </SafeScreen>
@@ -253,19 +435,75 @@ const getStyles = (theme) =>
     logo: {
       marginTop: 20,
     },
+    cont: {
+      flex: 1,
+    },
     btn: {
       width: "90%",
       marginHorizontal: "auto",
       borderRadius: 18,
       marginTop: 10,
     },
-    border: { borderColor: theme.purple },
-    forgot: {
-      color: theme.purple,
-      fontSize: 16,
-      fontWeight: "bold",
+    border: { 
+      borderColor: theme.purple 
+    },
+    errorText: {
+      color: "red",
       textAlign: "center",
-      marginVertical: 18,
+      marginVertical: 10,
+    },
+    otpContainer: {
+      width: "90%",
+      marginHorizontal: "auto",
+      alignItems: "center",
+      paddingVertical: 20,
+    },
+    otpTitle: {
+      fontSize: 24,
+      fontWeight: "bold",
+      marginBottom: 10,
+      color: theme.purple,
+    },
+    otpSubtitle: {
+      fontSize: 14,
+      textAlign: "center",
+      marginBottom: 30,
+      color: theme.main_text,
+    },
+    otpInputContainer: {
+      flexDirection: "row",
+      justifyContent: "center",
+      gap: 10,
+      marginBottom: 20,
+    },
+    otpInput: {
+      width: 45,
+      height: 55,
+      borderWidth: 2,
+      borderColor: theme.purple,
+      borderRadius: 10,
+      textAlign: "center",
+      fontSize: 20,
+      fontWeight: "bold",
+      backgroundColor: theme.post,
+      color: theme.main_text,
+    },
+    verifyBtn: {
+      width: "100%",
+      borderRadius: 18,
+      marginTop: 10,
+    },
+    resendContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginTop: 20,
+    },
+    resendText: {
+      fontSize: 14,
+      color: theme.main_text,
+    },
+    resendBtn: {
+      padding: 0,
     },
   });
 
