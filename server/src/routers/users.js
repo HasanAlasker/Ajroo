@@ -158,7 +158,7 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
     // ✅ NEW: Generate and send OTP automatically
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-    
+
     newUser.otp = otp;
     newUser.otpExpiry = otpExpiry;
     await newUser.save();
@@ -175,9 +175,8 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
       success: true,
       message: "Registration successful. Please check your email for OTP.",
       email: newUser.email,
-      requiresVerification: true
+      requiresVerification: true,
     });
-
   } catch (err) {
     if (err.code === 11000) {
       const field = Object.keys(err.keyValue)[0];
@@ -193,11 +192,13 @@ router.post("/register", validate(userRegistrationSchema), async (req, res) => {
 });
 
 // login
+
 router.post("/login", validate(userLoginSchema), async (req, res) => {
   try {
-    const user = await UserModel.findOne({ email: req.body.email })
-      .populate('subscription'); // Add this to get subscription data
-    
+    const user = await UserModel.findOne({ email: req.body.email }).populate(
+      "subscription"
+    );
+
     if (!user) {
       return res
         .status(400)
@@ -215,6 +216,36 @@ router.post("/login", validate(userLoginSchema), async (req, res) => {
         .send(createErrorResponse("Invalid email or password"));
     }
 
+    // ✅ Check if user is verified
+    if (!user.isVerified) {
+      // Generate new OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+      user.otp = otp;
+      user.otpExpiry = otpExpiry;
+      await user.save();
+
+      // Send OTP email
+      try {
+        await sendOTPEmail(user.email, otp);
+      } catch (emailError) {
+        console.error("Failed to send OTP email:", emailError);
+        return res
+          .status(500)
+          .send(createErrorResponse("Failed to send verification email"));
+      }
+
+      // Return response indicating OTP was sent
+      return res.status(200).send({
+        success: true,
+        message: "Account not verified. Please check your email for OTP.",
+        email: user.email,
+        requiresVerification: true,
+      });
+    }
+
+    // ✅ User is verified, proceed with login
     const token = user.generateAuthToken();
 
     // Include subscription info in response
@@ -222,6 +253,7 @@ router.post("/login", validate(userLoginSchema), async (req, res) => {
       ..._.pick(user, [
         "_id",
         "name",
+        "email",
         "image",
         "isRated",
         "rating",
@@ -236,12 +268,9 @@ router.post("/login", validate(userLoginSchema), async (req, res) => {
       subscription: user.subscription || null,
     };
 
-    return res
-      .status(200)
-      .header("x-auth-token", token)
-      .send(responseData);
+    return res.status(200).header("x-auth-token", token).send(responseData);
   } catch (err) {
-    console.error("Login error:", err); // Add logging
+    console.error("Login error:", err);
     return res
       .status(500)
       .send(createErrorResponse("Login failed. Please try again"));
@@ -281,7 +310,9 @@ router.get("/blocked", [auth, admin], async (req, res) => {
 router.get("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
-    const user = await UserModel.findById(id).select("-password").populate('subscription', 'productId');
+    const user = await UserModel.findById(id)
+      .select("-password")
+      .populate("subscription", "productId");
     if (!user) return res.status(404).send("user not found");
 
     return res.status(200).send(user);
