@@ -16,6 +16,7 @@ import { getUserById } from "../../api/user";
 import LoadingCircle from "../../components/general/LoadingCircle";
 import ErrorBox from "../../components/general/ErrorBox";
 import AppText from "../../config/AppText";
+import ProfileLoadingSkeleton from "../../components/general/ProfileSkeleton";
 
 function Profile({ isNotification }) {
   const [isMenu, setIsMenu] = useState(false);
@@ -48,7 +49,7 @@ function Profile({ isNotification }) {
   }, [userId]);
 
   if ((loading && userLoading) || (!posts && !profile)) {
-    return <LoadingCircle />;
+    return <ProfileLoadingSkeleton />;
   }
 
   const handleRefresh = async () => {
@@ -58,7 +59,7 @@ function Profile({ isNotification }) {
     setRefreshing(false);
   };
 
-  const subscriptionType = profile.subscription?.productId
+  const subscriptionType = profile.subscription?.productId;
 
   return (
     <SafeScreen>
@@ -94,12 +95,15 @@ function Profile({ isNotification }) {
           subscriptionType={subscriptionType}
         ></TopChunkProfile>
 
-        {user.role !== "admin" && !profile?.isBlocked && !subscriptionType && (
-          <IndivisualPromo />
-        )}{/* <BuisnessPromo></BuisnessPromo> */}
-        {user.role !== "admin" && !profile?.isBlocked && subscriptionType ==="pro_monthly"  && (
-          <BuisnessPromo />
-        )}
+        {user.id === profile._id &&
+          user.role !== "admin" &&
+          !profile?.isBlocked &&
+          !subscriptionType && <IndivisualPromo />}
+        {/* <BuisnessPromo></BuisnessPromo> */}
+        {user.id === profile._id &&
+          user.role !== "admin" &&
+          !profile?.isBlocked &&
+          subscriptionType === "pro_monthly" && <BuisnessPromo />}
         {profile?.isBlocked && myProfile && (
           <ErrorBox
             style={styles.err}
@@ -108,10 +112,11 @@ function Profile({ isNotification }) {
               "Your account has been suspended for violating our policy. You can still return borrowed items and give back those listed on the Book page."
             }
             secondTitle={"What to do"}
-            secondDetail={"If you believe this is a mistake, contact us through Support in Settings."}
+            secondDetail={
+              "If you believe this is a mistake, contact us through Support in Settings."
+            }
           />
         )}
-        
       </PostRenderer>
       <Navbar></Navbar>
     </SafeScreen>
