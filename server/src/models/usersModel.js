@@ -122,7 +122,8 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.index({ otpExpiry: 1 }, { expireAfterSeconds: 0 });
+// this line deletes the user if he doesn't get verified before otp expires
+// userSchema.index({ otpExpiry: 1 }, { expireAfterSeconds: 0 });
 
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(

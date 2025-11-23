@@ -425,8 +425,10 @@ const getStyles = (theme) =>
       borderColor: theme.purple,
     },
     errorText: {
-      color: "red",
-      textAlign: "center",
+      width:'90%',
+      marginHorizontal:'auto',
+      fontWeight:'bold',
+      color: theme.red,
       marginVertical: 10,
     },
     otpContainer: {
