@@ -86,6 +86,7 @@ const getStyles = (theme) =>
       paddingHorizontal: 20,
       paddingVertical: 20,
       borderRadius: 15,
+      marginVertical: 20,
 
       backgroundColor: theme.post,
       marginHorizontal: "auto",

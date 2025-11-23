@@ -8,6 +8,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import useApi from "../../hooks/useApi";
 import { availablePosts, searchPosts } from "../../api/post";
 import LoadingCircle from "../../components/general/LoadingCircle";
+import LoadingSkeleton from "../../components/post_releated/LoadingSkeleton";
 
 function Have({ route }) {
   const { user } = useUser();
@@ -147,6 +148,10 @@ function Have({ route }) {
           isFilterActive={isFilterActive}
           initialCategory={initialCategory.current}
         />
+        {loading && <LoadingSkeleton/>}
+        {loading && <LoadingSkeleton/>}
+        {loading && <LoadingSkeleton/>}
+        {loading && <LoadingSkeleton/>}
       </PostRenderer>
       <Navbar />
     </SafeScreen>

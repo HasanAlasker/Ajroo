@@ -8,6 +8,7 @@ import PostRenderer from "../../components/PostRenderer";
 import useApi from "../../hooks/useApi";
 import { gotRequests, sentRequests } from "../../api/request";
 import LoadingCircle from "../../components/general/LoadingCircle";
+import LoadingSkeleton from "../../components/post_releated/LoadingSkeleton";
 
 function Requests(props) {
   const [activeTab, setActiveTab] = useState("Got");
@@ -55,7 +56,10 @@ function Requests(props) {
             emptyMessage="You haven't received any requests yet"
             refreshing={refreshing}
             onRefresh={handleRefresh}
-          ></PostRenderer>
+          >
+            {(gotRequestsApi.loading || sentRequestsApi.loading) && <LoadingSkeleton />}
+            {(gotRequestsApi.loading || sentRequestsApi.loading) && <LoadingSkeleton />}
+          </PostRenderer>
         );
       default:
       // return <SentContent />;

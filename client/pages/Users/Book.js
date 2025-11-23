@@ -8,6 +8,7 @@ import PostRenderer from "../../components/PostRenderer";
 import useApi from "../../hooks/useApi";
 import { givenItems, takenItems } from "../../api/borrow";
 import LoadingCircle from "../../components/general/LoadingCircle";
+import LoadingSkeleton from "../../components/post_releated/LoadingSkeleton";
 
 function Book(props) {
   const [activeTab, setActiveTab] = useState("Given");
@@ -18,10 +19,10 @@ function Book(props) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     takenItemsApi.request();
     givenItemsApi.request();
-    setLoading(false)
+    setLoading(false);
   }, []);
 
   const handleRefresh = async () => {
@@ -59,7 +60,14 @@ function Book(props) {
               emptyMessage="You haven't borrowed any items yet"
               refreshing={refreshing}
               onRefresh={handleRefresh}
-            ></PostRenderer>
+            >
+              {(givenItemsApi.loading || takenItemsApi.loading) && (
+                <LoadingSkeleton />
+              )}
+              {(givenItemsApi.loading || takenItemsApi.loading) && (
+                <LoadingSkeleton />
+              )}
+            </PostRenderer>
           </>
         );
       default:
