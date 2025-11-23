@@ -109,8 +109,8 @@ const getStyles = (theme) =>
       marginTop: 10,
     },
     ratingBadge: {
-      width: 150,
-      height: 42,
+      width: 100,
+      height: 34,
       borderRadius: 20,
 
     },
