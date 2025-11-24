@@ -1,21 +1,21 @@
 // constants/subscriptionLimits.js
 export const SUBSCRIPTION_LIMITS = {
-  free: {
+  "individual_free": {
     maxPosts: 2,
     name: "Free Plan",
     entitlementId: null
   },
-  pro: {
+  "pro_monthly:pro": {
     maxPosts: 6,
     name: "Individual - Pro",
     entitlementId: "pro"
   },
-  starter: {
+  "business_starter:starter": {
     maxPosts: 25,
     name: "Business - Starter",
     entitlementId: "starter"
   },
-  premium: {
+  "business_premium:premium": {
     maxPosts: -1, // unlimited
     name: "Business - Premium",
     entitlementId: "premium"

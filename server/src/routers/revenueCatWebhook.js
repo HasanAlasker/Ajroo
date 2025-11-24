@@ -25,9 +25,9 @@ const verifyWebhookSignature = (req) => {
 // Map RevenueCat product IDs to your subscription types
 const mapProductIdToType = (productId) => {
   const mapping = {
-    pro_monthly: "individual_pro",
-    business_starter: "business_starter",
-    business_premium: "business_premium",
+    "pro_monthly:pro": "pro_monthly",
+    "business_starter:starter": "business_starter",
+    "business_premium:premium": "business_premium",
   };
   return mapping[productId] || "individual_free";
 };
@@ -207,7 +207,7 @@ const getFeaturesByType = (type) => {
       analytics: false,
       customBranding: false,
     },
-    individual_pro: {
+    pro_monthly: {
       maxPosts: 6,
       maxActiveRequests: 10,
       prioritySupport: false,

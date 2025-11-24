@@ -6,6 +6,43 @@ import admin from "../middleware/admin.js";
 
 const router = express.Router();
 
+// Helper function to extract base type from product ID
+const getBaseSubscriptionType = (subType) => {
+  return subType.split(':')[0];
+};
+
+// Define subscription features (used across multiple endpoints)
+const subscriptionFeatures = {
+  individual_free: {
+    maxPosts: 2,
+    maxActiveRequests: 3,
+    prioritySupport: false,
+    analytics: false,
+    customBranding: false,
+  },
+  pro_monthly: {
+    maxPosts: 6,
+    maxActiveRequests: 10,
+    prioritySupport: false,
+    analytics: false,
+    customBranding: false,
+  },
+  business_starter: {
+    maxPosts: 25,
+    maxActiveRequests: 20,
+    prioritySupport: true,
+    analytics: true,
+    customBranding: true,
+  },
+  business_premium: {
+    maxPosts: -1,
+    maxActiveRequests: -1,
+    prioritySupport: true,
+    analytics: true,
+    customBranding: true,
+  },
+};
+
 // Get current user's subscription
 router.get("/me", auth, async (req, res) => {
   try {
@@ -17,13 +54,7 @@ router.get("/me", auth, async (req, res) => {
       return res.status(200).send({
         subscriptionType: "individual_free",
         status: "active",
-        features: {
-          maxPosts: 2,
-          maxActiveRequests: 3,
-          prioritySupport: false,
-          analytics: false,
-          customBranding: false,
-        },
+        features: subscriptionFeatures.individual_free,
         isActive: true,
       });
     }
@@ -54,15 +85,9 @@ router.post("/init-revenuecat", auth, async (req, res) => {
     if (!subscription) {
       subscription = new SubscriptionModel({
         userId: user._id,
-        SubscriptionType: "individual_free", // Capital S to match schema
+        subscriptionType: "individual_free",
         status: "active",
-        features: {
-          maxPosts: 2,
-          maxActiveRequests: 3,
-          prioritySupport: false,
-          analytics: false,
-          customBranding: false,
-        },
+        features: subscriptionFeatures.individual_free,
       });
       await subscription.save();
 
@@ -94,20 +119,12 @@ router.post("/update", auth, async (req, res) => {
       originalPurchaseDate,
     } = req.body;
 
-    // console.log("📥 Received subscription update request:", {
-    //   subscriptionType,
-    //   revenueCatId,
-    //   productId,
-    //   store,
-    //   userId: req.user._id
-    // });
-
     // Validate subscription type
     const validTypes = [
       "individual_free",
-      "individual_pro",
-      "business_starter",
-      "business_premium",
+      "pro_monthly:pro",
+      "business_starter:starter",
+      "business_premium:premium",
     ];
 
     if (!subscriptionType || !validTypes.includes(subscriptionType)) {
@@ -119,52 +136,19 @@ router.post("/update", auth, async (req, res) => {
       });
     }
 
-    // Define features based on subscription type
-    const subscriptionFeatures = {
-      individual_free: {
-        maxPosts: 2,
-        maxActiveRequests: 3,
-        prioritySupport: false,
-        analytics: false,
-        customBranding: false,
-      },
-      individual_pro: {
-        maxPosts: 6,
-        maxActiveRequests: 10,
-        prioritySupport: false,
-        analytics: false,
-        customBranding: false,
-      },
-      business_starter: {
-        maxPosts: 25,
-        maxActiveRequests: 20,
-        prioritySupport: true,
-        analytics: true,
-        customBranding: true,
-      },
-      business_premium: {
-        maxPosts: -1,
-        maxActiveRequests: -1,
-        prioritySupport: true,
-        analytics: true,
-        customBranding: true,
-      },
-    };
+    // Get base type for features lookup
+    const baseType = getBaseSubscriptionType(subscriptionType);
 
     // Find existing subscription
     let subscription = await SubscriptionModel.findOne({
       userId: req.user._id,
     });
 
-    // console.log("🔍 Found existing subscription:", subscription ? "Yes" : "No");
-
     if (subscription) {
-      // FIXED: Use capital S to match schema
-      // console.log("📝 Updating subscription from", subscription.SubscriptionType, "to", subscriptionType);
-
-      subscription.subscriptionType = subscriptionType; // Changed from .type
+      // Update existing subscription
+      subscription.subscriptionType = subscriptionType; // Store full ID
       subscription.status = "active";
-      subscription.features = subscriptionFeatures[subscriptionType];
+      subscription.features = subscriptionFeatures[baseType]; // Use base type
       subscription.revenueCatId = revenueCatId;
       subscription.productId = productId;
       subscription.expirationDate = expirationDate;
@@ -175,16 +159,13 @@ router.post("/update", auth, async (req, res) => {
       subscription.willRenew = true;
 
       await subscription.save();
-      // console.log("✅ Subscription updated successfully:", subscription.SubscriptionType);
     } else {
       // Create new subscription
-      // console.log("📝 Creating new subscription:", subscriptionType);
-
       subscription = new SubscriptionModel({
         userId: req.user._id,
-        subscriptionType: subscriptionType, // Changed from type
+        subscriptionType: subscriptionType, // Store full ID
         status: "active",
-        features: subscriptionFeatures[subscriptionType],
+        features: subscriptionFeatures[baseType], // Use base type
         revenueCatId,
         productId,
         expirationDate,
@@ -196,13 +177,11 @@ router.post("/update", auth, async (req, res) => {
       });
 
       await subscription.save();
-      // console.log("✅ Subscription created successfully:", subscription.SubscriptionType);
 
       // Link subscription to user
       await UserModel.findByIdAndUpdate(req.user._id, {
         subscription: subscription._id,
       });
-      // console.log("✅ Subscription linked to user");
     }
 
     res.status(200).send({
@@ -253,6 +232,22 @@ router.post("/restore", auth, async (req, res) => {
   try {
     const { revenueCatId, expirationDate, subscriptionType } = req.body;
 
+    // Validate subscription type
+    const validTypes = [
+      "individual_free",
+      "pro_monthly:pro",
+      "business_starter:starter",
+      "business_premium:premium",
+    ];
+
+    if (!subscriptionType || !validTypes.includes(subscriptionType)) {
+      return res.status(400).send({
+        message: "Invalid subscription type",
+        received: subscriptionType,
+        valid: validTypes,
+      });
+    }
+
     let subscription = await SubscriptionModel.findOne({
       userId: req.user._id,
     });
@@ -263,33 +258,12 @@ router.post("/restore", auth, async (req, res) => {
       });
     }
 
-    const subscriptionFeatures = {
-      individual_pro: {
-        maxPosts: 6,
-        maxActiveRequests: 10,
-        prioritySupport: false,
-        analytics: false,
-        customBranding: false,
-      },
-      business_starter: {
-        maxPosts: 25,
-        maxActiveRequests: 20,
-        prioritySupport: true,
-        analytics: true,
-        customBranding: true,
-      },
-      business_premium: {
-        maxPosts: -1,
-        maxActiveRequests: -1,
-        prioritySupport: true,
-        analytics: true,
-        customBranding: true,
-      },
-    };
+    // Get base type for features lookup
+    const baseType = getBaseSubscriptionType(subscriptionType);
 
     subscription.status = "active";
-    subscription.SubscriptionType = subscriptionType; // Changed from .type
-    subscription.features = subscriptionFeatures[subscriptionType];
+    subscription.subscriptionType = subscriptionType; // Store full ID
+    subscription.features = subscriptionFeatures[baseType]; // Use base type
     subscription.revenueCatId = revenueCatId;
     subscription.expirationDate = expirationDate;
     subscription.willRenew = true;
@@ -369,14 +343,14 @@ router.get("/user/:userId", auth, async (req, res) => {
 
     const displayNames = {
       individual_free: "Free Plan",
-      individual_pro: "Pro",
-      business_starter: "Starter",
-      business_premium: "Premium",
+      "pro_monthly:pro": "Pro",
+      "business_starter:starter": "Starter",
+      "business_premium:premium": "Premium",
     };
 
     res.status(200).send({
-      subscriptionType: subscription.SubscriptionType, // Changed from .type
-      displayName: displayNames[subscription.SubscriptionType] || "Free Plan",
+      subscriptionType: subscription.subscriptionType,
+      displayName: displayNames[subscription.subscriptionType] || "Free Plan",
       status: subscription.status,
     });
   } catch (error) {
@@ -407,8 +381,7 @@ router.get("/history/:userId", [auth, admin], async (req, res) => {
   }
 });
 
-// sync subscription
-
+// Sync subscription from RevenueCat
 router.post("/sync-revenuecat", auth, async (req, res) => {
   try {
     const { 
@@ -422,18 +395,12 @@ router.post("/sync-revenuecat", auth, async (req, res) => {
       autoRenew
     } = req.body;
 
-    // console.log("🔄 Syncing subscription from RevenueCat:", {
-    //   subscriptionType,
-    //   productId: productId || "none (free plan)",
-    //   userId: req.user._id
-    // });
-
     // Validate subscription type
     const validTypes = [
       "individual_free",
-      "individual_pro",
-      "business_starter", 
-      "business_premium"
+      "pro_monthly:pro",
+      "business_starter:starter", 
+      "business_premium:premium"
     ];
     
     if (!subscriptionType || !validTypes.includes(subscriptionType)) {
@@ -444,49 +411,21 @@ router.post("/sync-revenuecat", auth, async (req, res) => {
       });
     }
 
+    // Get base type for features lookup
+    const baseType = getBaseSubscriptionType(subscriptionType);
+
     // Find existing subscription
     let subscription = await SubscriptionModel.findOne({ 
       userId: req.user._id 
     });
 
-    const subscriptionFeatures = {
-      individual_free: {
-        maxPosts: 2,
-        maxActiveRequests: 3,
-        prioritySupport: false,
-        analytics: false,
-        customBranding: false,
-      },
-      individual_pro: {
-        maxPosts: 6,
-        maxActiveRequests: 10,
-        prioritySupport: false,
-        analytics: false,
-        customBranding: false,
-      },
-      business_starter: {
-        maxPosts: 25,
-        maxActiveRequests: 20,
-        prioritySupport: true,
-        analytics: true,
-        customBranding: true,
-      },
-      business_premium: {
-        maxPosts: -1,
-        maxActiveRequests: -1,
-        prioritySupport: true,
-        analytics: true,
-        customBranding: true,
-      },
-    };
-
     if (subscription) {
       // Update existing subscription
-      subscription.subscriptionType = subscriptionType;
+      subscription.subscriptionType = subscriptionType; // Store full ID
       subscription.status = subscriptionType === "individual_free" ? "inactive" : "active";
-      subscription.features = subscriptionFeatures[subscriptionType];
+      subscription.features = subscriptionFeatures[baseType]; // Use base type
       subscription.revenueCatId = revenueCatId;
-      subscription.productId = productId || null; // ✅ Set to null for free plan
+      subscription.productId = productId || null;
       subscription.expirationDate = expirationDate || null;
       subscription.store = store || null;
       subscription.originalPurchaseDate = originalPurchaseDate || null;
@@ -495,16 +434,15 @@ router.post("/sync-revenuecat", auth, async (req, res) => {
       subscription.willRenew = willRenew || false;
       
       await subscription.save();
-      // console.log(`✅ Subscription synced to ${subscriptionType}`);
     } else {
       // Create new subscription
       subscription = new SubscriptionModel({
         userId: req.user._id,
-        subscriptionType,
+        subscriptionType, // Store full ID
         status: subscriptionType === "individual_free" ? "inactive" : "active",
-        features: subscriptionFeatures[subscriptionType],
+        features: subscriptionFeatures[baseType], // Use base type
         revenueCatId,
-        productId: productId || null, // ✅ Set to null for free plan
+        productId: productId || null,
         expirationDate: expirationDate || null,
         store: store || null,
         originalPurchaseDate: originalPurchaseDate || null,
@@ -518,8 +456,6 @@ router.post("/sync-revenuecat", auth, async (req, res) => {
       await UserModel.findByIdAndUpdate(req.user._id, {
         subscription: subscription._id,
       });
-      
-      // console.log(`✅ New subscription created: ${subscriptionType}`);
     }
 
     res.status(200).send({

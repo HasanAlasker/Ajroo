@@ -14,9 +14,9 @@ const subscriptionSchema = new mongoose.Schema(
       type: String,
       enum: [
         "individual_free",
-        "individual_pro",
-        "business_starter",
-        "business_premium",
+        "pro_monthly:pro",
+        "business_starter:starter",
+        "business_premium:premium",
       ],
       default: "individual_free",
     },

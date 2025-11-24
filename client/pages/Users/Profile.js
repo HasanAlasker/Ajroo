@@ -103,7 +103,7 @@ function Profile({ isNotification }) {
         {user.id === profile._id &&
           user.role !== "admin" &&
           !profile?.isBlocked &&
-          subscriptionType === "pro_monthly" && <BuisnessPromo />}
+          subscriptionType === "pro_monthly:pro" && <BuisnessPromo />}
         {profile?.isBlocked && myProfile && (
           <ErrorBox
             style={styles.err}

@@ -42,9 +42,9 @@ function AcceptRejectBtn({
   const userPostCount = fetchedUser.postCount;
 
   const postLimit = () => {
-    if (userSubscription === "pro_monthly") return 6;
-    else if (userSubscription === "business_starter") return 25;
-    else if (userSubscription === "business_premium") return -1; // unlimited
+    if (userSubscription === "pro_monthly:pro") return 6;
+    else if (userSubscription === "business_starter:starter") return 25;
+    else if (userSubscription === "business_premium:premium") return -1; // unlimited
     else return 2;
   };
 

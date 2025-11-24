@@ -86,6 +86,15 @@ const validationSchema = Yup.object().shape({
   price: Yup.string().required("Please choose pricing"),
 });
 
+const mapEntitlementToPlanType = (entitlementKey) => {
+  const mapping = {
+    pro: "pro_monthly:pro",
+    starter: "business_starter:starter",
+    premium: "business_premium:premium",
+  };
+  return mapping[entitlementKey] || "individual_free";
+};
+
 function Post(props) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -122,18 +131,15 @@ function Post(props) {
 
         const entitlements = customerInfo.entitlements.active;
 
-        let planType = "free"; // default to free
+        let planType = "individual_free"; // default to free
 
         // Check entitlements in priority order (highest to lowest)
         if (entitlements["premium"]) {
-          planType = "premium";
-          // console.log("✅ Premium plan detected");
+          planType = "business_premium:premium"; // ✅ Full format
         } else if (entitlements["starter"]) {
-          planType = "starter";
-          // console.log("✅ Starter plan detected");
+          planType = "business_starter:starter"; // ✅ Full format
         } else if (entitlements["pro"]) {
-          planType = "pro";
-          // console.log("✅ Pro plan detected");
+          planType = "pro_monthly:pro"; // ✅ Full format
         } else {
           // console.log("ℹ️ No active subscription - using free plan");
         }
@@ -405,8 +411,8 @@ const getStyles = (theme) =>
       borderRadius: 8,
       marginBottom: 15,
       marginTop: 35,
-      width:'90%',
-      marginHorizontal: 'auto',
+      width: "90%",
+      marginHorizontal: "auto",
     },
     limitText: {
       fontSize: 14,

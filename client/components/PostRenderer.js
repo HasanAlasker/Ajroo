@@ -17,9 +17,9 @@ function PostRenderer({
 
     const mapping = {
       individual_free: null, // No badge for free users
-      individual_pro: "Pro",
-      business_starter: "Starter",
-      business_premium: "Premium",
+      "pro_monthly:pro": "Pro",
+      "business_starter:starter": "Starter",
+      "business_premium:premium": "Premium",
     };
 
     return mapping[productId] || null;
@@ -40,13 +40,14 @@ function PostRenderer({
     }
 
     // Get productId from subscription and convert to display name
-    const productId =
-      post.user?.subscription?.productId ||
-      post.reportedPost?.user?.subscription?.productId ||
-      post.owner?.subscription?.productId ||
+    const subscriptionType =
+      post.user?.subscription?.subscriptionType ||
+      post.reportedPost?.user?.subscription?.subscriptionType ||
+      post.owner?.subscription?.subscriptionType ||
       null;
 
-    const subscriptionDisplayName = getSubscriptionDisplayName(productId);
+    const subscriptionDisplayName =
+      getSubscriptionDisplayName(subscriptionType);
 
     // console.log("📦 Rendering post - productId:", productId, "→ displayName:", subscriptionDisplayName);
 

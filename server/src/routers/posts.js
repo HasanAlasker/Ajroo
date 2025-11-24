@@ -20,9 +20,9 @@ const getSubscriptionDisplayName = (subscriptionType) => {
   
   const mapping = {
     individual_free: null,
-    individual_pro: "Pro",
-    business_starter: "Starter",
-    business_premium: "Premium",
+    "pro_monthly:pro": "Pro",
+    "business_starter:starter": "Starter",
+    "business_premium:premium": "Premium",
   };
   
   return mapping[subscriptionType] || null;

@@ -159,19 +159,19 @@ function BigPicAndUsername({
       {/* Using Text component to properly inline the badge */}
       <Text style={styles.nameContainer}>
         <Text style={styles.text}>{userName}</Text>
-        {(subscriptionType === "business_starter" ||
-          subscriptionType === "business_premium") && (
+        {(subscriptionType === "business_starter:starter" ||
+          subscriptionType === "business_premium:premium") && (
           <Text style={styles.badgeText}>
             {" "}
             <MaterialCommunityIcons
               name={
-                subscriptionType === "business_starter"
+                subscriptionType === "business_starter:starter"
                   ? "check-circle"
                   : "crown"
               }
-              size={subscriptionType === "business_starter" ? 24 : 26}
+              size={subscriptionType === "business_starter:starter" ? 24 : 26}
               color={
-                subscriptionType === "business_starter"
+                subscriptionType === "business_starter:starter"
                   ? theme.blue
                   : theme.purple
               }

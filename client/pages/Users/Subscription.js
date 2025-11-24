@@ -57,7 +57,7 @@ function Subscription(props) {
   // Map RevenueCat entitlement to backend subscription type
   const mapEntitlementToSubscriptionType = (entitlement) => {
     const mapping = {
-      pro: "individual_pro",
+      pro: "pro_monthly",
       starter: "business_starter",
       premium: "business_premium",
     };

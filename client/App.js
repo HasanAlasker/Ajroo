@@ -189,9 +189,9 @@ const syncSubscriptionData = async (customerInfo) => {
       
       // Map entitlement to subscription type
       const mapping = {
-        pro: "individual_pro",
-        starter: "business_starter",
-        premium: "business_premium",
+        pro: "pro_monthly:pro",
+        starter: "business_starter:starter",
+        premium: "business_premium:premium",
       };
       
       const subscriptionType = mapping[entitlementKey] || "individual_free";

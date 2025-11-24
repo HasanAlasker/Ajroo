@@ -69,7 +69,7 @@ function DropBox({
     }
   };
 
-  const userSubscription = fetchedUser?.subscription?.productId;
+  const userSubscription = fetchedUser?.subscription?.subscriptionType;
 
   const isSelectionDisabled = (placeholderText, label, value) => {
     // If user data is still loading, don't disable anything
@@ -85,9 +85,9 @@ function DropBox({
       // If user has no subscription or is not on a paid plan
       if (
         !userSubscription ||
-        (userSubscription !== "pro_monthly" &&
-         userSubscription !== "business_premium" &&
-         userSubscription !== "business_starter")
+        (userSubscription !== "pro_monthly:pro" &&
+         userSubscription !== "business_premium:premium" &&
+         userSubscription !== "business_starter:starter")
       ) {
         // console.log("Price restriction applied - free users can only post free items");
         return true;
@@ -99,7 +99,7 @@ function DropBox({
       placeholderText === "Select Category" &&
       (value === "automotive" || value === "realestate")
     ) {
-      if (userSubscription !== "business_premium") {
+      if (userSubscription !== "business_premium:premium") {
         // console.log("Category restriction applied - only business_premium can access automotive/realestate");
         return true;
       }
