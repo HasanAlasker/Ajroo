@@ -49,7 +49,8 @@
           "color": "#ffffff",
           "sounds": []
         }
-      ]
+      ],
+      "react-native-edge-to-edge"
     ],
     "extra": {
       "eas": {
