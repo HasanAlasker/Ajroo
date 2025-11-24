@@ -374,7 +374,7 @@ function Signin(props) {
               <RequestBtn
                 style={styles.verifyBtn}
                 backColor={"purple"}
-                color={"post"}
+                color={"always_white"}
                 title={isVerifying ? "Verifying..." : "Verify OTP"}
                 onPress={handleVerifyOtp}
                 disabled={isVerifying || otp.join("").length !== 6}
@@ -473,6 +473,7 @@ const getStyles = (theme) =>
       width: "100%",
       borderRadius: 18,
       marginTop: 10,
+      color: theme.always_white
     },
     resendContainer: {
       flexDirection: "row",

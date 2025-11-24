@@ -3,7 +3,7 @@ import Purchases from 'react-native-purchases';
 import { Platform } from 'react-native';
 
 // Conversion rate (update this as needed)
-const USD_TO_JD = 0.71; // 1 USD ≈ 0.71 JD (check current rate)
+const USD_TO_JD = 1; // 1 USD ≈ 0.71 JD (check current rate)
 
 export const useRevenueCat = () => {
   const [offerings, setOfferings] = useState(null);

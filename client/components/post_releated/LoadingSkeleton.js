@@ -142,7 +142,7 @@ const getStyles = (theme) =>
     },
     image: {
       width: "100%",
-      aspectRatio: "1/1",
+      aspectRatio: 4 / 3.5,
     },
     actionButtons: {
       flexDirection: "row",

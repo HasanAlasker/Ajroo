@@ -49,6 +49,8 @@ function Login(props) {
   const [isResending, setIsResending] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
+  const {login} = useUser()
+
   // Refs for OTP inputs
   const otpInputs = useRef([]);
 
@@ -82,7 +84,7 @@ function Login(props) {
       } else if (response && response._id) {
         // User is verified, use context to complete login
         // The response already has the token in headers, so just verify with context
-        const result = await verifyOtpAndLogin(values.email, null, true); // Pass true to skip OTP check
+        const result = await await login(values.email, values.password);
         
         if (!result.success) {
           setLoginError(result.error || "Login failed");
@@ -294,7 +296,7 @@ function Login(props) {
               <RequestBtn
                 style={styles.verifyBtn}
                 backColor={"purple"}
-                color={"post"}
+                color={"always_white"}
                 title={isVerifying ? "Verifying..." : "Verify OTP"}
                 onPress={handleVerifyOtp}
                 disabled={isVerifying || otp.join("").length !== 6}
