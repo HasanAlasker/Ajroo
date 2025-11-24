@@ -23,7 +23,13 @@ export const SUBSCRIPTION_LIMITS = {
 };
 
 export const getPostLimit = (planType) => {
-  return SUBSCRIPTION_LIMITS[planType]?.maxPosts ?? SUBSCRIPTION_LIMITS.free.maxPosts;
+  const limit = SUBSCRIPTION_LIMITS[planType]?.maxPosts;
+  // If undefined, default to free plan limit
+  if (limit === undefined) {
+    console.warn(`Unknown plan type: ${planType}, defaulting to free plan`);
+    return SUBSCRIPTION_LIMITS["individual_free"].maxPosts;
+  }
+  return limit;
 };
 
 export const canUserPost = (postCount, planType) => {
@@ -32,10 +38,26 @@ export const canUserPost = (postCount, planType) => {
   return postCount < limit;
 };
 
-// Helper to get plan type from entitlement
+// Helper to convert product ID to full subscription type
+export const getFullSubscriptionType = (productId) => {
+  const mapping = {
+    "business_premium": "business_premium:premium",
+    "business_starter": "business_starter:starter",
+    "pro_monthly": "pro_monthly:pro",
+    "individual_free": "individual_free"
+  };
+  return mapping[productId] || productId;
+};
+
+// Helper to get plan type from entitlement ID
 export const getPlanTypeFromEntitlement = (entitlementId) => {
   const plan = Object.keys(SUBSCRIPTION_LIMITS).find(
     key => SUBSCRIPTION_LIMITS[key].entitlementId === entitlementId
   );
-  return plan || 'free';
+  return plan || 'individual_free';
+};
+
+// Helper to extract base product ID from full subscription type
+export const getBaseProductId = (fullType) => {
+  return fullType.split(':')[0];
 };
