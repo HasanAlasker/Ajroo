@@ -87,7 +87,7 @@ function TopOfPost({
                   color={
                     subscriptionType === "Starter" ? theme.blue : theme.purple
                   }
-                  style={{ paddingTop: subscriptionType === "Starter" ? 5 : 0 }}
+                  style={{ paddingTop: subscriptionType === "Starter" ? 2 : 0 }}
                 />
               )}
             {isRequesterBlocked && (

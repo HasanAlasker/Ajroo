@@ -264,7 +264,7 @@ const handleRestore = async () => {
                 color={theme.green}
               />
               <AppText style={[styles.text, { color: theme.green }]}>
-                Active: {localActiveSubscription.toUpperCase()} Plan
+                Active: {localActiveSubscription.charAt(0).toUpperCase()+ localActiveSubscription.slice(1)} Plan
               </AppText>
             </View>
           </PostComponent>

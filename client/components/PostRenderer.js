@@ -41,9 +41,9 @@ function PostRenderer({
 
     // Get productId from subscription and convert to display name
     const subscriptionType =
-      post.user?.subscription?.subscriptionType ||
-      post.reportedPost?.user?.subscription?.subscriptionType ||
-      post.owner?.subscription?.subscriptionType ||
+      post.user?.subscription?.productId ||
+      post.reportedPost?.user?.subscription?.productId ||
+      post.owner?.subscription?.productId ||
       null;
 
     const subscriptionDisplayName =

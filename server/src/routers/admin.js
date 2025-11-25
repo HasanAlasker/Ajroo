@@ -47,7 +47,7 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
       ReportModel.countDocuments(),
 
       // Count blocked users
-    //   UserModel.countDocuments({ isBlocked: true }),
+      UserModel.countDocuments({ isBlocked: true }),
 
       // Get subscription breakdown
     //   UserModel.aggregate([
