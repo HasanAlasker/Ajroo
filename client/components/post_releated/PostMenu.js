@@ -7,6 +7,7 @@ import {
   ScrollView,
   Dimensions,
   Share,
+  Alert,
 } from "react-native";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useUser } from "../../config/UserContext";
@@ -261,7 +262,7 @@ function PostMenu({
                 /* Regular Post Menu */
                 <>
                   {/* Share - Available to non-admins on non-deleted posts */}
-                  {!isAdmin && !isDeleted && (
+                  {/* {!isAdmin && !isDeleted && (
                     <>
                       <MenuOption
                         text={"Share post"}
@@ -270,7 +271,7 @@ function PostMenu({
                       />
                       <SeparatorComp style={styles.sep} />
                     </>
-                  )}
+                  )} */}
 
                   {/* Edit - Only for owner on non-deleted posts */}
                   {isMine && !isDeleted && (
