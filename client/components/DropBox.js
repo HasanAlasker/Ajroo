@@ -51,13 +51,13 @@ function DropBox({
   }, [user?.id]);
 
   // Add debug logging
-  useEffect(() => {
-    if (fetchedUser) {
-      // console.log("Fetched User:", fetchedUser);
-      // console.log("Subscription:", fetchedUser.subscription);
-      // console.log("Product ID:", fetchedUser.subscription?.productId);
-    }
-  }, [fetchedUser]);
+  // useEffect(() => {
+  //   if (fetchedUser) {
+  //     console.log("Fetched User:", fetchedUser);
+  //     console.log("Subscription:", fetchedUser.subscription);
+  //     console.log("Product ID:", fetchedUser.subscription?.productId);
+  //   }
+  // }, [fetchedUser]);
 
   if (loading && !fetchedUser) {
     return <LoadingCircle />;
@@ -69,7 +69,7 @@ function DropBox({
     }
   };
 
-  const userSubscription = fetchedUser?.subscription?.subscriptionType;
+  const userSubscription = fetchedUser?.subscription?.productId;
 
   const isSelectionDisabled = (placeholderText, label, value) => {
     // If user data is still loading, don't disable anything
