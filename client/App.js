@@ -37,7 +37,11 @@ import Blocks from "./pages/admin/Blocks";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotifications } from "./functions/notificationToken";
 import Purchases, { LOG_LEVEL } from "react-native-purchases";
-import { syncRevenueCatId, updateSubscription } from "./api/subscription";
+import {
+  syncRevenueCatId,
+  syncSubscriptionFromRevenueCat,
+  updateSubscription,
+} from "./api/subscription";
 
 const Stack = createNativeStackNavigator();
 
@@ -120,7 +124,6 @@ const AppNavigator = () => {
   useEffect(() => {
     const initializeRevenueCat = async () => {
       try {
-        // Configure RevenueCat
         Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
 
         const iosApiKey = "test_lAEugUCvMRUQkbQHVTHizTxlyMp";
@@ -132,7 +135,7 @@ const AppNavigator = () => {
           await Purchases.configure({ apiKey: androidApiKey });
         }
 
-        // console.log("✅ RevenueCat configured");
+        console.log("✅ RevenueCat configured");
       } catch (error) {
         console.error("❌ RevenueCat configuration error:", error);
       }
@@ -141,28 +144,28 @@ const AppNavigator = () => {
     initializeRevenueCat();
   }, []);
 
-  // Handle user authentication and RevenueCat login
+  // FIXED: Pass user.id to syncSubscriptionData
   useEffect(() => {
     const handleUserAuthentication = async () => {
       if (isAuthenticated && user?.id) {
         try {
           const revenueCatUserId = user.id;
-          // console.log("🔐 Logging in to RevenueCat with ID:", revenueCatUserId);
+          console.log("🔐 Logging in to RevenueCat with ID:", revenueCatUserId);
 
           // Log in user to RevenueCat
           const { customerInfo } = await Purchases.logIn(revenueCatUserId);
-          // console.log("✅ RevenueCat user logged in");
+          console.log("✅ RevenueCat user logged in");
 
           // Sync with backend to ensure user has RevenueCat ID
           const response = await syncRevenueCatId();
           if (response.ok) {
-            // console.log("✅ RevenueCat ID synced with backend");
+            console.log("✅ RevenueCat ID synced with backend");
           } else {
             console.error("❌ Failed to sync RevenueCat ID:", response.data);
           }
 
-          // **NEW: Sync subscription data from RevenueCat**
-          await syncSubscriptionData(customerInfo);
+          // FIXED: Pass user.id to syncSubscriptionData
+          await syncSubscriptionData(customerInfo, user.id);
         } catch (error) {
           console.error("❌ RevenueCat login error:", error);
         }
@@ -172,121 +175,141 @@ const AppNavigator = () => {
     handleUserAuthentication();
   }, [isAuthenticated, user?.id]);
 
-  // **NEW: Add this helper function**
-  // In App.js, update the syncSubscriptionData function:
-
-const syncSubscriptionData = async (customerInfo) => {
-  try {
-    const activeEntitlements = customerInfo?.entitlements?.active || {};
-    
-    // Check if user has any active subscription
-    const hasActiveSub = Object.keys(activeEntitlements).length > 0;
-    
-    if (hasActiveSub) {
-      // Get the first active entitlement
-      const entitlementKey = Object.keys(activeEntitlements)[0];
-      const entitlement = activeEntitlements[entitlementKey];
+  // FIXED: Accept userId parameter and use it instead of customerInfo.originalAppUserId
+  const syncSubscriptionData = async (customerInfo, userId) => {
+    try {
+      console.log("🔄 Starting subscription sync...");
+      console.log("👤 User ID:", userId);
       
-      // Map entitlement to subscription type
-      const mapping = {
-        pro: "pro_monthly:pro",
-        starter: "business_starter:starter",
-        premium: "business_premium:premium",
-      };
+      const activeEntitlements = customerInfo?.entitlements?.active || {};
+      const hasActiveSub = Object.keys(activeEntitlements).length > 0;
       
-      const subscriptionType = mapping[entitlementKey] || "individual_free";
-      
-      // Prepare sync data
-      const syncData = {
-        subscriptionType,
-        revenueCatId: customerInfo.originalAppUserId,
-        productId: entitlement.productIdentifier,
-        expirationDate: entitlement.expirationDate,
-        store: entitlement.store === "APP_STORE" ? "app_store" : "play_store",
-        originalPurchaseDate: entitlement.originalPurchaseDate,
-        willRenew: entitlement.willRenew,
-        autoRenew: !entitlement.billingIssuesDetectedAt,
-      };
-      
-      // console.log("🔄 Syncing subscription data:", syncData);
-      
-      const { syncSubscriptionFromRevenueCat } = await import("./api/subscription");
-      const result = await syncSubscriptionFromRevenueCat(syncData);
-      
-      if (result.ok) {
-        // console.log("✅ Subscription synced from RevenueCat");
+      if (hasActiveSub) {
+        const entitlementKey = Object.keys(activeEntitlements)[0];
+        const entitlement = activeEntitlements[entitlementKey];
+        
+        console.log("📦 Active entitlement:", entitlementKey);
+        console.log("📦 Product ID:", entitlement.productIdentifier);
+        
+        // Map by product ID (more reliable)
+        const productMapping = {
+          "pro_monthly": "pro_monthly:pro",
+          "business_starter": "business_starter:starter",
+          "business_premium": "business_premium:premium",
+        };
+        
+        let subscriptionType = productMapping[entitlement.productIdentifier];
+        
+        if (!subscriptionType) {
+          // Fallback to entitlement ID mapping
+          const entitlementMapping = {
+            "pro": "pro_monthly:pro",
+            "starter": "business_starter:starter",
+            "premium": "business_premium:premium",
+          };
+          subscriptionType = entitlementMapping[entitlementKey.toLowerCase()];
+        }
+        
+        if (!subscriptionType) {
+          console.warn("⚠️ Unknown subscription, defaulting to free");
+          subscriptionType = "individual_free";
+        }
+        
+        console.log("🎯 Final subscription type:", subscriptionType);
+        
+        // FIXED: Use userId parameter instead of customerInfo.originalAppUserId
+        // FIXED: Use subscriptionType as productId to include the :pro/:starter/:premium suffix
+        const syncData = {
+          subscriptionType,
+          revenueCatId: userId, // ✅ FIXED: Use actual user ID
+          productId: subscriptionType, // ✅ FIXED: Use full subscription type (e.g., "pro_monthly:pro")
+          expirationDate: entitlement.expirationDate || null,
+          store: entitlement.store === "APP_STORE" ? "app_store" : 
+                 entitlement.store === "PLAY_STORE" ? "play_store" : null,
+          originalPurchaseDate: entitlement.originalPurchaseDate || null,
+          willRenew: entitlement.willRenew || false,
+          autoRenew: !entitlement.billingIssuesDetectedAt,
+        };
+        
+        console.log("📤 Syncing to backend:", syncData);
+        
+        const result = await syncSubscriptionFromRevenueCat(syncData);
+        
+        if (result.ok) {
+          console.log("✅ Subscription synced successfully");
+        } else {
+          console.error("❌ Sync failed:", result.status, result.data);
+        }
       } else {
-        console.error("❌ Failed to sync subscription:", result.data);
+        console.log("ℹ️ No active subscription, setting to free");
+        
+        // FIXED: Use userId parameter
+        const freeData = {
+          subscriptionType: "individual_free",
+          revenueCatId: userId, // ✅ FIXED: Use actual user ID
+          productId: null,
+          expirationDate: null,
+          store: null,
+          originalPurchaseDate: null,
+          willRenew: false,
+          autoRenew: false,
+        };
+        
+        const result = await syncSubscriptionFromRevenueCat(freeData);
+        
+        if (result.ok) {
+          console.log("✅ Free plan set successfully");
+        } else {
+          console.error("❌ Free plan sync failed:", result.status, result.data);
+        }
       }
-    } else {
-      // **NEW: No active subscription, update to individual_free**
-      // console.log("ℹ️ No active subscription found, updating to individual_free");
-      
-      const freeData = {
-        subscriptionType: "individual_free",
-        revenueCatId: customerInfo.originalAppUserId,
-        productId: null, // No product ID for free plan
-        expirationDate: null,
-        store: null,
-        originalPurchaseDate: null,
-        willRenew: false,
-        autoRenew: false,
-      };
-      
-      const { syncSubscriptionFromRevenueCat } = await import("./api/subscription");
-      const result = await syncSubscriptionFromRevenueCat(freeData);
-      
-      if (result.ok) {
-        // console.log("✅ Updated to individual_free plan");
-      } else {
-        console.error("❌ Failed to update to free plan:", result.data);
-      }
+    } catch (error) {
+      console.error("❌ Subscription sync error:", error.message);
     }
-  } catch (error) {
-    console.error("❌ Error syncing subscription data:", error);
-  }
-};
+  };
+
+  // Listen for subscription changes
+  useEffect(() => {
+    if (!isAuthenticated || !user?.id) return;
+
+    const customerInfoUpdateListener = Purchases.addCustomerInfoUpdateListener((info) => {
+      console.log("🔔 Subscription updated from RevenueCat");
+      syncSubscriptionData(info, user.id); // ✅ FIXED: Pass user.id
+    });
+
+    return () => {
+      if (customerInfoUpdateListener && typeof customerInfoUpdateListener.remove === 'function') {
+        customerInfoUpdateListener.remove();
+      }
+    };
+  }, [isAuthenticated, user?.id]);
 
   // Handle push notifications
   useEffect(() => {
     if (isAuthenticated) {
-      // Register for push notifications
       registerForPushNotifications();
 
-      // Listen for notifications received while app is foregrounded
       notificationListener.current =
         Notifications.addNotificationReceivedListener((notification) => {
-          // console.log("📬 Notification received!");
-          // console.log("Title:", notification.request.content.title);
-          // console.log("Body:", notification.request.content.body);
-          // console.log("Data:", notification.request.content.data);
+          console.log("📬 Notification received!");
         });
 
-      // Listen for user interactions with notifications
       responseListener.current =
         Notifications.addNotificationResponseReceivedListener((response) => {
-          // console.log("👆 Notification tapped!");
-          // console.log("Response:", response);
-          // TODO: Handle navigation based on notification data
-          // Example: if (response.notification.request.content.data.screen) { navigate(...) }
+          console.log("👆 Notification tapped!");
         });
 
       return () => {
         if (notificationListener.current) {
-          Notifications.removeNotificationSubscription(
-            notificationListener.current
-          );
+          Notifications.removeNotificationSubscription(notificationListener.current);
         }
         if (responseListener.current) {
-          Notifications.removeNotificationSubscription(
-            responseListener.current
-          );
+          Notifications.removeNotificationSubscription(responseListener.current);
         }
       };
     }
   }, [isAuthenticated]);
 
-  // Show loading screen while checking authentication
   if (isLoading) {
     return <LoadingCircle />;
   }
