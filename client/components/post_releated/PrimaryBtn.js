@@ -9,12 +9,13 @@ import RatingModal from "./RatingModal";
 import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
 import { useAlert } from "../../config/AlertContext";
-import { deletePost, updateStatus } from "../../api/post";
+import { deletePost, softDelete, unDelete, updateStatus } from "../../api/post";
 import { deleteReport } from "../../api/report";
 import { deleteRequest } from "../../api/request";
 import { confirmReturn, markReturned } from "../../api/borrow";
 import useApi from "../../hooks/useApi";
 import { getUserById } from "../../api/user";
+import * as Clipboard from "expo-clipboard";
 
 function PrimaryBtn({
   title,
@@ -31,6 +32,7 @@ function PrimaryBtn({
   iGave,
   requestId,
   isDeleted,
+  userEmail,
 }) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
@@ -39,7 +41,7 @@ function PrimaryBtn({
   const { user } = useUser();
   const { showAlert, showInfo } = useAlert();
   const passedUserId = iGave ? borrowerId : ownerId;
-  const {data: fetchedUser, request: fethUser, loading} = useApi(getUserById)
+  const { data: fetchedUser, request: fethUser, loading } = useApi(getUserById);
 
   // console.log("PrimaryBtn - iGave:", iGave); // Add this
   // console.log("PrimaryBtn - ownerId:", ownerId); // Add this
@@ -54,9 +56,26 @@ function PrimaryBtn({
   // const iBorrowed = currentPost?.borrowerId === user.id;
   const isAdmin = user.role === "admin";
 
-  useEffect(()=>{
-    fethUser(user.id)
-  },[user])
+  useEffect(() => {
+    fethUser(user.id);
+  }, [user]);
+
+  const handleCopy = async () => {
+    try {
+      await Clipboard.setStringAsync(userEmail);
+      showInfo({
+        title: "Copied!",
+        message: "Email copied to clipboard.",
+        confirmText: "Close",
+      });
+    } catch (error) {
+      showAlert({
+        title: "Error",
+        message: "Failed to copy email.",
+        confirmText: "Close",
+      });
+    }
+  };
 
   const shouldBeDisabled = () => {
     if (isAdmin) return false;
@@ -79,10 +98,16 @@ function PrimaryBtn({
       return "Delete Report";
     }
     if (isAdmin && route.name === "Search") {
-      return "Contact User";
+      return "Email User";
     }
     if (isAdmin && route.name === "Blocks") {
       return "Delete Completely";
+    }
+    if (isAdmin && route.name === "Profile" && !isDeleted) {
+      return "Delete Post";
+    }
+    if (isAdmin && route.name === "Profile" && isDeleted) {
+      return "Un-Delete Post";
     }
     if (isMine) {
       switch (status) {
@@ -151,6 +176,52 @@ function PrimaryBtn({
           }
         },
       });
+    }
+
+    if (buttonText === "Delete Post") {
+      showAlert({
+        title: "Soft-Delete post?",
+        message: "Are you sure, you can restore it later.",
+        confirmText: "Delete",
+        cancelText: "Cancel",
+        onConfirm: async () => {
+          try {
+            await softDelete(postId);
+            onClose();
+          } catch (error) {
+            showInfo({
+              title: "Error",
+              message: "Post could not be deleted.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
+    }
+
+    if (buttonText === "Un-Delete Post") {
+      showAlert({
+        title: "Restore post?",
+        message: "Are you sure you want to bring it back?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            await unDelete(postId);
+            onClose();
+          } catch (error) {
+            showInfo({
+              title: "Error",
+              message: "Post could not be deleted.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
+    }
+
+    if (buttonText === "Email User") {
+      handleCopy();
     }
 
     if (buttonText === "Delete Report") {

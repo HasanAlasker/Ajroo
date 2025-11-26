@@ -7,7 +7,8 @@ import {
 } from "@expo/vector-icons";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useUser } from "../../config/UserContext";
 
 function TopOfPost({
   name,
@@ -20,11 +21,13 @@ function TopOfPost({
   userId,
   subscriptionType,
   isRequesterBlocked,
-  isOwnerBlocked
+  isOwnerBlocked,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
   const navigate = useNavigation();
+  const { user } = useUser();
+  const route = useRoute();
 
   const handelOpenProfile = () => {
     navigate.navigate("Profile", { userId: userId });
@@ -102,11 +105,16 @@ function TopOfPost({
         </View>
       </TouchableOpacity>
       {(((status === "available" || status === "disabled") && isMine) ||
-        !isMine) && (
-        <TouchableOpacity onPress={onPressThree}>
-          <Feather name="more-vertical" size={30} style={styles.more}></Feather>
-        </TouchableOpacity>
-      )}
+        !isMine) &&
+        !(user.role === "admin" && route.name === "Profile") && (
+          <TouchableOpacity onPress={onPressThree}>
+            <Feather
+              name="more-vertical"
+              size={30}
+              style={styles.more}
+            ></Feather>
+          </TouchableOpacity>
+        )}
     </View>
   );
 }

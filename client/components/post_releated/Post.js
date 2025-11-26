@@ -79,6 +79,7 @@ function Post({
   subscriptionType,
   isRequesterBlocked,
   isOwnerBlocked,
+  userEmail
 }) {
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
@@ -179,6 +180,7 @@ function Post({
               ownerId={ownerId}
               borrowerId={borrowerId}
               isDeleted={isDeleted}
+              userEmail={userEmail}
             />
           )}
           {route.name === "Requests" &&

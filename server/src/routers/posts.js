@@ -50,7 +50,7 @@ router.get("/", auth, async (req, res) => {
     const posts = await PostModel.find({ isDeleted: false })
       .populate({
         path: "user",
-        select: "name image subscription",
+        select: "name image subscription email",
         populate: {
           path: "subscription",
           select: "productId status"

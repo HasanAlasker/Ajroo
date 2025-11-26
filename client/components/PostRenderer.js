@@ -79,6 +79,7 @@ function PostRenderer({
           post.reportedPost?.user?._id ||
           post?.owner?._id
         }
+        userEmail={post.user.email}
         ownerId={post?.owner?._id}
         borrowerId={post?.borrower?._id}
         image={post.image || post.reportedPost?.image || post?.item?.image}

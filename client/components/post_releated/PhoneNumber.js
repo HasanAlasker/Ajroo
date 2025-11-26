@@ -15,7 +15,7 @@ function PhoneNumber({ phoneNumber, email }) {
     await Clipboard.setStringAsync(phoneNumber || email);
     showInfo({
       title: "Copied!",
-      message: "Phone number copied to clipboard.",
+      message: `${phoneNumber ? "Phone number" : "Email"} copied to clipboard.`,
       confirmText: "Close",
     });
   };
