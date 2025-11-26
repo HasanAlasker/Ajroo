@@ -17,7 +17,7 @@ function ErrorBox({
 
   return (
     <View style={[styles.display, style]}>
-      <AppText style={[styles.reportReason, {color: theme[color] || theme.red}]}>
+      <AppText style={[styles.reportReason, {color: theme[color] || theme.error_text}]}>
         {firstTitle}: {fistDetail}
       </AppText>
       {secondTitle && (

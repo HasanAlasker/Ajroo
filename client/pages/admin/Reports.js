@@ -8,6 +8,7 @@ import PostRenderer from "../../components/PostRenderer";
 import useApi from "../../hooks/useApi";
 import { reportedPosts } from "../../api/report";
 import { useUser } from "../../config/UserContext";
+import LoadingSkeleton from "../../components/post_releated/LoadingSkeleton";
 
 function Reports(props) {
   const { user } = useUser();
@@ -22,6 +23,8 @@ function Reports(props) {
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  console.log(posts)
 
   const handleRefresh = () => {
     setRefresh(true);
@@ -38,6 +41,8 @@ function Reports(props) {
         fetchedPosts={posts}
       >
         <SearchBar />
+        {(loading || !posts) && <LoadingSkeleton/>}
+        {(loading || !posts) && <LoadingSkeleton/>}
       </PostRenderer>
       <Navbar></Navbar>
     </SafeScreen>

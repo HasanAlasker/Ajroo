@@ -10,6 +10,7 @@ import { useUser } from "../../config/UserContext";
 import UserCard from "../../components/UserCard";
 import { getBlockedUsers } from "../../api/user";
 import UserRenderer from "../../components/UserRenderer";
+import LoadingSkeleton from "../../components/post_releated/LoadingSkeleton";
 
 function Blocks(props) {
   const [activeTab, setActiveTab] = useState("Users");
@@ -54,7 +55,9 @@ function Blocks(props) {
               refreshing={refreshing}
               fetchedPosts={blockedUsers}
               emptyMessage="No blocked users found"
-            />
+            >
+              {(fetchingUsers || !blockedUsers) && <LoadingSkeleton />}
+            </UserRenderer>
           </>
         );
 
@@ -68,7 +71,9 @@ function Blocks(props) {
               refreshing={refreshing}
               emptyMessage="No deleted posts found"
               showUndelete={true}
-            />
+            >
+              {(loading || !deletedPosts) && <LoadingSkeleton /> }
+            </PostRenderer>
           </>
         );
       default:

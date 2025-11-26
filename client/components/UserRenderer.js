@@ -40,7 +40,9 @@ function UserRenderer({
       windowSize={3}
       removeClippedSubviews={true}
       updateCellsBatchingPeriod={50}
-    ></FlatList>
+    >
+      {children}
+    </FlatList>
   );
 }
 

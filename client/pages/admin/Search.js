@@ -8,6 +8,7 @@ import useApi from "../../hooks/useApi";
 import { getPosts, searchPosts } from "../../api/post";
 import { useUser } from "../../config/UserContext";
 import LoadingCircle from "../../components/general/LoadingCircle";
+import LoadingSkeleton from "../../components/post_releated/LoadingSkeleton";
 
 function Search(props) {
   const { user } = useUser();
@@ -116,6 +117,8 @@ function Search(props) {
           onClearSearch={handleClearSearch}
           isFilterActive={isFilterActive}
         />
+        {(loading || !posts) && <LoadingSkeleton />}
+        {(loading || !posts) && <LoadingSkeleton />}
       </PostRenderer>
       <Navbar />
     </SafeScreen>
