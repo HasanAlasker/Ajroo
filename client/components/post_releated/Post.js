@@ -118,7 +118,7 @@ function Post({
           subscriptionType={subscriptionType}
           isRequesterBlocked={isRequesterBlocked}
         />
-        {(reportReason || isDeleted) && (
+        {(reportReason || (isDeleted && isMine)) && (
           <ErrorBox
             firstTitle={reportReason ? "Reason" : "Notice"}
             fistDetail={
@@ -130,7 +130,7 @@ function Post({
             secondDetail={formatText(reporter)}
           />
         )}
-        
+
         <ItmeImage source={image} />
         {route.name != "Requests" && route.name != "Book" ? (
           <ItemNameAndCat
