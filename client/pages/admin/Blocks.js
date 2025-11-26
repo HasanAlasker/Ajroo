@@ -57,6 +57,7 @@ function Blocks(props) {
               emptyMessage="No blocked users found"
             >
               {(fetchingUsers || !blockedUsers) && <LoadingSkeleton />}
+              {(fetchingUsers || !blockedUsers) && <LoadingSkeleton />}
             </UserRenderer>
           </>
         );

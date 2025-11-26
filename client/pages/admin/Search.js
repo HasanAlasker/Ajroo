@@ -119,6 +119,7 @@ function Search(props) {
         />
         {(loading || !posts) && <LoadingSkeleton />}
         {(loading || !posts) && <LoadingSkeleton />}
+        {(loading || !posts) && <LoadingSkeleton />}
       </PostRenderer>
       <Navbar />
     </SafeScreen>

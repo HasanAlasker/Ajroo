@@ -43,6 +43,7 @@ function Reports(props) {
         <SearchBar />
         {(loading || !posts) && <LoadingSkeleton/>}
         {(loading || !posts) && <LoadingSkeleton/>}
+        {(loading || !posts) && <LoadingSkeleton/>}
       </PostRenderer>
       <Navbar></Navbar>
     </SafeScreen>
