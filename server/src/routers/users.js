@@ -567,8 +567,9 @@ router.delete("/push-token/:token", auth, async (req, res) => {
   }
 });
 
-// add subscription
-
-// cancel sub
+// wake server
+router.get("/wake", async (req, res) => {
+  res.status(200).send("Don't sleep");
+});
 
 export default router;
