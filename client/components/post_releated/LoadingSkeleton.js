@@ -53,6 +53,7 @@ export default function LoadingSkeleton() {
         {/* Category and Status */}
         <View style={styles.categoryRow}>
           <AnimatedBox style={styles.category} />
+          {/* <AnimatedBox style={styles.smallIconCircle} /> */}
           <AnimatedBox style={styles.status} />
         </View>
         {/* Location */}
@@ -68,8 +69,9 @@ export default function LoadingSkeleton() {
         {/* Rating */}
         <View style={styles.infoRow}>
           <AnimatedBox style={styles.iconCircle} />
-          <AnimatedBox style={styles.star} />
           <AnimatedBox style={styles.infoTextShort} />
+          <AnimatedBox style={styles.star} />
+          <AnimatedBox style={styles.status} />
         </View>
       </View>
 
@@ -143,6 +145,7 @@ const getStyles = (theme) =>
     image: {
       width: "100%",
       aspectRatio: 4 / 3.5,
+      marginBottom: 4,
     },
     actionButtons: {
       flexDirection: "row",
@@ -167,7 +170,7 @@ const getStyles = (theme) =>
       flexDirection: "row",
       alignItems: "center",
       gap: 12,
-      marginBottom: 16,
+      marginBottom: 26,
     },
     category: {
       width: 80,
@@ -187,6 +190,12 @@ const getStyles = (theme) =>
       width: 16,
       height: 16,
       borderRadius: 8,
+    },
+    smallIconCircle: {
+      width: 8,
+      height: 8,
+      borderRadius: 8,
+      marginHorizontal: 5,
     },
     infoText: {
       width: 140,

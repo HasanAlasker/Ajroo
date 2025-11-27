@@ -576,7 +576,7 @@ const getStyles = (theme) =>
       padding: 2,
       borderRadius: 10,
       width: "100%",
-      marginTop: 10,
+      
     },
   });
 
