@@ -26,7 +26,7 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
       proSubs,
       starterSubs,
       premiumSubs,
-      freeUsers
+      freeUsers,
     ] = await Promise.all([
       // Count total users (exclude admins)
       UserModel.countDocuments({ role: { $ne: "admin" } }),
@@ -70,13 +70,19 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
 
       // free users
       SubscriptionModel.countDocuments({
-        productId: {
-          $nin: [
-            "pro_monthly:pro",
-            "business_starter:starter",
-            "business_premium:premium",
-          ],
-        },
+        $or: [
+          { productId: null },
+          { productId: { $exists: false } },
+          {
+            productId: {
+              $nin: [
+                "pro_monthly:pro",
+                "business_starter:starter",
+                "business_premium:premium",
+              ],
+            },
+          },
+        ],
       }),
     ]);
 
@@ -95,7 +101,7 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
       proSubs,
       starterSubs,
       premiumSubs,
-      freeUsers
+      freeUsers,
     });
   } catch (err) {
     console.error("Dashboard stats error:", err);
