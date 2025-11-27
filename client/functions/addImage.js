@@ -1,19 +1,19 @@
 
 import * as ImagePicker from 'expo-image-picker';
 
-export const requestImagePermission = async () => {
-  const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (!result.granted) {
-    alert("enable permission to continue");
-    return false;
-  }
-  return true;
-};
+// export const requestImagePermission = async () => {
+//   const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
+//   if (!result.granted) {
+//     alert("enable permission to continue");
+//     return false;
+//   }
+//   return true;
+// };
 
 export const selectImageFromLibrary = async (options = {}) => {
   try {
-    const hasPermission = await requestImagePermission();
-    if (!hasPermission) return null;
+    // const hasPermission = await requestImagePermission();
+    // if (!hasPermission) return null;
 
     const defaultOptions = {
       mediaTypes: ['images'],
