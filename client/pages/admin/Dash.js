@@ -7,7 +7,7 @@ import AdminCard from "../../components/AdminCard";
 import LoadingCircle from "../../components/general/LoadingCircle";
 import useApi from "../../hooks/useApi";
 import { getStats } from "../../api/admin"; // New API function
-import AlertModal from '../../components/general/AlertModal'
+import AlertModal from "../../components/general/AlertModal";
 
 function Dash(props) {
   const [refreshing, setRefreshing] = useState(false);
@@ -131,18 +131,18 @@ function Dash(props) {
             value={dashboardData.blockedUsers}
           />
           <AdminCard
-            title={"Total Subscribers"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.totalSubs}
-          />
-          <AdminCard
             title={"Individual - Free"}
             backColor={"post"}
             borderColor={"purple"}
             color={"purple"}
             value={dashboardData.freeUsers}
+          />
+          <AdminCard
+            title={"Total Subscribers"}
+            backColor={"post"}
+            borderColor={"purple"}
+            color={"purple"}
+            value={dashboardData.totalSubs}
           />
           <AdminCard
             title={"Individual - Pro"}
