@@ -4,6 +4,8 @@ import admin from "../middleware/admin.js";
 import PostModel from "../models/postsModel.js";
 import ReportModel from "../models/reportModel.js";
 import UserModel from "../models/usersModel.js";
+import subscriptionModel from "../models/subscriptionModel.js";
+import SubscriptionModel from "../models/subscriptionModel.js";
 
 const router = express.Router();
 
@@ -20,7 +22,10 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
       deletedPosts,
       activeReports,
       blockedUsers,
-    //   subscriptionStats,
+      totalSubs,
+      proSubs,
+      starterSubs,
+      premiumSubs,
     ] = await Promise.all([
       // Count total users (exclude admins)
       UserModel.countDocuments({ role: { $ne: "admin" } }),
@@ -49,50 +54,16 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
       // Count blocked users
       UserModel.countDocuments({ isBlocked: true }),
 
-      // Get subscription breakdown
-    //   UserModel.aggregate([
-    //     {
-    //       $group: {
-    //         _id: "$subscriptionTier",
-    //         count: { $sum: 1 },
-    //       },
-    //     },
-    //   ]),
+      // Count total subs
+      SubscriptionModel.countDocuments({ status: "active" }),
+
+      subscriptionModel.countDocuments({ productId: "pro_monthly" }),
+
+      subscriptionModel.countDocuments({ productId: "business_starter" }),
+
+      subscriptionModel.countDocuments({ productId: "business_premium" }),
+
     ]);
-
-    // Process subscription stats
-    // const subscriptions = {
-    //   free: 0,
-    //   pro: 0,
-    //   businessStarter: 0,
-    //   businessPremium: 0,
-    // };
-
-    // subscriptionStats.forEach((stat) => {
-    //   switch (stat._id) {
-    //     case "free":
-    //       subscriptions.free = stat.count;
-    //       break;
-    //     case "pro":
-    //       subscriptions.pro = stat.count;
-    //       break;
-    //     case "business_starter":
-    //       subscriptions.businessStarter = stat.count;
-    //       break;
-    //     case "business_premium":
-    //       subscriptions.businessPremium = stat.count;
-    //       break;
-    //   }
-    // });
-
-    // const totalSubscribers =
-    //   subscriptions.pro +
-    //   subscriptions.businessStarter +
-    //   subscriptions.businessPremium;
-
-    // // Calculate profits (example - adjust based on your business logic)
-    // const usersProfit = totalSubscribers * 9.99; // Example calculation
-    // const appProfit = usersProfit * 0.7; // Example: 70% goes to app
 
     // Return all stats in one response
     res.status(200).json({
@@ -105,13 +76,10 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
       activeReports,
       deletedPosts,
       blockedUsers,
-    //   usersProfit,
-    //   appProfit,
-    //   totalSubscribers,
-    //   freeUsers: subscriptions.free,
-    //   proUsers: subscriptions.pro,
-    //   businessStarter: subscriptions.businessStarter,
-    //   businessPremium: subscriptions.businessPremium,
+      totalSubs,
+      proSubs,
+      starterSubs,
+      premiumSubs,
     });
   } catch (err) {
     console.error("Dashboard stats error:", err);
