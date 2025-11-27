@@ -11,6 +11,7 @@ import { usePosts } from "../../config/PostContext";
 import { useUser } from "../../config/UserContext";
 import useApi from "../../hooks/useApi";
 import { createRequest } from "../../api/request";
+import { useAlert } from "../../config/AlertContext";
 
 function RequestModal({
   isVisibile,
@@ -23,6 +24,7 @@ function RequestModal({
   const { theme } = useTheme();
   const { user } = useUser();
   const { updatePost } = usePosts();
+  const { showInfo } = useAlert();
 
   const [duration, setDuration] = useState(0);
   const [baseUnit, setBaseUnit] = useState(""); // Store base unit
@@ -82,57 +84,67 @@ function RequestModal({
       : baseUnit
     : "";
 
-const handleRequest = async () => {
-  try {
-    const startDate = new Date();
-    const endDate = new Date(startDate);
+  const handleRequest = async () => {
+    try {
+      const startDate = new Date();
+      const endDate = new Date(startDate);
 
-    // Calculate end date based on duration and unit
-    switch (baseUnit) {
-      case "hours":
-        endDate.setHours(endDate.getHours() + duration);
-        break;
-      case "days":
-        endDate.setDate(endDate.getDate() + duration);
-        break;
-      case "weeks":
-        endDate.setDate(endDate.getDate() + duration * 7);
-        break;
-      case "months":
-        endDate.setMonth(endDate.getMonth() + duration);
-        break;
+      // Calculate end date based on duration and unit
+      switch (baseUnit) {
+        case "hours":
+          endDate.setHours(endDate.getHours() + duration);
+          break;
+        case "days":
+          endDate.setDate(endDate.getDate() + duration);
+          break;
+        case "weeks":
+          endDate.setDate(endDate.getDate() + duration * 7);
+          break;
+        case "months":
+          endDate.setMonth(endDate.getMonth() + duration);
+          break;
+      }
+
+      const apiUnit = baseUnit.slice(0, -1);
+      const totalPrice = showPrice();
+
+      // console.log("Request data:", {
+      //   durationValue: duration,
+      //   durationUnit: apiUnit,
+      //   pricePerDay: pricePerDay,
+      //   totalPrice: totalPrice,
+      //   endDate: endDate.toISOString(),
+      // });
+
+      const data = {
+        durationValue: duration,
+        durationUnit: apiUnit,
+        pricePerDay: pricePerDay,
+        totalPrice: totalPrice,
+        endDate: endDate.toISOString(),
+      };
+
+      await createRequest(postId, data);
+      // console.log("Request created successfully:", response);
+
+      onRequestSubmit();
+      onClose();
+      showInfo({
+        title: "Request Sent!",
+        message:
+          "Your rental request has been sent to the owner. Track its status in Profile > Notifications.",
+        confirmText: "Got it",
+      });
+    } catch (error) {
+      // console.error("Error creating request:", error);
+      // Optionally show an error message to the user
+      showInfo({
+        title: "Error!",
+        message: `Failed to create request. Please try again.`,
+        confirmText: "OK",
+      });
     }
-
-    const apiUnit = baseUnit.slice(0, -1);
-    const totalPrice = showPrice();
-
-    // console.log("Request data:", {
-    //   durationValue: duration,
-    //   durationUnit: apiUnit,
-    //   pricePerDay: pricePerDay,
-    //   totalPrice: totalPrice,
-    //   endDate: endDate.toISOString(),
-    // });
-
-    const data = {
-      durationValue: duration,
-      durationUnit: apiUnit,
-      pricePerDay: pricePerDay,
-      totalPrice: totalPrice,
-      endDate: endDate.toISOString(),
-    };
-
-    await createRequest(postId, data);
-    // console.log("Request created successfully:", response);
-
-    onRequestSubmit();
-    onClose();
-  } catch (error) {
-    // console.error("Error creating request:", error);
-    // Optionally show an error message to the user
-    alert("Failed to create request. Please try again.");
-  }
-};
+  };
 
   return (
     <CardModal isVisibile={isVisibile} onClose={onClose}>
