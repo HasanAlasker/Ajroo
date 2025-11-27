@@ -25,6 +25,8 @@
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "READ_MEDIA_IMAGES",
         "POST_NOTIFICATIONS",
         "RECEIVE_BOOT_COMPLETED"
       ]
