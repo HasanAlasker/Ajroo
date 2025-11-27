@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, Button } from "react-native";
 import AppText from "../../config/AppText";
 import SearchBar from "../../components/general/SearchBar";
+import ScrollScreen from "../../components/general/ScrollScreen";
 
 import useThemedStyles from "../../hooks/useThemedStyles";
 import WelcomeCard from "../../components/WelcomeCard";
@@ -27,7 +28,7 @@ function Home({ navigation }) {
   return (
     <SafeScreen>
       {/* <SearchBar></SearchBar> */}
-      <ScrollView>
+      <ScrollScreen>
         <WelcomeCard />
         <AppText style={styles.text}>
           What kind of item are you looking for?
@@ -118,7 +119,7 @@ function Home({ navigation }) {
             onPress={() => handleCardPress("Books")}
           ></SquareCard>
         </View>
-      </ScrollView>
+      </ScrollScreen>
       <AlertModal></AlertModal>
       <Navbar></Navbar>
     </SafeScreen>
