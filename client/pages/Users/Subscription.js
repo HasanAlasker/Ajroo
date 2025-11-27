@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
-  Alert,
   ActivityIndicator,
   Platform,
 } from "react-native";
@@ -42,7 +41,7 @@ function Subscription(props) {
     refreshCustomerInfo,
   } = useRevenueCat();
 
-  const { showAlert } = useAlert();
+  const { showAlert, showInfo } = useAlert();
 
   const [purchasing, setPurchasing] = useState(false);
   const [restoring, setRestoring] = useState(false);
@@ -88,7 +87,6 @@ const handlePurchase = async (packageToPurchase, planName) => {
         const newActiveSub = getActiveSubscriptionType();
         setLocalActiveSubscription(newActiveSub);
 
-        // ✅ This now returns the full subscription type with suffix
         const subscriptionType = mapEntitlementToSubscriptionType(newActiveSub);
 
         console.log("🔄 Purchase - Entitlement:", newActiveSub);
@@ -99,7 +97,7 @@ const handlePurchase = async (packageToPurchase, planName) => {
         const expirationDate = activeEntitlement?.expirationDate;
 
         const updateData = {
-          subscriptionType, // ✅ Now includes suffix
+          subscriptionType,
           revenueCatId: result.customerInfo?.originalAppUserId,
           productId: packageToPurchase.product.identifier,
           expirationDate: expirationDate || null,
@@ -114,41 +112,41 @@ const handlePurchase = async (packageToPurchase, planName) => {
         const apiResponse = await updateSubscription(updateData);
 
         if (apiResponse.ok) {
-          Alert.alert(
-            "Success! 🎉",
-            `You've successfully subscribed to ${planName}!`,
-            [{ text: "OK" }]
-          );
+          showInfo({
+            title: "Success! 🎉",
+            message: `You've successfully subscribed to ${planName}!`,
+            confirmText: "OK",
+          });
         } else {
           console.error("❌ Backend update failed:", apiResponse.data);
-          Alert.alert(
-            "Warning",
-            "Purchase successful but failed to update your account. Please contact support if the issue persists.",
-            [{ text: "OK" }]
-          );
+          showInfo({
+            title: "Warning",
+            message: "Purchase successful but failed to update your account. Please contact support if the issue persists.",
+            confirmText: "OK",
+          });
         }
       } catch (error) {
         console.error("❌ Error updating backend:", error);
-        Alert.alert(
-          "Warning",
-          "Purchase successful but failed to sync with server. Your subscription is active. If issues persist, try 'Restore Purchases'.",
-          [{ text: "OK" }]
-        );
+        showInfo({
+          title: "Warning",
+          message: "Purchase successful but failed to sync with server. Your subscription is active. If issues persist, try 'Restore Purchases'.",
+          confirmText: "OK",
+        });
       }
     } else if (!result.error?.userCancelled) {
-      Alert.alert(
-        "Purchase Failed",
-        result.error?.message || "Something went wrong. Please try again.",
-        [{ text: "OK" }]
-      );
+      showInfo({
+        title: "Purchase Failed",
+        message: result.error?.message || "Something went wrong. Please try again.",
+        confirmText: "OK",
+      });
     }
   } catch (error) {
     console.error("❌ Purchase error:", error);
-    Alert.alert(
-      "Purchase Failed",
-      "An unexpected error occurred. Please try again.",
-      [{ text: "OK" }]
-    );
+    showInfo({
+      title: "Purchase Failed",
+      message: "An unexpected error occurred. Please try again.",
+      confirmText: "OK",
+    });
   } finally {
     setPurchasing(false);
   }
@@ -167,7 +165,6 @@ const handleRestore = async () => {
         setLocalActiveSubscription(newActiveSub);
 
         if (result.hasActiveEntitlement && newActiveSub) {
-          // ✅ This now returns the full subscription type with suffix
           const subscriptionType = mapEntitlementToSubscriptionType(newActiveSub);
 
           console.log("🔄 Restore - Entitlement:", newActiveSub);
@@ -178,7 +175,7 @@ const handleRestore = async () => {
           const expirationDate = activeEntitlement?.expirationDate;
 
           const restoreData = {
-            subscriptionType, // ✅ Now includes suffix
+            subscriptionType,
             revenueCatId: result.customerInfo?.originalAppUserId,
             expirationDate: expirationDate || null,
             willRenew: activeEntitlement?.willRenew || false,
@@ -190,48 +187,48 @@ const handleRestore = async () => {
           const apiResponse = await restoreSubscription(restoreData);
 
           if (apiResponse.ok) {
-            Alert.alert(
-              "Purchases Restored! ✅",
-              `Your ${newActiveSub?.toUpperCase() || "subscription"} plan has been restored successfully!`,
-              [{ text: "OK" }]
-            );
+            showInfo({
+              title: "Purchases Restored! ✅",
+              message: `Your ${newActiveSub?.toUpperCase() || "subscription"} plan has been restored successfully!`,
+              confirmText: "OK",
+            });
           } else {
             console.error("❌ Backend restore failed:", apiResponse.data);
-            Alert.alert(
-              "Partially Restored",
-              "Purchases restored locally but failed to sync with server. Please try again or contact support if the issue persists.",
-              [{ text: "OK" }]
-            );
+            showInfo({
+              title: "Partially Restored",
+              message: "Purchases restored locally but failed to sync with server. Please try again or contact support if the issue persists.",
+              confirmText: "OK",
+            });
           }
         } else {
-          Alert.alert(
-            "No Active Subscriptions",
-            "No active subscriptions were found to restore.",
-            [{ text: "OK" }]
-          );
+          showInfo({
+            title: "No Active Subscriptions",
+            message: "No active subscriptions were found to restore.",
+            confirmText: "OK",
+          });
         }
       } catch (error) {
         console.error("❌ Error restoring backend:", error);
-        Alert.alert(
-          "Partially Restored",
-          "Purchases restored locally but failed to sync. Please try again later.",
-          [{ text: "OK" }]
-        );
+        showInfo({
+          title: "Partially Restored",
+          message: "Purchases restored locally but failed to sync. Please try again later.",
+          confirmText: "OK",
+        });
       }
     } else {
-      Alert.alert(
-        "Restore Failed",
-        "Unable to restore purchases. Please check your internet connection and try again.",
-        [{ text: "OK" }]
-      );
+      showInfo({
+        title: "Restore Failed",
+        message: "Unable to restore purchases. Please check your internet connection and try again.",
+        confirmText: "OK",
+      });
     }
   } catch (error) {
     console.error("❌ Restore error:", error);
-    Alert.alert(
-      "Restore Failed",
-      "An unexpected error occurred. Please try again.",
-      [{ text: "OK" }]
-    );
+    showInfo({
+      title: "Restore Failed",
+      message: "An unexpected error occurred. Please try again.",
+      confirmText: "OK",
+    });
   } finally {
     setRestoring(false);
   }
@@ -351,11 +348,11 @@ const handleRestore = async () => {
             if (proPackage) {
               handlePurchase(proPackage, "Individual - Pro");
             } else {
-              Alert.alert(
-                "Unavailable",
-                "This package is temporarily unavailable. Please try again later.",
-                [{ text: "OK" }]
-              );
+              showInfo({
+                title: "Unavailable",
+                message: "This package is temporarily unavailable. Please try again later.",
+                confirmText: "OK",
+              });
             }
           }}
           disabled={purchasing || !proPackage}
@@ -385,11 +382,11 @@ const handleRestore = async () => {
             if (starterPackage) {
               handlePurchase(starterPackage, "Business - Starter");
             } else {
-              Alert.alert(
-                "Unavailable",
-                "This package is temporarily unavailable. Please try again later.",
-                [{ text: "OK" }]
-              );
+              showInfo({
+                title: "Unavailable",
+                message: "This package is temporarily unavailable. Please try again later.",
+                confirmText: "OK",
+              });
             }
           }}
           disabled={purchasing || !starterPackage}
@@ -420,11 +417,11 @@ const handleRestore = async () => {
             if (premiumPackage) {
               handlePurchase(premiumPackage, "Business - Premium");
             } else {
-              Alert.alert(
-                "Unavailable",
-                "This package is temporarily unavailable. Please try again later.",
-                [{ text: "OK" }]
-              );
+              showInfo({
+                title: "Unavailable",
+                message: "This package is temporarily unavailable. Please try again later.",
+                confirmText: "OK",
+              });
             }
           }}
           disabled={purchasing || !premiumPackage}
