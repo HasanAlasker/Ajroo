@@ -17,6 +17,7 @@ import ErrorMessage from "../../components/form/ErrorMessage";
 import ErrorBox from "../../components/general/ErrorBox";
 import { verifyOtp, resendOtp } from "../../api/auth";
 import { loginUser } from "../../api/user";
+import Note from "../../components/general/Note";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -320,9 +321,11 @@ function Login(props) {
                   onPress={handleResendOtp}
                   disabled={countdown > 0 || isResending}
                 />
-              </View>
 
-              <TouchableOpacity
+              </View>
+                <Note title={"Note"} text={"If the email doesn’t appear in your inbox, please check your spam or junk folder."}/>
+
+              {/* <TouchableOpacity
                 style={styles.backToLogin}
                 onPress={() => {
                   setShowOtpInput(false);
@@ -333,7 +336,7 @@ function Login(props) {
                 <AppText style={styles.backToLoginText}>
                   Back to Login
                 </AppText>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           )}
         </View>

@@ -19,6 +19,7 @@ import { verifyOtp, resendOtp } from "../../api/auth";
 import { registerUser } from "../../api/user";
 import { useUser } from "../../config/UserContext";
 import ErrorMessage from "../../components/form/ErrorMessage";
+import Note from "../../components/general/Note";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -320,9 +321,7 @@ function Signin(props) {
                 hasBeenSubmitted={hasBeenSubmitted}
               />
 
-              {registerError && (
-                <ErrorMessage error={registerError} />
-              )}
+              {registerError && <ErrorMessage error={registerError} />}
 
               <SubmitBtn
                 defaultText="Register"
@@ -368,9 +367,7 @@ function Signin(props) {
                 ))}
               </View>
 
-              {otpError && (
-                <ErrorMessage error={otpError} />
-              )}
+              {otpError && <ErrorMessage error={otpError} />}
 
               <RequestBtn
                 style={styles.verifyBtn}
@@ -400,6 +397,12 @@ function Signin(props) {
                   disabled={countdown > 0 || isResending}
                 />
               </View>
+                <Note
+                  title={"Note"}
+                  text={
+                    "If the email doesn’t appear in your inbox, please check your spam or junk folder."
+                  }
+                />
             </View>
           )}
         </View>
@@ -426,9 +429,9 @@ const getStyles = (theme) =>
       borderColor: theme.purple,
     },
     errorText: {
-      width:'90%',
-      marginHorizontal:'auto',
-      fontWeight:'bold',
+      width: "90%",
+      marginHorizontal: "auto",
+      fontWeight: "bold",
       color: theme.red,
       marginVertical: 10,
     },
@@ -474,7 +477,7 @@ const getStyles = (theme) =>
       width: "100%",
       borderRadius: 18,
       marginTop: 10,
-      color: theme.always_white
+      color: theme.always_white,
     },
     resendContainer: {
       flexDirection: "row",

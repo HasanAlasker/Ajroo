@@ -17,6 +17,7 @@ import { useRoute } from "@react-navigation/native";
 import PhoneNumber from "./post_releated/PhoneNumber";
 import BlockBtn from "./BlockBtn";
 import BlockedTag from "./BlockedTag";
+import Note from "./general/Note";
 
 const formatRating = (rating) => {
   if (rating !== "Unrated Yet") {
@@ -86,17 +87,12 @@ function TopChunkProfile({
         )}
       </MyProfileContainer>
       {user.gender === "female" && route.name === "EditProfile" && (
-        <View style={styles.iconAndTitle}>
-          <FontAwesome6
-            name="circle-exclamation"
-            color={theme.darker_gray}
-            style={styles.icon}
-          ></FontAwesome6>
-          <AppText style={[styles.note, styles.small]}>
-            Note: Profile photos are disabled for female users to protect their
-            privacy
-          </AppText>
-        </View>
+        <Note
+          title={"Note"}
+          text={
+            "Profile photos are disabled for female users to protect their privacy"
+          }
+        />
       )}
       <SeparatorComp>{sep}</SeparatorComp>
     </View>
@@ -107,24 +103,6 @@ const getStyles = (theme) =>
   StyleSheet.create({
     container: {
       width: "100%",
-    },
-    small: {
-      fontSize: 15,
-      color: theme.darker_gray,
-      fontWeight: "bold",
-      textAlign: "center",
-    },
-    icon: {
-      alignSelf: "stretch",
-      paddingTop: 4,
-    },
-    iconAndTitle: {
-      width: "90%",
-      marginHorizontal: "auto",
-      marginTop: "20",
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 0,
     },
   });
 

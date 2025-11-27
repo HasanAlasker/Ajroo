@@ -20,6 +20,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import AppText from "../../config/AppText";
 import { useTheme } from "../../config/ThemeContext";
 import useThemedStyles from "../../hooks/useThemedStyles";
+import Note from "../../components/general/Note";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -58,14 +59,14 @@ function EditProfile({ rating, sep }) {
   const [updateError, setUpdateError] = useState();
   const { user, error } = useUser();
   const { showInfo } = useAlert();
-  
+
   const {
     data: profile,
     request: fetchProfile,
     loading: fetchingProfile,
   } = useApi(getUserById);
-  
-  const styles = useThemedStyles(getStyles)
+
+  const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -203,16 +204,13 @@ function EditProfile({ rating, sep }) {
                 setHasBeenSubmitted={setHasBeenSubmitted}
               />
 
-              <View style={styles.iconAndTitle}>
-                <FontAwesome6
-                  name="circle-exclamation"
-                  color={theme.darker_gray}
-                  style={styles.icon}
-                ></FontAwesome6>
-                <AppText style={[styles.note, styles.small]}>
-                  Note: Only admins and users you approve to borrow your items can see your phone number.
-                </AppText>
-              </View>
+              <Note
+                title={"Note"}
+                text={
+                  "Only admins and users you approve to borrow your items can see your phone number."
+                }
+                style={styles.note}
+              />
 
               {updateError && (
                 <ErrorBox
@@ -232,31 +230,18 @@ function EditProfile({ rating, sep }) {
   );
 }
 
-const getStyles = (theme) => StyleSheet.create({
-  error: {
-    width: "90%",
-    margin: "auto",
-  },
-      container: {
+const getStyles = (theme) =>
+  StyleSheet.create({
+    error: {
+      width: "90%",
+      margin: "auto",
+    },
+    container: {
       width: "100%",
     },
-    small: {
-      fontSize: 15,
-      color: theme.darker_gray,
-      fontWeight: "bold",
-      textAlign: "center",
-    },
-    icon: {
-      alignSelf: "stretch",
-      paddingTop: 4,
-    },
-    iconAndTitle: {
-      width: "90%",
-      marginHorizontal: "auto",
-      marginTop: "40",
-      flexDirection: "row",
-      alignItems: "center",
-    },
-});
+    note:{
+      marginTop:40
+    }
+  });
 
 export default EditProfile;
