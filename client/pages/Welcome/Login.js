@@ -227,7 +227,7 @@ function Login(props) {
               />
 
               {loginError && (
-                <AppText style={styles.errorText}>{loginError}</AppText>
+                <ErrorMessage error={loginError} />
               )}
               {error && <ErrorMessage error={error} />}
 
@@ -290,7 +290,7 @@ function Login(props) {
               </View>
 
               {otpError && (
-                <AppText style={styles.errorText}>{otpError}</AppText>
+                <ErrorMessage error={otpError} />
               )}
 
               <RequestBtn

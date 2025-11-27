@@ -18,6 +18,7 @@ import AppText from "../../config/AppText";
 import { verifyOtp, resendOtp } from "../../api/auth";
 import { registerUser } from "../../api/user";
 import { useUser } from "../../config/UserContext";
+import ErrorMessage from "../../components/form/ErrorMessage";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -320,7 +321,7 @@ function Signin(props) {
               />
 
               {registerError && (
-                <AppText style={styles.errorText}>{registerError}</AppText>
+                <ErrorMessage error={registerError} />
               )}
 
               <SubmitBtn
@@ -368,7 +369,7 @@ function Signin(props) {
               </View>
 
               {otpError && (
-                <AppText style={styles.errorText}>{otpError}</AppText>
+                <ErrorMessage error={otpError} />
               )}
 
               <RequestBtn
