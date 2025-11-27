@@ -137,13 +137,13 @@ function Dash(props) {
             color={"purple"}
             value={dashboardData.totalSubs}
           />
-          {/* <AdminCard
+          <AdminCard
             title={"Individual - Free"}
             backColor={"post"}
             borderColor={"purple"}
             color={"purple"}
             value={dashboardData.freeUsers}
-          /> */}
+          />
           <AdminCard
             title={"Individual - Pro"}
             backColor={"purple"}
