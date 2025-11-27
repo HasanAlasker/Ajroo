@@ -68,9 +68,10 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
         productId: "business_premium:premium",
       }),
 
+      // free users
       SubscriptionModel.countDocuments({
         productId: {
-          $ne: [
+          $nin: [
             "pro_monthly:pro",
             "business_starter:starter",
             "business_premium:premium",
