@@ -24,8 +24,6 @@ function Reports(props) {
     fetchPosts();
   }, []);
 
-  console.log(posts)
-
   const handleRefresh = () => {
     setRefresh(true);
     fetchPosts();
