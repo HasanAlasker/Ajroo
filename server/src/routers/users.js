@@ -19,6 +19,11 @@ const router = express.Router();
 
 // ==================== PUBLIC ROUTES ====================
 
+// wake server
+router.get("/wake", async (req, res) => {
+  res.status(200).send("Don't sleep");
+});
+
 // get all users (not blocked)
 
 router.get("/", auth, async (req, res) => {
@@ -567,9 +572,6 @@ router.delete("/push-token/:token", auth, async (req, res) => {
   }
 });
 
-// wake server
-router.get("/wake", async (req, res) => {
-  res.status(200).send("Don't sleep");
-});
+
 
 export default router;
