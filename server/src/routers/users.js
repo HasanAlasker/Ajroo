@@ -22,6 +22,7 @@ const router = express.Router();
 // wake server
 router.get("/wake", async (req, res) => {
   res.status(200).send("Don't sleep");
+  console.log("Don't sleep")
 });
 
 // get all users (not blocked)
