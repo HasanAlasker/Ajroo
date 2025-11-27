@@ -57,11 +57,11 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
       // Count total subs
       SubscriptionModel.countDocuments({ status: "active" }),
 
-      subscriptionModel.countDocuments({ productId: "pro_monthly" }),
+      subscriptionModel.countDocuments({ productId: "pro_monthly:pro" }),
 
-      subscriptionModel.countDocuments({ productId: "business_starter" }),
+      subscriptionModel.countDocuments({ productId: "business_starter:starter" }),
 
-      subscriptionModel.countDocuments({ productId: "business_premium" }),
+      subscriptionModel.countDocuments({ productId: "business_premium:premium" }),
 
     ]);
 

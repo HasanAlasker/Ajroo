@@ -130,41 +130,41 @@ function Dash(props) {
             color={"purple"}
             value={dashboardData.blockedUsers}
           />
-          {/* <AdminCard
+          <AdminCard
             title={"Total Subscribers"}
             backColor={"post"}
             borderColor={"purple"}
             color={"purple"}
-            value={dashboardData.totalSubscribers}
+            value={dashboardData.totalSubs}
           />
-          <AdminCard
+          {/* <AdminCard
             title={"Individual - Free"}
             backColor={"post"}
             borderColor={"purple"}
             color={"purple"}
             value={dashboardData.freeUsers}
-          />
+          /> */}
           <AdminCard
             title={"Individual - Pro"}
             backColor={"purple"}
             borderColor={"purple"}
             color={"always_white"}
-            value={dashboardData.proUsers}
+            value={dashboardData.proSubs}
           />
           <AdminCard
             title={"Business - Starter"}
             backColor={"green"}
             borderColor={"green"}
             color={"always_white"}
-            value={dashboardData.businessStarter}
+            value={dashboardData.starterSubs}
           />
           <AdminCard
             title={"Business - Premium"}
             backColor={"gold"}
             borderColor={"gold"}
             color={"always_white"}
-            value={dashboardData.businessPremium}
-          /> */}
+            value={dashboardData.premiumSubs}
+          />
         </View>
       </ScrollScreen>
       <AlertModal />
