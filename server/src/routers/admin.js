@@ -5,7 +5,7 @@ import PostModel from "../models/postsModel.js";
 import ReportModel from "../models/reportModel.js";
 import UserModel from "../models/usersModel.js";
 import subscriptionModel from "../models/subscriptionModel.js";
-import SubscriptionModel from "../models/subscriptionModel.js";
+import suggestionModel from "../models/suggestionModel.js";
 
 const router = express.Router();
 
@@ -27,6 +27,7 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
       starterSubs,
       premiumSubs,
       freeUsers,
+      totalSuggestions
     ] = await Promise.all([
       // Count total users (exclude admins)
       UserModel.countDocuments({ role: { $ne: "admin" } }),
@@ -56,7 +57,7 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
       UserModel.countDocuments({ isBlocked: true }),
 
       // Count total subs
-      SubscriptionModel.countDocuments({ status: "active" }),
+      subscriptionModel.countDocuments({ status: "active" }),
 
       subscriptionModel.countDocuments({ productId: "pro_monthly:pro" }),
 
@@ -69,7 +70,7 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
       }),
 
       // free users
-      SubscriptionModel.countDocuments({
+      subscriptionModel.countDocuments({
         $or: [
           { productId: null },
           { productId: { $exists: false } },
@@ -84,6 +85,8 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
           },
         ],
       }),
+
+      suggestionModel.countDocuments()
     ]);
 
     // Return all stats in one response
@@ -102,6 +105,7 @@ router.get("/dashboard/stats", [auth, admin], async (req, res) => {
       starterSubs,
       premiumSubs,
       freeUsers,
+      totalSuggestions
     });
   } catch (err) {
     console.error("Dashboard stats error:", err);

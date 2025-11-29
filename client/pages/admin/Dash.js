@@ -68,6 +68,13 @@ function Dash(props) {
             value={dashboardData.totalAdmins}
           />
           <AdminCard
+            title={"Total Suggestions"}
+            backColor={"post"}
+            borderColor={"purple"}
+            color={"purple"}
+            value={dashboardData.totalSuggestions}
+          />
+          <AdminCard
             title={"Total Posts"}
             backColor={"post"}
             borderColor={"purple"}
