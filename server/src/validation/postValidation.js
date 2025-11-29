@@ -36,8 +36,10 @@ export const createPostValidation = Joi.object({
       "clothes",
       "events",
       "books",
-      "transportation",
-      "realestate"
+      "furniture",
+      "automotive",
+      "realestate",
+      "baby_kids"
     )
     .messages({
       "string.min": "Category must be at least 2 characters long",
