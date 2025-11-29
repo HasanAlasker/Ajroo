@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { View, StyleSheet, Animated } from "react-native";
 import useThemedStyles from "../../hooks/useThemedStyles";
+import { useRoute } from "@react-navigation/native";
 
 export default function LoadingSkeleton() {
   const pulseAnim = useRef(new Animated.Value(0)).current;
   const styles = useThemedStyles(getStyles);
+  const route = useRoute();
 
   useEffect(() => {
     Animated.loop(
@@ -46,37 +48,53 @@ export default function LoadingSkeleton() {
 
       {/* image Card */}
 
-      <AnimatedBox style={styles.image} />
+      {route.name !== "AdminSuggestions" && (
+        <AnimatedBox style={styles.image} />
+      )}
       <View>
         {/* Title */}
-        <AnimatedBox style={styles.title} />
+        {route.name !== "AdminSuggestions" && (
+          <AnimatedBox style={styles.title} />
+        )}
         {/* Category and Status */}
-        <View style={styles.categoryRow}>
-          <AnimatedBox style={styles.category} />
-          {/* <AnimatedBox style={styles.smallIconCircle} /> */}
-          <AnimatedBox style={styles.status} />
-        </View>
-        {/* Location */}
-        <View style={styles.infoRow}>
-          <AnimatedBox style={styles.iconCircle} />
-          <AnimatedBox style={styles.infoText} />
-        </View>
-        {/* Availability */}
-        <View style={styles.infoRow}>
-          <AnimatedBox style={styles.iconCircle} />
-          <AnimatedBox style={styles.infoTextShort} />
-        </View>
-        {/* Rating */}
-        <View style={styles.infoRow}>
-          <AnimatedBox style={styles.iconCircle} />
-          <AnimatedBox style={styles.infoTextShort} />
-          <AnimatedBox style={styles.star} />
-          <AnimatedBox style={styles.status} />
+        {route.name !== "AdminSuggestions" && (
+          <View style={styles.categoryRow}>
+            <AnimatedBox style={styles.category} />
+            {/* <AnimatedBox style={styles.smallIconCircle} /> */}
+            <AnimatedBox style={styles.status} />
+          </View>
+        )}
+        <View
+          style={[
+            styles.box,
+            { gap: route.name === "AdminSuggestions" ? 20 : 0 },
+            { marginTop: route.name === "AdminSuggestions" ? 10 : 0 },
+          ]}
+        >
+          {/* Location */}
+          <View style={styles.infoRow}>
+            <AnimatedBox style={styles.iconCircle} />
+            <AnimatedBox style={styles.infoText} />
+          </View>
+          {/* Availability */}
+          <View style={styles.infoRow}>
+            <AnimatedBox style={styles.iconCircle} />
+            <AnimatedBox style={styles.infoTextShort} />
+          </View>
+          {/* Rating */}
+          <View style={styles.infoRow}>
+            <AnimatedBox style={styles.iconCircle} />
+            <AnimatedBox style={styles.infoTextShort} />
+            <AnimatedBox style={styles.star} />
+            <AnimatedBox style={styles.status} />
+          </View>
         </View>
       </View>
 
       {/* Disable Button */}
-      <AnimatedBox style={styles.disableButton} />
+      {route.name !== "AdminSuggestions" && (
+        <AnimatedBox style={styles.disableButton} />
+      )}
     </View>
   );
 }
@@ -102,6 +120,10 @@ const getStyles = (theme) =>
       shadowRadius: 4.65,
 
       elevation: 6,
+    },
+    box:{
+      display:"flex",
+      flexDirection:'column'
     },
     skeleton: {
       backgroundColor: theme.loading,

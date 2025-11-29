@@ -9,6 +9,7 @@ import { getSuggestions } from "../../api/suggestion";
 import SuggestionRenderer from "../../components/SuggestionRenderer";
 import LoadingCircle from "../../components/general/LoadingCircle";
 import Navbar from "../../components/general/Navbar";
+import LoadingSkeleton from "../../components/post_releated/LoadingSkeleton";
 
 function AdminSuggestions(props) {
   const styles = useThemedStyles(getStyles);
@@ -26,17 +27,13 @@ function AdminSuggestions(props) {
   }, []);
 
   const handleRefresh = async () => {
-    setRefreshing(true)
+    setRefreshing(true);
     await fethSuggestion();
-    setRefreshing(false)
+    setRefreshing(false);
   };
 
   // console.log("Suggestion data:", suggestion); // Better logging
 
-  if (loading && !suggestion) { // Only show loading on initial load
-    return <LoadingCircle />;
-  }
-  
   return (
     <SafeScreen>
       <SuggestionRenderer
@@ -47,6 +44,9 @@ function AdminSuggestions(props) {
         <AppText style={styles.text}>
           See user suggestions and questions
         </AppText>
+        {(loading || !suggestion) && <LoadingSkeleton />}
+        {(loading || !suggestion) && <LoadingSkeleton />}
+        {(loading || !suggestion) && <LoadingSkeleton />}
       </SuggestionRenderer>
       <Navbar></Navbar>
     </SafeScreen>

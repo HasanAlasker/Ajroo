@@ -8,6 +8,7 @@ import LoadingCircle from "../../components/general/LoadingCircle";
 import useApi from "../../hooks/useApi";
 import { getStats } from "../../api/admin"; // New API function
 import AlertModal from "../../components/general/AlertModal";
+import LoadingDash from "../../components/general/LoadingDash";
 
 function Dash(props) {
   const [refreshing, setRefreshing] = useState(false);
@@ -24,10 +25,6 @@ function Dash(props) {
     await fetchStats();
     setRefreshing(false);
   };
-
-  if (loading && !stats) {
-    return <LoadingCircle />;
-  }
 
   // Default values if stats not loaded yet
   const dashboardData = stats || {
@@ -52,71 +49,87 @@ function Dash(props) {
   return (
     <SafeScreen>
       <ScrollScreen>
-        <View style={styles.container}>
-          <AdminCard
-            title={"Total Users"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.totalUsers}
-          />
-          <AdminCard
-            title={"Total Admins"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.totalAdmins}
-          />
-          <AdminCard
-            title={"Total Suggestions"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.totalSuggestions}
-          />
-          <AdminCard
-            title={"Total Posts"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.totalPosts}
-          />
-          <AdminCard
-            title={"Available Posts"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.activePosts}
-          />
-          <AdminCard
-            title={"Disabled Posts"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.disabledPosts}
-          />
-          <AdminCard
-            title={"Deleted Posts"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.deletedPosts}
-          />
-          <AdminCard
-            title={"Taken Items"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.takenItems}
-          />
-          <AdminCard
-            title={"Active Reports"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.activeReports}
-          />
-          {/* <AdminCard
+        {loading || !stats ? (
+          <>
+            <LoadingDash />
+            <LoadingDash />
+            <LoadingDash />
+            <LoadingDash />
+            <LoadingDash />
+            <LoadingDash />
+            <LoadingDash />
+            <LoadingDash />
+            <LoadingDash />
+            <LoadingDash />
+            <LoadingDash />
+          </>
+        ) : (
+          <>
+            <View style={styles.container}>
+              <AdminCard
+                title={"Total Users"}
+                backColor={"post"}
+                borderColor={"purple"}
+                color={"purple"}
+                value={dashboardData.totalUsers}
+              />
+              <AdminCard
+                title={"Total Admins"}
+                backColor={"post"}
+                borderColor={"purple"}
+                color={"purple"}
+                value={dashboardData.totalAdmins}
+              />
+              <AdminCard
+                title={"Total Suggestions"}
+                backColor={"post"}
+                borderColor={"purple"}
+                color={"purple"}
+                value={dashboardData.totalSuggestions}
+              />
+              <AdminCard
+                title={"Total Posts"}
+                backColor={"post"}
+                borderColor={"purple"}
+                color={"purple"}
+                value={dashboardData.totalPosts}
+              />
+              <AdminCard
+                title={"Available Posts"}
+                backColor={"post"}
+                borderColor={"purple"}
+                color={"purple"}
+                value={dashboardData.activePosts}
+              />
+              <AdminCard
+                title={"Disabled Posts"}
+                backColor={"post"}
+                borderColor={"purple"}
+                color={"purple"}
+                value={dashboardData.disabledPosts}
+              />
+              <AdminCard
+                title={"Deleted Posts"}
+                backColor={"post"}
+                borderColor={"purple"}
+                color={"purple"}
+                value={dashboardData.deletedPosts}
+              />
+              <AdminCard
+                title={"Taken Items"}
+                backColor={"post"}
+                borderColor={"purple"}
+                color={"purple"}
+                value={dashboardData.takenItems}
+              />
+              <AdminCard
+                title={"Active Reports"}
+                backColor={"post"}
+                borderColor={"purple"}
+                color={"purple"}
+                value={dashboardData.activeReports}
+              />
+              {/* <AdminCard
             title={"Users Profit"}
             backColor={"post"}
             borderColor={"purple"}
@@ -130,49 +143,51 @@ function Dash(props) {
             color={"purple"}
             value={`$${dashboardData.appProfit.toFixed(2)}`}
           /> */}
-          <AdminCard
-            title={"Blocked Users"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.blockedUsers}
-          />
-          <AdminCard
-            title={"Individual - Free"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.freeUsers}
-          />
-          <AdminCard
-            title={"Total Subscribers"}
-            backColor={"post"}
-            borderColor={"purple"}
-            color={"purple"}
-            value={dashboardData.totalSubs}
-          />
-          <AdminCard
-            title={"Individual - Pro"}
-            backColor={"purple"}
-            borderColor={"purple"}
-            color={"always_white"}
-            value={dashboardData.proSubs}
-          />
-          <AdminCard
-            title={"Business - Starter"}
-            backColor={"green"}
-            borderColor={"green"}
-            color={"always_white"}
-            value={dashboardData.starterSubs}
-          />
-          <AdminCard
-            title={"Business - Premium"}
-            backColor={"gold"}
-            borderColor={"gold"}
-            color={"always_white"}
-            value={dashboardData.premiumSubs}
-          />
-        </View>
+              <AdminCard
+                title={"Blocked Users"}
+                backColor={"post"}
+                borderColor={"purple"}
+                color={"purple"}
+                value={dashboardData.blockedUsers}
+              />
+              <AdminCard
+                title={"Individual - Free"}
+                backColor={"post"}
+                borderColor={"purple"}
+                color={"purple"}
+                value={dashboardData.freeUsers}
+              />
+              <AdminCard
+                title={"Total Subscribers"}
+                backColor={"post"}
+                borderColor={"purple"}
+                color={"purple"}
+                value={dashboardData.totalSubs}
+              />
+              <AdminCard
+                title={"Individual - Pro"}
+                backColor={"purple"}
+                borderColor={"purple"}
+                color={"always_white"}
+                value={dashboardData.proSubs}
+              />
+              <AdminCard
+                title={"Business - Starter"}
+                backColor={"green"}
+                borderColor={"green"}
+                color={"always_white"}
+                value={dashboardData.starterSubs}
+              />
+              <AdminCard
+                title={"Business - Premium"}
+                backColor={"gold"}
+                borderColor={"gold"}
+                color={"always_white"}
+                value={dashboardData.premiumSubs}
+              />
+            </View>
+          </>
+        )}
       </ScrollScreen>
       <AlertModal />
       <Navbar />
