@@ -119,7 +119,6 @@ router.post("/update", auth, async (req, res) => {
       originalPurchaseDate,
     } = req.body;
 
-    // Validate subscription type
     const validTypes = [
       "individual_free",
       "pro_monthly:pro",
@@ -128,7 +127,6 @@ router.post("/update", auth, async (req, res) => {
     ];
 
     if (!subscriptionType || !validTypes.includes(subscriptionType)) {
-      console.error("❌ Invalid subscription type:", subscriptionType);
       return res.status(400).send({
         message: "Invalid subscription type",
         received: subscriptionType,
@@ -136,53 +134,49 @@ router.post("/update", auth, async (req, res) => {
       });
     }
 
-    // Get base type for features lookup
     const baseType = getBaseSubscriptionType(subscriptionType);
 
-    // Find existing subscription
-    let subscription = await SubscriptionModel.findOne({
-      userId: req.user._id,
+    // ✅ Check for subscription transfer
+    const existingSubForDifferentUser = await SubscriptionModel.findOne({
+      revenueCatId,
+      userId: { $ne: req.user._id }
     });
 
-    if (subscription) {
-      // Update existing subscription
-      subscription.subscriptionType = subscriptionType; // Store full ID
-      subscription.status = "active";
-      subscription.features = subscriptionFeatures[baseType]; // Use base type
-      subscription.revenueCatId = revenueCatId;
-      subscription.productId = productId;
-      subscription.expirationDate = expirationDate;
-      subscription.store = store;
-      subscription.originalPurchaseDate = originalPurchaseDate || new Date();
-      subscription.latestPurchaseDate = new Date();
-      subscription.autoRenew = true;
-      subscription.willRenew = true;
-
-      await subscription.save();
-    } else {
-      // Create new subscription
-      subscription = new SubscriptionModel({
-        userId: req.user._id,
-        subscriptionType: subscriptionType, // Store full ID
-        status: "active",
-        features: subscriptionFeatures[baseType], // Use base type
-        revenueCatId,
-        productId,
-        expirationDate,
-        store,
-        originalPurchaseDate: originalPurchaseDate || new Date(),
-        latestPurchaseDate: new Date(),
-        autoRenew: true,
-        willRenew: true,
-      });
-
-      await subscription.save();
-
-      // Link subscription to user
-      await UserModel.findByIdAndUpdate(req.user._id, {
-        subscription: subscription._id,
+    if (existingSubForDifferentUser) {
+      await SubscriptionModel.deleteOne({ _id: existingSubForDifferentUser._id });
+      await UserModel.findByIdAndUpdate(existingSubForDifferentUser.userId, {
+        subscription: null
       });
     }
+
+    // ✅ Update/create for current user
+    const subscription = await SubscriptionModel.findOneAndUpdate(
+      { userId: req.user._id },
+      {
+        $set: {
+          subscriptionType,
+          status: "active",
+          features: subscriptionFeatures[baseType],
+          revenueCatId,
+          productId,
+          expirationDate,
+          store,
+          originalPurchaseDate: originalPurchaseDate || new Date(),
+          latestPurchaseDate: new Date(),
+          autoRenew: true,
+          willRenew: true,
+        }
+      },
+      {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true
+      }
+    );
+
+    await UserModel.findByIdAndUpdate(req.user._id, {
+      subscription: subscription._id,
+    });
 
     res.status(200).send({
       message: "Subscription updated successfully",
@@ -412,9 +406,29 @@ router.post("/sync-revenuecat", auth, async (req, res) => {
 
     const baseType = getBaseSubscriptionType(subscriptionType);
 
-    // ✅ Use findOneAndUpdate with upsert instead of separate find/create logic
+    // ✅ STEP 1: Check if this revenueCatId exists for a DIFFERENT user
+    const existingSubForDifferentUser = await SubscriptionModel.findOne({
+      revenueCatId,
+      userId: { $ne: req.user._id } // Not equal to current user
+    });
+
+    if (existingSubForDifferentUser) {
+      console.log(`⚠️ Subscription transfer detected: ${revenueCatId} from user ${existingSubForDifferentUser.userId} to ${req.user._id}`);
+      
+      // Remove the subscription from the old user
+      await SubscriptionModel.deleteOne({ _id: existingSubForDifferentUser._id });
+      
+      // Reset old user to free plan
+      await UserModel.findByIdAndUpdate(existingSubForDifferentUser.userId, {
+        subscription: null
+      });
+      
+      console.log(`✅ Old subscription removed from user ${existingSubForDifferentUser.userId}`);
+    }
+
+    // ✅ STEP 2: Now safely update/create for current user
     const subscription = await SubscriptionModel.findOneAndUpdate(
-      { userId: req.user._id }, // Find by userId, not revenueCatId
+      { userId: req.user._id }, // Find by current userId only
       {
         $set: {
           subscriptionType,
@@ -431,13 +445,13 @@ router.post("/sync-revenuecat", auth, async (req, res) => {
         }
       },
       { 
-        upsert: true,  // Create if doesn't exist
-        new: true,     // Return updated document
+        upsert: true,
+        new: true,
         setDefaultsOnInsert: true
       }
     );
 
-    // Link to user if this was a new subscription
+    // Link to current user
     await UserModel.findByIdAndUpdate(req.user._id, {
       subscription: subscription._id,
     });
