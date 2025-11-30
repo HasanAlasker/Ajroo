@@ -395,7 +395,6 @@ router.post("/sync-revenuecat", auth, async (req, res) => {
       autoRenew
     } = req.body;
 
-    // Validate subscription type
     const validTypes = [
       "individual_free",
       "pro_monthly:pro",
@@ -411,52 +410,37 @@ router.post("/sync-revenuecat", auth, async (req, res) => {
       });
     }
 
-    // Get base type for features lookup
     const baseType = getBaseSubscriptionType(subscriptionType);
 
-    // Find existing subscription
-    let subscription = await SubscriptionModel.findOne({ 
-      userId: req.user._id 
-    });
+    // ✅ Use findOneAndUpdate with upsert instead of separate find/create logic
+    const subscription = await SubscriptionModel.findOneAndUpdate(
+      { userId: req.user._id }, // Find by userId, not revenueCatId
+      {
+        $set: {
+          subscriptionType,
+          status: subscriptionType === "individual_free" ? "inactive" : "active",
+          features: subscriptionFeatures[baseType],
+          revenueCatId,
+          productId: productId || null,
+          expirationDate: expirationDate || null,
+          store: store || null,
+          originalPurchaseDate: originalPurchaseDate || null,
+          latestPurchaseDate: subscriptionType === "individual_free" ? null : new Date(),
+          autoRenew: autoRenew || false,
+          willRenew: willRenew || false,
+        }
+      },
+      { 
+        upsert: true,  // Create if doesn't exist
+        new: true,     // Return updated document
+        setDefaultsOnInsert: true
+      }
+    );
 
-    if (subscription) {
-      // Update existing subscription
-      subscription.subscriptionType = subscriptionType; // Store full ID
-      subscription.status = subscriptionType === "individual_free" ? "inactive" : "active";
-      subscription.features = subscriptionFeatures[baseType]; // Use base type
-      subscription.revenueCatId = revenueCatId;
-      subscription.productId = productId || null;
-      subscription.expirationDate = expirationDate || null;
-      subscription.store = store || null;
-      subscription.originalPurchaseDate = originalPurchaseDate || null;
-      subscription.latestPurchaseDate = subscriptionType === "individual_free" ? null : new Date();
-      subscription.autoRenew = autoRenew || false;
-      subscription.willRenew = willRenew || false;
-      
-      await subscription.save();
-    } else {
-      // Create new subscription
-      subscription = new SubscriptionModel({
-        userId: req.user._id,
-        subscriptionType, // Store full ID
-        status: subscriptionType === "individual_free" ? "inactive" : "active",
-        features: subscriptionFeatures[baseType], // Use base type
-        revenueCatId,
-        productId: productId || null,
-        expirationDate: expirationDate || null,
-        store: store || null,
-        originalPurchaseDate: originalPurchaseDate || null,
-        latestPurchaseDate: subscriptionType === "individual_free" ? null : new Date(),
-        autoRenew: autoRenew || false,
-        willRenew: willRenew || false,
-      });
-      
-      await subscription.save();
-      
-      await UserModel.findByIdAndUpdate(req.user._id, {
-        subscription: subscription._id,
-      });
-    }
+    // Link to user if this was a new subscription
+    await UserModel.findByIdAndUpdate(req.user._id, {
+      subscription: subscription._id,
+    });
 
     res.status(200).send({
       message: "Subscription synced from RevenueCat successfully",
