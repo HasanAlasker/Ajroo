@@ -11,6 +11,7 @@ import RatingModal from "./post_releated/RatingModal";
 import useApi from "../hooks/useApi";
 import { getUserById } from "../api/user";
 import { useUser } from "../config/UserContext";
+import Purchases from "react-native-purchases";
 
 function AcceptRejectBtn({
   postId,
@@ -26,6 +27,8 @@ function AcceptRejectBtn({
   const { showAlert, showInfo } = useAlert();
   const [visibleRating, setVisibleRating] = useState(false);
   const [alertShown, setAlertShown] = useState(false);
+  const [userSubscription, setUserSubscription] = useState(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
   const { user } = useUser();
 
   const {
@@ -38,17 +41,39 @@ function AcceptRejectBtn({
     fetchUser(user.id);
   }, [user]);
 
-  const userSubscription = fetchedUser.productId;
-  const userPostCount = fetchedUser.postCount;
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      try {
+        const customerInfo = await Purchases.getCustomerInfo();
+        const activeSubscriptions = customerInfo.activeSubscriptions;
+        
+        if (activeSubscriptions.length > 0) {
+          setUserSubscription(activeSubscriptions[0]);
+        } else {
+          setUserSubscription(null); // Free tier
+        }
+      } catch (error) {
+        console.error("Error fetching subscription:", error);
+        setUserSubscription(null);
+      } finally {
+        setSubscriptionLoading(false);
+      }
+    };
+
+    fetchSubscription();
+  }, []);
+
+  const userPostCount = fetchedUser?.postCount;
 
   const postLimit = () => {
     if (userSubscription === "pro_monthly:pro") return 6;
     else if (userSubscription === "business_starter:starter") return 25;
     else if (userSubscription === "business_premium:premium") return -1; // unlimited
-    else return 2;
+    else return 2; // free tier
   };
 
-  const hasUserExeededLimit = () => {
+  const hasUserExceededLimit = () => {
+    if (postLimit() === -1) return false;
     return userPostCount > postLimit();
   };
 
@@ -57,16 +82,17 @@ function AcceptRejectBtn({
   const passedUserId = iGave ? borrowerId : ownerId;
 
   const shouldBeDisabled = () => {
+    if (loading || subscriptionLoading) return true;
     if (route.name === "Requests") {
-      if (hasUserExeededLimit()) return true;
+      if (hasUserExceededLimit()) return true;
       if (isOwnerBlocked) return true;
       if (isRequesterBlocked) return true;
     }
-    return false; // Add explicit false return
+    return false;
   };
 
   useEffect(() => {
-    if (hasUserExeededLimit() && !alertShown) {
+    if (!loading && !subscriptionLoading && hasUserExceededLimit() && !alertShown) {
       setAlertShown(true);
 
       setTimeout(() => {
@@ -76,9 +102,9 @@ function AcceptRejectBtn({
             "You have more posts than your plan allows, delete some posts or upgrade your plan!",
           confirmText: "Close",
         });
-      }, 200);
+      }, 100);
     }
-  }, [fetchedUser]);
+  }, [fetchedUser, loading, subscriptionLoading]);
 
   const handleAccept = async () => {
     if (route.name === "Requests") {
@@ -112,7 +138,6 @@ function AcceptRejectBtn({
         onConfirm: async () => {
           try {
             await confirmReturn(requestId);
-            // Show rating modal after confirming return
             setVisibleRating(true);
           } catch (error) {
             showAlert({
