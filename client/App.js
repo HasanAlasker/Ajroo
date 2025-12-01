@@ -10,6 +10,7 @@ import { PostProvider } from "./config/PostContext";
 import { UserProvider } from "./config/UserContext";
 import { useUser } from "./config/UserContext";
 import { AlertProvider } from "./config/AlertContext";
+import { NotificationProvider } from "./config/NotificationContext";
 
 import Home from "./pages/Users/Home";
 import Have from "./pages/Users/Have";
@@ -28,40 +29,19 @@ import OfflineModal from "./components/general/OfflineModal";
 import Dash from "./pages/admin/Dash";
 import Search from "./pages/admin/Search";
 import Reports from "./pages/admin/Reports";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import LoadingCircle from "./components/general/LoadingCircle";
 import Suggestions from "./pages/Users/Suggestions";
 import AdminSuggestions from "./pages/admin/AdminSuggestions";
 import Blocks from "./pages/admin/Blocks";
 
-import * as Notifications from "expo-notifications";
-import { registerForPushNotifications } from "./functions/notificationToken";
 import Purchases, { LOG_LEVEL } from "react-native-purchases";
 import {
   syncRevenueCatId,
   syncSubscriptionFromRevenueCat,
-  updateSubscription,
 } from "./api/subscription";
 
 const Stack = createNativeStackNavigator();
-
-// Get android channel id for notifications
-if (Platform.OS === "android") {
-  Notifications.setNotificationChannelAsync("default", {
-    name: "Default Notifications",
-    importance: Notifications.AndroidImportance.MAX,
-    vibrationPattern: [0, 250, 250, 250],
-    lightColor: "#FF231F7C",
-  });
-}
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
 
 // Authenticated user navigation stack
 const AuthenticatedStack = () => {
@@ -117,8 +97,6 @@ const AuthStack = () => (
 const AppNavigator = () => {
   const { isAuthenticated, isAdmin, isLoading, user } = useUser();
   const { isDarkMode } = useTheme();
-  const notificationListener = useRef();
-  const responseListener = useRef();
 
   // Initialize RevenueCat
   useEffect(() => {
@@ -144,7 +122,7 @@ const AppNavigator = () => {
     initializeRevenueCat();
   }, []);
 
-  // FIXED: Pass user.id to syncSubscriptionData
+  // Handle RevenueCat authentication
   useEffect(() => {
     const handleUserAuthentication = async () => {
       if (isAuthenticated && user?.id) {
@@ -164,7 +142,6 @@ const AppNavigator = () => {
             console.error("❌ Failed to sync RevenueCat ID:", response.data);
           }
 
-          // FIXED: Pass user.id to syncSubscriptionData
           await syncSubscriptionData(customerInfo, user.id);
         } catch (error) {
           console.error("❌ RevenueCat login error:", error);
@@ -175,7 +152,6 @@ const AppNavigator = () => {
     handleUserAuthentication();
   }, [isAuthenticated, user?.id]);
 
-  // FIXED: Accept userId parameter and use it instead of customerInfo.originalAppUserId
   const syncSubscriptionData = async (customerInfo, userId) => {
     try {
       console.log("🔄 Starting subscription sync...");
@@ -217,12 +193,10 @@ const AppNavigator = () => {
         
         console.log("🎯 Final subscription type:", subscriptionType);
         
-        // FIXED: Use userId parameter instead of customerInfo.originalAppUserId
-        // FIXED: Use subscriptionType as productId to include the :pro/:starter/:premium suffix
         const syncData = {
           subscriptionType,
-          revenueCatId: userId, // ✅ FIXED: Use actual user ID
-          productId: subscriptionType, // ✅ FIXED: Use full subscription type (e.g., "pro_monthly:pro")
+          revenueCatId: userId,
+          productId: subscriptionType,
           expirationDate: entitlement.expirationDate || null,
           store: entitlement.store === "APP_STORE" ? "app_store" : 
                  entitlement.store === "PLAY_STORE" ? "play_store" : null,
@@ -243,10 +217,9 @@ const AppNavigator = () => {
       } else {
         console.log("ℹ️ No active subscription, setting to free");
         
-        // FIXED: Use userId parameter
         const freeData = {
           subscriptionType: "individual_free",
-          revenueCatId: userId, // ✅ FIXED: Use actual user ID
+          revenueCatId: userId,
           productId: null,
           expirationDate: null,
           store: null,
@@ -274,7 +247,7 @@ const AppNavigator = () => {
 
     const customerInfoUpdateListener = Purchases.addCustomerInfoUpdateListener((info) => {
       console.log("🔔 Subscription updated from RevenueCat");
-      syncSubscriptionData(info, user.id); // ✅ FIXED: Pass user.id
+      syncSubscriptionData(info, user.id);
     });
 
     return () => {
@@ -284,31 +257,6 @@ const AppNavigator = () => {
     };
   }, [isAuthenticated, user?.id]);
 
-  // Handle push notifications
-  useEffect(() => {
-    if (isAuthenticated) {
-      registerForPushNotifications();
-
-      notificationListener.current =
-        Notifications.addNotificationReceivedListener((notification) => {
-          console.log("📬 Notification received!");
-        });
-
-      responseListener.current =
-        Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log("👆 Notification tapped!");
-        });
-
-      return () => {
-        if (notificationListener.current) {
-          Notifications.removeNotificationSubscription(notificationListener.current);
-        }
-        if (responseListener.current) {
-          Notifications.removeNotificationSubscription(responseListener.current);
-        }
-      };
-    }
-  }, [isAuthenticated]);
 
   if (isLoading) {
     return <LoadingCircle />;
@@ -338,17 +286,11 @@ export default function App() {
       <ThemeProvider>
         <AlertProvider>
           <UserProvider>
-            <PostProvider>
-              <AppNavigator />
-              {/* This modal shows for the item owner when the borrower
-                claims that he returned the item */}
-              {/* <GetBackModal
-                isVisibile={true}
-                onClose={() => {
-                  setBackModal(backModal);
-                }}
-              /> */}
-            </PostProvider>
+            <NotificationProvider>
+              <PostProvider>
+                <AppNavigator />
+              </PostProvider>
+            </NotificationProvider>
           </UserProvider>
         </AlertProvider>
         <OfflineModal />

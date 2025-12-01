@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useRef, useState } from "r
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { useUser } from "./UserContext";
-import { saveNotificationToken } from "../api/notification";
+import { addPushToken } from "../api/user";
 
 // Configure how notifications should be handled when app is in foreground
 Notifications.setNotificationHandler({
@@ -52,7 +52,7 @@ export const NotificationProvider = ({ children }) => {
 
       // Get the token
       const token = await Notifications.getExpoPushTokenAsync({
-        projectId: "bb9f9982-0bf3-4826-8057-d9217e2a2772", // Get this from app.json
+        projectId: "bb9f9982-0bf3-4826-8057-d9217e2a2772"
       });
 
       // console.log("Push notification token:", token.data);
@@ -68,7 +68,8 @@ export const NotificationProvider = ({ children }) => {
     if (!user || !token) return;
 
     try {
-      await saveNotificationToken(user.id, token);
+      const platform = Platform.OS; // 'ios' or 'android'
+      await addPushToken(token, platform);
       // console.log("Token saved to backend");
     } catch (error) {
       console.error("Error saving token:", error);
@@ -77,7 +78,7 @@ export const NotificationProvider = ({ children }) => {
 
   // Initialize notifications when user is authenticated
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && user) {
       registerForPushNotifications().then((token) => {
         if (token) {
           setExpoPushToken(token);
@@ -102,15 +103,11 @@ export const NotificationProvider = ({ children }) => {
       );
 
       return () => {
-        if (notificationListener.current) {
-          Notifications.removeNotificationSubscription(notificationListener.current);
-        }
-        if (responseListener.current) {
-          Notifications.removeNotificationSubscription(responseListener.current);
-        }
+        notificationListener.current?.remove();
+        responseListener.current?.remove();
       };
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user?.id]);
 
   // Handle notification tap (navigate to relevant screen)
   const handleNotificationTap = (response) => {
