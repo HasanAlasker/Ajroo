@@ -232,6 +232,36 @@ router.post(
       // Delete all requests for this item when one is confirmed
       await RequestModel.deleteMany({ item: request.item });
 
+      // Try to send notification (but don't block request creation if it fails)
+      try {
+        const borrower = await UserModel.findById(request.requester);
+
+        if (
+          borrower &&
+          borrower.pushNotificationTokens &&
+          borrower.pushNotificationTokens.length > 0
+        ) {
+          // Extract token strings from the array of objects
+          const tokens = borrower.pushNotificationTokens.map(
+            (tokenObj) => tokenObj.token
+          );
+
+          await sendPushNotification(
+            tokens,
+            "Accepted Request",
+            `${req.user.name} Accepted your request!`
+          );
+          console.log("📤 Attempting to send notification to:", tokens);
+          console.log("📧 Notification content:", {
+            title: "Accepted Request",
+            body: `${req.user.name} Accepted your request!`,
+          });
+        }
+        // In your route after sending notification
+      } catch (notificationError) {
+        console.error("Failed to send push notification:", notificationError);
+      }
+
       return res.status(201).send(savedBorrow);
     } catch (err) {
       return res.status(500).send(err.message);
