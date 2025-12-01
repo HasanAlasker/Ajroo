@@ -131,6 +131,51 @@ router.delete("/:id", auth, async (req, res) => {
     }
 
     const deletedRequest = await RequestModel.findByIdAndDelete(id);
+
+    try {
+      if (isOwner) {
+        // Owner rejected - notify requester
+        const requester = await UserModel.findById(request.requester);
+
+        if (
+          requester &&
+          requester.pushNotificationTokens &&
+          requester.pushNotificationTokens.length > 0
+        ) {
+          const tokens = requester.pushNotificationTokens.map(
+            (tokenObj) => tokenObj.token
+          );
+
+          await sendPushNotification(
+            tokens,
+            "Request Rejected",
+            `${req.user.name} rejected your request!`
+          );
+        }
+      } else if (isRequester) {
+        // Requester canceled - notify owner
+        const owner = await UserModel.findById(request.owner);
+
+        if (
+          owner &&
+          owner.pushNotificationTokens &&
+          owner.pushNotificationTokens.length > 0
+        ) {
+          const tokens = owner.pushNotificationTokens.map(
+            (tokenObj) => tokenObj.token
+          );
+
+          await sendPushNotification(
+            tokens,
+            "Request Canceled",
+            `${req.user.name} canceled their request!`
+          );
+        }
+      }
+    } catch (notificationError) {
+      console.error("Failed to send push notification:", notificationError);
+    }
+
     return res.status(200).send(deletedRequest);
   } catch (err) {
     return res.status(500).send(err.message);
@@ -340,7 +385,8 @@ router.get("/got", auth, async (req, res) => {
   try {
     const requests = await RequestModel.find({ owner: req.user._id })
       .populate("requester", "name image isBlocked")
-      .populate("item", "image").populate('owner', 'isBlocked');
+      .populate("item", "image")
+      .populate("owner", "isBlocked");
     // if(requests.length === 0) return res.status(404).send("You haven't received any requests");
     return res.status(200).send(requests);
   } catch (err) {

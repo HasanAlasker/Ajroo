@@ -6,6 +6,8 @@ import BorrowModel from "../models/borrowsModel.js";
 import { updateBorrowValidation } from "../validation/borrowValidation.js";
 import validate from "../middleware/joiValidation.js";
 import PostModel from "../models/postsModel.js";
+import UserModel from "../models/usersModel.js";
+import { sendPushNotification } from "../utils/notifications.js";
 
 const router = express.Router();
 
@@ -76,6 +78,8 @@ router.get("/:id", auth, async (req, res) => {
 
 // borrower mark as returned (PUT), must be confirmed by owner
 
+// borrower mark as returned (PUT), must be confirmed by owner
+
 router.put(
   "/mark-returned/:id",
   [auth, validate(updateBorrowValidation)],
@@ -94,7 +98,7 @@ router.put(
         return res.status(400).send("You already marked item as returned");
 
       if (req.user._id.toString() !== borrowedItem.borrower.toString())
-        return res.status(403).send("You can't return and item you don't have");
+        return res.status(403).send("You can't return an item you don't have");
 
       const updatedBorrow = await BorrowModel.findByIdAndUpdate(
         borrowId,
@@ -103,6 +107,34 @@ router.put(
         },
         { new: true, runValidators: true }
       );
+
+      // Notify owner that borrower marked item as returned
+      try {
+        const owner = await UserModel.findById(borrowedItem.owner);
+
+        if (
+          owner &&
+          owner.pushNotificationTokens &&
+          owner.pushNotificationTokens.length > 0
+        ) {
+          const tokens = owner.pushNotificationTokens.map(
+            (tokenObj) => tokenObj.token
+          );
+
+          await sendPushNotification(
+            tokens,
+            "Item Return Pending",
+            `${req.user.name} marked your item as returned. Please confirm!`
+          );
+          console.log("📤 Attempting to send notification to:", tokens);
+          console.log("📧 Notification content:", {
+            title: "Item Return Pending",
+            body: `${req.user.name} marked your item as returned. Please confirm!`,
+          });
+        }
+      } catch (notificationError) {
+        console.error("Failed to send push notification:", notificationError);
+      }
 
       return res.status(200).send(updatedBorrow);
     } catch (err) {
@@ -135,6 +167,34 @@ router.delete("/confirm-return/:id", auth, async (req, res) => {
     });
 
     const deletedBorrow = await BorrowModel.findByIdAndDelete(borrowId);
+
+    // Notify borrower that owner confirmed the return
+    try {
+      const borrower = await UserModel.findById(borrowedItem.borrower);
+
+      if (
+        borrower &&
+        borrower.pushNotificationTokens &&
+        borrower.pushNotificationTokens.length > 0
+      ) {
+        const tokens = borrower.pushNotificationTokens.map(
+          (tokenObj) => tokenObj.token
+        );
+
+        await sendPushNotification(
+          tokens,
+          "Return Confirmed",
+          `${req.user.name} confirmed the return of their item!`
+        );
+        console.log("📤 Attempting to send notification to:", tokens);
+        console.log("📧 Notification content:", {
+          title: "Return Confirmed",
+          body: `${req.user.name} confirmed the return of their item!`,
+        });
+      }
+    } catch (notificationError) {
+      console.error("Failed to send push notification:", notificationError);
+    }
 
     return res.status(200).send(deletedBorrow);
   } catch (err) {
@@ -171,6 +231,34 @@ router.put(
         },
         { new: true, runValidators: true }
       );
+
+      // Notify borrower that owner rejected the return claim
+      try {
+        const borrower = await UserModel.findById(borrowedItem.borrower);
+
+        if (
+          borrower &&
+          borrower.pushNotificationTokens &&
+          borrower.pushNotificationTokens.length > 0
+        ) {
+          const tokens = borrower.pushNotificationTokens.map(
+            (tokenObj) => tokenObj.token
+          );
+
+          await sendPushNotification(
+            tokens,
+            "Return Rejected",
+            `${req.user.name} rejected your return claim. Please contact them!`
+          );
+          console.log("📤 Attempting to send notification to:", tokens);
+          console.log("📧 Notification content:", {
+            title: "Return Rejected",
+            body: `${req.user.name} rejected your return claim. Please contact them!`,
+          });
+        }
+      } catch (notificationError) {
+        console.error("Failed to send push notification:", notificationError);
+      }
 
       return res.status(200).send(updatedBorrow);
     } catch (err) {
