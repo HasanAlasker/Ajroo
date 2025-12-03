@@ -166,7 +166,7 @@ const getStyles = (theme) =>
     },
     image: {
       width: "100%",
-      aspectRatio: 4 / 3.5,
+      aspectRatio: 4 / 4,
       marginBottom: 4,
     },
     actionButtons: {

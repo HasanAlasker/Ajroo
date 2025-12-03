@@ -65,7 +65,7 @@ function AddImageBtn({
       const imageUri = await selectImageFromCamera({
         quality: 0.7,
         allowsEditing: true,
-        aspect: [4, 3.9], // Better aspect ratio for general images
+        aspect: [4, 4], // Better aspect ratio for general images
       });
 
       if (imageUri && onImageChange) {
@@ -154,7 +154,7 @@ const getStyles = (theme) =>
   StyleSheet.create({
     container: {
       width: "90%",
-      aspectRatio: 4/3.5,
+      aspectRatio: 4/4,
       // height: 270,
       marginHorizontal: "auto",
       marginBottom: 10,

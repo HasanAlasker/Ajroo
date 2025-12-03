@@ -12,14 +12,14 @@ function ItmeImage({source}) {
 const getStyles = (theme) => StyleSheet.create({
   itemImage: {
       width: "100%",
-      aspectRatio: 4/3.5,
+      aspectRatio: 4/4,
       backgroundColor: theme.post,
       borderRadius: 15,
       overflow:'hidden'
     },
     image:{
       width:'100%',
-      aspectRatio: 4/3.5,
+      aspectRatio: 4/4,
       // height:'250',
       resizeMode:'cover'
     }
