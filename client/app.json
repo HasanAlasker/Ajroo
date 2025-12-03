@@ -25,10 +25,16 @@
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "CAMERA",
-        "READ_EXTERNAL_STORAGE",
         "READ_MEDIA_IMAGES",
         "POST_NOTIFICATIONS",
         "RECEIVE_BOOT_COMPLETED"
+      ],
+      "blockedPermissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "RECORD_AUDIO"
       ]
     },
     "web": {
