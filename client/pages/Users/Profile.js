@@ -17,8 +17,9 @@ import LoadingCircle from "../../components/general/LoadingCircle";
 import ErrorBox from "../../components/general/ErrorBox";
 import AppText from "../../config/AppText";
 import ProfileLoadingSkeleton from "../../components/general/ProfileSkeleton";
+import { gotRequests, sentRequests } from "../../api/request";
 
-function Profile({ isNotification }) {
+function Profile({  }) {
   const [isMenu, setIsMenu] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useUser();
@@ -44,13 +45,32 @@ function Profile({ isNotification }) {
     request: fetchPosts,
   } = useApi(getUserPosts);
 
+  const {
+    data: gotReq,
+    request: getReq,
+    loading: gotLoading,
+  } = useApi(gotRequests);
+
+  const {
+    data: sentReq,
+    request: getSent,
+    loading: sentLoading,
+  } = useApi(sentRequests);
+
   useEffect(() => {
     fetchPosts(userId);
+    getReq(userId)
+    getSent(userId)
   }, [userId]);
 
   if ((loading && userLoading) || (!posts && !profile)) {
     return <ProfileLoadingSkeleton />;
   }
+
+  let isNotification = false;
+
+  if(sentReq.length > 0 || gotReq.length > 0)
+    isNotification = true
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -79,7 +99,7 @@ function Profile({ isNotification }) {
         ></SettingsMenu>
 
         <TopChunkProfile
-          isNotification={false} // change dynamicly
+          isNotification={isNotification} // change dynamicly
           myProfile={myProfile}
           profileId={profile?._id}
           isBlocked={profile?.isBlocked}
