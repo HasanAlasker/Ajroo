@@ -196,6 +196,7 @@ const getStyles = (theme) =>
       width: "90%",
       marginHorizontal: "auto",
       marginTop: 20,
+      overflow:'hidden'
     },
     text: {
       color: theme.purple,
@@ -206,6 +207,7 @@ const getStyles = (theme) =>
     left: {
       flexDirection: "row",
       gap: 10,
+      flex:1
     },
     modalContent: {
       backgroundColor: theme.post,
