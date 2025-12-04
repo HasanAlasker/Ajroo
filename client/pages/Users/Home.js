@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { View, StyleSheet, ScrollView, Button } from "react-native";
+import { View, StyleSheet } from "react-native";
 import AppText from "../../config/AppText";
-import SearchBar from "../../components/general/SearchBar";
 import ScrollScreen from "../../components/general/ScrollScreen";
 
 import useThemedStyles from "../../hooks/useThemedStyles";
@@ -9,13 +7,10 @@ import WelcomeCard from "../../components/WelcomeCard";
 import SquareCard from "../../components/SquareCard";
 import Navbar from "../../components/general/Navbar";
 import SafeScreen from "../../components/general/SafeScreen";
-import { useUser } from "../../config/UserContext";
 import AlertModal from "../../components/general/AlertModal";
-import * as Notifications from "expo-notifications";
 
 function Home({ navigation }) {
   const styles = useThemedStyles(getStyles);
-  const { getUserDisplayName } = useUser();
 
   const handleCardPress = (categoryName) => {
     // Navigate to Have page with category filter
@@ -33,42 +28,6 @@ function Home({ navigation }) {
         <AppText style={styles.text}>
           What kind of item are you looking for?
         </AppText>
-        {/* <View style={{ padding: 20 }}>
-          <Button
-            title="🧪 Test Expo Push API"
-            onPress={async () => {
-              const myToken = "ExponentPushToken[u6jq-oNAA09YmIyotq4le5]"; // Replace with your actual token
-
-              console.log("📤 Sending test push...");
-
-              const response = await fetch(
-                "https://exp.host/--/api/v2/push/send",
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    to: myToken,
-                    title: "API Test",
-                    body: "Direct from Expo API",
-                    sound: "default",
-                  }),
-                }
-              );
-
-              const result = await response.json();
-              console.log("📥 API Response:", JSON.stringify(result, null, 2));
-
-              if (result.data?.[0]?.status === "error") {
-                console.error("❌❌❌ ERROR:", result.data[0].message);
-                console.error("Details:", result.data[0].details);
-              } else {
-                console.log("✅ Push sent successfully!");
-              }
-            }}
-          /> 
-        </View>*/}
         <View style={styles.grid}>
           <SquareCard
             icon={"home"}
@@ -77,28 +36,16 @@ function Home({ navigation }) {
             onPress={() => handleCardPress("Household")}
           ></SquareCard>
           <SquareCard
+            icon={"car"}
+            name={"Automotive"}
+            cardnum={10}
+            onPress={() => handleCardPress("Automotive")}
+          ></SquareCard>
+          <SquareCard
             icon={"flower"}
             name={"Garden"}
             cardnum={3}
             onPress={() => handleCardPress("Garden")}
-          ></SquareCard>
-          <SquareCard
-            icon={"pliers"}
-            name={"Tools"}
-            cardnum={6}
-            onPress={() => handleCardPress("Tools")}
-          ></SquareCard>
-          <SquareCard
-            icon={"bicycle"}
-            name={"Sports"}
-            cardnum={4}
-            onPress={() => handleCardPress("Sports")}
-          ></SquareCard>
-          <SquareCard
-            icon={"tshirt-crew"}
-            name={"Clothes"}
-            cardnum={5}
-            onPress={() => handleCardPress("Clothes")}
           ></SquareCard>
           <SquareCard
             icon={"fridge"}
@@ -107,16 +54,52 @@ function Home({ navigation }) {
             onPress={() => handleCardPress("Electronics")}
           ></SquareCard>
           <SquareCard
-            icon={"calendar"}
-            name={"Events"}
-            cardnum={7}
-            onPress={() => handleCardPress("Events")}
+            icon={"tshirt-crew"}
+            name={"Clothes"}
+            cardnum={5}
+            onPress={() => handleCardPress("Clothes")}
+          ></SquareCard>
+          <SquareCard
+            icon={"pliers"}
+            name={"Tools"}
+            cardnum={6}
+            onPress={() => handleCardPress("Tools")}
+          ></SquareCard>
+          <SquareCard
+            icon={"teddy-bear"}
+            name={"Baby & Kids"}
+            cardnum={9}
+            onPress={() => handleCardPress("Baby_Kids")}
+          ></SquareCard>
+          <SquareCard
+            icon={"bicycle"}
+            name={"Sports"}
+            cardnum={4}
+            onPress={() => handleCardPress("Sports")}
+          ></SquareCard>
+          <SquareCard
+            icon={"home-city"}
+            name={"Real-Estate"}
+            cardnum={11}
+            onPress={() => handleCardPress("RealEstate")}
+          ></SquareCard>
+          <SquareCard
+            icon={"sofa"}
+            name={"Furniture"}
+            cardnum={12}
+            onPress={() => handleCardPress("Furniture")}
           ></SquareCard>
           <SquareCard
             icon={"book"}
             name={"Books"}
             cardnum={8}
             onPress={() => handleCardPress("Books")}
+          ></SquareCard>
+          <SquareCard
+            icon={"calendar"}
+            name={"Events"}
+            cardnum={7}
+            onPress={() => handleCardPress("Events")}
           ></SquareCard>
         </View>
       </ScrollScreen>

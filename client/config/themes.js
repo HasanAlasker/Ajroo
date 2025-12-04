@@ -24,8 +24,12 @@ export const lightTheme = {
   card4: "#EF88FF",
   card5: "#A688FF",
   card6: "#88C8FF",
-  card7: "#96FF88",
+  card7: "#9eff88ff",
   card8: "#88FFCB",
+  card9: "#88e7ffff",
+  card10: "#ffcd86ff",
+  card11: "#ffb9d8ff",
+  card12: "#62ff89ff",
 };
 
 export const darkTheme = {
@@ -54,6 +58,10 @@ export const darkTheme = {
   card4: "#EF88FF",
   card5: "#A688FF",
   card6: "#88C8FF",
-  card7: "#96FF88",
+  card7: "#9eff88ff",
   card8: "#88FFCB",
+  card9: "#88e7ffff",
+  card10: "#ffcd86ff",
+  card11: "#ffb9d8ff",
+  card12: "#62ff89ff",
 };

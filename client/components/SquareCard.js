@@ -28,6 +28,18 @@ function SquareCard({ icon, name, cardnum, onPress }) {
     } else if (cardnum === 8) {
       return theme.card8;
     }
+    else if (cardnum === 9) {
+      return theme.card9;
+    }
+    else if (cardnum === 10) {
+      return theme.card10;
+    }
+    else if (cardnum === 11) {
+      return theme.card11;
+    }
+    else if (cardnum === 12) {
+      return theme.card12;
+    }
   };
 
   return (
