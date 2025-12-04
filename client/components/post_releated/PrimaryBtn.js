@@ -43,17 +43,11 @@ function PrimaryBtn({
   const passedUserId = iGave ? borrowerId : ownerId;
   const { data: fetchedUser, request: fethUser, loading } = useApi(getUserById);
 
-  // console.log("PrimaryBtn - iGave:", iGave); // Add this
-  // console.log("PrimaryBtn - ownerId:", ownerId); // Add this
-  // console.log("PrimaryBtn - borrowerId:", borrowerId); // Add this
-  // console.log("PrimaryBtn - passedUserId:", passedUserId); // Add this
-
   const [visibleRequest, setVisibileRequest] = useState(false);
   const [visibleRating, setVisibileRating] = useState(false);
   const [pendingStatusUpdate, setPendingStatusUpdate] = useState(null);
+  const [btnText, setBtnText] = useState("");
 
-  // const iRequested = currentPost?.requesterId === user.id;
-  // const iBorrowed = currentPost?.borrowerId === user.id;
   const isAdmin = user.role === "admin";
 
   useEffect(() => {
@@ -156,6 +150,7 @@ function PrimaryBtn({
   };
 
   const handlePress = async () => {
+    // const buttonText = btnText || renderBtnText();
     const buttonText = renderBtnText();
 
     if (buttonText === "Delete Completely") {
@@ -299,6 +294,7 @@ function PrimaryBtn({
         onConfirm: async () => {
           try {
             await updateStatus(postId, { status: "disabled" });
+            // setBtnText("Enable")
           } catch (error) {
             showInfo({
               title: "Error",
@@ -312,6 +308,7 @@ function PrimaryBtn({
 
     if (buttonText === "Enable") {
       await updateStatus(postId, { status: "available" });
+      // setBtnText("Disable")
     }
 
     if (buttonText === "Cancel Request") {
@@ -334,6 +331,10 @@ function PrimaryBtn({
       });
     }
   };
+
+  // useEffect(() => {
+  //   setBtnText(renderBtnText());
+  // }, [status, isDeleted, isMine]);
 
   return (
     <>
