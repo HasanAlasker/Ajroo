@@ -95,7 +95,7 @@ const getStyles = (theme) =>
     },
     profileSection: {
       alignItems: "center",
-      paddingVertical: 20,
+      paddingBottom: 20,
       gap: 15,
     },
     avatar: {
