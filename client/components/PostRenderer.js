@@ -1,6 +1,7 @@
 import { FlatList, View } from "react-native";
 import AppText from "../config/AppText";
 import Post from "./post_releated/Post";
+import { StyleSheet } from "react-native";
 
 function PostRenderer({
   currentUserId,
@@ -126,6 +127,7 @@ function PostRenderer({
       windowSize={3}
       removeClippedSubviews={true}
       updateCellsBatchingPeriod={50}
+      contentContainerStyle={styles.list}
     />
   );
 }
@@ -137,5 +139,11 @@ const EmptyState = ({ message }) => (
     <AppText style={{ fontSize: 16, color: "#999" }}>{message}</AppText>
   </View>
 );
+
+const styles = StyleSheet.create({
+  list: {
+    paddingBottom:30
+  },
+});
 
 export default PostRenderer;
