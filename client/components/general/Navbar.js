@@ -4,14 +4,38 @@ import { Feather } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useUser } from "../../config/UserContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SettingsMenu from "../SettingsMenu";
+import useApi from "../../hooks/useApi";
+import { gotRequests, sentRequests } from "../../api/request";
+import MiniRedCircle from "../MiniRedCircle";
 
 function Navbar(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const { logout, isAdmin, user } = useUser();
   const [isMenu, setIsMenu] = useState(false);
+
+  const {
+    data: gotReq,
+    request: getReq,
+    loading: gotLoading,
+  } = useApi(gotRequests);
+
+  const {
+    data: sentReq,
+    request: getSent,
+    loading: sentLoading,
+  } = useApi(sentRequests);
+
+  useEffect(() => {
+    getReq(user.id);
+    getSent(user.id);
+  }, [user.id]);
+
+  let isNotification = false;
+
+  if (sentReq.length > 0 || gotReq.length > 0) isNotification = true;
 
   const styles = useThemedStyles(getStyles);
 
@@ -90,11 +114,11 @@ function Navbar(props) {
               size={30}
               style={[styles.icon, isMyProfile && styles.active]}
             />
-            <Text
-              style={[styles.text, isMyProfile && styles.active]}
-            >
+            <Text style={[styles.text, isMyProfile && styles.active]}>
               Profile
             </Text>
+
+            {isNotification && (!isMyProfile && route.name !== "Requests") && <MiniRedCircle />}
           </TouchableOpacity>
         </View>
       ) : (

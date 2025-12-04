@@ -13,17 +13,17 @@ function MiniRedCircle() {
 const getStyles = (theme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: theme.red,
+      backgroundColor: theme.purple,
       width: 14,
       height: 14,
       borderRadius: "50%",
       justifyContent: "center",
       alignItems: "center",
-      borderColor: theme.background,
-      borderWidth: 2,
-
-      bottom:45,
-      left:25
+      borderColor: theme.post,
+      borderWidth: 2.5,
+      position:'absolute',
+      bottom:39,
+      left:20
     },
   });
 
