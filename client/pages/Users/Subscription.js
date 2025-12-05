@@ -393,7 +393,7 @@ const handleRestore = async () => {
         >
           List up to 25 items for rental every month and make more money.
           {"\n\n"}
-          Get a store badge - Displayed next to your user name.
+          Get a verification badge - Displayed next to your user name.
         </OfferCard>
 
         {/* Premium Plan */}
@@ -427,8 +427,8 @@ const handleRestore = async () => {
           disabled={purchasing || !premiumPackage}
         >
           List unlimited items and max out your profit every month.{"\n\n"}
-          Get a store badge - Displayed next to your user name.{"\n\n"}
-          List Real Estate and Transportation items.
+          Get a crown badge - Displayed next to your user name.{"\n\n"}
+          List Real Estate and Automotive items.
         </OfferCard>
 
         <SeparatorComp children={"Manage Subscription"} />
