@@ -39,7 +39,7 @@ function Home({ navigation }) {
             name={"Tools"}
             cardnum={6}
             onPress={() => handleCardPress("Tools")}
-          ></SquareCard>{" "}
+          ></SquareCard>
           <SquareCard
             icon={"tshirt-crew"}
             name={"Clothes"}

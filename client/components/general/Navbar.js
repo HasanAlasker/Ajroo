@@ -9,6 +9,7 @@ import SettingsMenu from "../SettingsMenu";
 import useApi from "../../hooks/useApi";
 import { gotRequests, sentRequests } from "../../api/request";
 import MiniRedCircle from "../MiniRedCircle";
+import { givenItems } from "../../api/borrow";
 
 function Navbar(props) {
   const navigation = useNavigation();
@@ -28,14 +29,25 @@ function Navbar(props) {
     loading: sentLoading,
   } = useApi(sentRequests);
 
+  const {
+    data: given,
+    request: getGiven,
+    loading: givenLoading,
+  } = useApi(givenItems);
+
   useEffect(() => {
     getReq(user.id);
     getSent(user.id);
+    getGiven(user.id);
   }, [user.id]);
 
-  let isNotification = false;
+  const bookNotification = () => {
+    return given.some((item) => item.status === "pending_return");
+  };
 
-  if (sentReq.length > 0 || gotReq.length > 0) isNotification = true;
+  let profileNotification = false;
+
+  if (sentReq.length > 0 || gotReq.length > 0) profileNotification = true;
 
   const styles = useThemedStyles(getStyles);
 
@@ -103,6 +115,8 @@ function Navbar(props) {
             <Text style={[styles.text, route.name === "Book" && styles.active]}>
               Book
             </Text>
+
+            {bookNotification() && route.name !== "Book" && <MiniRedCircle />}
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -118,7 +132,9 @@ function Navbar(props) {
               Profile
             </Text>
 
-            {isNotification && (!isMyProfile && route.name !== "Requests") && <MiniRedCircle />}
+            {profileNotification &&
+              !isMyProfile &&
+              route.name !== "Requests" && <MiniRedCircle />}
           </TouchableOpacity>
         </View>
       ) : (
