@@ -29,18 +29,6 @@ function Home({ navigation }) {
         </AppText>
         <View style={styles.grid}>
           <SquareCard
-            icon={"tshirt-crew"}
-            name={"Clothes"}
-            cardnum={5}
-            onPress={() => handleCardPress("Clothes")}
-          ></SquareCard>
-          <SquareCard
-            icon={"sofa"}
-            name={"Furniture"}
-            cardnum={7}
-            onPress={() => handleCardPress("Furniture")}
-          ></SquareCard>
-          <SquareCard
             icon={"teddy-bear"}
             name={"Baby & Kids"}
             cardnum={9}
@@ -51,6 +39,18 @@ function Home({ navigation }) {
             name={"Tools"}
             cardnum={6}
             onPress={() => handleCardPress("Tools")}
+          ></SquareCard>{" "}
+          <SquareCard
+            icon={"tshirt-crew"}
+            name={"Clothes"}
+            cardnum={5}
+            onPress={() => handleCardPress("Clothes")}
+          ></SquareCard>
+          <SquareCard
+            icon={"sofa"}
+            name={"Furniture"}
+            cardnum={7}
+            onPress={() => handleCardPress("Furniture")}
           ></SquareCard>
           <SquareCard
             icon={"bicycle"}
@@ -88,7 +88,6 @@ function Home({ navigation }) {
             cardnum={10}
             onPress={() => handleCardPress("Automotive")}
           ></SquareCard>
-
           <SquareCard
             icon={"book"}
             name={"Books"}
