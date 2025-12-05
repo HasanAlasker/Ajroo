@@ -332,15 +332,16 @@ function Signin(props) {
                   value={isChecked}
                   onValueChange={() => setChecked(!isChecked)}
                   color={isChecked ? theme.purple : undefined}
+                  style={styles.checkbox}
                 />
                 <View style={styles.agreementText}>
-                  <AppText style={styles.resendText}>I agree to the </AppText>
+                  <AppText style={styles.resendText}>I agree to </AppText>
                   <RequestBtn
                     textStyle={styles.agreeText}
                     style={styles.agreeBtn}
                     backColor={"background"}
                     color={"purple"}
-                    title={"Terms of service "}
+                    title={"Terms "}
                     onPress={() =>
                       openURL(
                         "https://ajroo.netlify.app/terms-of-service",
@@ -348,7 +349,7 @@ function Signin(props) {
                       )
                     }
                   />
-                  <AppText style={styles.resendText}>and </AppText>
+                  <AppText style={styles.resendText}>& </AppText>
                   <RequestBtn
                     textStyle={styles.agreeText}
                     style={styles.agreeBtn}
@@ -538,6 +539,9 @@ const getStyles = (theme) =>
       padding: 0,
       width: "auto ",
     },
+    checkbox:{
+      marginTop:3,
+    },
     agreeBtn: {
       padding: 0,
       fontSize: 16,
@@ -557,11 +561,11 @@ const getStyles = (theme) =>
       marginHorizontal: "auto",
       marginTop: 20,
       flexDirection: "row",
-      alignItems: "center",
+      alignItems: "flex-start",
       justifyContent: "flex-start",
-      gap: 4,
       flex: 1,
       overflow:'hidden',
+      gap: 10
     },
     agreementText: {
       flexDirection: "row",
