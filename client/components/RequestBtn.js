@@ -5,7 +5,7 @@ import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-function RequestBtn({ title, isActive, onPress, isGreen, isRed, style, disabled=false, arrow=false, color, backColor }) {
+function RequestBtn({ title, isActive, onPress, isGreen, isRed, textStyle, style, disabled=false, arrow=false, color, backColor }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
 
@@ -28,7 +28,7 @@ function RequestBtn({ title, isActive, onPress, isGreen, isRed, style, disabled=
 
   return (
     <TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.container, {backgroundColor: backColor? theme[backColor] : buttonColor(), borderColor: backColor? theme[backColor] : borderColor()}, style]}>
-      <AppText style={[styles.text, {color: color ? theme[color] : textColor()}]}>{title}</AppText>
+      <AppText style={[styles.text, {color: color ? theme[color] : textColor()}, textStyle]}>{title}</AppText>
       {arrow && <MaterialCommunityIcons name="chevron-right-circle-outline" color={theme[color]} size={20}></MaterialCommunityIcons>}
     </TouchableOpacity>
   );

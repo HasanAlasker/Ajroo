@@ -7,7 +7,6 @@ import WelcomeCard from "../../components/WelcomeCard";
 import SquareCard from "../../components/SquareCard";
 import Navbar from "../../components/general/Navbar";
 import SafeScreen from "../../components/general/SafeScreen";
-import AlertModal from "../../components/general/AlertModal";
 
 function Home({ navigation }) {
   const styles = useThemedStyles(getStyles);
@@ -104,7 +103,6 @@ function Home({ navigation }) {
           ></SquareCard>
         </View>
       </ScrollScreen>
-      <AlertModal></AlertModal>
       <Navbar></Navbar>
     </SafeScreen>
   );

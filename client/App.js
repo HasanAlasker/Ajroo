@@ -40,6 +40,7 @@ import {
   syncRevenueCatId,
   syncSubscriptionFromRevenueCat,
 } from "./api/subscription";
+import AlertModal from "./components/general/AlertModal";
 
 const Stack = createNativeStackNavigator();
 
@@ -289,6 +290,7 @@ export default function App() {
             <NotificationProvider>
               <PostProvider>
                 <AppNavigator />
+                <AlertModal />
               </PostProvider>
             </NotificationProvider>
           </UserProvider>

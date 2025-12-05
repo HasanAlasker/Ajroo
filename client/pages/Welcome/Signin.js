@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, StyleSheet, TextInput } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import SafeScreen from "../../components/general/SafeScreen";
 import AppForm from "../../components/form/AppForm";
 import Logo from "../../components/Logo";
@@ -20,6 +19,10 @@ import { registerUser } from "../../api/user";
 import { useUser } from "../../config/UserContext";
 import ErrorMessage from "../../components/form/ErrorMessage";
 import Note from "../../components/general/Note";
+import { Checkbox } from "expo-checkbox";
+import { openURL } from "../../functions/openURL";
+import { useAlert } from "../../config/AlertContext";
+import { useTheme } from "../../config/ThemeContext";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -102,10 +105,13 @@ const initialValues = {
 
 function Signin(props) {
   const styles = useThemedStyles(getStyles);
+  const { theme } = useTheme();
   const navigation = useNavigation();
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const [registerError, setRegisterError] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isChecked, setChecked] = useState(false);
+  const { showAlert } = useAlert();
 
   // Get verifyOtpAndLogin from UserContext
   const { verifyOtpAndLogin } = useUser();
@@ -321,12 +327,50 @@ function Signin(props) {
                 hasBeenSubmitted={hasBeenSubmitted}
               />
 
+              <View style={styles.agreement}>
+                <Checkbox
+                  value={isChecked}
+                  onValueChange={() => setChecked(!isChecked)}
+                  color={isChecked ? theme.purple : undefined}
+                />
+                <View style={styles.agreementText}>
+                  <AppText style={styles.resendText}>I agree to the </AppText>
+                  <RequestBtn
+                    textStyle={styles.agreeText}
+                    style={styles.agreeBtn}
+                    backColor={"background"}
+                    color={"purple"}
+                    title={"Terms of service "}
+                    onPress={() =>
+                      openURL(
+                        "https://ajroo.netlify.app/terms-of-service",
+                        showAlert
+                      )
+                    }
+                  />
+                  <AppText style={styles.resendText}>and </AppText>
+                  <RequestBtn
+                    textStyle={styles.agreeText}
+                    style={styles.agreeBtn}
+                    backColor={"background"}
+                    color={"purple"}
+                    title={"Privacy policy"}
+                    onPress={() =>
+                      openURL(
+                        "https://ajroo.netlify.app/privacy-policy",
+                        showAlert
+                      )
+                    }
+                  />
+                </View>
+              </View>
+
               {registerError && <ErrorMessage error={registerError} />}
 
               <SubmitBtn
                 defaultText="Register"
                 submittingText="Registering..."
-                disabled={isRegistering}
+                disabled={!isChecked || isRegistering}
                 setHasBeenSubmitted={setHasBeenSubmitted}
               />
 
@@ -397,12 +441,12 @@ function Signin(props) {
                   disabled={countdown > 0 || isResending}
                 />
               </View>
-                <Note
-                  title={"Note"}
-                  text={
-                    "If the email doesn’t appear in your inbox, please check your spam or junk folder."
-                  }
-                />
+              <Note
+                title={"Note"}
+                text={
+                  "If the email doesn’t appear in your inbox, please check your spam or junk folder."
+                }
+              />
             </View>
           )}
         </View>
@@ -493,6 +537,37 @@ const getStyles = (theme) =>
     resendBtn: {
       padding: 0,
       width: "auto ",
+    },
+    agreeBtn: {
+      padding: 0,
+      fontSize: 16,
+      margin: 0,
+      gap: 0,
+      width: "auto",
+
+      flexWrap:'wrap'
+    },
+    agreeText: {
+      fontSize: 16,
+      display:'flex',
+
+    },
+    agreement: {
+      width: "90%",
+      marginHorizontal: "auto",
+      marginTop: 20,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "flex-start",
+      gap: 4,
+      flex: 1,
+      overflow:'hidden',
+    },
+    agreementText: {
+      flexDirection: "row",
+      alignItems: "center",
+      flexWrap: "wrap",
+      flex: 1,
     },
   });
 
