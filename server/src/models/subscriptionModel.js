@@ -64,7 +64,7 @@ const subscriptionSchema = new mongoose.Schema(
     // RevenueCat Specific Fields
     revenueCatId: {
       type: String,
-      unique: true,
+      // unique: true,
       sparse: true,
     },
     originalPurchaseDate: {
