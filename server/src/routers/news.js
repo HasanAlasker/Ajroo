@@ -23,10 +23,12 @@ router.post(
     if (!newNews)
       return res.status(400).send("News not created, something went wrong!");
 
-    newNews.isActive = "false";
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + data.displayDuration);
+    newNews.expiresAt = expiresAt;
 
     const savedNews = await newNews.save();
-    return res.status(200).send(savedNews);
+    return res.status(201).send(savedNews);
   }
 );
 
@@ -40,6 +42,16 @@ router.put(
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).send("Invalid news ID");
+    }
+
+    // Recalculate expiresAt if displayDuration is being updated
+    if (data.displayDuration) {
+      const news = await NewsModel.findById(id);
+      if (!news) return res.status(404).send("News not found");
+
+      const expiresAt = new Date(news.createdAt);
+      expiresAt.setDate(expiresAt.getDate() + data.displayDuration);
+      data.expiresAt = expiresAt;
     }
 
     const editedNews = await NewsModel.findByIdAndUpdate(id, data, {
@@ -117,7 +129,12 @@ router.get("/", auth, async (req, res) => {
 // get active new banner (auth users)
 
 router.get("/active", auth, async (req, res) => {
-  const activeNews = await NewsModel.findOne({ isActive: true });
+  const activeNews = await NewsModel.findOne({
+    isActive: true,
+    isDeleted: false,
+    expiresAt: { $gt: new Date() },
+  }).sort({ createdAt: -1 });
+
   if (!activeNews) return res.status(404).send("No active news found");
   return res.status(200).send(activeNews);
 });
