@@ -1,7 +1,6 @@
-import React from "react";
 import { View, StyleSheet, FlatList } from "react-native";
-import SuggestionCard from "./SuggestionCard";
 import AppText from "../config/AppText";
+import NewsCard from "./NewsCard";
 
 function NewsRenderer({
   refreshing,
@@ -10,17 +9,22 @@ function NewsRenderer({
   emptyMessage = "No news found",
   fetchedNews = [],
 }) {
-  const renderSuggestion = ({ item: post }) => {
+  const renderNews = ({ item: news }) => {
     return (
-      <SuggestionCard
-        
+      <NewsCard
+        backGroundColor={news.backGroundColor}
+        textColor={news.textColor}
+        title={news.title}
+        createdAt={news.createdAt}
+        description={news.description}
+        icon={news?.icon}
       />
     );
   };
   return (
     <FlatList
       data={fetchedNews}
-      renderItem={renderSuggestion}
+      renderItem={renderNews}
       keyExtractor={(item) => item._id}
       ListEmptyComponent={() => <EmptyState message={emptyMessage} />}
       onRefresh={onRefresh}

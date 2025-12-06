@@ -7,15 +7,7 @@ import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import RowLableCont from "./post_releated/RowLableCont";
 import PostMenu from "./post_releated/PostMenu";
-
-const formatDate = (isoDate) => {
-  if (!isoDate) return "";
-  const date = new Date(isoDate);
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
+import { formatDate } from "../functions/formatDate";
 
 function UserCard({
   image,

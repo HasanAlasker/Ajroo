@@ -22,16 +22,7 @@ import ItemBill from "./ItemBill";
 import AppText from "../../config/AppText";
 import ErrorBox from "../general/ErrorBox";
 import PhoneNumber from "./PhoneNumber";
-
-// Format ISO date to DD/MM/YYYY
-const formatDate = (isoDate) => {
-  if (!isoDate) return "";
-  const date = new Date(isoDate);
-  const day = date.getDate();
-  const month = date.getMonth() + 1; // Months are 0-indexed
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
+import { formatDate } from "../../functions/formatDate";
 
 // Capitalize first letter and replace underscores with spaces
 const formatText = (text) => {
@@ -79,7 +70,7 @@ function Post({
   subscriptionType,
   isRequesterBlocked,
   isOwnerBlocked,
-  userEmail
+  userEmail,
 }) {
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
