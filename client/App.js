@@ -41,6 +41,7 @@ import {
   syncSubscriptionFromRevenueCat,
 } from "./api/subscription";
 import AlertModal from "./components/general/AlertModal";
+import NewsLog from "./pages/admin/NewsLog";
 
 const Stack = createNativeStackNavigator();
 
@@ -61,6 +62,7 @@ const AuthenticatedStack = () => {
       <Stack.Screen name="Promo" component={Promo} />
       <Stack.Screen name="Subscription" component={Subscription} />
       <Stack.Screen name="Suggestions" component={Suggestions} />
+      <Stack.Screen name="NewsLog" component={NewsLog} />
     </Stack.Navigator>
   );
 };
@@ -78,6 +80,7 @@ const AdminStack = () => {
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Blocks" component={Blocks} />
       <Stack.Screen name="AdminSuggestions" component={AdminSuggestions} />
+      <Stack.Screen name="NewsLog" component={NewsLog} />
     </Stack.Navigator>
   );
 };

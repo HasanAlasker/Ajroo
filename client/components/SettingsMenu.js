@@ -64,6 +64,14 @@ function SettingsMenu({ isVisible, onClose }) {
             />
           )}
           {!isAdmin && <SeparatorComp style={styles.sep} />}
+          <MenuOption
+            text={"News Log"}
+            icon={"file-outline"}
+            onPress={() =>
+              openURL(navigation.navigate('NewsLog'))
+            }
+          />
+          {!isAdmin && <SeparatorComp style={styles.sep} />}
           {!isAdmin && (
             <MenuOption
               text={"Subscription"}
