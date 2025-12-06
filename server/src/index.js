@@ -12,6 +12,7 @@ import reports from "./routers/reports.js";
 import suggestions from "./routers/suggestions.js";
 import admin from "./routers/admin.js";
 import subscriptions from "./routers/subscriptions.js";
+import news from "./routers/news.js";
 import email from "./routers/email.js";
  
 dotenv.config();
@@ -39,6 +40,7 @@ app.use("/api/reports", reports);
 app.use("/api/suggestions", suggestions);
 app.use("/api/admin", admin);
 app.use("/api/subscriptions", subscriptions);
+app.use("/api/news", news);
 app.use("/api/auth", email);
 
 app.listen(port, () => {
