@@ -329,7 +329,7 @@ function PrimaryBtn({
       await updateStatus(postId, { status: "available" });
       showInfo({
         title: "Success",
-        message: "Post was enabled, refresh page to see it!"
+        message: "Post was enabled, refresh screen to see it!"
       })
       // setBtnText("Disable")
     }

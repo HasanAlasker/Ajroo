@@ -42,14 +42,14 @@ function Have({ route }) {
     if (route?.params?.category && route?.params?.applyFilter) {
       const category = route.params.category;
       initialCategory.current = category;
-      
+
       // Apply the filter automatically
       handleFilterByCategory(category);
     }
   }, [route?.params]);
 
   const handleFilterByCategory = async (category) => {
-    searchSource.current = 'filter';
+    searchSource.current = "filter";
     setIsSearching(true);
     setIsFilterActive(true);
     try {
@@ -78,7 +78,10 @@ function Have({ route }) {
   // Handle search by name (from SearchBar text input)
   const handleSearchByName = useCallback(async (searchText) => {
     // If filter modal was used, don't override with text search
-    if (searchSource.current === 'filter' && (!searchText || searchText.trim() === "")) {
+    if (
+      searchSource.current === "filter" &&
+      (!searchText || searchText.trim() === "")
+    ) {
       return; // Keep the filter results
     }
 
@@ -91,7 +94,7 @@ function Have({ route }) {
       return;
     }
 
-    searchSource.current = 'text';
+    searchSource.current = "text";
     setIsSearching(true);
     setIsFilterActive(true);
     try {
@@ -107,7 +110,7 @@ function Have({ route }) {
 
   // Handle filter results from FilterModal
   const handleFilterResults = useCallback((results) => {
-    searchSource.current = 'filter';
+    searchSource.current = "filter";
     setFilteredResults(results);
     setIsFilterActive(true);
   }, []);
@@ -122,7 +125,8 @@ function Have({ route }) {
   }, []);
 
   // Determine which posts to display
-  const displayPosts = isFilterActive && filteredResults !== null ? filteredResults : posts;
+  const displayPosts =
+    isFilterActive && filteredResults !== null ? filteredResults : posts;
 
   if (loading && !posts) {
     return <LoadingCircle />;
@@ -135,7 +139,9 @@ function Have({ route }) {
         refreshing={refreshing}
         onRefresh={handleRefresh}
         emptyMessage={
-          isFilterActive
+          loading
+            ? null
+            : isFilterActive
             ? "No results found for your search"
             : "No one has posted yet"
         }
@@ -148,10 +154,10 @@ function Have({ route }) {
           isFilterActive={isFilterActive}
           initialCategory={initialCategory.current}
         />
-        {loading && <LoadingSkeleton/>}
-        {loading && <LoadingSkeleton/>}
-        {loading && <LoadingSkeleton/>}
-        {loading && <LoadingSkeleton/>}
+        {loading && <LoadingSkeleton />}
+        {loading && <LoadingSkeleton />}
+        {loading && <LoadingSkeleton />}
+        {loading && <LoadingSkeleton />}
       </PostRenderer>
       <Navbar />
     </SafeScreen>
