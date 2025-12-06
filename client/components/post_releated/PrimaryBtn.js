@@ -137,7 +137,7 @@ function PrimaryBtn({
     }
 
     if (!isMine) {
-      if (loadingRequests) return "Loading...";
+      if (loadingRequests && route.name === "Have") return "Loading...";
       if (isItemRequested() && route.name === "Have")
         return "Pending Request...";
       if (status === "disabled") return "Disabled";
@@ -327,6 +327,10 @@ function PrimaryBtn({
 
     if (buttonText === "Enable") {
       await updateStatus(postId, { status: "available" });
+      showInfo({
+        title: "Success",
+        message: "Post was enabled, refresh page to see it!"
+      })
       // setBtnText("Disable")
     }
 
@@ -351,9 +355,9 @@ function PrimaryBtn({
     }
   };
 
-  // useEffect(() => {
-  //   setBtnText(renderBtnText());
-  // }, [status, isDeleted, isMine]);
+  useEffect(() => {
+    setBtnText(renderBtnText());
+  }, [status, isDeleted, isMine]);
 
   return (
     <>
