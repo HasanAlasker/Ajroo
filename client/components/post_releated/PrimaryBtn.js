@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import AppText from "../../config/AppText";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import RequestModal from "./RequestModal";
 import { useEffect, useState } from "react";
 import RatingModal from "./RatingModal";
@@ -11,7 +11,7 @@ import { useUser } from "../../config/UserContext";
 import { useAlert } from "../../config/AlertContext";
 import { deletePost, softDelete, unDelete, updateStatus } from "../../api/post";
 import { deleteReport } from "../../api/report";
-import { deleteRequest } from "../../api/request";
+import { deleteRequest, sentRequests } from "../../api/request";
 import { confirmReturn, markReturned } from "../../api/borrow";
 import useApi from "../../hooks/useApi";
 import { getUserById } from "../../api/user";
@@ -37,11 +37,11 @@ function PrimaryBtn({
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
+  const navigation = useNavigation();
   const { updatePost, getPostById } = usePosts();
   const { user } = useUser();
   const { showAlert, showInfo } = useAlert();
   const passedUserId = iGave ? borrowerId : ownerId;
-  const { data: fetchedUser, request: fethUser, loading } = useApi(getUserById);
 
   const [visibleRequest, setVisibileRequest] = useState(false);
   const [visibleRating, setVisibileRating] = useState(false);
@@ -50,9 +50,22 @@ function PrimaryBtn({
 
   const isAdmin = user.role === "admin";
 
+  const { data: fetchedUser, request: fethUser, loading } = useApi(getUserById);
+
+  const {
+    data: myRequests,
+    loading: loadingRequests,
+    request: fetchMyRequests,
+  } = useApi(sentRequests);
+
   useEffect(() => {
     fethUser(user.id);
+    fetchMyRequests(user.id);
   }, [user]);
+
+  const isItemRequested = () => {
+    return myRequests.some((request) => request.item._id === postId);
+  };
 
   const handleCopy = async () => {
     try {
@@ -74,6 +87,7 @@ function PrimaryBtn({
   const shouldBeDisabled = () => {
     if (isAdmin) return false;
     if (isDeleted) return true;
+    // if (isItemRequested() && route.name === 'Have') return true;
     if (fetchedUser.isBlocked && route.name !== "Book") return true;
     if (isDisabled) return true;
     if (iBorrowed && status === "pending_return") return true;
@@ -123,6 +137,9 @@ function PrimaryBtn({
     }
 
     if (!isMine) {
+      if (loadingRequests) return "Loading...";
+      if (isItemRequested() && route.name === "Have")
+        return "Pending Request...";
       if (status === "disabled") return "Disabled";
       if (iRequested) return "Cancel Request";
       if (iBorrowed && status === "active") return "Mark Returned";
@@ -152,6 +169,8 @@ function PrimaryBtn({
   const handlePress = async () => {
     // const buttonText = btnText || renderBtnText();
     const buttonText = renderBtnText();
+
+    if (buttonText === "Pending Request...") navigation.navigate("Requests");
 
     if (buttonText === "Delete Completely") {
       showAlert({
