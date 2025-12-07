@@ -57,7 +57,7 @@ export const createPostValidation = Joi.object({
   }),
 
   // Selling price - required only for Sell type
-  sellingPrice: Joi.when("type", {
+  sellPrice: Joi.when("type", {
     is: "Sell",
     then: Joi.number().min(1).required().messages({
       "number.min": "Selling price must be at least 1",
