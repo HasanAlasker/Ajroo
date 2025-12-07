@@ -11,6 +11,13 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    type: {
+      type: String,
+      lowercase: true,
+      enum: ["sell", "rent"],
+      required: true,
+      default: "rent",
+    },
     name: {
       type: String,
       minLength: 2,
@@ -43,7 +50,11 @@ const postSchema = new mongoose.Schema(
       type: Number,
       min: 0,
       max: 300, // change it later if expensive items are requested to be added in the app
-      required: true,
+      // required: true,
+    },
+    sellingPrice: {
+      type: Number,
+      min: 0,
     },
     city: {
       type: String,

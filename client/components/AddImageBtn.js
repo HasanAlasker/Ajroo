@@ -13,6 +13,8 @@ function AddImageBtn({
   error,
   errorMessage,
   allowCamera = true,
+  containerStyle,
+  touchableAreaStyle,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
@@ -103,9 +105,9 @@ function AddImageBtn({
 
   return (
     <>
-      <View style={styles.container}>
+      <View style={[styles.container, containerStyle]}>
         <TouchableOpacity
-          style={styles.touchableArea}
+          style={[styles.touchableArea, touchableAreaStyle]}
           onPress={handleImagePress}
           disabled={isLoading}
           activeOpacity={0.7}
@@ -157,18 +159,15 @@ const getStyles = (theme) =>
       aspectRatio: 4/4,
       // height: 270,
       marginHorizontal: "auto",
-      // marginBottom: 10,
+      marginBottom: 10,
       marginTop: 25,
       alignSelf: 'center', // Better centering
     },
     touchableArea: {
       flex: 1,
       backgroundColor: theme.post,
-      // borderRadius: 20,
-      borderTopRightRadius:20,
-      borderTopLeftRadius:20,
+      borderRadius: 20,
       borderWidth: 2,
-      borderBottomWidth:0,
       borderColor: theme.purple,
       overflow: "hidden",
     },

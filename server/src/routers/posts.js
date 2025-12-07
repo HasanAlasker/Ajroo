@@ -17,29 +17,29 @@ const router = express.Router();
 // Helper function to get display name from subscription type
 const getSubscriptionDisplayName = (subscriptionType) => {
   if (!subscriptionType) return null;
-  
+
   const mapping = {
     individual_free: null,
     "pro_monthly:pro": "Pro",
     "business_starter:starter": "Starter",
     "business_premium:premium": "Premium",
   };
-  
+
   return mapping[subscriptionType] || null;
 };
 
 // Helper function to transform posts with subscription data
 const transformPostsWithSubscription = (posts) => {
-  return posts.map(post => {
+  return posts.map((post) => {
     const postObj = post.toObject();
-    
+
     // Get subscription display name
     const subscriptionType = postObj.user?.subscription?.type;
     const displayName = getSubscriptionDisplayName(subscriptionType);
-    
+
     return {
       ...postObj,
-      subscriptionDisplayName: displayName
+      subscriptionDisplayName: displayName,
     };
   });
 };
@@ -53,11 +53,11 @@ router.get("/", auth, async (req, res) => {
         select: "name image subscription email",
         populate: {
           path: "subscription",
-          select: "productId status"
-        }
+          select: "productId status",
+        },
       })
       .sort("-createdAt");
-      
+
     if (!posts) return res.status(404).send("No posts found");
 
     const transformedPosts = transformPostsWithSubscription(posts);
@@ -79,11 +79,11 @@ router.get("/available", auth, async (req, res) => {
         select: "name image isBlocked subscription",
         populate: {
           path: "subscription",
-          select: "productId status"
-        }
+          select: "productId status",
+        },
       })
       .sort("-createdAt");
-      
+
     if (!posts) return res.status(404).send("No posts found");
 
     // Filter out posts from blocked users
@@ -108,10 +108,10 @@ router.get("/deleted", [auth, admin], async (req, res) => {
         select: "name image subscription",
         populate: {
           path: "subscription",
-          select: "productId status"
-        }
+          select: "productId status",
+        },
       });
-      
+
     const transformedPosts = transformPostsWithSubscription(deletedPosts);
     return res.status(200).send(transformedPosts);
   } catch (err) {
@@ -130,6 +130,8 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
       "city",
       "area",
       "condition",
+      "type",
+      "sellingPrice",
     ]);
 
     // user id should be set by req.user._id for security reasons
@@ -178,6 +180,7 @@ router.put(
         "city",
         "area",
         "condition",
+        "sellingPrice",
       ]);
 
       const updatedPost = await PostModel.findByIdAndUpdate(id, data, {
@@ -240,10 +243,10 @@ router.get("/user/:id", auth, async (req, res) => {
         select: "name image subscription",
         populate: {
           path: "subscription",
-          select: "productId status"
-        }
+          select: "productId status",
+        },
       });
-      
+
     if (posts.length === 0) return res.status(404).send("No posts found");
 
     const transformedPosts = transformPostsWithSubscription(posts);
@@ -324,8 +327,8 @@ router.get("/search", auth, async (req, res) => {
         select: "name image subscription",
         populate: {
           path: "subscription",
-          select: "productId status"
-        }
+          select: "productId status",
+        },
       })
       .sort("-createdAt");
 
@@ -348,25 +351,24 @@ router.get("/:id", auth, async (req, res) => {
       return res.status(400).send("Invalid post ID");
     }
 
-    const post = await PostModel.findById(id)
-      .populate({
-        path: "user",
-        select: "name image subscription",
-        populate: {
-          path: "subscription",
-          select: "productId status"
-        }
-      });
-      
+    const post = await PostModel.findById(id).populate({
+      path: "user",
+      select: "name image subscription",
+      populate: {
+        path: "subscription",
+        select: "productId status",
+      },
+    });
+
     if (!post) return res.status(404).send("No posts found");
 
     const postObj = post.toObject();
     const subscriptionType = postObj.user?.subscription?.subscriptionType;
     const displayName = getSubscriptionDisplayName(subscriptionType);
-    
+
     return res.status(200).send({
       ...postObj,
-      subscriptionDisplayName: displayName
+      subscriptionDisplayName: displayName,
     });
   } catch (err) {
     return res.status(500).send(err.message);

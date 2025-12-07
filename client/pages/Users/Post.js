@@ -355,6 +355,13 @@ function Post(props) {
                   }}
                   error={hasBeenSubmitted && errors.image}
                   errorMessage={errors.image}
+                  containerStyle={{ marginBottom: 0 }}
+                  touchableAreaStyle={{
+                    borderRadius:0,
+                    borderTopRightRadius: 20,
+                    borderTopLeftRadius: 20,
+                    borderBottomWidth: 0,
+                  }}
                 />
 
                 <View style={styles.select}>
