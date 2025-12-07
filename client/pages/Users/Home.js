@@ -23,46 +23,46 @@ function Home({ navigation }) {
     <SafeScreen>
       {/* <SearchBar></SearchBar> */}
       <ScrollScreen>
-        <WelcomeCard />
+        {/* <WelcomeCard /> */}
         <AppText style={styles.text}>
           What kind of item are you looking for?
         </AppText>
         <View style={styles.grid}>
           <SquareCard
-            icon={"teddy-bear"}
-            name={"Baby & Kids"}
+            icon={"car"}
+            name={"Automotive"}
             cardnum={9}
-            onPress={() => handleCardPress("Baby_Kids")}
-          ></SquareCard>
-          <SquareCard
-            icon={"pliers"}
-            name={"Tools"}
-            cardnum={6}
-            onPress={() => handleCardPress("Tools")}
-          ></SquareCard>
-          <SquareCard
-            icon={"tshirt-crew"}
-            name={"Clothes"}
-            cardnum={5}
-            onPress={() => handleCardPress("Clothes")}
-          ></SquareCard>
-          <SquareCard
-            icon={"sofa"}
-            name={"Furniture"}
-            cardnum={7}
-            onPress={() => handleCardPress("Furniture")}
-          ></SquareCard>
-          <SquareCard
-            icon={"bicycle"}
-            name={"Sports"}
-            cardnum={4}
-            onPress={() => handleCardPress("Sports")}
+            onPress={() => handleCardPress("Automotive")}
           ></SquareCard>
           <SquareCard
             icon={"home-city"}
             name={"Real-Estate"}
-            cardnum={11}
+            cardnum={6}
             onPress={() => handleCardPress("RealEstate")}
+          ></SquareCard>
+          <SquareCard
+            icon={"pliers"}
+            name={"Tools"}
+            cardnum={5}
+            onPress={() => handleCardPress("Tools")}
+          ></SquareCard>
+          <SquareCard
+            icon={"fridge"}
+            name={"Electronics"}
+            cardnum={7}
+            onPress={() => handleCardPress("Electronics")}
+          ></SquareCard>
+          <SquareCard
+            icon={"home"}
+            name={"Household"}
+            cardnum={4}
+            onPress={() => handleCardPress("Household")}
+          ></SquareCard>
+          <SquareCard
+            icon={"sofa"}
+            name={"Furniture"}
+            cardnum={11}
+            onPress={() => handleCardPress("Furniture")}
           ></SquareCard>
           <SquareCard
             icon={"flower"}
@@ -71,22 +71,22 @@ function Home({ navigation }) {
             onPress={() => handleCardPress("Garden")}
           ></SquareCard>
           <SquareCard
-            icon={"fridge"}
-            name={"Electronics"}
+            icon={"teddy-bear"}
+            name={"Baby & Kids"}
             cardnum={2}
-            onPress={() => handleCardPress("Electronics")}
+            onPress={() => handleCardPress("Baby_Kids")}
           ></SquareCard>
           <SquareCard
-            icon={"home"}
-            name={"Household"}
+            icon={"tshirt-crew"}
+            name={"Clothes"}
             cardnum={1}
-            onPress={() => handleCardPress("Household")}
+            onPress={() => handleCardPress("Clothes")}
           ></SquareCard>
           <SquareCard
-            icon={"car"}
-            name={"Automotive"}
+            icon={"bicycle"}
+            name={"Sports"}
             cardnum={10}
-            onPress={() => handleCardPress("Automotive")}
+            onPress={() => handleCardPress("Sports")}
           ></SquareCard>
           <SquareCard
             icon={"book"}
@@ -128,7 +128,7 @@ const getStyles = (theme) =>
       fontWeight: "bold",
       width: "90%",
       marginHorizontal: "auto",
-      marginTop: 40,
+      marginTop: 30,
       color: theme.main_text,
     },
   });

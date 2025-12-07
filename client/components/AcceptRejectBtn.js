@@ -27,7 +27,7 @@ function AcceptRejectBtn({
   const { showAlert, showInfo } = useAlert();
   const [visibleRating, setVisibleRating] = useState(false);
   const [alertShown, setAlertShown] = useState(false);
-  const [userSubscription, setUserSubscription] = useState(null);
+  const [userEntitlements, setUserEntitlements] = useState({});
   const [subscriptionLoading, setSubscriptionLoading] = useState(true);
   const { user } = useUser();
 
@@ -45,16 +45,11 @@ function AcceptRejectBtn({
     const fetchSubscription = async () => {
       try {
         const customerInfo = await Purchases.getCustomerInfo();
-        const activeSubscriptions = customerInfo.activeSubscriptions;
-        
-        if (activeSubscriptions.length > 0) {
-          setUserSubscription(activeSubscriptions[0]);
-        } else {
-          setUserSubscription(null); // Free tier
-        }
+        const entitlements = customerInfo.entitlements.active;
+        setUserEntitlements(entitlements);
       } catch (error) {
         console.error("Error fetching subscription:", error);
-        setUserSubscription(null);
+        setUserEntitlements({});
       } finally {
         setSubscriptionLoading(false);
       }
@@ -66,15 +61,25 @@ function AcceptRejectBtn({
   const userPostCount = fetchedUser?.postCount;
 
   const postLimit = () => {
-    if (userSubscription === "pro_monthly:pro") return 6;
-    else if (userSubscription === "business_starter:starter") return 25;
-    else if (userSubscription === "business_premium:premium") return -1; // unlimited
-    else return 2; // free tier
+    // Check for specific entitlements (adjust these to match your RevenueCat entitlement identifiers)
+    if (userEntitlements.premium || userEntitlements.Premium) {
+      return -1; // unlimited
+    } else if (userEntitlements.starter || userEntitlements.Starter) {
+      return 25;
+    } else if (userEntitlements.pro || userEntitlements.Pro) {
+      return 6;
+    }
+    return 2; // free tier
   };
 
   const hasUserExceededLimit = () => {
-    if (postLimit() === -1) return false;
-    return userPostCount > postLimit();
+    const limit = postLimit();
+
+    // If unlimited (premium), never exceeded
+    if (limit === -1) return false;
+
+    // Otherwise check if user exceeded their limit
+    return userPostCount >= limit;
   };
 
   const route = useRoute();
@@ -92,7 +97,12 @@ function AcceptRejectBtn({
   };
 
   useEffect(() => {
-    if (!loading && !subscriptionLoading && hasUserExceededLimit() && !alertShown) {
+    if (
+      !loading &&
+      !subscriptionLoading &&
+      hasUserExceededLimit() &&
+      !alertShown
+    ) {
       setAlertShown(true);
 
       setTimeout(() => {
