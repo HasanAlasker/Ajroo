@@ -27,6 +27,7 @@ function DropBox({
   selectedValue,
   disabled,
   icon,
+  userPlan,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
@@ -37,70 +38,28 @@ function DropBox({
   const selectedItem = items.find((item) => item.value === selectedValue);
   const displayText = selectedItem ? selectedItem.label : placeholder;
 
-  const {
-    data: fetchedUser,
-    request: fetchUser,
-    loading,
-    error: userError,
-  } = useApi(getUserById);
-
-  useEffect(() => {
-    if (user?.id) {
-      fetchUser(user.id);
-    }
-  }, [user?.id]);
-
-  // Add debug logging
-  // useEffect(() => {
-  //   if (fetchedUser) {
-  //     console.log("Fetched User:", fetchedUser);
-  //     console.log("Subscription:", fetchedUser.subscription);
-  //     console.log("Product ID:", fetchedUser.subscription?.productId);
-  //   }
-  // }, [fetchedUser]);
-
-  if (loading && !fetchedUser) {
-    return <LoadingCircle />;
-  }
-
   const handlePress = () => {
     if (!disabled) {
       setModal(true);
     }
   };
 
-  const userSubscription = fetchedUser?.subscription?.productId;
-
   const isSelectionDisabled = (placeholderText, label, value) => {
-    // If user data is still loading, don't disable anything
-    if (!fetchedUser) {
-      // console.log("User data still loading, allowing all options");
-      return false;
-    }
-
-    // console.log("Checking subscription:", userSubscription, "for placeholder:", placeholderText, "value:", value);
-
-    // Free users (productId is null) can only post free items
     if (placeholderText === "Select Price Per Day" && value !== "0") {
-      // If user has no subscription or is not on a paid plan
       if (
-        !userSubscription ||
-        (userSubscription !== "pro_monthly:pro" &&
-         userSubscription !== "business_premium:premium" &&
-         userSubscription !== "business_starter:starter")
+        userPlan !== "pro_monthly:pro" &&
+        userPlan !== "business_premium:premium" &&
+        userPlan !== "business_starter:starter"
       ) {
-        // console.log("Price restriction applied - free users can only post free items");
         return true;
       }
     }
 
-    // Only business_premium users can post in automotive or real estate categories
     if (
       placeholderText === "Select Category" &&
       (value === "automotive" || value === "realestate")
     ) {
-      if (userSubscription !== "business_premium:premium") {
-        // console.log("Category restriction applied - only business_premium can access automotive/realestate");
+      if (userPlan !== "business_premium:premium") {
         return true;
       }
     }
@@ -196,7 +155,7 @@ const getStyles = (theme) =>
       width: "90%",
       marginHorizontal: "auto",
       marginTop: 20,
-      overflow:'hidden'
+      overflow: "hidden",
     },
     text: {
       color: theme.purple,
@@ -207,7 +166,7 @@ const getStyles = (theme) =>
     left: {
       flexDirection: "row",
       gap: 10,
-      flex:1
+      flex: 1,
     },
     modalContent: {
       backgroundColor: theme.post,

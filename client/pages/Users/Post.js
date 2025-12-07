@@ -398,6 +398,7 @@ function Post(props) {
                   placeholder="Select Category"
                   items={categories}
                   hasBeenSubmitted={hasBeenSubmitted}
+                  userPlan={userPlan}
                 />
 
                 <FormikDropBox
@@ -414,6 +415,7 @@ function Post(props) {
                     placeholder="Select Price Per Day"
                     items={price}
                     hasBeenSubmitted={hasBeenSubmitted}
+                    userPlan={userPlan}
                   />
                 )}
 

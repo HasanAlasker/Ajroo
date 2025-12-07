@@ -11,6 +11,7 @@ function FormikDropBox({
   disabled = false,
   penOn = false,
   hasBeenSubmitted = false,
+  userPlan,
   ...other
 }) {
   const { values, errors, touched, setFieldTouched, setFieldValue, setStatus } =
@@ -32,6 +33,7 @@ function FormikDropBox({
           }
         }}
         disabled={disabled}
+        userPlan={userPlan}
         {...other}
       />
       {shouldShowError && <ErrorMessage error={errors[name]}></ErrorMessage>}
