@@ -388,6 +388,7 @@ function Post(props) {
                     style={[styles.selectBtn, styles.sell]}
                     isActive={active === "Sell"}
                     onPress={() => setActive("Sell")}
+                    disabled={userPlan === 'free'}
                   />
                 </View>
 
