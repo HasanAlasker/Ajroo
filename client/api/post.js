@@ -43,6 +43,7 @@ export const searchPosts = (filters = {}) => {
   if (filters.area) queryParams.append("area", filters.area);
   if (filters.condition) queryParams.append("condition", filters.condition);
   if (filters.status) queryParams.append("status", filters.status);
+  if (filters.type) queryParams.append("type", filters.type);
 
   // Convert to string: "name=camera&city=Amman"
   const queryString = queryParams.toString();
