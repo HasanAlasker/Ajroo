@@ -14,6 +14,7 @@ function NewsRenderer({
       <NewsCard
         backGroundColor={news.backGroundColor}
         textColor={news.textColor}
+        borderColor={news.borderColor}
         title={news.title}
         createdAt={news.createdAt}
         description={news.description}

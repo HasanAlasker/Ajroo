@@ -18,6 +18,7 @@ function NewsCard({
   icon,
   createdAt,
   actionButton,
+  isActive
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
@@ -66,7 +67,8 @@ const getStyles = (theme) =>
   StyleSheet.create({
     container: {
       marginVertical: 15,
-      paddingBottom:25
+      paddingBottom:25,
+      borderWidth:2
     },
     heading:{gap:5},
     iconAndTitle: {
