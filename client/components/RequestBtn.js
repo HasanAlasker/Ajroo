@@ -17,6 +17,7 @@ function RequestBtn({
   arrow = false,
   color,
   backColor,
+  showLock,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
@@ -47,7 +48,7 @@ function RequestBtn({
         {
           backgroundColor: backColor ? theme[backColor] : buttonColor(),
           borderColor: backColor ? theme[backColor] : borderColor(),
-          opacity: disabled ? 0.6 : 1,
+          opacity: disabled ? 0.5 : 1,
         },
         style,
       ]}
@@ -68,12 +69,12 @@ function RequestBtn({
           size={20}
         ></MaterialCommunityIcons>
       )}
-      {disabled && (
+      {disabled && showLock && (
         <Feather
           name="lock"
           color={theme.purple}
           size={18}
-          style={{marginLeft: 5}}
+          style={{marginLeft:5}}
         ></Feather>
       )}
     </TouchableOpacity>

@@ -34,7 +34,7 @@ function PrimaryBtn({
   isDeleted,
   userEmail,
   userPhone,
-  postType
+  postType,
 }) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
@@ -159,7 +159,7 @@ function PrimaryBtn({
       if (loadingRequests && route.name === "Have") return "Loading...";
       if (isItemRequested() && route.name === "Have")
         return "Pending Request...";
-      if( postType === 'sell') return "Contact User"
+      if (postType === "sell") return "Contact User";
       if (status === "disabled") return "Disabled";
       if (iRequested) return "Cancel Request";
       if (iBorrowed && status === "active") return "Mark Returned";
@@ -190,7 +190,9 @@ function PrimaryBtn({
     // const buttonText = btnText || renderBtnText();
     const buttonText = renderBtnText();
 
-    if (buttonText === "Pending Request...") navigation.navigate("Requests");
+    if (buttonText === "Pending Request..." && route.name === "Have") {
+      navigation.navigate("Requests");
+    }
 
     if (buttonText === "Delete Completely") {
       showAlert({
@@ -353,8 +355,8 @@ function PrimaryBtn({
       await updateStatus(postId, { status: "available" });
       showInfo({
         title: "Success",
-        message: "Post was enabled, refresh screen to see it!"
-      })
+        message: "Post was enabled, refresh screen to see it!",
+      });
       // setBtnText("Disable")
     }
 

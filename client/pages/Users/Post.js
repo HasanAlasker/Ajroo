@@ -389,6 +389,7 @@ function Post(props) {
                     isActive={active === "Sell"}
                     onPress={() => setActive("Sell")}
                     disabled={userPlan === 'individual_free'}
+                    showLock
                   />
                 </View>
 
