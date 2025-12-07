@@ -40,8 +40,6 @@ function PostRenderer({
       isMine = post.reportedPost.user._id === currentUserId;
     }
 
-    console.log(post?.user?.phone)
-
     // Get productId from subscription and convert to display name
     const subscriptionType =
       post.user?.subscription?.productId ||

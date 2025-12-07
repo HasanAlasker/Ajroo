@@ -16,6 +16,7 @@ import {
   condition,
   getAreasByCity,
   getItemsByCategory,
+  type,
 } from "../../constants/DropOptions";
 
 import { Formik } from "formik";
@@ -36,6 +37,7 @@ function FilterModal({ isVisible, onClose, onSearchResults }) {
     city: "",
     area: "",
     condition: "",
+    type: "",
   };
 
   const handleSubmit = async (
@@ -48,11 +50,16 @@ function FilterModal({ isVisible, onClose, onSearchResults }) {
       // Build activeFilters from Formik values
       const activeFilters = {};
 
+      // Type
+      if (values.type) {
+        activeFilters.type = values.type;
+      }
+
       // Category
       if (values.category) {
         activeFilters.category = values.category;
       }
-
+      
       // Item (maps to "name" in backend)
       if (values.item) {
         activeFilters.name = values.item;
@@ -109,7 +116,6 @@ function FilterModal({ isVisible, onClose, onSearchResults }) {
 
       // Close modal after successful search
       onClose();
-      
     } catch (error) {
       // console.log("FilterModal: Search error:", error);
       // console.log("FilterModal: Error details:", error.response || error.message);
@@ -198,6 +204,13 @@ function FilterModal({ isVisible, onClose, onSearchResults }) {
 
             return (
               <ScrollView>
+                <FormikDropBox
+                  name="type"
+                  placeholder="Select Post Type"
+                  items={type}
+                  hasBeenSubmitted={hasBeenSubmitted}
+                />
+
                 <FormikDropBox
                   name="category"
                   placeholder="Select Category"
