@@ -207,7 +207,7 @@ function EditProfile({ rating, sep }) {
               <Note
                 title={"Note"}
                 text={
-                  "Only admins and users you approve to borrow your items can see your phone number."
+                  "Your phone number is used so interested users can contact you about your items."
                 }
                 style={styles.note}
               />
@@ -240,7 +240,7 @@ const getStyles = (theme) =>
       width: "100%",
     },
     note:{
-      marginTop:40
+      marginTop:40,
     }
   });
 

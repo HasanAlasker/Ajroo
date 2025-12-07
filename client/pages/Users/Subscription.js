@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  Platform,
-} from "react-native";
+import { View, StyleSheet, ActivityIndicator, Platform } from "react-native";
 import ScrollScreen from "../../components/general/ScrollScreen";
 import SafeScreen from "../../components/general/SafeScreen";
 import Navbar from "../../components/general/Navbar";
@@ -54,185 +49,197 @@ function Subscription(props) {
   }, [customerInfo]);
 
   // Map RevenueCat entitlement to backend subscription type
-const mapEntitlementToSubscriptionType = (entitlement) => {
-  const mapping = {
-    pro: "pro_monthly:pro",
-    starter: "business_starter:starter",
-    premium: "business_premium:premium",
+  const mapEntitlementToSubscriptionType = (entitlement) => {
+    const mapping = {
+      pro: "pro_monthly:pro",
+      starter: "business_starter:starter",
+      premium: "business_premium:premium",
+    };
+    return mapping[entitlement] || "individual_free";
   };
-  return mapping[entitlement] || "individual_free";
-};
 
-// Map product ID to store format
-const mapProductIdToStore = (productId) => {
-  if (productId?.includes("ios") || productId?.includes("apple")) {
-    return "app_store";
-  }
-  if (productId?.includes("android") || productId?.includes("google")) {
-    return "play_store";
-  }
-  return Platform.OS === "ios" ? "app_store" : "play_store";
-};
-
-const handlePurchase = async (packageToPurchase, planName) => {
-  if (purchasing) return;
-  setPurchasing(true);
-
-  try {
-    const result = await purchasePackage(packageToPurchase);
-
-    if (result.success) {
-      try {
-        await refreshCustomerInfo();
-        const newActiveSub = getActiveSubscriptionType();
-        setLocalActiveSubscription(newActiveSub);
-
-        const subscriptionType = mapEntitlementToSubscriptionType(newActiveSub);
-
-        console.log("🔄 Purchase - Entitlement:", newActiveSub);
-        console.log("🔄 Purchase - Full Type:", subscriptionType);
-
-        const activeEntitlements = result.customerInfo?.entitlements?.active || {};
-        const activeEntitlement = activeEntitlements[newActiveSub];
-        const expirationDate = activeEntitlement?.expirationDate;
-
-        const updateData = {
-          subscriptionType,
-          revenueCatId: result.customerInfo?.originalAppUserId,
-          productId: packageToPurchase.product.identifier,
-          expirationDate: expirationDate || null,
-          store: mapProductIdToStore(packageToPurchase.product.identifier),
-          originalPurchaseDate: new Date().toISOString(),
-          willRenew: activeEntitlement?.willRenew || true,
-          autoRenew: !activeEntitlement?.billingIssuesDetectedAt,
-        };
-
-        console.log("📤 Sending to backend:", updateData);
-
-        const apiResponse = await updateSubscription(updateData);
-
-        if (apiResponse.ok) {
-          showInfo({
-            title: "Success! 🎉",
-            message: `You've successfully subscribed to ${planName}!`,
-            confirmText: "OK",
-          });
-        } else {
-          console.error("❌ Backend update failed:", apiResponse.data);
-          showInfo({
-            title: "Warning",
-            message: "Purchase successful but failed to update your account. Please contact support if the issue persists.",
-            confirmText: "OK",
-          });
-        }
-      } catch (error) {
-        console.error("❌ Error updating backend:", error);
-        showInfo({
-          title: "Warning",
-          message: "Purchase successful but failed to sync with server. Your subscription is active. If issues persist, try 'Restore Purchases'.",
-          confirmText: "OK",
-        });
-      }
-    } else if (!result.error?.userCancelled) {
-      showInfo({
-        title: "Purchase Failed",
-        message: result.error?.message || "Something went wrong. Please try again.",
-        confirmText: "OK",
-      });
+  // Map product ID to store format
+  const mapProductIdToStore = (productId) => {
+    if (productId?.includes("ios") || productId?.includes("apple")) {
+      return "app_store";
     }
-  } catch (error) {
-    console.error("❌ Purchase error:", error);
-    showInfo({
-      title: "Purchase Failed",
-      message: "An unexpected error occurred. Please try again.",
-      confirmText: "OK",
-    });
-  } finally {
-    setPurchasing(false);
-  }
-};
+    if (productId?.includes("android") || productId?.includes("google")) {
+      return "play_store";
+    }
+    return Platform.OS === "ios" ? "app_store" : "play_store";
+  };
 
-const handleRestore = async () => {
-  if (restoring) return;
-  setRestoring(true);
+  const handlePurchase = async (packageToPurchase, planName) => {
+    if (purchasing) return;
+    setPurchasing(true);
 
-  try {
-    const result = await restorePurchases();
+    try {
+      const result = await purchasePackage(packageToPurchase);
 
-    if (result.success) {
-      try {
-        const newActiveSub = getActiveSubscriptionType();
-        setLocalActiveSubscription(newActiveSub);
+      if (result.success) {
+        try {
+          await refreshCustomerInfo();
+          const newActiveSub = getActiveSubscriptionType();
+          setLocalActiveSubscription(newActiveSub);
 
-        if (result.hasActiveEntitlement && newActiveSub) {
-          const subscriptionType = mapEntitlementToSubscriptionType(newActiveSub);
+          const subscriptionType =
+            mapEntitlementToSubscriptionType(newActiveSub);
 
-          console.log("🔄 Restore - Entitlement:", newActiveSub);
-          console.log("🔄 Restore - Full Type:", subscriptionType);
+          console.log("🔄 Purchase - Entitlement:", newActiveSub);
+          console.log("🔄 Purchase - Full Type:", subscriptionType);
 
-          const activeEntitlements = result.customerInfo?.entitlements?.active || {};
+          const activeEntitlements =
+            result.customerInfo?.entitlements?.active || {};
           const activeEntitlement = activeEntitlements[newActiveSub];
           const expirationDate = activeEntitlement?.expirationDate;
 
-          const restoreData = {
+          const updateData = {
             subscriptionType,
             revenueCatId: result.customerInfo?.originalAppUserId,
+            productId: packageToPurchase.product.identifier,
             expirationDate: expirationDate || null,
-            willRenew: activeEntitlement?.willRenew || false,
+            store: mapProductIdToStore(packageToPurchase.product.identifier),
+            originalPurchaseDate: new Date().toISOString(),
+            willRenew: activeEntitlement?.willRenew || true,
             autoRenew: !activeEntitlement?.billingIssuesDetectedAt,
           };
 
-          console.log("📤 Restoring to backend:", restoreData);
+          console.log("📤 Sending to backend:", updateData);
 
-          const apiResponse = await restoreSubscription(restoreData);
+          const apiResponse = await updateSubscription(updateData);
 
           if (apiResponse.ok) {
             showInfo({
-              title: "Purchases Restored! ✅",
-              message: `Your ${newActiveSub?.toUpperCase() || "subscription"} plan has been restored successfully!`,
+              title: "Success! 🎉",
+              message: `You've successfully subscribed to ${planName}!`,
               confirmText: "OK",
             });
           } else {
-            console.error("❌ Backend restore failed:", apiResponse.data);
+            console.error("❌ Backend update failed:", apiResponse.data);
             showInfo({
-              title: "Partially Restored",
-              message: "Purchases restored locally but failed to sync with server. Please try again or contact support if the issue persists.",
+              title: "Warning",
+              message:
+                "Purchase successful but failed to update your account. Please contact support if the issue persists.",
               confirmText: "OK",
             });
           }
-        } else {
+        } catch (error) {
+          console.error("❌ Error updating backend:", error);
           showInfo({
-            title: "No Active Subscriptions",
-            message: "No active subscriptions were found to restore.",
+            title: "Warning",
+            message:
+              "Purchase successful but failed to sync with server. Your subscription is active. If issues persist, try 'Restore Purchases'.",
             confirmText: "OK",
           });
         }
-      } catch (error) {
-        console.error("❌ Error restoring backend:", error);
+      } else if (!result.error?.userCancelled) {
         showInfo({
-          title: "Partially Restored",
-          message: "Purchases restored locally but failed to sync. Please try again later.",
+          title: "Purchase Failed",
+          message:
+            result.error?.message || "Something went wrong. Please try again.",
           confirmText: "OK",
         });
       }
-    } else {
+    } catch (error) {
+      console.error("❌ Purchase error:", error);
       showInfo({
-        title: "Restore Failed",
-        message: "Unable to restore purchases. Please check your internet connection and try again.",
+        title: "Purchase Failed",
+        message: "An unexpected error occurred. Please try again.",
         confirmText: "OK",
       });
+    } finally {
+      setPurchasing(false);
     }
-  } catch (error) {
-    console.error("❌ Restore error:", error);
-    showInfo({
-      title: "Restore Failed",
-      message: "An unexpected error occurred. Please try again.",
-      confirmText: "OK",
-    });
-  } finally {
-    setRestoring(false);
-  }
-};
+  };
+
+  const handleRestore = async () => {
+    if (restoring) return;
+    setRestoring(true);
+
+    try {
+      const result = await restorePurchases();
+
+      if (result.success) {
+        try {
+          const newActiveSub = getActiveSubscriptionType();
+          setLocalActiveSubscription(newActiveSub);
+
+          if (result.hasActiveEntitlement && newActiveSub) {
+            const subscriptionType =
+              mapEntitlementToSubscriptionType(newActiveSub);
+
+            console.log("🔄 Restore - Entitlement:", newActiveSub);
+            console.log("🔄 Restore - Full Type:", subscriptionType);
+
+            const activeEntitlements =
+              result.customerInfo?.entitlements?.active || {};
+            const activeEntitlement = activeEntitlements[newActiveSub];
+            const expirationDate = activeEntitlement?.expirationDate;
+
+            const restoreData = {
+              subscriptionType,
+              revenueCatId: result.customerInfo?.originalAppUserId,
+              expirationDate: expirationDate || null,
+              willRenew: activeEntitlement?.willRenew || false,
+              autoRenew: !activeEntitlement?.billingIssuesDetectedAt,
+            };
+
+            console.log("📤 Restoring to backend:", restoreData);
+
+            const apiResponse = await restoreSubscription(restoreData);
+
+            if (apiResponse.ok) {
+              showInfo({
+                title: "Purchases Restored! ✅",
+                message: `Your ${
+                  newActiveSub?.toUpperCase() || "subscription"
+                } plan has been restored successfully!`,
+                confirmText: "OK",
+              });
+            } else {
+              console.error("❌ Backend restore failed:", apiResponse.data);
+              showInfo({
+                title: "Partially Restored",
+                message:
+                  "Purchases restored locally but failed to sync with server. Please try again or contact support if the issue persists.",
+                confirmText: "OK",
+              });
+            }
+          } else {
+            showInfo({
+              title: "No Active Subscriptions",
+              message: "No active subscriptions were found to restore.",
+              confirmText: "OK",
+            });
+          }
+        } catch (error) {
+          console.error("❌ Error restoring backend:", error);
+          showInfo({
+            title: "Partially Restored",
+            message:
+              "Purchases restored locally but failed to sync. Please try again later.",
+            confirmText: "OK",
+          });
+        }
+      } else {
+        showInfo({
+          title: "Restore Failed",
+          message:
+            "Unable to restore purchases. Please check your internet connection and try again.",
+          confirmText: "OK",
+        });
+      }
+    } catch (error) {
+      console.error("❌ Restore error:", error);
+      showInfo({
+        title: "Restore Failed",
+        message: "An unexpected error occurred. Please try again.",
+        confirmText: "OK",
+      });
+    } finally {
+      setRestoring(false);
+    }
+  };
 
   // Get packages with JD prices
   const proPackage = getPackageWithJDPrice("pro_monthly");
@@ -261,7 +268,10 @@ const handleRestore = async () => {
                 color={theme.green}
               />
               <AppText style={[styles.text, { color: theme.green }]}>
-                Active: {localActiveSubscription.charAt(0).toUpperCase()+ localActiveSubscription.slice(1)} Plan
+                Active:{" "}
+                {localActiveSubscription.charAt(0).toUpperCase() +
+                  localActiveSubscription.slice(1)}{" "}
+                Plan
               </AppText>
             </View>
           </PostComponent>
@@ -350,15 +360,18 @@ const handleRestore = async () => {
             } else {
               showInfo({
                 title: "Unavailable",
-                message: "This package is temporarily unavailable. Please try again later.",
+                message:
+                  "This package is temporarily unavailable. Please try again later.",
                 confirmText: "OK",
               });
             }
           }}
           disabled={purchasing || !proPackage}
         >
-          List up to 6 items for rental every month and make money.{"\n\n"}
-          The profit is all yours - We don't take commission.
+          List up to 6 items.{"\n\n"}
+          Enable price-per-day listings.{"\n\n"}
+          Enable item selling option.{"\n\n"}
+          Keep 100% of your earnings — we take no commission.
         </OfferCard>
 
         {/* Starter Plan */}
@@ -384,14 +397,15 @@ const handleRestore = async () => {
             } else {
               showInfo({
                 title: "Unavailable",
-                message: "This package is temporarily unavailable. Please try again later.",
+                message:
+                  "This package is temporarily unavailable. Please try again later.",
                 confirmText: "OK",
               });
             }
           }}
           disabled={purchasing || !starterPackage}
         >
-          List up to 25 items for rental every month and make more money.
+          List up to 25 items for rental and make more money.
           {"\n\n"}
           Get a verification badge - Displayed next to your user name.
         </OfferCard>
@@ -419,16 +433,17 @@ const handleRestore = async () => {
             } else {
               showInfo({
                 title: "Unavailable",
-                message: "This package is temporarily unavailable. Please try again later.",
+                message:
+                  "This package is temporarily unavailable. Please try again later.",
                 confirmText: "OK",
               });
             }
           }}
           disabled={purchasing || !premiumPackage}
         >
-          List unlimited items and max out your profit every month.{"\n\n"}
-          Get a crown badge - Displayed next to your user name.{"\n\n"}
-          List Real Estate and Automotive items.
+          List unlimited items and max out your profit.{"\n\n"}
+          Enable Real Estate and Automotive options.{"\n\n"}
+          Get a crown badge - Displayed next to your user name.
         </OfferCard>
 
         <SeparatorComp children={"Manage Subscription"} />
@@ -573,7 +588,6 @@ const getStyles = (theme) =>
       padding: 2,
       borderRadius: 10,
       width: "100%",
-      
     },
   });
 
