@@ -124,7 +124,7 @@ const mapEntitlementToPlanType = (entitlementKey) => {
 function Post(props) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [userPlan, setUserPlan] = useState("free");
+  const [userPlan, setUserPlan] = useState("individual_free");
   const [canPost, setCanPost] = useState(true);
   const [subscriptionError, setSubscriptionError] = useState(null);
   const [active, setActive] = useState("Rent");
@@ -388,7 +388,7 @@ function Post(props) {
                     style={[styles.selectBtn, styles.sell]}
                     isActive={active === "Sell"}
                     onPress={() => setActive("Sell")}
-                    disabled={userPlan === 'free'}
+                    disabled={userPlan === 'individual_free'}
                   />
                 </View>
 
