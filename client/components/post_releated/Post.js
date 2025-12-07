@@ -49,12 +49,14 @@ function Post({
   name,
   date,
   image,
+  type,
   itemName,
   itemCat,
   city,
   area,
   isMine,
   status,
+  description,
   borrowStatus,
   rating,
   phoneNumber,
@@ -62,6 +64,7 @@ function Post({
   title,
   isDisabled,
   pricePerDay,
+  sellPrice,
   reportReason,
   endDate,
   reporter,
@@ -129,6 +132,7 @@ function Post({
             itemName={formatText(itemName)}
             itemCat={formatText(itemCat)}
             pricePerDay={pricePerDay}
+            sellPrice={sellPrice}
           />
         ) : (
           <ItemBill billId={borrowId} postId={id}></ItemBill>

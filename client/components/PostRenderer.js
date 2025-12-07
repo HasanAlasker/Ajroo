@@ -84,14 +84,17 @@ function PostRenderer({
         ownerId={post?.owner?._id}
         borrowerId={post?.borrower?._id}
         image={post.image || post.reportedPost?.image || post?.item?.image}
+        type={post?.type || post.reportedPost?.type}
         itemCat={
           post.category || post.reportedPost?.category || post?.item?.category
         }
         itemName={post.name || post.reportedPost?.name}
-        pricePerDay={post.pricePerDay || post.reportedPost?.pricePerDay}
+        pricePerDay={post?.pricePerDay || post.reportedPost?.pricePerDay}
+        sellPrice={post?.sellPrice || post?.reportedPost?.sellPrice}
         city={post.city || post.reportedPost?.city}
         area={post.area || post.reportedPost?.area}
         condition={post.condition || post.reportedPost?.condition}
+        description={post?.description || post.reportedPost?.description}
         rating={post?.rating || post.reportedPost?.rating}
         date={post.createdAt}
         reportReason={post?.reason}
@@ -142,7 +145,7 @@ const EmptyState = ({ message }) => (
 
 const styles = StyleSheet.create({
   list: {
-    paddingBottom:30
+    paddingBottom: 30,
   },
 });
 
