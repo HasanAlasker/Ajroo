@@ -32,6 +32,8 @@ import {
 } from "../../constants/subscriptionLimits";
 import { useTheme } from "../../config/ThemeContext";
 import useThemedStyles from "../../hooks/useThemedStyles";
+import RequestBtn from "../../components/RequestBtn";
+import FormikInput from "../../components/form/FormikInput";
 
 const validationSchema = Yup.object().shape({
   category: Yup.string()
@@ -84,6 +86,17 @@ const validationSchema = Yup.object().shape({
       return typeof value === "string" && value.length > 0;
     }),
   price: Yup.string().required("Please choose pricing"),
+  sellPrice: Yup.number()
+    .typeError("Please enter a valid number for the price")
+    .min(1, "The price must be at least 1")
+    .required("A price is required to list your item"),
+
+  description: Yup.string()
+    .min(
+      10,
+      "Please provide a more detailed description (at least 10 characters)"
+    )
+    .optional(),
 });
 
 const mapEntitlementToPlanType = (entitlementKey) => {
@@ -101,6 +114,7 @@ function Post(props) {
   const [userPlan, setUserPlan] = useState("free");
   const [canPost, setCanPost] = useState(true);
   const [subscriptionError, setSubscriptionError] = useState(null);
+  const [active, setActive] = useState("Rent");
   const { showInfo } = useAlert();
   const { user } = useUser();
   const styles = useThemedStyles(getStyles);
@@ -343,6 +357,21 @@ function Post(props) {
                   errorMessage={errors.image}
                 />
 
+                <View style={styles.select}>
+                  <RequestBtn
+                    title={"Rent"}
+                    style={[styles.selectBtn, styles.rent]}
+                    isActive={active === "Rent"}
+                    onPress={() => setActive("Rent")}
+                  />
+                  <RequestBtn
+                    title={"Sell"}
+                    style={[styles.selectBtn, styles.sell]}
+                    isActive={active === "Sell"}
+                    onPress={() => setActive("Sell")}
+                  />
+                </View>
+
                 <FormikDropBox
                   name="category"
                   placeholder="Select Category"
@@ -358,12 +387,24 @@ function Post(props) {
                   hasBeenSubmitted={hasBeenSubmitted}
                 />
 
-                <FormikDropBox
-                  name="price"
-                  placeholder="Select Price Per Day"
-                  items={price}
-                  hasBeenSubmitted={hasBeenSubmitted}
-                />
+                {active === "Rent" && (
+                  <FormikDropBox
+                    name="price"
+                    placeholder="Select Price Per Day"
+                    items={price}
+                    hasBeenSubmitted={hasBeenSubmitted}
+                  />
+                )}
+
+                {active === "Sell" && (
+                  <FormikInput
+                    name="sellPrice"
+                    placeholder="Enter Selling Price"
+                    items={price}
+                    hasBeenSubmitted={hasBeenSubmitted}
+                    keyboardType={"numeric"}
+                  />
+                )}
 
                 <FormikDropBox
                   name="city"
@@ -386,6 +427,16 @@ function Post(props) {
                   items={condition}
                   hasBeenSubmitted={hasBeenSubmitted}
                 />
+
+                {active === "Sell" && (
+                  <FormikInput
+                    name="description"
+                    placeholder="Description (optional)"
+                    hasBeenSubmitted={hasBeenSubmitted}
+                    isBox={true}
+                    height={100}
+                  />
+                )}
 
                 <SubmitBtn
                   disabled={fetchedUser?.isBlocked || loading || !canPost}
@@ -413,6 +464,24 @@ const getStyles = (theme) =>
       marginTop: 35,
       width: "90%",
       marginHorizontal: "auto",
+    },
+    select: {
+      flexDirection: "row",
+      width: "90%",
+      marginHorizontal: "auto",
+    },
+    selectBtn: {
+      width: "50%",
+    },
+    rent: {
+      borderTopRightRadius: 0,
+      borderTopLeftRadius: 0,
+      borderBottomRightRadius: 0,
+    },
+    sell: {
+      borderTopLeftRadius: 0,
+      borderTopRightRadius: 0,
+      borderBottomLeftRadius: 0,
     },
     limitText: {
       fontSize: 14,
