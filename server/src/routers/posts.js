@@ -132,6 +132,7 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
       "condition",
       "type",
       "sellPrice",
+      "description"
     ]);
 
     // user id should be set by req.user._id for security reasons
@@ -181,6 +182,7 @@ router.put(
         "area",
         "condition",
         "sellPrice",
+        "description"
       ]);
 
       const updatedPost = await PostModel.findByIdAndUpdate(id, data, {

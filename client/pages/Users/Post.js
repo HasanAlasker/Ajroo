@@ -35,69 +35,82 @@ import useThemedStyles from "../../hooks/useThemedStyles";
 import RequestBtn from "../../components/RequestBtn";
 import FormikInput from "../../components/form/FormikInput";
 
-const validationSchema = Yup.object().shape({
-  category: Yup.string()
-    .required("Please select a category")
-    .oneOf(
-      categories.map((cat) => cat.value),
-      "Please select a valid category"
-    ),
-  item: Yup.string()
-    .required("Please select an item")
-    .test(
-      "item-matches-category",
-      "Please select a valid item for this category",
-      function (value) {
-        const { category } = this.parent;
-        if (!category || !value) return true;
-        const categoryItems = getItemsByCategory(category);
-        return categoryItems.some((item) => item.value === value);
-      }
-    ),
-  city: Yup.string()
-    .required("Please select a city")
-    .oneOf(
-      cities.map((city) => city.value),
-      "Please select a valid city"
-    ),
-  area: Yup.string()
-    .required("Please select an area")
-    .test(
-      "area-matches-city",
-      "Please select a valid area for this city",
-      function (value) {
-        const { city } = this.parent;
-        if (!city || !value) return true;
-        const cityAreas = getAreasByCity(city);
-        return cityAreas.some((area) => area.value === value);
-      }
-    ),
-  condition: Yup.string()
-    .required("Please select item condition")
-    .oneOf(
-      condition.map((cond) => cond.value),
-      "Please select a valid condition"
-    ),
-  image: Yup.string()
-    .nullable()
-    .required("Please add an image")
-    .test("valid-uri", "Please select a valid image", (value) => {
-      if (!value) return false;
-      return typeof value === "string" && value.length > 0;
-    }),
-  price: Yup.string().required("Please choose pricing"),
-  sellPrice: Yup.number()
-    .typeError("Please enter a valid number for the price")
-    .min(1, "The price must be at least 1")
-    .required("A price is required to list your item"),
+// Fixed validation schema - conditional based on active type
+const getValidationSchema = (active) => {
+  const baseSchema = {
+    category: Yup.string()
+      .required("Please select a category")
+      .oneOf(
+        categories.map((cat) => cat.value),
+        "Please select a valid category"
+      ),
+    item: Yup.string()
+      .required("Please select an item")
+      .test(
+        "item-matches-category",
+        "Please select a valid item for this category",
+        function (value) {
+          const { category } = this.parent;
+          if (!category || !value) return true;
+          const categoryItems = getItemsByCategory(category);
+          return categoryItems.some((item) => item.value === value);
+        }
+      ),
+    city: Yup.string()
+      .required("Please select a city")
+      .oneOf(
+        cities.map((city) => city.value),
+        "Please select a valid city"
+      ),
+    area: Yup.string()
+      .required("Please select an area")
+      .test(
+        "area-matches-city",
+        "Please select a valid area for this city",
+        function (value) {
+          const { city } = this.parent;
+          if (!city || !value) return true;
+          const cityAreas = getAreasByCity(city);
+          return cityAreas.some((area) => area.value === value);
+        }
+      ),
+    condition: Yup.string()
+      .required("Please select item condition")
+      .oneOf(
+        condition.map((cond) => cond.value),
+        "Please select a valid condition"
+      ),
+    image: Yup.string()
+      .nullable()
+      .required("Please add an image")
+      .test("valid-uri", "Please select a valid image", (value) => {
+        if (!value) return false;
+        return typeof value === "string" && value.length > 0;
+      }),
+    description: Yup.string()
+      .min(
+        10,
+        "Please provide a more detailed description (at least 10 characters)"
+      )
+      .max(
+        2000,
+        "Description cannot exceed 2000 characters"
+      )
+      .optional(),
+  };
 
-  description: Yup.string()
-    .min(
-      10,
-      "Please provide a more detailed description (at least 10 characters)"
-    )
-    .optional(),
-});
+  // Add conditional validation based on active type
+  if (active === "Rent") {
+    baseSchema.price = Yup.string().required("Please choose pricing");
+  } else if (active === "Sell") {
+    baseSchema.sellPrice = Yup.number()
+      .typeError("Please enter a valid number for the price")
+      .min(1, "The price must be at least 1")
+      .required("A price is required to list your item");
+  }
+
+  return Yup.object().shape(baseSchema);
+};
 
 const mapEntitlementToPlanType = (entitlementKey) => {
   const mapping = {
@@ -134,46 +147,28 @@ function Post(props) {
   useEffect(() => {
     const checkUserSubscription = async () => {
       try {
-        // console.log("🔍 Checking subscription status...");
         const customerInfo = await Purchases.getCustomerInfo();
-
-        // console.log("📦 Customer Info:", JSON.stringify(customerInfo, null, 2));
-        // console.log(
-        //   "🎯 Active Entitlements:",
-        //   Object.keys(customerInfo.entitlements.active)
-        // );
-
         const entitlements = customerInfo.entitlements.active;
 
-        let planType = "individual_free"; // default to free
+        let planType = "individual_free";
 
-        // Check entitlements in priority order (highest to lowest)
         if (entitlements["premium"]) {
-          planType = "business_premium:premium"; // ✅ Full format
+          planType = "business_premium:premium";
         } else if (entitlements["starter"]) {
-          planType = "business_starter:starter"; // ✅ Full format
+          planType = "business_starter:starter";
         } else if (entitlements["pro"]) {
-          planType = "pro_monthly:pro"; // ✅ Full format
-        } else {
-          // console.log("ℹ️ No active subscription - using free plan");
+          planType = "pro_monthly:pro";
         }
 
         setUserPlan(planType);
         setSubscriptionError(null);
 
-        // Check if user can post
         if (fetchedUser?.postCount !== undefined) {
           const canUserPostNow = canUserPost(fetchedUser.postCount, planType);
           setCanPost(canUserPostNow);
 
           const limit = getPostLimit(planType);
-          // console.log(
-          //   `📊 Post Count: ${fetchedUser.postCount}/${
-          //     limit === -1 ? "∞" : limit
-          //   }`
-          // );
 
-          // Show warning if at limit
           if (limit !== -1 && fetchedUser.postCount >= limit) {
             showInfo({
               title: "Post Limit Reached",
@@ -186,7 +181,7 @@ function Post(props) {
         console.error("❌ Error checking subscription:", error);
         setSubscriptionError(error.message);
         setUserPlan("free");
-        setCanPost(fetchedUser?.postCount < 2); // Free plan limit
+        setCanPost(fetchedUser?.postCount < 2);
       }
     };
 
@@ -211,7 +206,6 @@ function Post(props) {
     values,
     { setSubmitting, setStatus, resetForm }
   ) => {
-    // Check post limit before submitting
     if (!canPost) {
       showInfo({
         title: "Post Limit Reached",
@@ -226,18 +220,24 @@ function Post(props) {
     try {
       const imageUrl = await uploadImage(values.image);
 
+      // Fixed: properly handle rent vs sell data
       const postData = {
         image: imageUrl,
         type: active,
         name: values.item,
-        pricePerDay: values.price,
         category: values.category,
         city: values.city,
         area: values.area,
         condition: values.condition,
-        sellPrice: values.sellPrice,
         description: values.description,
       };
+
+      // Add type-specific fields
+      if (active === "Rent") {
+        postData.pricePerDay = values.price;
+      } else if (active === "Sell") {
+        postData.sellPrice = values.sellPrice;
+      }
 
       await addPost(postData);
 
@@ -247,7 +247,6 @@ function Post(props) {
         confirmText: "Got it",
       });
 
-      // Refresh user data to update post count
       await fetchUser(user.id);
 
       resetForm();
@@ -275,7 +274,6 @@ function Post(props) {
     }
   };
 
-  // Show post count and limit info
   const renderPostLimitInfo = () => {
     if (!fetchedUser) return null;
 
@@ -305,7 +303,7 @@ function Post(props) {
       <ScrollScreen>
         <Formik
           initialValues={initialValues}
-          validationSchema={validationSchema}
+          validationSchema={getValidationSchema(active)} // Dynamic validation
           onSubmit={handleSubmit}
         >
           {({ values, errors, setFieldValue, setStatus }) => {
@@ -349,6 +347,15 @@ function Post(props) {
                 }
               }
             }, [values.city]);
+
+            // Handle active state changes - clear type-specific fields
+            useEffect(() => {
+              if (active === "Rent") {
+                setFieldValue("sellPrice", "");
+              } else if (active === "Sell") {
+                setFieldValue("price", "");
+              }
+            }, [active]);
 
             return (
               <>
@@ -412,7 +419,6 @@ function Post(props) {
                   <FormikInput
                     name="sellPrice"
                     placeholder="Enter Selling Price"
-                    items={price}
                     hasBeenSubmitted={hasBeenSubmitted}
                     keyboardType={"numeric"}
                   />

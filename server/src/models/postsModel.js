@@ -1,3 +1,5 @@
+import { string } from "joi";
+import { max, min } from "lodash";
 import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema(
@@ -123,6 +125,11 @@ const postSchema = new mongoose.Schema(
     rentStartDate: Date,
     rentEndDate: Date,
     reservedUntil: Date,
+    description: {
+      type: string,
+      min: 10,
+      max: 2000,
+    },
   },
   { timestamps: true }
 );
