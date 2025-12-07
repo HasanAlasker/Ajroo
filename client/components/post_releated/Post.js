@@ -24,6 +24,7 @@ import ErrorBox from "../general/ErrorBox";
 import PhoneNumber from "./PhoneNumber";
 import { formatDate } from "../../functions/formatDate";
 import { usePosts } from "../../config/PostContext";
+import Description from "./Description";
 
 // Capitalize first letter and replace underscores with spaces
 const formatText = (text) => {
@@ -140,6 +141,8 @@ function Post({
           <ItemBill billId={borrowId} postId={id}></ItemBill>
         )}
 
+        {description && <Description description={description}/>}
+
         <LableContainer>
           {area && <Location city={formatText(city)} area={formatText(area)} />}
           {route.name === "Book" && phoneNumber && (
@@ -230,6 +233,7 @@ const getStyles = (theme) =>
     post: {
       marginVertical: 20,
       zIndex: 50,
+      flex:1
     },
     reportReason: {
       color: theme.error_text,
