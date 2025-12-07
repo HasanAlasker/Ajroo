@@ -269,6 +269,8 @@ router.get("/search", auth, async (req, res) => {
       rating,
       condition,
       status,
+      type,
+      sellingPrice,
     } = req.query;
 
     // Base query - always exclude deleted posts
@@ -317,6 +319,11 @@ router.get("/search", auth, async (req, res) => {
     // Condition filter
     if (condition) {
       query.condition = condition;
+    }
+
+    // Type filter
+    if (type) {
+      query.type = type;
     }
 
     // console.log("Backend search query:", query);
