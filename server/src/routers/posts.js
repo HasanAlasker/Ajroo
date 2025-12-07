@@ -131,7 +131,7 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
       "area",
       "condition",
       "type",
-      "sellingPrice",
+      "sellPrice",
     ]);
 
     // user id should be set by req.user._id for security reasons
@@ -180,7 +180,7 @@ router.put(
         "city",
         "area",
         "condition",
-        "sellingPrice",
+        "sellPrice",
       ]);
 
       const updatedPost = await PostModel.findByIdAndUpdate(id, data, {
@@ -270,7 +270,7 @@ router.get("/search", auth, async (req, res) => {
       condition,
       status,
       type,
-      sellingPrice,
+      sellPrice,
     } = req.query;
 
     // Base query - always exclude deleted posts

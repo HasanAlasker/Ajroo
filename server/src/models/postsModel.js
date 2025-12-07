@@ -52,7 +52,7 @@ const postSchema = new mongoose.Schema(
       max: 300, // change it later if expensive items are requested to be added in the app
       // required: true,
     },
-    sellingPrice: {
+    sellPrice: {
       type: Number,
       min: 0,
     },

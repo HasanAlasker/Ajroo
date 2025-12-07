@@ -199,6 +199,8 @@ function Post(props) {
     category: "",
     item: "",
     price: "",
+    sellPrice: "",
+    description: "",
     city: "",
     area: "",
     condition: "",
@@ -226,12 +228,15 @@ function Post(props) {
 
       const postData = {
         image: imageUrl,
+        type: active,
         name: values.item,
         pricePerDay: values.price,
         category: values.category,
         city: values.city,
         area: values.area,
         condition: values.condition,
+        sellPrice: values.sellPrice,
+        description: values.description,
       };
 
       await addPost(postData);
@@ -357,7 +362,7 @@ function Post(props) {
                   errorMessage={errors.image}
                   containerStyle={{ marginBottom: 0 }}
                   touchableAreaStyle={{
-                    borderRadius:0,
+                    borderRadius: 0,
                     borderTopRightRadius: 20,
                     borderTopLeftRadius: 20,
                     borderBottomWidth: 0,
