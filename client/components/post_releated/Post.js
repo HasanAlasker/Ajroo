@@ -23,6 +23,7 @@ import AppText from "../../config/AppText";
 import ErrorBox from "../general/ErrorBox";
 import PhoneNumber from "./PhoneNumber";
 import { formatDate } from "../../functions/formatDate";
+import { usePosts } from "../../config/PostContext";
 
 // Capitalize first letter and replace underscores with spaces
 const formatText = (text) => {
@@ -74,6 +75,7 @@ function Post({
   isRequesterBlocked,
   isOwnerBlocked,
   userEmail,
+  userPhone
 }) {
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
@@ -176,6 +178,8 @@ function Post({
               borrowerId={borrowerId}
               isDeleted={isDeleted}
               userEmail={userEmail}
+              userPhone={userPhone}
+              postType={type}
             />
           )}
           {route.name === "Requests" &&

@@ -40,6 +40,8 @@ function PostRenderer({
       isMine = post.reportedPost.user._id === currentUserId;
     }
 
+    console.log(post?.user?.phone)
+
     // Get productId from subscription and convert to display name
     const subscriptionType =
       post.user?.subscription?.productId ||
@@ -81,6 +83,7 @@ function PostRenderer({
           post?.owner?._id
         }
         userEmail={post?.user?.email}
+        userPhone={post?.user?.phone}
         ownerId={post?.owner?._id}
         borrowerId={post?.borrower?._id}
         image={post.image || post.reportedPost?.image || post?.item?.image}

@@ -50,7 +50,7 @@ router.get("/", auth, async (req, res) => {
     const posts = await PostModel.find({ isDeleted: false })
       .populate({
         path: "user",
-        select: "name image subscription email",
+        select: "name image subscription email phone",
         populate: {
           path: "subscription",
           select: "productId status",
@@ -76,7 +76,7 @@ router.get("/available", auth, async (req, res) => {
     })
       .populate({
         path: "user",
-        select: "name image isBlocked subscription",
+        select: "name image isBlocked subscription phone",
         populate: {
           path: "subscription",
           select: "productId status",
@@ -105,7 +105,7 @@ router.get("/deleted", [auth, admin], async (req, res) => {
       .sort("-createdAt")
       .populate({
         path: "user",
-        select: "name image subscription",
+        select: "name image subscription phone",
         populate: {
           path: "subscription",
           select: "productId status",
@@ -242,7 +242,7 @@ router.get("/user/:id", auth, async (req, res) => {
       .sort({ createdAt: -1 })
       .populate({
         path: "user",
-        select: "name image subscription",
+        select: "name image subscription phone",
         populate: {
           path: "subscription",
           select: "productId status",
@@ -333,7 +333,7 @@ router.get("/search", auth, async (req, res) => {
     const filteredPosts = await PostModel.find(query)
       .populate({
         path: "user",
-        select: "name image subscription",
+        select: "name image subscription phone",
         populate: {
           path: "subscription",
           select: "productId status",
@@ -362,7 +362,7 @@ router.get("/:id", auth, async (req, res) => {
 
     const post = await PostModel.findById(id).populate({
       path: "user",
-      select: "name image subscription",
+      select: "name image subscription phone",
       populate: {
         path: "subscription",
         select: "productId status",

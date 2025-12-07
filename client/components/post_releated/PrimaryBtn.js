@@ -33,6 +33,8 @@ function PrimaryBtn({
   requestId,
   isDeleted,
   userEmail,
+  userPhone,
+  postType
 }) {
   const { theme } = useTheme();
   const styles = useThemedStyles(getStyles);
@@ -79,6 +81,23 @@ function PrimaryBtn({
       showAlert({
         title: "Error",
         message: "Failed to copy email.",
+        confirmText: "Close",
+      });
+    }
+  };
+
+  const handleContact = async () => {
+    try {
+      await Clipboard.setStringAsync(userPhone);
+      showInfo({
+        title: "Copied!",
+        message: "Phone number copied to clipboard.",
+        confirmText: "Close",
+      });
+    } catch (error) {
+      showAlert({
+        title: "Error",
+        message: "Failed to copy phone number.",
         confirmText: "Close",
       });
     }
@@ -140,6 +159,7 @@ function PrimaryBtn({
       if (loadingRequests && route.name === "Have") return "Loading...";
       if (isItemRequested() && route.name === "Have")
         return "Pending Request...";
+      if( postType === 'sell') return "Contact User"
       if (status === "disabled") return "Disabled";
       if (iRequested) return "Cancel Request";
       if (iBorrowed && status === "active") return "Mark Returned";
@@ -236,6 +256,10 @@ function PrimaryBtn({
 
     if (buttonText === "Email User") {
       handleCopy();
+    }
+
+    if (buttonText === "Contact User") {
+      handleContact();
     }
 
     if (buttonText === "Delete Report") {
