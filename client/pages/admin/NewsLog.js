@@ -8,38 +8,44 @@ import useApi from "../../hooks/useApi";
 import { getAllNews } from "../../api/news";
 import NewsCard from "../../components/NewsCard";
 import NewsRenderer from "../../components/NewsRenderer";
+import { useUser } from "../../config/UserContext";
+import AddHoverBtn from "../../components/general/AddHoverBtn";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 function NewsLog(props) {
   const { data: fetchedNews, request: fetchNews, loading } = useApi(getAllNews);
+  const { user } = useUser();
+  const navigation = useNavigation();
 
-  const [refresh, setRefresh] = useState(false)
+  const [refresh, setRefresh] = useState(false);
 
-  useEffect(()=>{
-    fetchNews()
-  },[])
+  useEffect(() => {
+    fetchNews();
+  }, []);
 
   const handleRefresh = async () => {
-    await fetchNews()
-  }
+    await fetchNews();
+  };
 
-  console.log(fetchedNews)
+  const handleAddBtn = () => {
+    if (user.role === "admin") navigation.navigate("AddNews");
+  };
+
+  console.log(fetchedNews);
   return (
     <SafeScreen>
       {/* <AppText>Ajroo News Log</AppText> */}
-      <NewsRenderer 
+      <NewsRenderer
         fetchedNews={fetchedNews}
         refreshing={refresh}
         onRefresh={handleRefresh}
-      >
-
-      </NewsRenderer>
+      ></NewsRenderer>
+      <AddHoverBtn onPress={handleAddBtn}/>
       <Navbar />
     </SafeScreen>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {},
-});
+const styles = StyleSheet.create({});
 
 export default NewsLog;

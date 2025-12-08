@@ -42,6 +42,7 @@ import {
 } from "./api/subscription";
 import AlertModal from "./components/general/AlertModal";
 import NewsLog from "./pages/admin/NewsLog";
+import AddNews from "./pages/admin/AddNews";
 
 const Stack = createNativeStackNavigator();
 
@@ -81,6 +82,7 @@ const AdminStack = () => {
       <Stack.Screen name="Blocks" component={Blocks} />
       <Stack.Screen name="AdminSuggestions" component={AdminSuggestions} />
       <Stack.Screen name="NewsLog" component={NewsLog} />
+      <Stack.Screen name="AddNews" component={AddNews} />
     </Stack.Navigator>
   );
 };
