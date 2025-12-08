@@ -18,7 +18,7 @@ function NewsCard({
   icon,
   createdAt,
   actionButton,
-  isActive
+  isActive,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
@@ -59,6 +59,25 @@ function NewsCard({
       >
         {description}
       </AppText>
+
+      <RequestBtn
+        title={"Edit"}
+        color={backGroundColor}
+        backColor={'always_white'}
+        style={styles.btn}
+      />
+      <RequestBtn
+        title={"Activate"}
+        color={backGroundColor}
+        backColor={'always_white'}
+        style={styles.btn}
+      />
+      <RequestBtn
+        title={"Delete"}
+        color={backGroundColor}
+        backColor={'always_white'}
+        style={styles.btn}
+      />
     </PostComponent>
   );
 }
@@ -67,10 +86,10 @@ const getStyles = (theme) =>
   StyleSheet.create({
     container: {
       marginVertical: 15,
-      paddingBottom:25,
-      borderWidth:2
+      // paddingBottom: 25,
+      borderWidth: 2,
     },
-    heading:{gap:5},
+    heading: { gap: 5 },
     iconAndTitle: {
       flexDirection: "row",
       alignItems: "center",
@@ -93,7 +112,9 @@ const getStyles = (theme) =>
       borderRadius: 10,
       width: "100%",
       marginTop: 5,
+      marginBottom:0,
     },
+    
   });
 
 export default NewsCard;

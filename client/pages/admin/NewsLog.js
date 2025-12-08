@@ -32,7 +32,6 @@ function NewsLog(props) {
     if (isAdmin) navigation.navigate("AddNews");
   };
 
-  console.log(fetchedNews);
   return (
     <SafeScreen>
       {/* <AppText>Ajroo News Log</AppText> */}
