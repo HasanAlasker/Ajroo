@@ -135,7 +135,7 @@ userSchema.methods.generateAuthToken = function () {
       phone: this.phone,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "1m" } // ~ 114 years
   );
   return token;
 };

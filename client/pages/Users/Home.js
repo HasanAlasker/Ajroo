@@ -7,9 +7,21 @@ import WelcomeCard from "../../components/WelcomeCard";
 import SquareCard from "../../components/SquareCard";
 import Navbar from "../../components/general/Navbar";
 import SafeScreen from "../../components/general/SafeScreen";
+import { useUser } from "../../config/UserContext";
+import { useAlert } from "../../config/AlertContext";
 
 function Home({ navigation }) {
   const styles = useThemedStyles(getStyles);
+  const { user, token } = useUser();
+  const { showInfo } = useAlert();
+
+  if (!user || !token) {
+    showInfo({
+      title: "Important!",
+      message:
+        "You have to logout and login again, because your token has expired.",
+    });
+  }
 
   const handleCardPress = (categoryName) => {
     // Navigate to Have page with category filter
