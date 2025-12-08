@@ -39,8 +39,9 @@ function NewsLog(props) {
         fetchedNews={fetchedNews}
         refreshing={refresh}
         onRefresh={handleRefresh}
-      ></NewsRenderer>
-      {isAdmin && <AddHoverBtn onPress={handleAddBtn} />}
+      >
+        {isAdmin && <AddHoverBtn onPress={handleAddBtn} />}
+      </NewsRenderer>
       <Navbar />
     </SafeScreen>
   );

@@ -12,6 +12,7 @@ function NewsRenderer({
   const renderNews = ({ item: news }) => {
     return (
       <NewsCard
+        id={news._id}
         backGroundColor={news.backGroundColor}
         textColor={news.textColor}
         borderColor={news.borderColor}
@@ -37,6 +38,8 @@ function NewsRenderer({
       windowSize={3}
       removeClippedSubviews={true}
       updateCellsBatchingPeriod={50}
+      contentContainerStyle={{paddingBottom:30}}
+      style={styles.box}
     ></FlatList>
   );
 }
@@ -48,4 +51,9 @@ const EmptyState = ({ message }) => (
     <AppText style={{ fontSize: 16, color: "#999" }}>{message}</AppText>
   </View>
 );
+
+const styles = StyleSheet.create({
+  box:{}
+});
+
 export default NewsRenderer;

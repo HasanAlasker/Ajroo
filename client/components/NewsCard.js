@@ -7,6 +7,9 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import AppText from "../config/AppText";
 import RequestBtn from "./RequestBtn";
 import { formatDate } from "../functions/formatDate";
+import { deleteNews } from "../api/news";
+import { useAlert } from "../config/AlertContext";
+import { useUser } from "../config/UserContext";
 
 function NewsCard({
   id,
@@ -22,6 +25,31 @@ function NewsCard({
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
+  const { user } = useUser();
+
+  const { showAlert, showInfo } = useAlert();
+
+  const isAdmin = user.role === "admin";
+
+  const handleDelete = async () => {
+    showAlert({
+      title: "Delete news?",
+      message: "Are you sure you want to delete news?",
+      confirmText: "Yes",
+      cancelText: "No",
+      onConfirm: async () => {
+        try {
+          await deleteNews(id);
+        } catch (error) {
+          showAlert({
+            title: "Error",
+            message: "Something went wrong.",
+            confirmText: "Close",
+          });
+        }
+      },
+    });
+  };
 
   return (
     <PostComponent
@@ -60,24 +88,29 @@ function NewsCard({
         {description}
       </AppText>
 
-      <RequestBtn
-        title={"Edit"}
-        color={backGroundColor}
-        backColor={'always_white'}
-        style={styles.btn}
-      />
-      <RequestBtn
-        title={"Activate"}
-        color={backGroundColor}
-        backColor={'always_white'}
-        style={styles.btn}
-      />
-      <RequestBtn
-        title={"Delete"}
-        color={backGroundColor}
-        backColor={'always_white'}
-        style={styles.btn}
-      />
+      {isAdmin && (
+        <>
+          <RequestBtn
+            title={"Edit"}
+            color={backGroundColor}
+            backColor={"always_white"}
+            style={styles.btn}
+          />
+          <RequestBtn
+            title={"Activate"}
+            color={backGroundColor}
+            backColor={"always_white"}
+            style={styles.btn}
+          />
+          <RequestBtn
+            title={"Delete"}
+            color={backGroundColor}
+            backColor={"always_white"}
+            style={styles.btn}
+            onPress={handleDelete}
+          />
+        </>
+      )}
     </PostComponent>
   );
 }
@@ -112,9 +145,8 @@ const getStyles = (theme) =>
       borderRadius: 10,
       width: "100%",
       marginTop: 5,
-      marginBottom:0,
+      marginBottom: 0,
     },
-    
   });
 
 export default NewsCard;

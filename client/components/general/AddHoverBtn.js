@@ -20,7 +20,8 @@ const getStyles = (theme) =>
   StyleSheet.create({
     container: {
       width: "100%",
-      paddingBottom: 20,
+      paddingBottom: 10,
+      marginTop:10
     },
     btn: {
       alignItems: "center",
