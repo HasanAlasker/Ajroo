@@ -21,6 +21,9 @@ import FormBtn from "./FormBtn";
 import { editPost, getPostById } from "../api/post";
 import useApi from "../hooks/useApi";
 import { uploadImage } from "../api/upload";
+import { getUserById } from "../api/user";
+import Purchases from "react-native-purchases";
+import { useUser } from "../config/UserContext";
 
 // Dynamic validation schema based on post type
 const getValidationSchema = (postType) => {
@@ -96,19 +99,69 @@ const getValidationSchema = (postType) => {
 
 function EditPostModal({ postId, visible, onClose }) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
+  const [subscriptionError, setSubscriptionError] = useState(null);
+  const [userPlan, setUserPlan] = useState("individual_free");
+  const {user} = useUser()
+
+  const styles = useThemedStyles(getStyles);
+
   const {
     data: post,
     request: fetchPost,
     error,
     loading,
   } = useApi(getPostById);
-  const styles = useThemedStyles(getStyles);
+
+  const {
+    data: fetchedUser,
+    request: fetchUser,
+    loading: fetching,
+  } = useApi(getUserById);
 
   useEffect(() => {
     if (visible && postId) {
       fetchPost(postId);
     }
   }, [postId, visible]);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchUser(user.id);
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    const checkUserSubscription = async () => {
+      try {
+        const customerInfo = await Purchases.getCustomerInfo();
+        const entitlements = customerInfo.entitlements.active;
+
+        let planType = "individual_free";
+
+        if (entitlements["premium"]) {
+          planType = "business_premium:premium";
+        } else if (entitlements["starter"]) {
+          planType = "business_starter:starter";
+        } else if (entitlements["pro"]) {
+          planType = "pro_monthly:pro";
+        }
+
+        setUserPlan(planType);
+        setSubscriptionError(null);
+
+       
+        
+      } catch (error) {
+        console.error("❌ Error checking subscription:", error);
+        setSubscriptionError(error.message);
+        setUserPlan("individual_free");
+      }
+    };
+
+    if (fetchedUser) {
+      checkUserSubscription();
+    }
+  }, [fetchedUser]);
 
   if (loading) {
     return <LoadingCircle />;
@@ -268,6 +321,7 @@ function EditPostModal({ postId, visible, onClose }) {
                   placeholder="Select Category"
                   items={categories}
                   hasBeenSubmitted={hasBeenSubmitted}
+                  userPlan={userPlan}
                 />
 
                 <FormikDropBox
@@ -284,6 +338,7 @@ function EditPostModal({ postId, visible, onClose }) {
                     placeholder="Select Price Per Day"
                     items={price}
                     hasBeenSubmitted={hasBeenSubmitted}
+                    userPlan={userPlan}
                   />
                 )}
 

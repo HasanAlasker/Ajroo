@@ -177,7 +177,7 @@ function Post(props) {
       } catch (error) {
         console.error("❌ Error checking subscription:", error);
         setSubscriptionError(error.message);
-        setUserPlan("free");
+        setUserPlan("individual_free");
         setCanPost(fetchedUser?.postCount < 2);
       }
     };
