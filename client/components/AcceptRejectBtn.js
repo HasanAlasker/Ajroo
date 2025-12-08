@@ -79,7 +79,7 @@ function AcceptRejectBtn({
     if (limit === -1) return false;
 
     // Otherwise check if user exceeded their limit
-    return userPostCount >= limit;
+    return userPostCount > limit;
   };
 
   const route = useRoute();
