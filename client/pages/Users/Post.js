@@ -92,10 +92,7 @@ const getValidationSchema = (active) => {
         10,
         "Please provide a more detailed description (at least 10 characters)"
       )
-      .max(
-        2000,
-        "Description cannot exceed 2000 characters"
-      )
+      .max(2000, "Description cannot exceed 2000 characters")
       .optional(),
   };
 
@@ -388,7 +385,7 @@ function Post(props) {
                     style={[styles.selectBtn, styles.sell]}
                     isActive={active === "Sell"}
                     onPress={() => setActive("Sell")}
-                    disabled={userPlan === 'individual_free'}
+                    disabled={userPlan === "individual_free"}
                     showLock
                   />
                 </View>
@@ -450,15 +447,13 @@ function Post(props) {
                   hasBeenSubmitted={hasBeenSubmitted}
                 />
 
-                {active === "Sell" && (
-                  <FormikInput
-                    name="description"
-                    placeholder="Description (optional)"
-                    hasBeenSubmitted={hasBeenSubmitted}
-                    isBox={true}
-                    height={100}
-                  />
-                )}
+                <FormikInput
+                  name="description"
+                  placeholder="Description (optional)"
+                  hasBeenSubmitted={hasBeenSubmitted}
+                  isBox={true}
+                  height={100}
+                />
 
                 <SubmitBtn
                   disabled={fetchedUser?.isBlocked || loading || !canPost}
