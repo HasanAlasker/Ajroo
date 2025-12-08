@@ -99,7 +99,7 @@ const AuthStack = () => (
 
 // Main navigation component that switches based on auth state
 const AppNavigator = () => {
-  const { isAuthenticated, isAdmin, isLoading, user } = useUser();
+  const { isAuthenticated, isAdmin, isLoading, user, logout, token } = useUser();
   const { isDarkMode } = useTheme();
 
   // Initialize RevenueCat
@@ -144,6 +144,9 @@ const AppNavigator = () => {
             console.log("✅ RevenueCat ID synced with backend");
           } else {
             console.error("❌ Failed to sync RevenueCat ID:", response.data);
+            if(response.data.name === "TokenExpiredError"){
+              logout()
+            }
           }
 
           await syncSubscriptionData(customerInfo, user.id);
