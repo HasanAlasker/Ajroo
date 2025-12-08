@@ -9,7 +9,6 @@ import FormikInput from "../../components/form/FormikInput";
 import FormikDropBox from "../../components/form/FormikDropBox";
 import SubmitBtn from "../../components/form/SubmitBtn";
 import { useAlert } from "../../config/AlertContext";
-// import { addSuggestion } from "../../api/suggestions"; // you'll create this endpoint
 import { useUser } from "../../config/UserContext";
 import { makeSuggestion } from "../../api/suggestion";
 import AppText from "../../config/AppText";

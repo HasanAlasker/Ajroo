@@ -2017,6 +2017,46 @@ export const type = [
   { label: "Items For Sale", value: "sell" },
 ];
 
+export const colors = [
+  { label: "Purple", value: "purple" },
+  { label: "Background", value: "background" },
+  { label: "Post Background", value: "post" },
+  { label: "Main Text", value: "main_text" },
+  { label: "Secondary Text", value: "sec_text" },
+  { label: "Light Gray", value: "light_gray" },
+  { label: "Loading Gray", value: "loading" },
+  { label: "Dark Gray", value: "darker_gray" },
+  { label: "Red", value: "red" },
+  { label: "Error Text", value: "error_text" },
+  { label: "Error Background", value: "error_back" },
+  { label: "Error Border", value: "error_border" },
+  { label: "Always White", value: "always_white" },
+  { label: "Gold", value: "gold" },
+  { label: "Green", value: "green" },
+  { label: "Purple Ghost", value: "ghost" },
+  { label: "Orange", value: "orange" },
+  { label: "Blue", value: "blue" },
+
+  // 🌈 Card Colors (descriptive names)
+  { label: "Warm Amber", value: "card1" }, // #FFE188
+  { label: "Soft Coral", value: "card2" }, // #FF8888
+  { label: "Peach Glow", value: "card3" }, // #FFA888
+  { label: "Lavender Burst", value: "card4" }, // #EF88FF
+  { label: "Violet Dream", value: "card5" }, // #A688FF
+  { label: "Sky Breeze", value: "card6" }, // #88C8FF
+  { label: "Neon Orchid", value: "card7" }, // #cb72ff
+  { label: "Mint Fresh", value: "card8" }, // #88FFCB
+  { label: "Aqua Mist", value: "card9" }, // #88e7ff
+  { label: "Honey Glow", value: "card10" }, // #ffcd86
+  { label: "Blossom Pink", value: "card11" }, // #ffb9d8
+  { label: "Fresh Lime", value: "card12" }, // #62ff89
+];
+
+export const yesNo = [
+  {label: "Yes", value: true},
+  {label: "No", value: false}
+]
+
 // Helper functions to filter items by category and areas by city
 export const getItemsByCategory = (categoryValue) => {
   return items.filter((item) => item.category === categoryValue);

@@ -18,6 +18,7 @@ function NewsLog(props) {
   const navigation = useNavigation();
 
   const [refresh, setRefresh] = useState(false);
+  const isAdmin = user.role === "admin";
 
   useEffect(() => {
     fetchNews();
@@ -28,7 +29,7 @@ function NewsLog(props) {
   };
 
   const handleAddBtn = () => {
-    if (user.role === "admin") navigation.navigate("AddNews");
+    if (isAdmin) navigation.navigate("AddNews");
   };
 
   console.log(fetchedNews);
@@ -40,7 +41,7 @@ function NewsLog(props) {
         refreshing={refresh}
         onRefresh={handleRefresh}
       ></NewsRenderer>
-      <AddHoverBtn onPress={handleAddBtn}/>
+      {isAdmin && <AddHoverBtn onPress={handleAddBtn} />}
       <Navbar />
     </SafeScreen>
   );
