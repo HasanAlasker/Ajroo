@@ -39,7 +39,8 @@ router.post(
 // edit news (admin)
 
 router.put(
-  "/edit/:id"[auth, admin, validate(editNewsValidation)],
+  "/edit/:id",
+  [auth, admin, validate(editNewsValidation)],
   async (req, res) => {
     try {
       const id = req.params.id;
@@ -142,7 +143,7 @@ router.put("/activate/:id", [auth, admin], async (req, res) => {
 
 router.get("/", auth, async (req, res) => {
   try {
-    const allNews = await NewsModel.find().sort('-createdAt');
+    const allNews = await NewsModel.find().sort("-createdAt");
     if (!allNews) return res.status(404).send("No news found");
     return res.status(200).send(allNews);
   } catch (error) {
@@ -162,7 +163,6 @@ router.get("/active", auth, async (req, res) => {
 
     if (!activeNews) return res.status(404).send("No active news found");
     return res.status(200).send(activeNews);
-    
   } catch (error) {
     return res.status(500).send("Server error", error);
   }
