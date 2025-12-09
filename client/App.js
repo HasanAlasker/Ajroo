@@ -43,6 +43,7 @@ import {
 import AlertModal from "./components/general/AlertModal";
 import NewsLog from "./pages/admin/NewsLog";
 import AddNews from "./pages/admin/AddNews";
+import EditNews from "./pages/admin/EditNews";
 
 const Stack = createNativeStackNavigator();
 
@@ -83,6 +84,7 @@ const AdminStack = () => {
       <Stack.Screen name="AdminSuggestions" component={AdminSuggestions} />
       <Stack.Screen name="NewsLog" component={NewsLog} />
       <Stack.Screen name="AddNews" component={AddNews} />
+      <Stack.Screen name="EditNews" component={EditNews} />
     </Stack.Navigator>
   );
 };

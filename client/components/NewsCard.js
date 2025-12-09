@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import PostComponent from "./post_releated/PostComponent";
 import useThemedStyles from "../hooks/useThemedStyles";
@@ -7,7 +7,7 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import AppText from "../config/AppText";
 import RequestBtn from "./RequestBtn";
 import { formatDate } from "../functions/formatDate";
-import { deleteNews } from "../api/news";
+import { activateNews, deactivateNews, deleteNews } from "../api/news";
 import { useAlert } from "../config/AlertContext";
 import { useUser } from "../config/UserContext";
 
@@ -29,6 +29,8 @@ function NewsCard({
 
   const { showAlert, showInfo } = useAlert();
 
+  const [active, setActive] = useState(isActive);
+
   const isAdmin = user.role === "admin";
 
   const handleDelete = async () => {
@@ -49,6 +51,48 @@ function NewsCard({
         }
       },
     });
+  };
+
+  const handleActivation = async () => {
+    if (!active) {
+      showAlert({
+        title: "Activate news?",
+        message: "Are you sure you want to activate news?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            await activateNews(id);
+            setActive(!active);
+          } catch (error) {
+            showAlert({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
+    } else {
+      showAlert({
+        title: "Deactivate news?",
+        message: "Are you sure you want to deactivate news?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: async () => {
+          try {
+            await deactivateNews(id);
+            setActive(!active);
+          } catch (error) {
+            showAlert({
+              title: "Error",
+              message: "Something went wrong.",
+              confirmText: "Close",
+            });
+          }
+        },
+      });
+    }
   };
 
   return (
@@ -90,24 +134,28 @@ function NewsCard({
 
       {isAdmin && (
         <>
+          <View style={styles.btnBox}>
+            <RequestBtn
+              title={"Edit"}
+              color={backGroundColor}
+              backColor={"always_white"}
+              style={styles.btn}
+            />
+            <RequestBtn
+              title={"Delete"}
+              color={backGroundColor}
+              backColor={"always_white"}
+              style={styles.btn}
+              onPress={handleDelete}
+            />
+          </View>
+
           <RequestBtn
-            title={"Edit"}
+            title={active ? "Deactivate" : "Activate"}
             color={backGroundColor}
             backColor={"always_white"}
-            style={styles.btn}
-          />
-          <RequestBtn
-            title={"Activate"}
-            color={backGroundColor}
-            backColor={"always_white"}
-            style={styles.btn}
-          />
-          <RequestBtn
-            title={"Delete"}
-            color={backGroundColor}
-            backColor={"always_white"}
-            style={styles.btn}
-            onPress={handleDelete}
+            style={styles.fullBtn}
+            onPress={handleActivation}
           />
         </>
       )}
@@ -140,12 +188,23 @@ const getStyles = (theme) =>
       fontSize: 25,
       fontWeight: "bold",
     },
+    btnBox: {
+      display: "flex",
+      flexDirection: "row",
+      width: "100%",
+      justifyContent: "space-between",
+      flex: 1,
+    },
     btn: {
       padding: 2,
       borderRadius: 10,
-      width: "100%",
       marginTop: 5,
       marginBottom: 0,
+      width: "47%",
+    },
+    fullBtn: {
+      padding: 2,
+      width: "100%",
     },
   });
 

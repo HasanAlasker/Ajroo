@@ -19,6 +19,7 @@ function NewsRenderer({
         title={news.title}
         createdAt={news.createdAt}
         description={news.description}
+        isActive={news.isActive}
         icon={news?.icon}
       />
     );
