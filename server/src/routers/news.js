@@ -39,7 +39,7 @@ router.post(
 // edit news (admin)
 
 router.put(
-  "/edit/:id"[(auth, admin, validate(editNewsValidation))],
+  "/edit/:id"[auth, admin, validate(editNewsValidation)],
   async (req, res) => {
     try {
       const id = req.params.id;

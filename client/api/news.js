@@ -8,7 +8,7 @@ export const getActiveNews = () => apiClient.get(`${endPoint}/active`);
 
 export const createNews = (data) => apiClient.post(`${endPoint}/create`, data);
 
-export const editNews = (data) => apiClient.put(`${endPoint}/edit`, data);
+export const editNews = (id, data) => apiClient.put(`${endPoint}/edit/${id}`, data);
 
 export const deactivateNews = (id) =>
   apiClient.put(`${endPoint}/deactivate/${id}`);

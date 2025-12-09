@@ -10,6 +10,7 @@ import { formatDate } from "../functions/formatDate";
 import { activateNews, deactivateNews, deleteNews } from "../api/news";
 import { useAlert } from "../config/AlertContext";
 import { useUser } from "../config/UserContext";
+import { useNavigation } from "@react-navigation/native";
 
 function NewsCard({
   id,
@@ -28,6 +29,7 @@ function NewsCard({
   const { user } = useUser();
 
   const { showAlert, showInfo } = useAlert();
+  const navigation = useNavigation();
 
   const [active, setActive] = useState(isActive);
 
@@ -140,6 +142,17 @@ function NewsCard({
               color={backGroundColor}
               backColor={"always_white"}
               style={styles.btn}
+              onPress={() =>
+                navigation.navigate("EditNews", {
+                  id,
+                  title,
+                  icon,
+                  description,
+                  backGroundColor,
+                  textColor,
+                  borderColor,  
+                })
+              }
             />
             <RequestBtn
               title={"Delete"}
