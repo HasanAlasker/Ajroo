@@ -29,6 +29,7 @@ function RequestModal({
   const [duration, setDuration] = useState(0);
   const [baseUnit, setBaseUnit] = useState(""); // Store base unit
   const [active, setActive] = useState(null);
+  const [loading, setLoading] = useState(false)
 
   const increase = () => setDuration((prev) => Math.min(prev + 1, 99));
   const decrease = () => setDuration((prev) => Math.max(prev - 1, 1));
@@ -86,6 +87,7 @@ function RequestModal({
 
   const handleRequest = async () => {
     try {
+      setLoading(true)
       const startDate = new Date();
       const endDate = new Date(startDate);
 
@@ -135,6 +137,8 @@ function RequestModal({
           "Your rental request has been sent to the owner. Track its status in Profile > Notifications.",
         confirmText: "Got it",
       });
+
+      setLoading(false)
     } catch (error) {
       // console.error("Error creating request:", error);
       // Optionally show an error message to the user
@@ -220,14 +224,16 @@ function RequestModal({
         <View style={styles.buttons}>
           <View style={styles.buttons}>
             <RequestBtn
-              title={"Request"}
+              title={!loading ? "Request" : "Requesting..."}
               isGreen={true}
               onPress={handleRequest}
+              disabled={loading}
             ></RequestBtn>
             <RequestBtn
               title={"Cancel"}
               isRed={true}
               onPress={onClose}
+              disabled={loading}
             ></RequestBtn>
           </View>
         </View>
