@@ -137,7 +137,23 @@ function NewsCard({
       >
         {description}
       </AppText>
-
+      {actionButton && (
+        <RequestBtn
+          title={"Update App"}
+          color={backGroundColor}
+          backColor={"always_white"}
+          style={styles.fullBtn}
+          onPress={() =>
+            openURL(
+              Platform.OS === "android"
+                ? "https://play.google.com/store/apps/details?id=com.hasan_alasker.Ajroo"
+                : "", // add apple store link when you have it
+              showAlert
+            )
+          }
+          arrow
+        />
+      )}
       {isAdmin && (
         <>
           {route.name !== "Dash" && (
@@ -176,23 +192,6 @@ function NewsCard({
             style={styles.fullBtn}
             onPress={handleActivation}
           />
-
-          {actionButton && !isAdmin && (
-            <RequestBtn
-              title={"Update App"}
-              color={backGroundColor}
-              backColor={"always_white"}
-              style={styles.fullBtn}
-              onPress={() =>
-                openURL(
-                  Platform.OS === "android"
-                    ? "https://play.google.com/store/apps/details?id=com.hasan_alasker.Ajroo"
-                    : "" // add apple store link when you have it
-                )
-              }
-              arrow
-            />
-          )}
         </>
       )}
     </PostComponent>
