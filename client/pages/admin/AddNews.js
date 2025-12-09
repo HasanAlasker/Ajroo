@@ -42,6 +42,8 @@ const validationSchema = Yup.object().shape({
     .typeError("Display duration must be a number")
     .integer("Display duration must be an integer")
     .required("Please enter the display duration"),
+
+  actionButton: Yup.boolean().optional(),
 });
 
 const initialValues = {
@@ -53,6 +55,7 @@ const initialValues = {
   textColor: "",
   isActive: "",
   displayDuration: "", // int number
+  actionButton: "",
 };
 
 function AddNews(props) {
@@ -62,7 +65,7 @@ function AddNews(props) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
 
   const { showInfo } = useAlert();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const handleSubmit = async (
     values,
@@ -79,9 +82,13 @@ function AddNews(props) {
         textColor: values.textColor,
         isActive: values.isActive,
         displayDuration: values.displayDuration,
+        actionButton: values.actionButton,
       };
 
-      await createNews(newsData);
+      console.log(newsData)
+
+      const res = await createNews(newsData);
+      console.log(res)
 
       showInfo({
         title: "Done!",
@@ -91,7 +98,7 @@ function AddNews(props) {
 
       resetForm();
       setHasBeenSubmitted(false);
-      navigation.navigate('NewsLog')
+      navigation.navigate("NewsLog");
     } catch (err) {
       console.error("News error:", err.response?.data || err.message);
       showInfo({
@@ -176,6 +183,13 @@ function AddNews(props) {
               <FormikInput
                 name="icon"
                 placeholder="Icon before title (optional)"
+                hasBeenSubmitted={hasBeenSubmitted}
+              />
+
+              <FormikDropBox
+                name="actionButton"
+                placeholder="Button to store listing?"
+                items={yesNo}
                 hasBeenSubmitted={hasBeenSubmitted}
               />
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import PostComponent from "./post_releated/PostComponent";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
@@ -11,6 +11,7 @@ import { activateNews, deactivateNews, deleteNews } from "../api/news";
 import { useAlert } from "../config/AlertContext";
 import { useUser } from "../config/UserContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { openURL } from "../functions/openURL";
 
 function NewsCard({
   id,
@@ -175,6 +176,23 @@ function NewsCard({
             style={styles.fullBtn}
             onPress={handleActivation}
           />
+
+          {actionButton && !isAdmin && (
+            <RequestBtn
+              title={"Update App"}
+              color={backGroundColor}
+              backColor={"always_white"}
+              style={styles.fullBtn}
+              onPress={() =>
+                openURL(
+                  Platform.OS === "android"
+                    ? "https://play.google.com/store/apps/details?id=com.hasan_alasker.Ajroo"
+                    : "" // add apple store link when you have it
+                )
+              }
+              arrow
+            />
+          )}
         </>
       )}
     </PostComponent>

@@ -46,8 +46,7 @@ const newsSchema = new mongoose.Schema(
       type: String,
     },
     actionButton: {
-      text: String,
-      link: String, // deep link to a screen or external URL
+      type: Boolean,
     },
   },
   { timestamps: true }

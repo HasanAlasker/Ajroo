@@ -38,16 +38,7 @@ export const createNewsValidation = Joi.object({
 
   icon: Joi.string().max(100).optional().allow(""),
 
-  actionButton: Joi.object({
-    text: Joi.string().max(50).required().messages({
-      "string.empty": "Action button text is required",
-      "string.max": "Action button text cannot exceed 50 characters",
-    }),
-    link: Joi.string().uri({ allowRelative: true }).required().messages({
-      "string.empty": "Action button link is required",
-      "string.uri": "Action button link must be a valid URL or deep link",
-    }),
-  }).optional(),
+  actionButton: Joi.boolean().optional(),
 });
 
 export const editNewsValidation = Joi.object({
@@ -83,14 +74,7 @@ export const editNewsValidation = Joi.object({
 
   icon: Joi.string().max(100).allow(""),
 
-  actionButton: Joi.object({
-    text: Joi.string().max(50).messages({
-      "string.max": "Action button text cannot exceed 50 characters",
-    }),
-    link: Joi.string().uri({ allowRelative: true }).messages({
-      "string.uri": "Action button link must be a valid URL or deep link",
-    }),
-  }).optional(),
+  actionButton: Joi.boolean().optional(),
 })
   .min(1)
   .messages({
