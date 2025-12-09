@@ -1,17 +1,22 @@
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from "react-native";
 
-function ScrollScreen({children}) {
+function ScrollScreen({ children, ...other }) {
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-        {children}
+    <ScrollView
+      style={styles.container}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 40 }}
+      {...other}
+    >
+      {children}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     flex: 1,
   },
-})
+});
 
 export default ScrollScreen;

@@ -8,15 +8,19 @@ import LoadingCircle from "../../components/general/LoadingCircle";
 import useApi from "../../hooks/useApi";
 import { getStats } from "../../api/admin"; // New API function
 import LoadingDash from "../../components/general/LoadingDash";
+import { getActiveNews } from "../../api/news";
+import NewsCard from "../../components/NewsCard";
 
 function Dash(props) {
   const [refreshing, setRefreshing] = useState(false);
 
   // Single API call for all stats
   const { data: stats, error, loading, request: fetchStats } = useApi(getStats);
+  const { data: news, request: fetchNews, loadingNews } = useApi(getActiveNews);
 
   useEffect(() => {
     fetchStats();
+    fetchNews();
   }, []);
 
   const handleRefresh = async () => {
@@ -65,6 +69,20 @@ function Dash(props) {
         ) : (
           <>
             <View style={styles.container}>
+              {!loading && news && Object.keys(news).length > 0 && (
+                <NewsCard
+                  id={news._id}
+                  backGroundColor={news.backGroundColor}
+                  textColor={news.textColor}
+                  borderColor={news.borderColor}
+                  title={news.title}
+                  createdAt={news.createdAt}
+                  description={news.description}
+                  isActive={news.isActive}
+                  icon={news?.icon}
+                  style={styles.news}
+                />
+              )}
               <AdminCard
                 title={"Total Users"}
                 backColor={"post"}
@@ -197,6 +215,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
   },
+  news: { width: "95%" },
 });
 
 export default Dash;

@@ -14,6 +14,7 @@ import useThemedStyles from "../../hooks/useThemedStyles";
 import useApi from "../../hooks/useApi";
 import { createNews } from "../../api/news";
 import { useAlert } from "../../config/AlertContext";
+import { useNavigation } from "@react-navigation/native";
 
 const validationSchema = Yup.object().shape({
   icon: Yup.string().optional(),
@@ -60,7 +61,8 @@ function AddNews(props) {
   const [loading, setLoading] = useState(false);
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
 
-  const {showInfo} = useAlert()
+  const { showInfo } = useAlert();
+  const navigation = useNavigation()
 
   const handleSubmit = async (
     values,
@@ -69,7 +71,7 @@ function AddNews(props) {
     setLoading(true);
     try {
       const newsData = {
-        icon: values.icon || null,
+        icon: values.icon || "",
         title: values.title,
         description: values.description,
         backGroundColor: values.backGroundColor,
@@ -89,6 +91,7 @@ function AddNews(props) {
 
       resetForm();
       setHasBeenSubmitted(false);
+      navigation.navigate('NewsLog')
     } catch (err) {
       console.error("News error:", err.response?.data || err.message);
       showInfo({

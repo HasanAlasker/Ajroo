@@ -9,6 +9,8 @@ import useApi from "../../hooks/useApi";
 import { availablePosts, searchPosts } from "../../api/post";
 import LoadingCircle from "../../components/general/LoadingCircle";
 import LoadingSkeleton from "../../components/post_releated/LoadingSkeleton";
+import NewsCard from "../../components/NewsCard";
+import { getActiveNews } from "../../api/news";
 
 function Have({ route }) {
   const { user } = useUser();
@@ -33,8 +35,11 @@ function Have({ route }) {
     request: fetchPosts,
   } = useApi(availablePosts);
 
+  const { data: news, request: fetchNews, loadingNews } = useApi(getActiveNews);
+
   useEffect(() => {
     fetchPosts();
+    fetchNews();
   }, []);
 
   // Handle navigation params - apply filter when coming from Home
@@ -158,6 +163,19 @@ function Have({ route }) {
         {loading && <LoadingSkeleton />}
         {loading && <LoadingSkeleton />}
         {loading && <LoadingSkeleton />}
+        {!loading && news && Object.keys(news).length > 0 && (
+          <NewsCard
+            id={news._id}
+            backGroundColor={news.backGroundColor}
+            textColor={news.textColor}
+            borderColor={news.borderColor}
+            title={news.title}
+            createdAt={news.createdAt}
+            description={news.description}
+            isActive={news.isActive}
+            icon={news?.icon}
+          />
+        )}
       </PostRenderer>
       <Navbar />
     </SafeScreen>

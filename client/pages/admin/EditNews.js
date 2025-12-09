@@ -33,7 +33,6 @@ const validationSchema = Yup.object().shape({
   borderColor: Yup.string().required("Please choose a border color"),
 
   textColor: Yup.string().required("Please choose a text color"),
-
 });
 
 function EditNews(props) {
@@ -57,7 +56,7 @@ function EditNews(props) {
   } = route.params;
 
   const initialValues = {
-    icon: icon || null, // optional
+    icon: icon || "", // optional
     title: title,
     description: description,
     backGroundColor: backGroundColor,
@@ -71,7 +70,7 @@ function EditNews(props) {
     setLoading(true);
     try {
       const newsData = {
-        icon: values.icon || null,
+        icon: values.icon || "",
         title: values.title,
         description: values.description,
         backGroundColor: values.backGroundColor,
@@ -79,11 +78,8 @@ function EditNews(props) {
         textColor: values.textColor,
       };
 
-      console.log("new data: ",newsData)
+      await editNews(id, newsData);
 
-      const res = await editNews(id, newsData);
-      console.log(res)
-      
       showInfo({
         title: "Done!",
         message: "News updated successfully",

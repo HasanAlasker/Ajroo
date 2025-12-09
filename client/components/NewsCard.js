@@ -10,7 +10,7 @@ import { formatDate } from "../functions/formatDate";
 import { activateNews, deactivateNews, deleteNews } from "../api/news";
 import { useAlert } from "../config/AlertContext";
 import { useUser } from "../config/UserContext";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 function NewsCard({
   id,
@@ -23,10 +23,12 @@ function NewsCard({
   createdAt,
   actionButton,
   isActive,
+  style,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
   const { user } = useUser();
+  const route = useRoute();
 
   const { showAlert, showInfo } = useAlert();
   const navigation = useNavigation();
@@ -105,6 +107,7 @@ function NewsCard({
           backgroundColor: theme[backGroundColor],
           borderColor: theme[borderColor],
         },
+        style,
       ]}
     >
       <View style={styles.heading}>
@@ -136,32 +139,34 @@ function NewsCard({
 
       {isAdmin && (
         <>
-          <View style={styles.btnBox}>
-            <RequestBtn
-              title={"Edit"}
-              color={backGroundColor}
-              backColor={"always_white"}
-              style={styles.btn}
-              onPress={() =>
-                navigation.navigate("EditNews", {
-                  id,
-                  title,
-                  icon,
-                  description,
-                  backGroundColor,
-                  textColor,
-                  borderColor,  
-                })
-              }
-            />
-            <RequestBtn
-              title={"Delete"}
-              color={backGroundColor}
-              backColor={"always_white"}
-              style={styles.btn}
-              onPress={handleDelete}
-            />
-          </View>
+          {route.name !== "Dash" && (
+            <View style={styles.btnBox}>
+              <RequestBtn
+                title={"Edit"}
+                color={backGroundColor}
+                backColor={"always_white"}
+                style={styles.btn}
+                onPress={() =>
+                  navigation.navigate("EditNews", {
+                    id,
+                    title,
+                    icon,
+                    description,
+                    backGroundColor,
+                    textColor,
+                    borderColor,
+                  })
+                }
+              />
+              <RequestBtn
+                title={"Delete"}
+                color={backGroundColor}
+                backColor={"always_white"}
+                style={styles.btn}
+                onPress={handleDelete}
+              />
+            </View>
+          )}
 
           <RequestBtn
             title={active ? "Deactivate" : "Activate"}
@@ -195,10 +200,10 @@ const getStyles = (theme) =>
     },
     description: {
       color: theme.always_white,
-      fontSize: 20,
+      fontSize: 18,
     },
     title: {
-      fontSize: 25,
+      fontSize: 22,
       fontWeight: "bold",
     },
     btnBox: {
