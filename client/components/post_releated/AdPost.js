@@ -38,7 +38,7 @@ function AdPost({ userId, userPic, userName, userSub, image, link }) {
         <AppText style={styles.text}>Learn More</AppText>
         <MaterialCommunityIcons
           name="chevron-right-circle-outline"
-          size={23}
+          size={20}
           color={theme.always_white}
           style={{ paddingTop: 3 }}
         />
@@ -76,7 +76,7 @@ const getStyles = (theme) =>
     },
     text: {
       color: theme.always_white,
-      fontSize: 22,
+      fontSize: 20,
     },
   });
 

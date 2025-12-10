@@ -26,7 +26,7 @@ function Home({ navigation }) {
       <ScrollScreen>
         {/* <WelcomeCard /> */}
 
-        {/* <AdPost
+        <AdPost
           userName={"CARSTARS"}
           userSub={"Starter"}
           userPic={
@@ -36,7 +36,7 @@ function Home({ navigation }) {
             "https://www.carstarsjo.com/wp-content/uploads/2023/07/-jpg.webp"
           }
           link={"https://www.carstarsjo.com/"}
-        /> */}
+        />
 
         <AppText style={styles.text}>
           What kind of item are you looking for?
