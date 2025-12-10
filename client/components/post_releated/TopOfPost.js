@@ -22,6 +22,7 @@ function TopOfPost({
   subscriptionType,
   isRequesterBlocked,
   isOwnerBlocked,
+  hideThree = false
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
@@ -104,7 +105,7 @@ function TopOfPost({
           <AppText style={styles.date}>{date}</AppText>
         </View>
       </TouchableOpacity>
-      {(((status === "available" || status === "disabled") && isMine) ||
+      {!hideThree && (((status === "available" || status === "disabled") && isMine) ||
         !isMine) &&
         !(user.role === "admin" && route.name === "Profile") && (
           <TouchableOpacity onPress={onPressThree}>
