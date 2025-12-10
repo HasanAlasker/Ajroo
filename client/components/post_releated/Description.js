@@ -20,7 +20,7 @@ function Description({ description }) {
         name={
           full ? "chevron-up-circle-outline" : "chevron-down-circle-outline"
         }
-        size={20}
+        size={22}
         color={theme.sec_text}
         style={{ paddingTop: 1 }}
       />
@@ -39,6 +39,7 @@ const getStyles = (theme) =>
       flex: 1,
       gap: 5,
       overflow: "hidden",
+      right:3
     },
     text: {
       fontSize: 16,
