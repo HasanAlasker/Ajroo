@@ -76,7 +76,7 @@ function Post({
   isRequesterBlocked,
   isOwnerBlocked,
   userEmail,
-  userPhone
+  userPhone,
 }) {
   const styles = useThemedStyles(getStyles);
   const route = useRoute();
@@ -141,7 +141,7 @@ function Post({
           <ItemBill billId={borrowId} postId={id}></ItemBill>
         )}
 
-        {description && <Description description={description}/>}
+        {description && <Description description={description} />}
 
         <LableContainer>
           {area && <Location city={formatText(city)} area={formatText(area)} />}
@@ -150,12 +150,19 @@ function Post({
           )}
           <RowLableCont>
             <ItemStatus status={status} endDate={endDate} />
+            {condition && type === "sell" && (
+              <ItemCondition condition={formatText(condition)} />
+            )}
           </RowLableCont>
           <RowLableCont>
-            {condition && <ItemCondition condition={formatText(condition)} />}
-            {route.name !== "Book" && route.name !== "Requests" && (
-              <ItemRating rating={rating ? rating : "Unrated Yet"} />
+            {condition && type !== "sell" && (
+              <ItemCondition condition={formatText(condition)} />
             )}
+            {route.name !== "Book" &&
+              route.name !== "Requests" &&
+              type !== "sell" && (
+                <ItemRating rating={rating ? rating : "Unrated Yet"} />
+              )}
           </RowLableCont>
           {!(
             (route.name === "Requests" &&
@@ -233,7 +240,7 @@ const getStyles = (theme) =>
     post: {
       marginVertical: 20,
       zIndex: 50,
-      flex:1
+      flex: 1,
     },
     reportReason: {
       color: theme.error_text,
