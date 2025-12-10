@@ -155,8 +155,6 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
       "description",
     ]);
 
-    console.log("recivedData: ", data);
-
     // user id should be set by req.user._id for security reasons
     data.user = req.user._id;
 
@@ -170,7 +168,6 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
     });
 
     const savedPost = await newPost.save();
-    console.log("savedPost: ", savedPost);
     return res.status(201).send(savedPost);
   } catch (err) {
     return res.status(500).send(err.message);
@@ -237,8 +234,8 @@ router.delete("/delete/:id", auth, async (req, res) => {
       return res.status(403).send("Only post owner and admins can delete post");
     }
 
-    if (post.imgagePublicId) {
-      await deleteImageFromCloudinary(post.imgagePublicId);
+    if (post.imagePublicId) {
+      await deleteImageFromCloudinary(post.imagePublicId);
     }
 
     const deletedPost = await PostModel.findByIdAndDelete(id);

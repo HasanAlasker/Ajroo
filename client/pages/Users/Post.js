@@ -217,8 +217,6 @@ function Post(props) {
     try {
       const imageData = await uploadImage(values.image);
 
-      console.log("imageData: ", imageData)
-
       // Fixed: properly handle rent vs sell data
       const postData = {
         image: imageData.url,
@@ -231,8 +229,6 @@ function Post(props) {
         condition: values.condition,
         description: values.description,
       };
-
-      console.log("postData: ", postData)
 
       // Add type-specific fields
       if (active === "Rent") {
