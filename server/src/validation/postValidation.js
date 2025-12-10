@@ -97,11 +97,11 @@ export const createPostValidation = Joi.object({
 
   condition: Joi.string()
     .lowercase()
-    .valid("excellent", "very_good", "good", "fair", "needs_repair")
+    .valid("band_new", "excellent", "very_good", "good", "fair", "needs_repair")
     .required()
     .messages({
       "any.only":
-        "Condition must be one of: excellent, very_good, good, fair, needs_repair",
+        "Condition must be one of: band_new, excellent, very_good, good, fair, needs_repair",
       "any.required": "Condition is required",
     }),
 });
@@ -174,10 +174,10 @@ export const updatePostValidation = Joi.object({
 
   condition: Joi.string()
     .lowercase()
-    .valid("excellent", "very_good", "good", "fair", "needs_repair")
+    .valid("band_new", "excellent", "very_good", "good", "fair", "needs_repair")
     .messages({
       "any.only":
-        "Condition must be one of: excellent, very_good, good, fair, needs_repair",
+        "Condition must be one of: band_new, excellent, very_good, good, fair, needs_repair",
     }),
 })
   .min(1)

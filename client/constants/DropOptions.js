@@ -2719,6 +2719,7 @@ export const areas = [
 ];
 
 export const condition = [
+  { label: "Brand New", value: "band_new" },
   { label: "Excellent", value: "excellent" },
   { label: "Very Good", value: "very_good" },
   { label: "Good", value: "good" },

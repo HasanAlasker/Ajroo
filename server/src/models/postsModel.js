@@ -84,7 +84,7 @@ const postSchema = new mongoose.Schema(
     condition: {
       type: String,
       lowercase: true,
-      enum: ["excellent", "very_good", "good", "fair", "needs_repair"],
+      enum: ["band_new", "excellent", "very_good", "good", "fair", "needs_repair"],
       required: true,
     },
     isRated: {
