@@ -11,6 +11,9 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    imgagePublicId: {
+      type: String,
+    },
     type: {
       type: String,
       lowercase: true,

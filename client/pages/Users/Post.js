@@ -215,11 +215,12 @@ function Post(props) {
 
     setLoading(true);
     try {
-      const imageUrl = await uploadImage(values.image);
+      const imageData = await uploadImage(values.image);
 
       // Fixed: properly handle rent vs sell data
       const postData = {
-        image: imageUrl,
+        image: imageData.url,
+        imagePublicId: imageData.publicId,
         type: active,
         name: values.item,
         category: values.category,

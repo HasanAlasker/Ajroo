@@ -101,7 +101,7 @@ function EditPostModal({ postId, visible, onClose }) {
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const [subscriptionError, setSubscriptionError] = useState(null);
   const [userPlan, setUserPlan] = useState("individual_free");
-  const {user} = useUser()
+  const { user } = useUser();
 
   const styles = useThemedStyles(getStyles);
 
@@ -148,9 +148,6 @@ function EditPostModal({ postId, visible, onClose }) {
 
         setUserPlan(planType);
         setSubscriptionError(null);
-
-       
-        
       } catch (error) {
         console.error("❌ Error checking subscription:", error);
         setSubscriptionError(error.message);
@@ -191,6 +188,7 @@ function EditPostModal({ postId, visible, onClose }) {
     area: post.area || "",
     condition: post.condition || "",
     image: post.image || null,
+    imagePublicId: post?.imagePublicId,
     description: post.description || "",
   };
 
@@ -201,9 +199,9 @@ function EditPostModal({ postId, visible, onClose }) {
     try {
       setSubmitting(true);
 
-      let imageUrl = values.image;
+      let imageData = values.image;
       if (values.image && !values.image.startsWith("http")) {
-        imageUrl = await uploadImage(values.image);
+        imageData = await uploadImage(values.image);
       }
 
       const updatedData = {
@@ -212,7 +210,8 @@ function EditPostModal({ postId, visible, onClose }) {
         city: values.city,
         area: values.area,
         condition: values.condition,
-        image: imageUrl,
+        image: imageData?.url,
+        imagePublicId: imageData?.publicId,
         description: values.description,
       };
 

@@ -12,6 +12,25 @@ import {
 import admin from "../middleware/admin.js";
 import UserModel from "../models/usersModel.js";
 
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
+
+// Delete image from Cloudinary
+const deleteImageFromCloudinary = async (publicId) => {
+  try {
+    const result = await cloudinary.uploader.destroy(publicId);
+    return result;
+  } catch (error) {
+    console.error("Cloudinary delete error:", error);
+    throw error;
+  }
+};
+
 const router = express.Router();
 
 // Helper function to get display name from subscription type
@@ -124,6 +143,7 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
   try {
     const data = _.pick(req.body, [
       "image",
+      "imagePublicId",
       "name",
       "category",
       "pricePerDay",
@@ -132,7 +152,7 @@ router.post("/", [auth, validate(createPostValidation)], async (req, res) => {
       "condition",
       "type",
       "sellPrice",
-      "description"
+      "description",
     ]);
 
     // user id should be set by req.user._id for security reasons
@@ -175,6 +195,7 @@ router.put(
 
       const data = _.pick(req.body, [
         "image",
+        "imagePublicId",
         "name",
         "category",
         "pricePerDay",
@@ -182,7 +203,7 @@ router.put(
         "area",
         "condition",
         "sellPrice",
-        "description"
+        "description",
       ]);
 
       const updatedPost = await PostModel.findByIdAndUpdate(id, data, {
@@ -211,6 +232,10 @@ router.delete("/delete/:id", auth, async (req, res) => {
 
     if (req.user.role !== "admin" && req.user._id !== post.user.toString()) {
       return res.status(403).send("Only post owner and admins can delete post");
+    }
+
+    if (post.imgagePublicId) {
+      await deleteImageFromCloudinary(post.imgagePublicId);
     }
 
     const deletedPost = await PostModel.findByIdAndDelete(id);
