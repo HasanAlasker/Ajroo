@@ -14,6 +14,7 @@ import admin from "./routers/admin.js";
 import subscriptions from "./routers/subscriptions.js";
 import news from "./routers/news.js";
 import email from "./routers/email.js";
+import ad from "./routers/ad.js";
  
 dotenv.config();
 
@@ -42,6 +43,7 @@ app.use("/api/admin", admin);
 app.use("/api/subscriptions", subscriptions);
 app.use("/api/news", news);
 app.use("/api/auth", email);
+app.use("/api/ad", ad);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port} 🌍`);
