@@ -9,7 +9,8 @@ export const categories = [
   { label: "Books (كتب)", value: "books" },
   { label: "Furniture (أثاث)", value: "furniture" },
   { label: "Baby & Kids (مستلزمات أطفال)", value: "baby_kids" },
-  { label: "Automotive (سيارات)", value: "automotive" },
+  { label: "Car Essentials (مستلزمات مركبات)", value: "automotive" },
+  { label: "Cars & Vehicles (سيارات)", value: "vehicles" },
   { label: "Real Estate (عقارات)", value: "realestate" },
 ];
 
@@ -113,6 +114,101 @@ export const items = [
     value: "carpet_cleaner",
     category: "household",
   },
+  {
+    label: "Water Dispenser (موزع مياه)",
+    value: "water_dispenser",
+    category: "household",
+  },
+  {
+    label: "Electric Grill (شواية كهربائية)",
+    value: "electric_grill",
+    category: "household",
+  },
+  {
+    label: "Gas Cylinder (جرة غاز)",
+    value: "gas_cylinder",
+    category: "household",
+  },
+  {
+    label: "Sewing Machine (ماكينة خياطة)",
+    value: "sewing_machine",
+    category: "household",
+  },
+  {
+    label: "Vacuum Robot (مكنسة روبوت)",
+    value: "robot_vacuum",
+    category: "household",
+  },
+  {
+    label: "Hair Dryer (سيشوار)",
+    value: "hair_dryer",
+    category: "household",
+  },
+  {
+    label: "Water Filter (فلتر ماء)",
+    value: "water_filter",
+    category: "household",
+  },
+  {
+    label: "Gas Heater (دفاية غاز)",
+    value: "gas_heater",
+    category: "household",
+  },
+  {
+    label: "Electric Stove (فرن كهربائي صغير)",
+    value: "electric_stove",
+    category: "household",
+  },
+  {
+    label: "Kitchen Utensils (أدوات مطبخ)",
+    value: "kitchen_utensils",
+    category: "household",
+  },
+  {
+    label: "Cutlery Set (طقم ملاعق وشوك)",
+    value: "cutlery_set",
+    category: "household",
+  },
+  {
+    label: "Water Keg (جالون ماء)",
+    value: "water_keg",
+    category: "household",
+  },
+  {
+    label: "Trash Bin (سلة نفايات)",
+    value: "trash_bin",
+    category: "household",
+  },
+  {
+    label: "Bathroom Accessories (إكسسوارات حمام)",
+    value: "bathroom_accessories",
+    category: "household",
+  },
+  {
+    label: "Vacuum Bags or Filters (أكياس وفلاتر مكنسة)",
+    value: "vacuum_accessories",
+    category: "household",
+  },
+  {
+    label: "Portable Heater (دفاية صغيرة)",
+    value: "portable_heater",
+    category: "household",
+  },
+  {
+    label: "Electric Blanket (بطانية كهربائية)",
+    value: "electric_blanket",
+    category: "household",
+  },
+  {
+    label: "Tableware (أواني طعام)",
+    value: "tableware",
+    category: "household",
+  },
+  {
+    label: "Water Boiler (سخان ماء صغير)",
+    value: "water_boiler",
+    category: "household",
+  },
   { label: "Other (أخرى)", value: "other_household", category: "household" },
 
   // Electronics
@@ -183,6 +279,101 @@ export const items = [
     category: "electronics",
   },
   {
+    label: "Smartphone (هاتف ذكي)",
+    value: "smartphone",
+    category: "electronics",
+  },
+  {
+    label: "Bluetooth Headphones (سماعات بلوتوث)",
+    value: "bluetooth_headphones",
+    category: "electronics",
+  },
+  {
+    label: "Earbuds (سماعات أذن)",
+    value: "earbuds",
+    category: "electronics",
+  },
+  {
+    label: "Soundbar (ساوند بار)",
+    value: "soundbar",
+    category: "electronics",
+  },
+  {
+    label: "Home Theater System (نظام مسرح منزلي)",
+    value: "home_theater",
+    category: "electronics",
+  },
+  {
+    label: "Smart Home Device (جهاز منزل ذكي)",
+    value: "smart_home_device",
+    category: "electronics",
+  },
+  {
+    label: "Graphics Card (كرت شاشة)",
+    value: "graphics_card",
+    category: "electronics",
+  },
+  {
+    label: "Motherboard (لوحة أم)",
+    value: "motherboard",
+    category: "electronics",
+  },
+  {
+    label: "RAM Memory (رام)",
+    value: "ram_memory",
+    category: "electronics",
+  },
+  {
+    label: "CPU Processor (معالج)",
+    value: "cpu_processor",
+    category: "electronics",
+  },
+  {
+    label: "Power Supply (مزود طاقة)",
+    value: "power_supply",
+    category: "electronics",
+  },
+  {
+    label: "Computer Case (كيس كمبيوتر)",
+    value: "computer_case",
+    category: "electronics",
+  },
+  {
+    label: "Drawing Tablet (لوح رسم)",
+    value: "drawing_tablet",
+    category: "electronics",
+  },
+  {
+    label: "E-Reader (قارئ إلكتروني)",
+    value: "e_reader",
+    category: "electronics",
+  },
+  {
+    label: "Microphone (ميكروفون)",
+    value: "microphone",
+    category: "electronics",
+  },
+  {
+    label: "Headset (سماعة رأس)",
+    value: "headset",
+    category: "electronics",
+  },
+  {
+    label: "Smart TV Box (جهاز تلفاز ذكي)",
+    value: "smart_tv_box",
+    category: "electronics",
+  },
+  {
+    label: "Projector Screen (شاشة بروجكتر)",
+    value: "projector_screen",
+    category: "electronics",
+  },
+  {
+    label: "UPS Power Backup (يو بي إس)",
+    value: "ups_backup",
+    category: "electronics",
+  },
+  {
     label: "Other (أخرى)",
     value: "other_electronics",
     category: "electronics",
@@ -250,6 +441,81 @@ export const items = [
   {
     label: "Patio Heater (دفاية خارجية)",
     value: "patio_heater",
+    category: "garden",
+  },
+  {
+    label: "Garden Umbrella (مظلة حديقة)",
+    value: "garden_umbrella",
+    category: "garden",
+  },
+  {
+    label: "Outdoor Table (طاولة خارجية)",
+    value: "outdoor_table",
+    category: "garden",
+  },
+  {
+    label: "Outdoor Chair (كرسي خارجي)",
+    value: "outdoor_chair",
+    category: "garden",
+  },
+  {
+    label: "Hammock (أرجوحة)",
+    value: "hammock",
+    category: "garden",
+  },
+  {
+    label: "Fire Pit (حفرة نار)",
+    value: "fire_pit",
+    category: "garden",
+  },
+  {
+    label: "Compost Bin (صندوق سماد)",
+    value: "compost_bin",
+    category: "garden",
+  },
+  {
+    label: "Greenhouse (بيت زجاجي/بلاستيكي صغير)",
+    value: "greenhouse",
+    category: "garden",
+  },
+  {
+    label: "Soil Bags (أكياس تربة)",
+    value: "soil_bags",
+    category: "garden",
+  },
+  {
+    label: "Outdoor Lights (إنارة خارجية)",
+    value: "outdoor_lights",
+    category: "garden",
+  },
+  {
+    label: "Water Pump (مضخة ماء)",
+    value: "water_pump",
+    category: "garden",
+  },
+  {
+    label: "Irrigation Timer (مؤقت ري)",
+    value: "irrigation_timer",
+    category: "garden",
+  },
+  {
+    label: "Plant Stand (حامل نباتات)",
+    value: "plant_stand",
+    category: "garden",
+  },
+  {
+    label: "Seed Packs (بذور زراعة)",
+    value: "seed_packs",
+    category: "garden",
+  },
+  {
+    label: "Gazebo (جلسة خارجية بظل)",
+    value: "gazebo",
+    category: "garden",
+  },
+  {
+    label: "Swimming Pool (مسبح بلاستيكي)",
+    value: "inflatable_pool",
     category: "garden",
   },
   { label: "Other (أخرى)", value: "other_garden", category: "garden" },
@@ -356,6 +622,51 @@ export const items = [
     value: "paddleboard",
     category: "sports",
   },
+  {
+    label: "Boxing Gloves (قفازات ملاكمة)",
+    value: "boxing_gloves",
+    category: "sports",
+  },
+  {
+    label: "Punching Bag (كيس ملاكمة)",
+    value: "punching_bag",
+    category: "sports",
+  },
+  {
+    label: "Resistance Bands (مطاط مقاومة)",
+    value: "resistance_bands",
+    category: "sports",
+  },
+  {
+    label: "Kettlebell (كتل بيل)",
+    value: "kettlebell",
+    category: "sports",
+  },
+  {
+    label: "Protein Shaker (شيكر بروتين)",
+    value: "protein_shaker",
+    category: "sports",
+  },
+  {
+    label: "Roller Skates (حذاء تزلج)",
+    value: "roller_skates",
+    category: "sports",
+  },
+  {
+    label: "Helmet (خوذة)",
+    value: "helmet",
+    category: "sports",
+  },
+  {
+    label: "Sportswear (ملابس رياضية)",
+    value: "sportswear",
+    category: "sports",
+  },
+  {
+    label: "Jump Rope (حبل قفز)",
+    value: "jump_rope",
+    category: "sports",
+  },
   { label: "Other (أخرى)", value: "other_sports", category: "sports" },
 
   // Clothes
@@ -411,6 +722,66 @@ export const items = [
   },
   { label: "Costume (زي تنكري)", value: "costume", category: "clothes" },
   { label: "Ski Suit (بدلة تزلج)", value: "ski_suit", category: "clothes" },
+  {
+    label: "Sports Shoes (حذاء رياضي)",
+    value: "sports_shoes",
+    category: "clothes",
+  },
+  {
+    label: "Hoodie (هودي)",
+    value: "hoodie",
+    category: "clothes",
+  },
+  {
+    label: "Jeans (بنطال جينز)",
+    value: "jeans",
+    category: "clothes",
+  },
+  {
+    label: "T-Shirt (تيشيرت)",
+    value: "tshirt",
+    category: "clothes",
+  },
+  {
+    label: "Sweater (كنزة)",
+    value: "sweater",
+    category: "clothes",
+  },
+  {
+    label: "Children's Clothes (ملابس أطفال)",
+    value: "kids_clothes",
+    category: "clothes",
+  },
+  {
+    label: "Maternity Wear (ملابس حمل)",
+    value: "maternity_wear",
+    category: "clothes",
+  },
+  {
+    label: "Caps & Hats (قبعات)",
+    value: "caps_hats",
+    category: "clothes",
+  },
+  {
+    label: "Scarves (شالات)",
+    value: "scarves",
+    category: "clothes",
+  },
+  {
+    label: "Watches (ساعات)",
+    value: "watches",
+    category: "clothes",
+  },
+  {
+    label: "Sunglasses (نظارات شمسية)",
+    value: "sunglasses",
+    category: "clothes",
+  },
+  {
+    label: "Belts (أحزمة)",
+    value: "belts",
+    category: "clothes",
+  },
   { label: "Other (أخرى)", value: "other_clothes", category: "clothes" },
 
   // Tools
@@ -487,6 +858,51 @@ export const items = [
     category: "tools",
   },
   { label: "Nail Gun (مسدس مسامير)", value: "nail_gun", category: "tools" },
+  {
+    label: "Heat Gun (مسدس حراري)",
+    value: "heat_gun",
+    category: "tools",
+  },
+  {
+    label: "Glue Gun (مسدس غراء)",
+    value: "glue_gun",
+    category: "tools",
+  },
+  {
+    label: "Multimeter (ملتيميتر)",
+    value: "multimeter",
+    category: "tools",
+  },
+  {
+    label: "Soldering Iron (كاوية لحام)",
+    value: "soldering_iron",
+    category: "tools",
+  },
+  {
+    label: "Pressure Sprayer (رشاشة ضغط)",
+    value: "pressure_sprayer",
+    category: "tools",
+  },
+  {
+    label: "Tile Cutter (قطاعة سيراميك)",
+    value: "tile_cutter",
+    category: "tools",
+  },
+  {
+    label: "Water Pump (مضخة ماء)",
+    value: "water_pump_tool",
+    category: "tools",
+  },
+  {
+    label: "Concrete Mixer (خلاطة إسمنت)",
+    value: "concrete_mixer",
+    category: "tools",
+  },
+  {
+    label: "Chainsaw Sharpener (مسن شفرات المنشار)",
+    value: "chainsaw_sharpener",
+    category: "tools",
+  },
   { label: "Other (أخرى)", value: "other_tools", category: "tools" },
 
   // Events
@@ -551,6 +967,41 @@ export const items = [
   {
     label: "Bouncy Castle (نطيطة)",
     value: "bouncy_castle",
+    category: "events",
+  },
+  {
+    label: "Backdrop (خلفية تصوير)",
+    value: "backdrop",
+    category: "events",
+  },
+  {
+    label: "Carpet/Rug (سجادة مناسبات)",
+    value: "event_carpet",
+    category: "events",
+  },
+  {
+    label: "Heater (دفاية فعاليات)",
+    value: "event_heater",
+    category: "events",
+  },
+  {
+    label: "Cooler Fan (مروحة تبريد كبيرة)",
+    value: "cooler_fan",
+    category: "events",
+  },
+  {
+    label: "Backdrop Stand (ستاند خلفية)",
+    value: "backdrop_stand",
+    category: "events",
+  },
+  {
+    label: "Ice Box (صندوق ثلج)",
+    value: "ice_box",
+    category: "events",
+  },
+  {
+    label: "Serving Trays (صواني تقديم)",
+    value: "serving_trays",
     category: "events",
   },
   { label: "Other (أخرى)", value: "other_events", category: "events" },
@@ -670,6 +1121,61 @@ export const items = [
   { label: "Curtains (ستائر)", value: "curtains", category: "furniture" },
   { label: "Rug (سجادة صغيرة)", value: "rug", category: "furniture" },
   { label: "Carpet (سجاد)", value: "carpet", category: "furniture" },
+  {
+    label: "Recliner Chair (كرسي استرخاء)",
+    value: "recliner_chair",
+    category: "furniture",
+  },
+  {
+    label: "Armchair (كرسي فردي)",
+    value: "armchair",
+    category: "furniture",
+  },
+  {
+    label: "TV Cabinet (خزانة تلفزيون)",
+    value: "tv_cabinet",
+    category: "furniture",
+  },
+  {
+    label: "Kitchen Cabinets (خزائن مطبخ)",
+    value: "kitchen_cabinets",
+    category: "furniture",
+  },
+  {
+    label: "Outdoor Furniture (أثاث خارجي)",
+    value: "outdoor_furniture",
+    category: "furniture",
+  },
+  {
+    label: "Bean Bag (بين باج)",
+    value: "bean_bag",
+    category: "furniture",
+  },
+  {
+    label: "TV Console (كونسول تلفزيون)",
+    value: "tv_console",
+    category: "furniture",
+  },
+  {
+    label: "Divider (فاصل غرفة)",
+    value: "room_divider",
+    category: "furniture",
+  },
+  {
+    label: "Storage Ottoman (عثماني تخزين)",
+    value: "storage_ottoman",
+    category: "furniture",
+  },
+  {
+    label: "Vanity Table (طاولة زينة)",
+    value: "vanity_table",
+    category: "furniture",
+  },
+  {
+    label: "Baby Wardrobe (خزانة أطفال)",
+    value: "baby_wardrobe",
+    category: "furniture",
+  },
   { label: "Other (أخرى)", value: "other_furniture", category: "furniture" },
 
   // Baby & Kids
@@ -717,6 +1223,56 @@ export const items = [
     value: "swing_set",
     category: "baby_kids",
   },
+  {
+    label: "Baby Walker (مشاية أطفال)",
+    value: "baby_walker",
+    category: "baby_kids",
+  },
+  {
+    label: "Baby Bathtub (حوض استحمام أطفال)",
+    value: "baby_bathtub",
+    category: "baby_kids",
+  },
+  {
+    label: "Bassinet (سرير جانبي)",
+    value: "bassinet",
+    category: "baby_kids",
+  },
+  {
+    label: "Changing Table (طاولة تغيير حفاضات)",
+    value: "changing_table",
+    category: "baby_kids",
+  },
+  {
+    label: "Kids Study Desk (مكتب دراسة أطفال)",
+    value: "kids_study_desk",
+    category: "baby_kids",
+  },
+  {
+    label: "Kids Bed (سرير أطفال كبير)",
+    value: "kids_bed",
+    category: "baby_kids",
+  },
+  {
+    label: "Baby Bouncer (هزاز أطفال)",
+    value: "baby_bouncer",
+    category: "baby_kids",
+  },
+  {
+    label: "Electric Ride-On Car (سيارة كهربائية للأطفال)",
+    value: "kids_electric_car",
+    category: "baby_kids",
+  },
+  {
+    label: "Baby Clothes (ملابس أطفال)",
+    value: "baby_clothes",
+    category: "baby_kids",
+  },
+  {
+    label: "Lego & Building Blocks (ليجو)",
+    value: "lego_blocks",
+    category: "baby_kids",
+  },
   { label: "Other (أخرى)", value: "other_baby_kids", category: "baby_kids" },
 
   // Automotive
@@ -760,6 +1316,51 @@ export const items = [
   {
     label: "GPS Navigator (جهاز ملاحة)",
     value: "gps_navigator",
+    category: "automotive",
+  },
+  {
+    label: "Car Tool Kit (عدة سيارة)",
+    value: "car_tool_kit",
+    category: "automotive",
+  },
+  {
+    label: "Tow Rope (حبل سحب)",
+    value: "tow_rope",
+    category: "automotive",
+  },
+  {
+    label: "Motor Oil (زيت محرك)",
+    value: "motor_oil",
+    category: "automotive",
+  },
+  {
+    label: "Car Battery Charger (شاحن بطارية سيارة)",
+    value: "battery_charger",
+    category: "automotive",
+  },
+  {
+    label: "OBD Scanner (قارئ أعطال OBD)",
+    value: "obd_scanner",
+    category: "automotive",
+  },
+  {
+    label: "Seat Covers (أغطية مقاعد)",
+    value: "seat_covers",
+    category: "automotive",
+  },
+  {
+    label: "Steering Wheel Cover (غطاء مقود)",
+    value: "steering_cover",
+    category: "automotive",
+  },
+  {
+    label: "Floor Mats (فرشات أرضية)",
+    value: "floor_mats",
+    category: "automotive",
+  },
+  {
+    label: "Portable Car Fridge (ثلاجة سيارة محمولة)",
+    value: "portable_car_fridge",
     category: "automotive",
   },
   { label: "Other (أخرى)", value: "other_automotive", category: "automotive" },
@@ -827,7 +1428,148 @@ export const items = [
     value: "garden_realestate",
     category: "realestate",
   },
+  {
+    label: "Farmhouse (مزرعة ريفية)",
+    value: "farmhouse",
+    category: "realestate",
+  },
+  {
+    label: "Basement Apartment (قبو سكني)",
+    value: "basement_apartment",
+    category: "realestate",
+  },
+  {
+    label: "Event Hall (صالة مناسبات)",
+    value: "event_hall",
+    category: "realestate",
+  },
+  {
+    label: "Office Floor (طابق مكاتب)",
+    value: "office_floor",
+    category: "realestate",
+  },
+  {
+    label: "Workshop (ورشة)",
+    value: "workshop",
+    category: "realestate",
+  },
+  {
+    label: "Industrial Warehouse (مستودع صناعي)",
+    value: "industrial_warehouse",
+    category: "realestate",
+  },
   { label: "Other (أخرى)", value: "other_realestate", category: "realestate" },
+
+  // cars
+  // Vehicles
+  {
+    label: "Sedan (سيدان)",
+    value: "sedan",
+    category: "vehicles",
+  },
+  {
+    label: "SUV (دفع رباعي)",
+    value: "suv",
+    category: "vehicles",
+  },
+  {
+    label: "Hatchback (هاتشباك)",
+    value: "hatchback",
+    category: "vehicles",
+  },
+  {
+    label: "Coupe (كوبيه)",
+    value: "coupe",
+    category: "vehicles",
+  },
+  {
+    label: "Convertible (مكشوفة)",
+    value: "convertible",
+    category: "vehicles",
+  },
+
+  // Motorcycles
+  {
+    label: "Motorcycle (دراجة نارية)",
+    value: "motorcycle",
+    category: "vehicles",
+  },
+  {
+    label: "Scooter (سكوتر)",
+    value: "scooter",
+    category: "vehicles",
+  },
+  {
+    label: "Electric Scooter (سكوتر كهربائي)",
+    value: "electric_scooter",
+    category: "vehicles",
+  },
+  {
+    label: "ATV / Four Wheeler (دراجة رباعية)",
+    value: "atv",
+    category: "vehicles",
+  },
+
+  // Trucks & Vans
+  {
+    label: "Pickup Truck (بيك أب)",
+    value: "pickup_truck",
+    category: "vehicles",
+  },
+  {
+    label: "Van (فان)",
+    value: "van",
+    category: "vehicles",
+  },
+  {
+    label: "Mini Bus (باص صغير)",
+    value: "mini_bus",
+    category: "vehicles",
+  },
+  {
+    label: "Truck (شاحنة)",
+    value: "truck",
+    category: "vehicles",
+  },
+
+  // Electric
+  {
+    label: "Electric Car (سيارة كهربائية)",
+    value: "electric_car",
+    category: "vehicles",
+  },
+  {
+    label: "E-Bike (دراجة كهربائية)",
+    value: "electric_bike",
+    category: "vehicles",
+  },
+
+  // Specialty Vehicles
+  {
+    label: "Trailer (مقطورة)",
+    value: "trailer",
+    category: "vehicles",
+  },
+  {
+    label: "Golf Cart (عربة غولف)",
+    value: "golf_cart",
+    category: "vehicles",
+  },
+  {
+    label: "Boat (قارب)",
+    value: "boat",
+    category: "vehicles",
+  },
+  {
+    label: "Jet Ski (جت سكي)",
+    value: "jet_ski",
+    category: "vehicles",
+  },
+  {
+    label: "Other (أخرى)",
+    value: "other_vehicles",
+    category: "vehicles",
+  },
 ];
 
 export const cities = [
@@ -2053,9 +2795,9 @@ export const colors = [
 ];
 
 export const yesNo = [
-  {label: "Yes", value: true},
-  {label: "No", value: false}
-]
+  { label: "Yes", value: true },
+  { label: "No", value: false },
+];
 
 // Helper functions to filter items by category and areas by city
 export const getItemsByCategory = (categoryValue) => {

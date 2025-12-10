@@ -57,7 +57,7 @@ function DropBox({
 
     if (
       placeholderText === "Select Category" &&
-      (value === "automotive" || value === "realestate")
+      (value === "vehicles" || value === "realestate")
     ) {
       if (userPlan !== "business_premium:premium") {
         return true;

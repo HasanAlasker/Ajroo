@@ -30,9 +30,9 @@ function Home({ navigation }) {
         <View style={styles.grid}>
           <SquareCard
             icon={"car"}
-            name={"Automotive"}
+            name={"Vehicles"}
             cardnum={9}
-            onPress={() => handleCardPress("Automotive")}
+            onPress={() => handleCardPress("Vehicles")}
           ></SquareCard>
           <SquareCard
             icon={"home-city"}

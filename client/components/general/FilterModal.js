@@ -216,6 +216,7 @@ function FilterModal({ isVisible, onClose, onSearchResults }) {
                   placeholder="Select Category"
                   items={categories}
                   hasBeenSubmitted={hasBeenSubmitted}
+                  userPlan={"business_premium:premium"}
                 />
 
                 <FormikDropBox

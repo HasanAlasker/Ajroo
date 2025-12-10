@@ -45,6 +45,7 @@ const postSchema = new mongoose.Schema(
         "furniture",
         "automotive",
         "baby_kids",
+        "vehicles",
         "realestate",
       ],
       required: true,

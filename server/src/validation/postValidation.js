@@ -31,6 +31,7 @@ export const createPostValidation = Joi.object({
       "furniture",
       "automotive",
       "realestate",
+      "vehicles",
       "baby_kids"
     )
     .messages({
@@ -132,6 +133,7 @@ export const updatePostValidation = Joi.object({
       "books",
       "furniture",
       "automotive",
+      "vehicles",
       "realestate",
       "baby_kids"
     )
