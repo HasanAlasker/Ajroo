@@ -7,7 +7,7 @@ export const createPostValidation = Joi.object({
     "any.required": "Image is required",
   }),
 
-  imagePublicId: Joi.string(),
+  imagePublicId: Joi.string().allow(null, ""),
 
   name: Joi.string().min(2).max(500).required().messages({
     "string.min": "Name must be at least 2 characters long",
@@ -111,7 +111,7 @@ export const updatePostValidation = Joi.object({
     "string.uri": "Image must be a valid URL",
   }),
 
-  imagePublicId: Joi.string(),
+  imagePublicId: Joi.string().allow(null, ""),
 
   name: Joi.string().min(2).max(500).messages({
     "string.min": "Name must be at least 2 characters long",
