@@ -221,7 +221,14 @@ route.delete("/delete/:id", [auth, admin], async (req, res) => {
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).send("Invalid ad ID");
     }
+
+    const ad = await AdModel.findById(id);
+    if (!ad) return res.status(404).send("Ad not found");
+
+    await deleteImageFromCloudinary(ad.imagePublicId);
+
     const deletedAd = await AdModel.findByIdAndDelete(id);
+
     if (!deletedAd)
       return res.status(400).send("Ad not deleted, something wrong");
 
