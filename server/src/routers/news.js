@@ -11,8 +11,36 @@ import validate from "../middleware/joiValidation.js";
 
 const router = express.Router();
 
-// create news (admin)
+// get news log (auth/ admin)
 
+router.get("/", auth, async (req, res) => {
+  try {
+    const allNews = await NewsModel.find().sort("-createdAt");
+    if (!allNews) return res.status(404).send("No news found");
+    return res.status(200).send(allNews);
+  } catch (error) {
+    return res.status(500).send("Server error", error);
+  }
+});
+
+// get active new banner (auth users)
+
+router.get("/active", auth, async (req, res) => {
+  try {
+    const activeNews = await NewsModel.findOne({
+      isActive: true,
+      isDeleted: false,
+      expiresAt: { $gt: new Date() },
+    }).sort({ createdAt: -1 });
+
+    if (!activeNews) return res.status(404).send("No active news found");
+    return res.status(200).send(activeNews);
+  } catch (error) {
+    return res.status(500).send("Server error", error);
+  }
+});
+
+// create news (admin)
 router.post(
   "/create",
   [auth, admin, validate(createNewsValidation)],
@@ -25,7 +53,8 @@ router.post(
         return res.status(400).send("News not created, something went wrong!");
 
       const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + data.displayDuration);
+      const daysToAdd = parseInt(data.displayDuration) || 0;
+      expiresAt.setDate(expiresAt.getDate() + daysToAdd);
       newNews.expiresAt = expiresAt;
 
       const savedNews = await newNews.save();
@@ -55,7 +84,7 @@ router.put(
         const news = await NewsModel.findById(id);
         if (!news) return res.status(404).send("News not found");
 
-        const expiresAt = new Date(news.createdAt);
+        const expiresAt = new Date();
         expiresAt.setDate(expiresAt.getDate() + data.displayDuration);
         data.expiresAt = expiresAt;
       }
@@ -134,35 +163,6 @@ router.put("/activate/:id", [auth, admin], async (req, res) => {
     );
 
     return res.status(200).send(activatedNews);
-  } catch (error) {
-    return res.status(500).send("Server error", error);
-  }
-});
-
-// get news log (auth/ admin)
-
-router.get("/", auth, async (req, res) => {
-  try {
-    const allNews = await NewsModel.find().sort("-createdAt");
-    if (!allNews) return res.status(404).send("No news found");
-    return res.status(200).send(allNews);
-  } catch (error) {
-    return res.status(500).send("Server error", error);
-  }
-});
-
-// get active new banner (auth users)
-
-router.get("/active", auth, async (req, res) => {
-  try {
-    const activeNews = await NewsModel.findOne({
-      isActive: true,
-      isDeleted: false,
-      expiresAt: { $gt: new Date() },
-    }).sort({ createdAt: -1 });
-
-    if (!activeNews) return res.status(404).send("No active news found");
-    return res.status(200).send(activeNews);
   } catch (error) {
     return res.status(500).send("Server error", error);
   }

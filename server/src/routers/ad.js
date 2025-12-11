@@ -11,9 +11,12 @@ const route = express.Router();
 // get all ads
 route.get("/", auth, async (req, res) => {
   try {
-    const ads = await AdModel.find()
-      .select("isApproved isActive")
-      .sort("createdAt")
+    const ads = await AdModel.find({
+      isActive: true,
+      isApproved: true,
+      isDeleted: false,
+    })
+      .sort({ createdAt: -1 })
       .populate({
         path: "user",
         select: "name image subscription email phone",
@@ -28,11 +31,11 @@ route.get("/", auth, async (req, res) => {
 });
 
 // get all inactive ads
-route.get("/inactive", auth, async (req, res) => {
+route.get("/inactive", [auth, admin], async (req, res) => {
   try {
     const ads = await AdModel.find()
-      .select("isApproved -isActive")
-      .sort("createdAt")
+      .select("-isActive")
+      .sort("-createdAt")
       .populate({
         path: "user",
         select: "name image subscription email phone",
@@ -47,11 +50,10 @@ route.get("/inactive", auth, async (req, res) => {
 });
 
 // get all not approved ads
-route.get("/notApproved", auth, async (req, res) => {
+route.get("/notApproved", [auth, admin], async (req, res) => {
   try {
-    const ads = await AdModel.find()
-      .select("-isApproved -isActive")
-      .sort("createdAt")
+    const ads = await AdModel.find("-isApproved")
+      .sort("-createdAt")
       .populate({
         path: "user",
         select: "name image subscription email phone",
@@ -68,9 +70,7 @@ route.get("/notApproved", auth, async (req, res) => {
 // Get user's own ads
 route.get("/my-ads", auth, async (req, res) => {
   try {
-    const ads = await AdModel.find({ user: req.user._id })
-      .select("image link isApproved isActive createdAt")
-      .sort("-createdAt");
+    const ads = await AdModel.find({ user: req.user._id }).sort("-createdAt");
 
     return res.status(200).json(ads);
   } catch (error) {
@@ -89,7 +89,7 @@ route.post("/create", [auth, validate(createAdSchema)], async (req, res) => {
     if (!newAd) return res.status(400).send("Ad not created, something wrong");
 
     const savedAd = await newAd.save();
-    return res.status(202).send(savedAd);
+    return res.status(201).send(savedAd);
   } catch (error) {
     return res.status(500).send("Server error", error);
   }
@@ -101,20 +101,28 @@ route.put("/approve/:id", [auth, admin], async (req, res) => {
     const id = req.params.id;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send("Invalid news ID");
+      return res.status(400).send("Invalid ad ID");
     }
+
+    const ad = await AdModel.findById(id);
+    if (!ad) return res.status(404).send("Ad not found");
+
+    const expiresAt = new Date();
+    const daysToAdd = parseInt(ad.displayDuration) || 0;
+    expiresAt.setDate(expiresAt.getDate() + daysToAdd);
 
     const approvedAd = await AdModel.findByIdAndUpdate(
       id,
       {
         isApproved: true,
+        expiresAt: expiresAt,
       },
       { new: true, runValidators: true }
     );
     if (!approvedAd)
       return res.status(400).send("Ad not approved, something wrong");
 
-    return res.status(202).send(approvedAd);
+    return res.status(200).send(approvedAd);
   } catch (error) {
     return res.status(500).send("Server error", error);
   }
@@ -126,7 +134,7 @@ route.put("/activate/:id", [auth, admin], async (req, res) => {
     const id = req.params.id;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send("Invalid news ID");
+      return res.status(400).send("Invalid ad ID");
     }
 
     const activatedAd = await AdModel.findByIdAndUpdate(
@@ -151,7 +159,7 @@ route.put("/deactivate/:id", [auth, admin], async (req, res) => {
     const id = req.params.id;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send("Invalid news ID");
+      return res.status(400).send("Invalid ad ID");
     }
 
     const deactivatedAd = await AdModel.findByIdAndUpdate(
@@ -164,7 +172,7 @@ route.put("/deactivate/:id", [auth, admin], async (req, res) => {
     if (!deactivatedAd)
       return res.status(400).send("Ad not deactivated, something wrong");
 
-    return res.status(202).send(deactivatedAd);
+    return res.status(200).send(deactivatedAd);
   } catch (error) {
     return res.status(500).send("Server error", error);
   }
@@ -180,7 +188,15 @@ route.put(
       const data = req.body;
 
       if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).send("Invalid news ID");
+        return res.status(400).send("Invalid ad ID");
+      }
+
+      // Recalculate expiresAt if displayDuration is being updated
+      if (data.displayDuration) {
+        const expiresAt = new Date();
+        const daysToAdd = parseInt(data.displayDuration) || 0;
+        expiresAt.setDate(expiresAt.getDate() + daysToAdd);
+        data.expiresAt = expiresAt;
       }
 
       const updatedAd = await AdModel.findByIdAndUpdate(id, data, {
@@ -190,7 +206,7 @@ route.put(
       if (!updatedAd)
         return res.status(400).send("Ad not updated, something wrong");
 
-      return res.status(202).send(updatedAd);
+      return res.status(200).send(updatedAd);
     } catch (error) {
       return res.status(500).send("Server error", error);
     }
@@ -203,13 +219,13 @@ route.delete("/delete/:id", [auth, admin], async (req, res) => {
     const id = req.params.id;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send("Invalid news ID");
+      return res.status(400).send("Invalid ad ID");
     }
     const deletedAd = await AdModel.findByIdAndDelete(id);
     if (!deletedAd)
       return res.status(400).send("Ad not deleted, something wrong");
 
-    return res.status(202).send(deletedAd);
+    return res.status(200).send(deletedAd);
   } catch (error) {
     return res.status(500).send("Server error", error);
   }
