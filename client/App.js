@@ -44,6 +44,8 @@ import AlertModal from "./components/general/AlertModal";
 import NewsLog from "./pages/admin/NewsLog";
 import AddNews from "./pages/admin/AddNews";
 import EditNews from "./pages/admin/EditNews";
+import AdInfo from "./pages/Users/AdInfo";
+import AddAd from "./pages/Users/AddAd";
 
 const Stack = createNativeStackNavigator();
 
@@ -65,6 +67,8 @@ const AuthenticatedStack = () => {
       <Stack.Screen name="Subscription" component={Subscription} />
       <Stack.Screen name="Suggestions" component={Suggestions} />
       <Stack.Screen name="NewsLog" component={NewsLog} />
+      <Stack.Screen name="AdInfo" component={AdInfo} />
+      <Stack.Screen name="AddAd" component={AddAd} />
     </Stack.Navigator>
   );
 };

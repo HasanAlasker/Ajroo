@@ -25,6 +25,7 @@ function SettingsMenu({ isVisible, onClose }) {
   const navigation = useNavigation();
   const { logout, isAdmin } = useUser();
   const { showAlert } = useAlert();
+  const { user } = useUser();
 
   if (!isVisible) return null;
   return (
@@ -70,14 +71,17 @@ function SettingsMenu({ isVisible, onClose }) {
             onPress={() => openURL(navigation.navigate("NewsLog"))}
           />
           <SeparatorComp style={styles.sep} />
-          (
+
           <MenuOption
             text={"Business Ads"}
             icon={"billboard"}
-            onPress={() => navigation.navigate("Subscription")}
+            onPress={() =>
+              !isAdmin
+                ? navigation.navigate("AdInfo")
+                : navigation.navigate("AdInfo")
+            }
           />
-          
-          ){!isAdmin && <SeparatorComp style={styles.sep} />}
+          {!isAdmin && <SeparatorComp style={styles.sep} />}
           {!isAdmin && (
             <MenuOption
               text={"Subscription"}

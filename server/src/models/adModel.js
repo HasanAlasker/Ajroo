@@ -26,6 +26,14 @@ const adSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    displayDuration: {
+      type: Number, // number of days to show
+      required: true,
+    },
+    expiresAt: {
+      type: Date,
+      // auto-calculated from displayDuration
+    },
   },
   { timestamps: true }
 );
