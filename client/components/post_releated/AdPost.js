@@ -116,7 +116,8 @@ function AdPost({
   const handleDelete = async () => {
     showAlert({
       title: "Delete Ad",
-      message: "Are you sure you want to delete this ad? This action cannot be undone.",
+      message:
+        "Are you sure you want to delete this ad? This action cannot be undone.",
       confirmText: "Delete",
       cancelText: "Cancel",
       onConfirm: async () => {
@@ -143,13 +144,16 @@ function AdPost({
   };
 
   const handleEdit = () => {
-    navigation.navigate("EditAd", { adId, adData: {
-      image,
-      link,
-      displayDuration,
-      isApproved,
-      isActive,
-    }});
+    navigation.navigate("EditAd", {
+      adId,
+      adData: {
+        image,
+        link,
+        displayDuration,
+        isApproved,
+        isActive,
+      },
+    });
   };
 
   return (
@@ -164,101 +168,134 @@ function AdPost({
           userId={userId}
           hideThree
         />
-        
-        {isAdmin && (
-          <View style={styles.adminSection}>            
-            {/* Status Info */}
-            <View style={styles.statusContainer}>
-              <View style={styles.statusRow}>
-                <AppText style={styles.label}>Status:</AppText>
-                <View style={[styles.badge, isActive ? styles.activeBadge : styles.inactiveBadge]}>
-                  <AppText style={[styles.badgeText, isActive ? styles.activeText : styles.inactiveText]}>
-                    {isActive ? "Active" : "Inactive"}
-                  </AppText>
-                </View>
-              </View>
-              
-              <View style={styles.statusRow}>
-                <AppText style={styles.label}>Approval:</AppText>
-                <View style={[styles.badge, isApproved ? styles.approvedBadge : styles.pendingBadge]}>
-                  <AppText style={[styles.badgeText, isApproved ? styles.approvedText : styles.pendingText]}>
-                    {isApproved ? "Approved" : "Pending"}
-                  </AppText>
-                </View>
-              </View>
-
-              <View style={styles.statusRow}>
-                <AppText style={styles.label}>Duration:</AppText>
-                <AppText style={styles.value}>
-                  {displayDuration} day{displayDuration > 1 ? "s" : ""}
-                </AppText>
-              </View>
-
-              <View style={styles.statusRow}>
-                <AppText style={styles.label}>Created:</AppText>
-                <AppText style={styles.value}>{formatDate(createdAt)}</AppText>
-              </View>
-
-              {expiresAt && (
-                <View style={styles.statusRow}>
-                  <AppText style={styles.label}>Expires:</AppText>
-                  <AppText style={styles.value}>{formatDate(expiresAt)}</AppText>
-                </View>
-              )}
-            </View>
-
-            {/* Action Buttons */}
-            <View style={styles.actionButtons}>
-              {!isApproved && (
-                <Pressable 
-                  style={[styles.actionBtn, styles.approveBtn]}
-                  onPress={handleApprove}
-                  disabled={loading}
-                >
-                  <MaterialCommunityIcons name="check-circle" size={18} color={theme.always_white} />
-                  <AppText style={styles.actionBtnText}>Approve</AppText>
-                </Pressable>
-              )}
-
-              <Pressable 
-                style={[styles.actionBtn, isActive ? styles.deactivateBtn : styles.activateBtn]}
-                onPress={handleToggleActive}
-                disabled={loading}
-              >
-                <MaterialCommunityIcons 
-                  name={isActive ? "pause-circle" : "play-circle"} 
-                  size={18} 
-                  color={theme.always_white} 
-                />
-                <AppText style={styles.actionBtnText}>
-                  {isActive ? "Deactivate" : "Activate"}
-                </AppText>
-              </Pressable>
-
-              <Pressable 
-                style={[styles.actionBtn, styles.editBtn]}
-                onPress={handleEdit}
-                disabled={loading}
-              >
-                <MaterialCommunityIcons name="pencil" size={18} color={theme.always_white} />
-                <AppText style={styles.actionBtnText}>Edit</AppText>
-              </Pressable>
-
-              <Pressable 
-                style={[styles.actionBtn, styles.deleteBtn]}
-                onPress={handleDelete}
-                disabled={loading}
-              >
-                <MaterialCommunityIcons name="delete" size={18} color={theme.always_white} />
-                <AppText style={styles.actionBtnText}>Delete</AppText>
-              </Pressable>
-            </View>
-          </View>
-        )}
       </View>
 
       <Image source={{ uri: image }} style={styles.img} />
-      
+      {isAdmin && (
+        <View style={styles.adminSection}>
+          {/* Status Info */}
+          <View style={styles.statusContainer}>
+            <View style={styles.statusRow}>
+              <AppText style={styles.label}>Status:</AppText>
+              <View
+                style={[
+                  styles.badge,
+                  isActive ? styles.activeBadge : styles.inactiveBadge,
+                ]}
+              >
+                <AppText
+                  style={[
+                    styles.badgeText,
+                    isActive ? styles.activeText : styles.inactiveText,
+                  ]}
+                >
+                  {isActive ? "Active" : "Inactive"}
+                </AppText>
+              </View>
+            </View>
+
+            <View style={styles.statusRow}>
+              <AppText style={styles.label}>Approval:</AppText>
+              <View
+                style={[
+                  styles.badge,
+                  isApproved ? styles.approvedBadge : styles.pendingBadge,
+                ]}
+              >
+                <AppText
+                  style={[
+                    styles.badgeText,
+                    isApproved ? styles.approvedText : styles.pendingText,
+                  ]}
+                >
+                  {isApproved ? "Approved" : "Pending"}
+                </AppText>
+              </View>
+            </View>
+
+            <View style={styles.statusRow}>
+              <AppText style={styles.label}>Duration:</AppText>
+              <AppText style={styles.value}>
+                {displayDuration} day{displayDuration > 1 ? "s" : ""}
+              </AppText>
+            </View>
+
+            <View style={styles.statusRow}>
+              <AppText style={styles.label}>Created:</AppText>
+              <AppText style={styles.value}>{formatDate(createdAt)}</AppText>
+            </View>
+
+            {expiresAt && (
+              <View style={styles.statusRow}>
+                <AppText style={styles.label}>Expires:</AppText>
+                <AppText style={styles.value}>{formatDate(expiresAt)}</AppText>
+              </View>
+            )}
+          </View>
+
+          {/* Action Buttons */}
+          <View style={styles.actionButtons}>
+            {!isApproved && (
+              <Pressable
+                style={[styles.actionBtn, styles.approveBtn]}
+                onPress={handleApprove}
+                disabled={loading}
+              >
+                <MaterialCommunityIcons
+                  name="check-circle"
+                  size={18}
+                  color={theme.always_white}
+                />
+                <AppText style={styles.actionBtnText}>Approve</AppText>
+              </Pressable>
+            )}
+
+            <Pressable
+              style={[
+                styles.actionBtn,
+                isActive ? styles.deactivateBtn : styles.activateBtn,
+              ]}
+              onPress={handleToggleActive}
+              disabled={loading}
+            >
+              <MaterialCommunityIcons
+                name={isActive ? "pause-circle" : "play-circle"}
+                size={18}
+                color={theme.always_white}
+              />
+              <AppText style={styles.actionBtnText}>
+                {isActive ? "Deactivate" : "Activate"}
+              </AppText>
+            </Pressable>
+
+            <Pressable
+              style={[styles.actionBtn, styles.editBtn]}
+              onPress={handleEdit}
+              disabled={loading}
+            >
+              <MaterialCommunityIcons
+                name="pencil"
+                size={18}
+                color={theme.always_white}
+              />
+              <AppText style={styles.actionBtnText}>Edit</AppText>
+            </Pressable>
+
+            <Pressable
+              style={[styles.actionBtn, styles.deleteBtn]}
+              onPress={handleDelete}
+              disabled={loading}
+            >
+              <MaterialCommunityIcons
+                name="delete"
+                size={18}
+                color={theme.always_white}
+              />
+              <AppText style={styles.actionBtnText}>Delete</AppText>
+            </Pressable>
+          </View>
+        </View>
+      )}
       <Pressable style={styles.btn} onPress={() => openURL(link, showAlert)}>
         <AppText style={styles.text}>Learn More</AppText>
         <MaterialCommunityIcons
@@ -305,11 +342,14 @@ const getStyles = (theme) =>
       color: theme.always_white,
       fontSize: 20,
     },
-    
+
     // Admin Section Styles
     adminSection: {
       marginTop: 15,
       gap: 15,
+      width:'90%',
+      marginHorizontal:'auto',
+      marginBottom:30,
     },
     statusContainer: {
       gap: 10,
@@ -327,7 +367,7 @@ const getStyles = (theme) =>
     value: {
       fontSize: 14,
       fontWeight: "bold",
-      right:3,
+      right: 3,
       color: theme.main_text,
     },
     badge: {
@@ -363,7 +403,7 @@ const getStyles = (theme) =>
     pendingText: {
       color: theme.orange,
     },
-    
+
     // Action Buttons
     actionButtons: {
       flexDirection: "row",
