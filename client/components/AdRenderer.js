@@ -10,8 +10,11 @@ function AdRenderer({
   fetchedAds = [],
 }) {
   const renderAds = ({ item: ad }) => {
+
     return (
       <AdPost
+        adId={ad._id}
+        userId={ad.user._id}
         userName={ad.user.name}
         userSub={ad.user?.productId}
         userPic={ad.user?.image}

@@ -17,10 +17,9 @@ function AdControl(props) {
   }, []);
 
   const handleRefresh = async () => {
-    await fetchNews();
+    await fetchAds();
   };
 
-  console.log(ads)
   return (
     <SafeScreen>
       <AdRenderer

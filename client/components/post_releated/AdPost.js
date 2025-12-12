@@ -16,6 +16,7 @@ import { openURL } from "../../functions/openURL";
 import { useAlert } from "../../config/AlertContext";
 
 function AdPost({
+  adId,
   userId,
   userPic,
   userName,
@@ -61,6 +62,7 @@ function AdPost({
 const getStyles = (theme) =>
   StyleSheet.create({
     container: {
+      marginVertical: 20,
       paddingHorizontal: 0,
       paddingVertical: 0,
       rowGap: 0,
