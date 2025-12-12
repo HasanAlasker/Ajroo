@@ -78,7 +78,7 @@ function SettingsMenu({ isVisible, onClose }) {
             onPress={() =>
               !isAdmin
                 ? navigation.navigate("AdInfo")
-                : navigation.navigate("AdInfo")
+                : navigation.navigate("AdControl")
             }
           />
           {!isAdmin && <SeparatorComp style={styles.sep} />}

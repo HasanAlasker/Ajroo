@@ -46,6 +46,7 @@ import AddNews from "./pages/admin/AddNews";
 import EditNews from "./pages/admin/EditNews";
 import AdInfo from "./pages/Users/AdInfo";
 import AddAd from "./pages/Users/AddAd";
+import AdControl from "./pages/admin/AdControl";
 
 const Stack = createNativeStackNavigator();
 
@@ -89,6 +90,7 @@ const AdminStack = () => {
       <Stack.Screen name="NewsLog" component={NewsLog} />
       <Stack.Screen name="AddNews" component={AddNews} />
       <Stack.Screen name="EditNews" component={EditNews} />
+      <Stack.Screen name="AdControl" component={AdControl} />
     </Stack.Navigator>
   );
 };
