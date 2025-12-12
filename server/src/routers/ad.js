@@ -11,11 +11,7 @@ const route = express.Router();
 // get all ads
 route.get("/", auth, async (req, res) => {
   try {
-    const ads = await AdModel.find({
-      isActive: true,
-      isApproved: true,
-      isDeleted: false,
-    })
+    const ads = await AdModel.find()
       .sort({ createdAt: -1 })
       .populate({
         path: "user",

@@ -15,10 +15,21 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { openURL } from "../../functions/openURL";
 import { useAlert } from "../../config/AlertContext";
 
-function AdPost({ userId, userPic, userName, userSub, image, link }) {
+function AdPost({
+  userId,
+  userPic,
+  userName,
+  userSub,
+  image,
+  link,
+  isApproved,
+  isActive,
+  expiresAt,
+  createdAt,
+}) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
-  const {showAlert} = useAlert()
+  const { showAlert } = useAlert();
 
   return (
     <PostComponent style={styles.container}>
@@ -34,7 +45,7 @@ function AdPost({ userId, userPic, userName, userSub, image, link }) {
         />
       </View>
       <Image source={{ uri: image }} style={styles.img} />
-      <Pressable style={styles.btn} onPress={()=>openURL(link, showAlert)}>
+      <Pressable style={styles.btn} onPress={() => openURL(link, showAlert)}>
         <AppText style={styles.text}>Learn More</AppText>
         <MaterialCommunityIcons
           name="chevron-right-circle-outline"
@@ -57,7 +68,7 @@ const getStyles = (theme) =>
     topPad: {
       paddingHorizontal: 20,
       paddingTop: 20,
-      paddingBottom:10,
+      paddingBottom: 10,
     },
     btn: {
       paddingHorizontal: 20,

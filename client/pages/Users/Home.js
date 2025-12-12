@@ -26,18 +26,6 @@ function Home({ navigation }) {
       <ScrollScreen>
         {/* <WelcomeCard /> */}
 
-        <AdPost
-          userName={"CARSTARS"}
-          userSub={"Starter"}
-          userPic={
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBSZ7qRtRl3ksOwGnM1eMA4iDrak2imGeq5w&s"
-          }
-          image={
-            "https://www.carstarsjo.com/wp-content/uploads/2023/07/-jpg.webp"
-          }
-          link={"https://www.carstarsjo.com/"}
-        />
-
         <AppText style={styles.text}>
           What kind of item are you looking for?
         </AppText>
