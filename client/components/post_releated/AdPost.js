@@ -32,6 +32,11 @@ function AdPost({
   const { theme } = useTheme();
   const { showAlert } = useAlert();
 
+  const SubType = () => {
+    if(userSub === "business_starter:starter") return "Starter"
+    if(userSub === "business_premium:premium") return "Premium"
+  }
+
   return (
     <PostComponent style={styles.container}>
       <View style={styles.topPad}>
@@ -40,7 +45,7 @@ function AdPost({
           image={userPic}
           isMine={false}
           name={userName}
-          subscriptionType={userSub}
+          subscriptionType={SubType()}
           userId={userId}
           hideThree
         />

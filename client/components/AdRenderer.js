@@ -16,7 +16,7 @@ function AdRenderer({
         adId={ad._id}
         userId={ad.user._id}
         userName={ad.user.name}
-        userSub={ad.user?.productId}
+        userSub={ad.user?.subscription?.productId}
         userPic={ad.user?.image}
         image={ad.image}
         link={ad.link}
