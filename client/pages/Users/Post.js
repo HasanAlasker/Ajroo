@@ -34,6 +34,7 @@ import { useTheme } from "../../config/ThemeContext";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import RequestBtn from "../../components/RequestBtn";
 import FormikInput from "../../components/form/FormikInput";
+import KeyboardScrollScreen from "../../components/general/KeyboardScrollScreen";
 
 // Fixed validation schema - conditional based on active type
 const getValidationSchema = (active) => {
@@ -298,7 +299,7 @@ function Post(props) {
 
   return (
     <SafeScreen>
-      <ScrollScreen>
+      <KeyboardScrollScreen>
         <Formik
           initialValues={initialValues}
           validationSchema={getValidationSchema(active)} // Dynamic validation
@@ -465,7 +466,7 @@ function Post(props) {
             );
           }}
         </Formik>
-      </ScrollScreen>
+      </KeyboardScrollScreen>
       <Navbar />
     </SafeScreen>
   );
