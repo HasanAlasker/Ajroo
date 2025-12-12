@@ -8,6 +8,7 @@ function KeyboardScrollScreen({children, ...other}) {
       contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
       enableOnAndroid={true}
       extraScrollHeight={60}
+      showsVerticalScrollIndicator={false}
       {...other}
     >
         {children}
