@@ -10,7 +10,6 @@ function AdRenderer({
   fetchedAds = [],
 }) {
   const renderAds = ({ item: ad }) => {
-
     return (
       <AdPost
         adId={ad._id}
@@ -23,7 +22,9 @@ function AdRenderer({
         isActive={ad.isActive}
         isApproved={ad.isApproved}
         createdAt={ad.createdAt}
+        updatedAt={ad.updatedAt}
         expiresAt={ad.expiresAt}
+        displayDuration={ad.displayDuration}
       />
     );
   };
