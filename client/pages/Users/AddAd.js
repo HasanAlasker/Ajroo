@@ -62,11 +62,8 @@ function AdAdd() {
         link: values.link,
         displayDuration: parseInt(values.displayDuration),
       };
-      console.log("Data: ", AdData);
-      
-      const res = await createAd(AdData);
 
-      console.log("Res: ", res);
+      await createAd(AdData);
 
       showInfo({
         title: "Thank you!",
@@ -125,7 +122,7 @@ function AdAdd() {
                 placeholder="Your website or social media link (e.g., https://example.com)"
                 hasBeenSubmitted={hasBeenSubmitted}
                 isBox
-                height={100}
+                height={55}
                 keyboardType="url"
                 autoCapitalize="none"
                 autoCorrect={false}
