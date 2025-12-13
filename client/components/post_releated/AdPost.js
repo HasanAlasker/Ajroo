@@ -146,13 +146,11 @@ function AdPost({
   const handleEdit = () => {
     navigation.navigate("EditAd", {
       adId,
-      adData: {
-        image,
-        link,
-        displayDuration,
-        isApproved,
-        isActive,
-      },
+      image,
+      link,
+      displayDuration,
+      isApproved,
+      isActive,
     });
   };
 
@@ -347,9 +345,9 @@ const getStyles = (theme) =>
     adminSection: {
       marginTop: 15,
       gap: 15,
-      width:'90%',
-      marginHorizontal:'auto',
-      marginBottom:30,
+      width: "90%",
+      marginHorizontal: "auto",
+      marginBottom: 30,
     },
     statusContainer: {
       gap: 10,

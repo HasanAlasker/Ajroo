@@ -84,11 +84,11 @@ function EditNews(props) {
         title: "Done!",
         message: "News updated successfully",
         confirmText: "OK",
+        onConfirm: () => navigation.navigate("NewsLog"),
       });
 
       resetForm();
       setHasBeenSubmitted(false);
-      navigation.navigate("NewsLog");
     } catch (err) {
       console.error("News error:", err.response?.data || err.message);
       showInfo({

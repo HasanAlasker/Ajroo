@@ -11,9 +11,10 @@ import { useAlert } from "../../config/AlertContext";
 import { useUser } from "../../config/UserContext";
 import AppText from "../../config/AppText";
 import useThemedStyles from "../../hooks/useThemedStyles";
-import { createAd } from "../../api/ads";
+import { editAd } from "../../api/ads";
 import { uploadImage } from "../../api/upload";
 import AddImageBtn from "../../components/AddImageBtn";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import Note from "../../components/general/Note";
 
 const validationSchema = Yup.object().shape({
@@ -35,59 +36,72 @@ const validationSchema = Yup.object().shape({
     .required("Please enter the display duration in days"),
 });
 
-function AdAdd() {
+function EditAd() {
   const { showInfo } = useAlert();
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const styles = useThemedStyles(getStyles);
+  const route = useRoute();
+  const navigation = useNavigation();
+
+  const { adId, image, link, displayDuration } = route.params || {};
+
+  // Handle missing params
+  if (!adId) {
+    showInfo({
+      title: "Error",
+      message: "Ad information is missing. Please try again.",
+      confirmText: "OK",
+      onConfirm: () => navigation.goBack(),
+    });
+    return null;
+  }
 
   const initialValues = {
-    image: null,
-    link: "",
-    displayDuration: "",
+    image: image || null,
+    link: link || "",
+    displayDuration: displayDuration ? displayDuration.toString() : "",
   };
 
-  const handleSubmit = async (
-    values,
-    { setSubmitting, resetForm, setStatus }
-  ) => {
+  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
     setLoading(true);
     try {
-      const imageData = await uploadImage(values.image);
-
-      const AdData = {
-        image: imageData.url,
-        imagePublicId: imageData.publicId,
+      let AdData = {
         link: values.link,
         displayDuration: parseInt(values.displayDuration),
       };
 
-      await createAd(AdData);
+      // Only upload new image if it was changed
+      if (values.image && values.image !== image) {
+        const imageData = await uploadImage(values.image);
+        AdData.image = imageData.url;
+        AdData.imagePublicId = imageData.publicId;
+      }
+
+      await editAd(adId, AdData);
 
       showInfo({
-        title: "Thank you!",
-        message:
-          "Your ad has been submitted and will be reviewed by our team within 24-48 hours.",
+        title: "Success!",
+        message: "Your ad has been updated successfully.",
         confirmText: "OK",
+        onConfirm: () => navigation.goBack(),
       });
-
-      resetForm();
-      setHasBeenSubmitted(false);
     } catch (err) {
-      console.error("Ad error:", err.response?.data || err.message);
+      console.error("Edit ad error:", err.response?.data || err.message);
       showInfo({
-        title: "Error",
+        title: "Update Failed",
         message:
           err.response?.data?.message ||
-          "Failed to submit your ad. Please try again.",
+          err.response?.data ||
+          "Failed to update your ad. Please try again.",
         confirmText: "OK",
       });
       setStatus({
         type: "error",
         message:
           err.response?.data?.message ||
-          "Failed to submit your ad. Please try again.",
+          "Failed to update your ad. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -98,7 +112,6 @@ function AdAdd() {
   return (
     <SafeScreen>
       <KeyboardScrollScreen>
-        <AppText style={styles.text}>Submit Your Business Ad</AppText>
 
         <Formik
           initialValues={initialValues}
@@ -135,18 +148,18 @@ function AdAdd() {
                 keyboardType="numeric"
               />
 
-              <SubmitBtn
-                disabled={loading}
-                setHasBeenSubmitted={setHasBeenSubmitted}
-                defaultText="Submit Ad Request"
-                submittingText="Submitting..."
-              />
-
               <Note
                 title={"Note"}
                 text={
-                  "After submitting, our team will review your ad and contact you to finalize pricing and display details."
+                  "Changing the display duration will recalculate the expiration date from today."
                 }
+              />
+
+              <SubmitBtn
+                disabled={loading}
+                setHasBeenSubmitted={setHasBeenSubmitted}
+                defaultText="Update Ad"
+                submittingText="Updating..."
               />
             </>
           )}
@@ -178,6 +191,15 @@ const getStyles = (theme) =>
       color: theme.darker_gray,
       textAlign: "center",
     },
+    noteText: {
+      fontSize: 14,
+      width: "90%",
+      marginHorizontal: "auto",
+      marginVertical: 15,
+      color: theme.darker_gray,
+      textAlign: "center",
+      lineHeight: 20,
+    },
   });
 
-export default AdAdd;
+export default EditAd;

@@ -24,6 +24,7 @@ import { uploadImage } from "../api/upload";
 import { getUserById } from "../api/user";
 import Purchases from "react-native-purchases";
 import { useUser } from "../config/UserContext";
+import { useAlert } from "../config/AlertContext";
 
 // Dynamic validation schema based on post type
 const getValidationSchema = (postType) => {
@@ -102,6 +103,7 @@ function EditPostModal({ postId, visible, onClose }) {
   const [subscriptionError, setSubscriptionError] = useState(null);
   const [userPlan, setUserPlan] = useState("individual_free");
   const { user } = useUser();
+  const { showInfo } = useAlert();
 
   const styles = useThemedStyles(getStyles);
 
@@ -210,7 +212,6 @@ function EditPostModal({ postId, visible, onClose }) {
         city: values.city,
         area: values.area,
         condition: values.condition,
-        sellPrice: values.sellPrice,
         image: imageData?.url,
         imagePublicId: imageData?.publicId,
         description: values.description,
@@ -226,15 +227,13 @@ function EditPostModal({ postId, visible, onClose }) {
       await editPost(postId, updatedData);
       setHasBeenSubmitted(true);
 
-      // Simulate API call success
-      setTimeout(() => {
-        setStatus({ type: "success", message: "Item updated successfully!" });
-        setHasBeenSubmitted(false);
-        if (onClose) {
-          onClose(); // Close the modal
-        }
-        setSubmitting(false);
-      }, 500);
+      showInfo({
+        title: "Done!",
+        message: "Post updated successfully",
+        confirmText: "OK",
+        onConfirm: () => onClose(),
+      });
+
     } catch (error) {
       console.error("Error updating post:", error);
       setStatus({
