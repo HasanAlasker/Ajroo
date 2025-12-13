@@ -29,8 +29,7 @@ route.get("/", auth, async (req, res) => {
 // get all inactive ads
 route.get("/inactive", [auth, admin], async (req, res) => {
   try {
-    const ads = await AdModel.find()
-      .select("-isActive")
+    const ads = await AdModel.find({ isActive: false })
       .sort("-createdAt")
       .populate({
         path: "user",
@@ -48,8 +47,7 @@ route.get("/inactive", [auth, admin], async (req, res) => {
 // get all inactive ads
 route.get("/active", [auth, admin], async (req, res) => {
   try {
-    const ads = await AdModel.find()
-      .select("isActive")
+    const ads = await AdModel.find({ isActive: true })
       .sort("-createdAt")
       .populate({
         path: "user",

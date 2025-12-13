@@ -6,7 +6,7 @@ import Navbar from "../../components/general/Navbar";
 import TopNav from "../../components/general/TopNav";
 import AdRenderer from "../../components/AdRenderer";
 import useApi from "../../hooks/useApi";
-import { getActiveAds, getAllAds, getInactiveAds } from "../../api/ads";
+import { activateAd, getActiveAds, getAllAds, getInactiveAds } from "../../api/ads";
 
 function AdControl(props) {
   const { data: ads, request: fetchAds, loading } = useApi(getAllAds);
@@ -30,6 +30,9 @@ function AdControl(props) {
     fetchActiveAds();
     fetchInctiveAds();
   }, []);
+
+  console.log("active: ", activeAds)
+  console.log("inactive: ", inactiveAds)
 
   const handleRefresh = async () => {
     fetchActiveAds();
