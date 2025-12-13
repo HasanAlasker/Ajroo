@@ -137,7 +137,7 @@ function NewsCard({
       >
         {description}
       </AppText>
-      {actionButton && (
+      {actionButton && !isAdmin && (
         <RequestBtn
           title={"Update App"}
           color={backGroundColor}

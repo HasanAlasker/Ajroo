@@ -173,6 +173,7 @@ function Have({ route }) {
             createdAt={news.createdAt}
             description={news.description}
             isActive={news.isActive}
+            actionButton={news.actionButton}
             icon={news?.icon}
           />
         )}
