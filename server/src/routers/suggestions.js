@@ -22,7 +22,7 @@ router.post("/", auth, async (req, res) => {
 
     try {
       const admins = await UserModel.find({ role: "admin" });
-      const owner = await UserModel.findById(req.user._id);
+      const owner = await UserModel.findById(req.user);
 
       const tokens = [];
       admins.forEach((admin) => {
