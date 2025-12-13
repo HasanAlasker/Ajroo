@@ -4,6 +4,7 @@ import auth from "../middleware/auth.js";
 import SuggestionModel from "../models/suggestionModel.js";
 import admin from "../middleware/admin.js";
 import UserModel from "../models/usersModel.js";
+import { sendPushNotification } from "../utils/notifications.js";
 
 const router = express.Router();
 
