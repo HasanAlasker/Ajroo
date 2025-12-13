@@ -7,6 +7,7 @@ import TopNav from "../../components/general/TopNav";
 import AdRenderer from "../../components/AdRenderer";
 import useApi from "../../hooks/useApi";
 import { getMyAds } from "../../api/ads";
+import LoadingAd from "../../components/general/LoadingAd";
 
 function MyAds(props) {
   const { data: ads, request: fetchAds, loading } = useApi(getMyAds);
@@ -30,7 +31,11 @@ function MyAds(props) {
         onRefresh={handleRefresh}
         refreshing={refresh}
         emptyMessage="You don't have any ads"
-      />
+      >
+        {(loading || !ads) && <LoadingAd />}
+        {(loading || !ads) && <LoadingAd />}
+        {(loading || !ads) && <LoadingAd />}
+      </AdRenderer>
       <Navbar />
     </SafeScreen>
   );

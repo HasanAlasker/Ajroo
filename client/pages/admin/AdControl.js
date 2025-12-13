@@ -6,61 +6,62 @@ import Navbar from "../../components/general/Navbar";
 import TopNav from "../../components/general/TopNav";
 import AdRenderer from "../../components/AdRenderer";
 import useApi from "../../hooks/useApi";
-import { activateAd, getActiveAds, getAllAds, getInactiveAds } from "../../api/ads";
+import { getActiveAds, getInactiveAds } from "../../api/ads";
+import LoadingAd from "../../components/general/LoadingAd";
 
 function AdControl(props) {
-  const { data: ads, request: fetchAds, loading } = useApi(getAllAds);
-
   const {
     data: activeAds,
     request: fetchActiveAds,
-    loadingActive,
+    loading: loadingActive,
   } = useApi(getActiveAds);
 
   const {
     data: inactiveAds,
-    request: fetchInctiveAds,
-    loadingInactive,
+    request: fetchInactiveAds,
+    loading: loadingInactive,
   } = useApi(getInactiveAds);
 
-  const [refresh, setRefresh] = useState(false);
   const [active, setActive] = useState("Active");
 
   useEffect(() => {
     fetchActiveAds();
-    fetchInctiveAds();
+    fetchInactiveAds();
   }, []);
 
-  console.log("active: ", activeAds)
-  console.log("inactive: ", inactiveAds)
-
   const handleRefresh = async () => {
-    await fetchActiveAds();
-    await fetchInctiveAds();
+    if (active === "Active") {
+      await fetchActiveAds();
+    } else {
+      await fetchInactiveAds();
+    }
   };
 
   const handleTabChange = () => {
-    if (active === "Active") setActive("Inactive");
-    else setActive("Active");
+    setActive(active === "Active" ? "Inactive" : "Active");
   };
+
+  // Determine which data and loading state to use
+  const currentAds = active === "Active" ? activeAds : inactiveAds;
+  const currentLoading = active === "Active" ? loadingActive : loadingInactive;
 
   return (
     <SafeScreen>
       <TopNav activeTab={active} onTabChange={handleTabChange} />
-      {active === "Active" && (
-        <AdRenderer
-          fetchedAds={activeAds}
-          onRefresh={handleRefresh}
-          refreshing={refresh}
-        />
-      )}
-      {active === "Inactive" && (
-        <AdRenderer
-          fetchedAds={inactiveAds}
-          onRefresh={handleRefresh}
-          refreshing={refresh}
-        />
-      )}
+      <AdRenderer
+        fetchedAds={currentAds}
+        onRefresh={handleRefresh}
+        refreshing={currentLoading}
+      >
+        {currentLoading && (
+          <>
+            <LoadingAd />
+            <LoadingAd />
+            <LoadingAd />
+            <LoadingAd />
+          </>
+        )}
+      </AdRenderer>
       <Navbar />
     </SafeScreen>
   );
