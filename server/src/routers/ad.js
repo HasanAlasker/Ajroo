@@ -45,6 +45,25 @@ route.get("/inactive", [auth, admin], async (req, res) => {
   }
 });
 
+// get all inactive ads
+route.get("/active", [auth, admin], async (req, res) => {
+  try {
+    const ads = await AdModel.find()
+      .select("isActive")
+      .sort("-createdAt")
+      .populate({
+        path: "user",
+        select: "name image subscription email phone",
+        populate: { path: "subscription", select: "productId status" },
+      });
+    if (!ads) return res.status(404).send("No ads found");
+
+    return res.status(202).send(ads);
+  } catch (error) {
+    return res.status(500).send("Server error", error);
+  }
+});
+
 // get all not approved ads
 route.get("/notApproved", [auth, admin], async (req, res) => {
   try {

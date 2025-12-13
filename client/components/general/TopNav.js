@@ -14,28 +14,49 @@ function TopNav({ activeTab, onTabChange }) {
   };
 
   // Determine the correct tab values based on route
-  const firstTab = route.name === "Book" ? "Given"  : route.name === "Requests" ? "Got" : "Users";
-  const secondTab = route.name === "Book" ? "Taken" : route.name === "Requests" ? "Sent" : "Posts";
+  const firstTab =
+    route.name === "Book"
+      ? "Given"
+      : route.name === "Requests"
+      ? "Got"
+      : route.name === "AdControl"
+      ? "Active"
+      : "Users";
+  const secondTab =
+    route.name === "Book"
+      ? "Taken"
+      : route.name === "Requests"
+      ? "Sent"
+      : route.name === "AdControl"
+      ? "Inactive"
+      : "Posts";
 
   return (
     <View style={styles.container}>
       <View style={styles.row}>
         <TouchableOpacity onPress={() => onTabChange(firstTab)}>
-          <AppText style={[
-            styles.text, 
-            isActive(firstTab) && {color: theme.purple, fontWeight: 'bold'}
-          ]}>
+          <AppText
+            style={[
+              styles.text,
+              isActive(firstTab) && { color: theme.purple, fontWeight: "bold" },
+            ]}
+          >
             {firstTab}
           </AppText>
         </TouchableOpacity>
-        
+
         <View style={styles.line}></View>
-        
+
         <TouchableOpacity onPress={() => onTabChange(secondTab)}>
-          <AppText style={[
-            styles.text,
-            isActive(secondTab) && {color: theme.purple, fontWeight: 'bold'}
-          ]}>
+          <AppText
+            style={[
+              styles.text,
+              isActive(secondTab) && {
+                color: theme.purple,
+                fontWeight: "bold",
+              },
+            ]}
+          >
             {secondTab}
           </AppText>
         </TouchableOpacity>

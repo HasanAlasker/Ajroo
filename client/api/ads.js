@@ -13,6 +13,8 @@ export const createAd = (adData) =>
 // Admin endpoints
 export const getInactiveAds = () => apiClient.get(`${endPoint}/inactive`);
 
+export const getActiveAds = () => apiClient.get(`${endPoint}/active`);
+
 export const getNotApprovedAds = () => apiClient.get(`${endPoint}/notApproved`);
 
 export const approveAd = (id) => apiClient.put(`${endPoint}/approve/${id}`); //✅
