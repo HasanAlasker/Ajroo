@@ -391,7 +391,7 @@ route.delete("/delete/:id", [auth, admin], async (req, res) => {
         await sendPushNotification(
           tokens,
           "Ad removal",
-          `Admins deleted you ad!`
+          `Admins deleted your ad!`
         );
         console.log("📤 Attempting to send notification to:", tokens);
       }
@@ -401,7 +401,8 @@ route.delete("/delete/:id", [auth, admin], async (req, res) => {
 
     return res.status(200).send(deletedAd);
   } catch (error) {
-    return res.status(500).send("Server error", error);
+    console.error("Delete ad error:", error); // Log the actual error
+    return res.status(500).send({ message: "Server error", error: error.message });
   }
 });
 

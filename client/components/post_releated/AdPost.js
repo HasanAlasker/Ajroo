@@ -124,7 +124,8 @@ function AdPost({
       onConfirm: async () => {
         setLoading(true);
         try {
-          await deleteAd(adId);
+          const res = await deleteAd(adId);
+          console.log(res)
           showAlert({
             title: "Success",
             message: "Ad deleted successfully!",
