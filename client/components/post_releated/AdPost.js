@@ -17,7 +17,7 @@ import { useAlert } from "../../config/AlertContext";
 import { formatDate } from "../../functions/formatDate";
 import { useUser } from "../../config/UserContext";
 import { activateAd, deactivateAd, deleteAd, approveAd } from "../../api/ads";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 function AdPost({
   adId,
@@ -40,6 +40,7 @@ function AdPost({
   const { showAlert } = useAlert();
   const { user } = useUser();
   const navigation = useNavigation();
+  const route = useRoute();
   const [loading, setLoading] = useState(false);
 
   const isAdmin = user.role === "admin";
@@ -169,7 +170,7 @@ function AdPost({
       </View>
 
       <Image source={{ uri: image }} style={styles.img} />
-      {isAdmin && (
+      {(isAdmin || route.name === "MyAds") && (
         <View style={styles.adminSection}>
           {/* Status Info */}
           <View style={styles.statusContainer}>
@@ -232,68 +233,71 @@ function AdPost({
           </View>
 
           {/* Action Buttons */}
-          <View style={styles.actionButtons}>
-            {!isApproved && (
+          {isAdmin && (
+            <View style={styles.actionButtons}>
+              {!isApproved && (
+                <Pressable
+                  style={[styles.actionBtn, styles.approveBtn]}
+                  onPress={handleApprove}
+                  disabled={loading}
+                >
+                  <MaterialCommunityIcons
+                    name="check-circle"
+                    size={18}
+                    color={theme.always_white}
+                  />
+                  <AppText style={styles.actionBtnText}>Approve</AppText>
+                </Pressable>
+              )}
+
               <Pressable
-                style={[styles.actionBtn, styles.approveBtn]}
-                onPress={handleApprove}
+                style={[
+                  styles.actionBtn,
+                  isActive ? styles.deactivateBtn : styles.activateBtn,
+                ]}
+                onPress={handleToggleActive}
                 disabled={loading}
               >
                 <MaterialCommunityIcons
-                  name="check-circle"
+                  name={isActive ? "pause-circle" : "play-circle"}
                   size={18}
                   color={theme.always_white}
                 />
-                <AppText style={styles.actionBtnText}>Approve</AppText>
+                <AppText style={styles.actionBtnText}>
+                  {isActive ? "Deactivate" : "Activate"}
+                </AppText>
               </Pressable>
-            )}
 
-            <Pressable
-              style={[
-                styles.actionBtn,
-                isActive ? styles.deactivateBtn : styles.activateBtn,
-              ]}
-              onPress={handleToggleActive}
-              disabled={loading}
-            >
-              <MaterialCommunityIcons
-                name={isActive ? "pause-circle" : "play-circle"}
-                size={18}
-                color={theme.always_white}
-              />
-              <AppText style={styles.actionBtnText}>
-                {isActive ? "Deactivate" : "Activate"}
-              </AppText>
-            </Pressable>
+              <Pressable
+                style={[styles.actionBtn, styles.editBtn]}
+                onPress={handleEdit}
+                disabled={loading}
+              >
+                <MaterialCommunityIcons
+                  name="pencil"
+                  size={18}
+                  color={theme.always_white}
+                />
+                <AppText style={styles.actionBtnText}>Edit</AppText>
+              </Pressable>
 
-            <Pressable
-              style={[styles.actionBtn, styles.editBtn]}
-              onPress={handleEdit}
-              disabled={loading}
-            >
-              <MaterialCommunityIcons
-                name="pencil"
-                size={18}
-                color={theme.always_white}
-              />
-              <AppText style={styles.actionBtnText}>Edit</AppText>
-            </Pressable>
-
-            <Pressable
-              style={[styles.actionBtn, styles.deleteBtn]}
-              onPress={handleDelete}
-              disabled={loading}
-            >
-              <MaterialCommunityIcons
-                name="delete"
-                size={18}
-                color={theme.always_white}
-              />
-              <AppText style={styles.actionBtnText}>Delete</AppText>
-            </Pressable>
-          </View>
+              <Pressable
+                style={[styles.actionBtn, styles.deleteBtn]}
+                onPress={handleDelete}
+                disabled={loading}
+              >
+                <MaterialCommunityIcons
+                  name="delete"
+                  size={18}
+                  color={theme.always_white}
+                />
+                <AppText style={styles.actionBtnText}>Delete</AppText>
+              </Pressable>
+            </View>
+          )}
         </View>
       )}
+
       <Pressable style={styles.btn} onPress={() => openURL(link, showAlert)}>
         <AppText style={styles.text}>Learn More</AppText>
         <MaterialCommunityIcons

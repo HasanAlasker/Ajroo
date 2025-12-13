@@ -6,7 +6,11 @@ import Navbar from "../../components/general/Navbar";
 import AppText from "../../config/AppText";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import PostComponent from "../../components/post_releated/PostComponent";
-import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import {
+  FontAwesome6,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { useTheme } from "../../config/ThemeContext";
 import RequestBtn from "../../components/RequestBtn";
 import { useNavigation } from "@react-navigation/native";
@@ -15,7 +19,7 @@ function AdInfo(props) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
 
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   return (
     <SafeScreen style={styles.container}>
@@ -71,7 +75,29 @@ function AdInfo(props) {
             color={"always_white"}
             backColor={"purple"}
             style={styles.btn}
-            onPress={()=>navigation.navigate('AddAd')}
+            onPress={() => navigation.navigate("AddAd")}
+          />
+        </PostComponent>
+        <PostComponent style={styles.container}>
+          <View style={styles.iconAndTitle}>
+            <MaterialCommunityIcons
+              name={"billboard"}
+              size={26}
+              color={theme.purple}
+              style={{ marginRight: 3 }}
+            />
+            <AppText style={[styles.text, styles.title]}>My Ads</AppText>
+          </View>
+          <AppText style={[styles.text, styles.faded]}>
+            Monitor the status of your ads here
+          </AppText>
+          <RequestBtn
+            title={"View My Ads"}
+            arrow={true}
+            color={"always_white"}
+            backColor={"purple"}
+            style={styles.btn}
+            onPress={() => navigation.navigate("MyAds")}
           />
         </PostComponent>
       </ScrollScreen>

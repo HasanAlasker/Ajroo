@@ -35,8 +35,8 @@ function AdControl(props) {
   console.log("inactive: ", inactiveAds)
 
   const handleRefresh = async () => {
-    fetchActiveAds();
-    fetchInctiveAds();
+    await fetchActiveAds();
+    await fetchInctiveAds();
   };
 
   const handleTabChange = () => {

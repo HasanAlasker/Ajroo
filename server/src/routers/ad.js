@@ -83,7 +83,13 @@ route.get("/notApproved", [auth, admin], async (req, res) => {
 // Get user's own ads
 route.get("/my-ads", auth, async (req, res) => {
   try {
-    const ads = await AdModel.find({ user: req.user._id }).sort("-createdAt");
+    const ads = await AdModel.find({ user: req.user._id })
+      .sort("-createdAt")
+      .populate({
+        path: "user",
+        select: "name image subscription email phone",
+        populate: { path: "subscription", select: "productId status" },
+      });
 
     return res.status(200).json(ads);
   } catch (error) {

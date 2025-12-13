@@ -48,6 +48,7 @@ import AdInfo from "./pages/Users/AdInfo";
 import AddAd from "./pages/Users/AddAd";
 import AdControl from "./pages/admin/AdControl";
 import EditAd from "./pages/admin/EditAd";
+import MyAds from "./pages/Users/MyAds";
 
 const Stack = createNativeStackNavigator();
 
@@ -71,6 +72,7 @@ const AuthenticatedStack = () => {
       <Stack.Screen name="NewsLog" component={NewsLog} />
       <Stack.Screen name="AdInfo" component={AdInfo} />
       <Stack.Screen name="AddAd" component={AddAd} />
+      <Stack.Screen name="MyAds" component={MyAds} />
     </Stack.Navigator>
   );
 };
