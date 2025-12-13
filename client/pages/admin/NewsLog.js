@@ -11,6 +11,7 @@ import NewsRenderer from "../../components/NewsRenderer";
 import { useUser } from "../../config/UserContext";
 import AddHoverBtn from "../../components/general/AddHoverBtn";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import LoadingNews from "../../components/general/LoadingNews";
 
 function NewsLog(props) {
   const { data: fetchedNews, request: fetchNews, loading } = useApi(getAllNews);
@@ -41,6 +42,12 @@ function NewsLog(props) {
         onRefresh={handleRefresh}
       >
         {isAdmin && <AddHoverBtn onPress={handleAddBtn} />}
+        {(loading || !fetchedNews) && <LoadingNews />}
+        {(loading || !fetchedNews) && <LoadingNews />}
+        {(loading || !fetchedNews) && <LoadingNews />}
+        {(loading || !fetchedNews) && <LoadingNews />}
+        {(loading || !fetchedNews) && <LoadingNews />}
+        {(loading || !fetchedNews) && <LoadingNews />}
       </NewsRenderer>
       <Navbar />
     </SafeScreen>
