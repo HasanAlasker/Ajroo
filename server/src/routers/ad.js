@@ -112,24 +112,31 @@ route.post("/create", [auth, validate(createAdSchema)], async (req, res) => {
     const savedAd = await newAd.save();
 
     try {
-      const admin = await UserModel.find({ role: "admin" });
+      const admins = await UserModel.find({ role: "admin" });
       const owner = await UserModel.findById(newAd.user._id);
 
-      if (
-        admin &&
-        admin.pushNotificationTokens &&
-        admin.pushNotificationTokens.length > 0
-      ) {
-        const tokens = admin.pushNotificationTokens.map(
-          (tokenObj) => tokenObj.token
-        );
+      const tokens = [];
+      admins.forEach((admin) => {
+        if (
+          admin.pushNotificationTokens &&
+          admin.pushNotificationTokens.length > 0
+        ) {
+          admin.pushNotificationTokens.forEach((tokenObj) => {
+            tokens.push(tokenObj.token);
+          });
+        }
+      });
 
+      // Send notification if we have tokens
+      if (tokens.length > 0) {
         await sendPushNotification(
           tokens,
           "Ad request",
           `${owner.name} applied for an ad!`
         );
-        console.log("📤 Attempting to send notification to:", tokens);
+        console.log("📤 Notification sent to", tokens.length, "admin(s)");
+      } else {
+        console.log("⚠️ No admin tokens found");
       }
     } catch (notificationError) {
       console.error("Failed to send push notification:", notificationError);
