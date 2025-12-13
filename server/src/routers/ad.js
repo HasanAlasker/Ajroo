@@ -5,6 +5,8 @@ import AdModel from "../models/adModel.js";
 import validate from "../middleware/joiValidation.js";
 import { createAdSchema, updateAdSchema } from "../validation/adValidation.js";
 import admin from "../middleware/admin.js";
+import { sendPushNotification } from "../utils/notifications.js";
+import UserModel from "../models/usersModel.js";
 
 const route = express.Router();
 
@@ -108,6 +110,30 @@ route.post("/create", [auth, validate(createAdSchema)], async (req, res) => {
     if (!newAd) return res.status(400).send("Ad not created, something wrong");
 
     const savedAd = await newAd.save();
+
+    try {
+      const admin = await UserModel.find({ role: "admin" });
+      const owner = await UserModel.findById(newAd.user._id);
+
+      if (
+        admin &&
+        admin.pushNotificationTokens &&
+        admin.pushNotificationTokens.length > 0
+      ) {
+        const tokens = admin.pushNotificationTokens.map(
+          (tokenObj) => tokenObj.token
+        );
+
+        await sendPushNotification(
+          tokens,
+          "Ad request",
+          `${owner.name} applied for an ad!`
+        );
+        console.log("📤 Attempting to send notification to:", tokens);
+      }
+    } catch (notificationError) {
+      console.error("Failed to send push notification:", notificationError);
+    }
     return res.status(201).send(savedAd);
   } catch (error) {
     return res.status(500).send("Server error", error);
@@ -141,6 +167,29 @@ route.put("/approve/:id", [auth, admin], async (req, res) => {
     if (!approvedAd)
       return res.status(400).send("Ad not approved, something wrong");
 
+    try {
+      const owner = await UserModel.findById(ad.user._id);
+
+      if (
+        owner &&
+        owner.pushNotificationTokens &&
+        owner.pushNotificationTokens.length > 0
+      ) {
+        const tokens = owner.pushNotificationTokens.map(
+          (tokenObj) => tokenObj.token
+        );
+
+        await sendPushNotification(
+          tokens,
+          "Ad approval",
+          `Admins approved you ad!`
+        );
+        console.log("📤 Attempting to send notification to:", tokens);
+      }
+    } catch (notificationError) {
+      console.error("Failed to send push notification:", notificationError);
+    }
+
     return res.status(200).send(approvedAd);
   } catch (error) {
     return res.status(500).send("Server error", error);
@@ -166,6 +215,29 @@ route.put("/activate/:id", [auth, admin], async (req, res) => {
     if (!activatedAd)
       return res.status(400).send("Ad not activated, something wrong");
 
+    try {
+      const owner = await UserModel.findById(activatedAd.user._id);
+
+      if (
+        owner &&
+        owner.pushNotificationTokens &&
+        owner.pushNotificationTokens.length > 0
+      ) {
+        const tokens = owner.pushNotificationTokens.map(
+          (tokenObj) => tokenObj.token
+        );
+
+        await sendPushNotification(
+          tokens,
+          "Ad activated",
+          `Admins activated you ad!`
+        );
+        console.log("📤 Attempting to send notification to:", tokens);
+      }
+    } catch (notificationError) {
+      console.error("Failed to send push notification:", notificationError);
+    }
+
     return res.status(202).send(activatedAd);
   } catch (error) {
     return res.status(500).send("Server error", error);
@@ -190,6 +262,29 @@ route.put("/deactivate/:id", [auth, admin], async (req, res) => {
     );
     if (!deactivatedAd)
       return res.status(400).send("Ad not deactivated, something wrong");
+
+    try {
+      const owner = await UserModel.findById(deactivatedAd.user._id);
+
+      if (
+        owner &&
+        owner.pushNotificationTokens &&
+        owner.pushNotificationTokens.length > 0
+      ) {
+        const tokens = owner.pushNotificationTokens.map(
+          (tokenObj) => tokenObj.token
+        );
+
+        await sendPushNotification(
+          tokens,
+          "Ad deactivated",
+          `Admins deactivated you ad!`
+        );
+        console.log("📤 Attempting to send notification to:", tokens);
+      }
+    } catch (notificationError) {
+      console.error("Failed to send push notification:", notificationError);
+    }
 
     return res.status(200).send(deactivatedAd);
   } catch (error) {
@@ -225,6 +320,29 @@ route.put(
       if (!updatedAd)
         return res.status(400).send("Ad not updated, something wrong");
 
+      try {
+        const owner = await UserModel.findById(updatedAd.user._id);
+
+        if (
+          owner &&
+          owner.pushNotificationTokens &&
+          owner.pushNotificationTokens.length > 0
+        ) {
+          const tokens = owner.pushNotificationTokens.map(
+            (tokenObj) => tokenObj.token
+          );
+
+          await sendPushNotification(
+            tokens,
+            "Ad updated",
+            `Admins updated you ad!`
+          );
+          console.log("📤 Attempting to send notification to:", tokens);
+        }
+      } catch (notificationError) {
+        console.error("Failed to send push notification:", notificationError);
+      }
+
       return res.status(200).send(updatedAd);
     } catch (error) {
       return res.status(500).send("Server error", error);
@@ -250,6 +368,29 @@ route.delete("/delete/:id", [auth, admin], async (req, res) => {
 
     if (!deletedAd)
       return res.status(400).send("Ad not deleted, something wrong");
+
+    try {
+      const owner = await UserModel.findById(ad.user._id);
+
+      if (
+        owner &&
+        owner.pushNotificationTokens &&
+        owner.pushNotificationTokens.length > 0
+      ) {
+        const tokens = owner.pushNotificationTokens.map(
+          (tokenObj) => tokenObj.token
+        );
+
+        await sendPushNotification(
+          tokens,
+          "Ad removal",
+          `Admins deleted you ad!`
+        );
+        console.log("📤 Attempting to send notification to:", tokens);
+      }
+    } catch (notificationError) {
+      console.error("Failed to send push notification:", notificationError);
+    }
 
     return res.status(200).send(deletedAd);
   } catch (error) {
