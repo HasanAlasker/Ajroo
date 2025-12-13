@@ -7,7 +7,7 @@ import { createAdSchema, updateAdSchema } from "../validation/adValidation.js";
 import admin from "../middleware/admin.js";
 import { sendPushNotification } from "../utils/notifications.js";
 import UserModel from "../models/usersModel.js";
-import deleteImageFromCloudinary from '../utils/deleteImageFromCloudinary'
+import deleteImageFromCloudinary from "../utils/cloudinary.js";
 
 const route = express.Router();
 
