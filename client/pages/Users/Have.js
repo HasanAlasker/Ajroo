@@ -4,13 +4,14 @@ import SearchBar from "../../components/general/SearchBar";
 import SafeScreen from "../../components/general/SafeScreen";
 import { useUser } from "../../config/UserContext";
 import PostRenderer from "../../components/PostRenderer";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import useApi from "../../hooks/useApi";
 import { availablePosts, searchPosts } from "../../api/post";
 import LoadingCircle from "../../components/general/LoadingCircle";
 import LoadingSkeleton from "../../components/post_releated/LoadingSkeleton";
 import NewsCard from "../../components/NewsCard";
 import { getActiveNews } from "../../api/news";
+import { getActiveAds } from "../../api/ads";
 
 function Have({ route }) {
   const { user } = useUser();
@@ -27,6 +28,8 @@ function Have({ route }) {
   // Store initial category from navigation
   const initialCategory = useRef(null);
 
+  const [ads, setAds] = useState([]);
+
   // Get all posts
   const {
     data: posts,
@@ -36,12 +39,19 @@ function Have({ route }) {
   } = useApi(availablePosts);
 
   const { data: news, request: fetchNews, loadingNews } = useApi(getActiveNews);
+  const {
+    data: activeAd,
+    request: fetchAds,
+    loadingAds,
+  } = useApi(getActiveAds);
 
   useEffect(() => {
     fetchPosts();
     fetchNews();
+    fetchAds();
   }, []);
 
+  console.log(activeAd)
   // Handle navigation params - apply filter when coming from Home
   useEffect(() => {
     if (route?.params?.category && route?.params?.applyFilter) {
@@ -129,9 +139,30 @@ function Have({ route }) {
     initialCategory.current = null;
   }, []);
 
-  // Determine which posts to display
-  const displayPosts =
-    isFilterActive && filteredResults !== null ? filteredResults : posts;
+  // Helper function to merge posts with ads
+  const createMergedData = useCallback((postsArray, adsArray) => {
+    const merged = [];
+    let adIndex = 0;
+
+    postsArray.forEach((post, index) => {
+      merged.push({ type: "post", data: post });
+
+      // Insert ad after every 5 posts (index 4, 9, 14, etc.)
+      if ((index + 1) % 5 === 0 && adIndex < adsArray.length) {
+        merged.push({ type: "ad", data: adsArray[adIndex] });
+        adIndex++;
+      }
+    });
+
+    return merged;
+  }, []);
+
+  // Determine which posts to display and merge with ads
+  const displayPosts = useMemo(() => {
+    const postsToDisplay =
+      isFilterActive && filteredResults !== null ? filteredResults : posts;
+    return createMergedData(postsToDisplay || [], ads);
+  }, [isFilterActive, filteredResults, posts, ads, createMergedData]);
 
   if (loading && !posts) {
     return <LoadingCircle />;
@@ -140,7 +171,7 @@ function Have({ route }) {
   return (
     <SafeScreen>
       <PostRenderer
-        fetchedPosts={displayPosts || []}
+        fetchedPosts={displayPosts}
         refreshing={refreshing}
         onRefresh={handleRefresh}
         emptyMessage={

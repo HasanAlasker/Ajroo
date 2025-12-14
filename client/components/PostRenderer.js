@@ -1,6 +1,7 @@
 import { FlatList, View } from "react-native";
 import AppText from "../config/AppText";
 import Post from "./post_releated/Post";
+import AdPost from "./post_releated/AdPost";
 import { StyleSheet } from "react-native";
 
 function PostRenderer({
@@ -26,7 +27,31 @@ function PostRenderer({
     return mapping[productId] || null;
   };
 
-  const renderPost = ({ item: post }) => {
+  const renderItem = ({ item }) => {
+    // Check if this is an ad
+    if (item.type === "ad") {
+      const ad = item.data;
+      return (
+        <AdPost
+          adId={ad._id}
+          userId={ad.user._id}
+          userName={ad.user.name}
+          userSub={ad.user?.subscription?.productId}
+          userPic={ad.user?.image}
+          image={ad.image}
+          link={ad.link}
+          isActive={ad.isActive}
+          isApproved={ad.isApproved}
+          createdAt={ad.createdAt}
+          updatedAt={ad.updatedAt}
+          expiresAt={ad.expiresAt}
+          displayDuration={ad.displayDuration}
+        />
+      );
+    }
+
+    // Otherwise render a post
+    const post = item.type === "post" ? item.data : item;
     let isMine = false;
 
     // Determine ownership
@@ -49,8 +74,6 @@ function PostRenderer({
 
     const subscriptionDisplayName =
       getSubscriptionDisplayName(subscriptionType);
-
-    // console.log("📦 Rendering post - productId:", productId, "→ displayName:", subscriptionDisplayName);
 
     return (
       <Post
@@ -119,8 +142,16 @@ function PostRenderer({
   return (
     <FlatList
       data={fetchedPosts}
-      renderItem={renderPost}
-      keyExtractor={(item) => item._id}
+      renderItem={renderItem}
+      keyExtractor={(item, index) => {
+        if (item.type === "ad") {
+          return `ad-${item.data._id}`;
+        } else if (item.type === "post") {
+          return `post-${item.data._id}`;
+        }
+        // Fallback for non-wrapped items
+        return `post-${item._id}`;
+      }}
       onRefresh={onRefresh}
       refreshing={refreshing}
       ListEmptyComponent={() => <EmptyState message={emptyMessage} />}

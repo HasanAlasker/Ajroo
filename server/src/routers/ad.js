@@ -47,8 +47,8 @@ route.get("/inactive", [auth, admin], async (req, res) => {
   }
 });
 
-// get all inactive ads
-route.get("/active", [auth, admin], async (req, res) => {
+// get all active ads
+route.get("/active", auth, async (req, res) => {
   try {
     const ads = await AdModel.find({ isActive: true })
       .sort("-createdAt")
