@@ -51,7 +51,12 @@ function Have({ route }) {
     fetchAds();
   }, []);
 
-  console.log(activeAd)
+  useEffect(() => {
+    if (activeAd && Array.isArray(activeAd)) {
+      setAds(activeAd);
+    }
+  }, [activeAd]);
+
   // Handle navigation params - apply filter when coming from Home
   useEffect(() => {
     if (route?.params?.category && route?.params?.applyFilter) {
@@ -81,6 +86,8 @@ function Have({ route }) {
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchPosts();
+    await fetchNews();
+    await fetchAds();
     // Clear filters on refresh
     setFilteredResults(null);
     setIsSearching(false);
