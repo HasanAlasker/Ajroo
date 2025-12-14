@@ -233,7 +233,6 @@ function EditPostModal({ postId, visible, onClose }) {
         confirmText: "OK",
         onConfirm: () => onClose(),
       });
-
     } catch (error) {
       console.error("Error updating post:", error);
       setStatus({
@@ -372,15 +371,13 @@ function EditPostModal({ postId, visible, onClose }) {
                   hasBeenSubmitted={hasBeenSubmitted}
                 />
 
-                {postType === "Sell" && (
-                  <FormikInput
-                    name="description"
-                    placeholder="Description (optional)"
-                    hasBeenSubmitted={hasBeenSubmitted}
-                    isBox={true}
-                    height={100}
-                  />
-                )}
+                <FormikInput
+                  name="description"
+                  placeholder="Description (optional)"
+                  hasBeenSubmitted={hasBeenSubmitted}
+                  isBox={true}
+                  height={100}
+                />
 
                 <SubmitBtn
                   setHasBeenSubmitted={setHasBeenSubmitted}
