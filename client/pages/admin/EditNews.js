@@ -15,6 +15,7 @@ import useApi from "../../hooks/useApi";
 import { createNews, editNews } from "../../api/news";
 import { useAlert } from "../../config/AlertContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import KeyboardScrollScreen from "../../components/general/KeyboardScrollScreen";
 
 const validationSchema = Yup.object().shape({
   icon: Yup.string().optional(),
@@ -112,7 +113,7 @@ function EditNews(props) {
 
   return (
     <SafeScreen>
-      <ScrollScreen>
+      <KeyboardScrollScreen>
         <AppText style={styles.text}>Edit News</AppText>
         <Formik
           initialValues={initialValues}
@@ -172,7 +173,7 @@ function EditNews(props) {
             </>
           )}
         </Formik>
-      </ScrollScreen>
+      </KeyboardScrollScreen>
       <Navbar />
     </SafeScreen>
   );
