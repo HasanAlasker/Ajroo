@@ -14,6 +14,7 @@ import auth from "../middleware/auth.js";
 import admin from "../middleware/admin.js";
 import SubscriptionModel from "../models/subscriptionModel.js";
 import { sendOTPEmail } from "./email.js";
+import deleteImageFromCloudinary from "../utils/cloudinary.js";
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ const router = express.Router();
 // wake server
 router.get("/wake", async (req, res) => {
   res.status(200).send("Don't sleep");
-  console.log("Don't sleep")
+  console.log("Don't sleep");
 });
 
 // get all users (not blocked)
@@ -344,20 +345,31 @@ router.put("/edit/:id", auth, validate(userUpdateSchema), async (req, res) => {
       "email",
       "phone",
       "image",
-      "imagePublicId"
+      "imagePublicId",
     ]);
 
+    const user = await UserModel.findById(id);
+    if (!user) return res.status(404).send("User not found");
+
     if (data.password) {
-      const user = await UserModel.findById(id);
-      if (!user) return res.status(404).send("User not found");
       data.password = await user.hashPassword(data.password);
     }
+
+    const oldImagePublicId = user.imagePublicId;
 
     const updatedUser = await usersModel.findByIdAndUpdate(id, data, {
       new: true,
       runValidators: true,
     });
     if (!updatedUser) return res.status(400).send("user not found");
+
+    if (data.image && oldImagePublicId) {
+      try {
+        await deleteImageFromCloudinary(oldImagePublicId);
+      } catch (error) {
+        console.error("Failed to delete old image from Cloudinary:", error);
+      }
+    }
 
     return res
       .status(200)
@@ -573,7 +585,5 @@ router.delete("/push-token/:token", auth, async (req, res) => {
     return res.status(500).send(err.message);
   }
 });
-
-
 
 export default router;
