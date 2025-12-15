@@ -1,10 +1,6 @@
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import AppText from "../../config/AppText";
-import {
-  Feather,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -22,7 +18,7 @@ function TopOfPost({
   subscriptionType,
   isRequesterBlocked,
   isOwnerBlocked,
-  hideThree = false
+  hideThree = false,
 }) {
   const styles = useThemedStyles(getStyles);
   const { theme } = useTheme();
@@ -105,8 +101,9 @@ function TopOfPost({
           <AppText style={styles.date}>{date}</AppText>
         </View>
       </TouchableOpacity>
-      {!hideThree && (((status === "available" || status === "disabled") && isMine) ||
-        !isMine) &&
+      {!hideThree &&
+        (((status === "available" || status === "disabled") && isMine) ||
+          !isMine) &&
         !(user.role === "admin" && route.name === "Profile") && (
           <TouchableOpacity onPress={onPressThree}>
             <Feather

@@ -1,11 +1,7 @@
-import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { useState } from "react";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import AppText from "../../config/AppText";
-import {
-  MaterialCommunityIcons,
-  MaterialIcons,
-  Octicons,
-} from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "../../config/ThemeContext";
 import useThemedStyles from "../../hooks/useThemedStyles";
 
@@ -39,7 +35,7 @@ const getStyles = (theme) =>
       flex: 1,
       gap: 5,
       overflow: "hidden",
-      right:3
+      right: 3,
     },
     text: {
       fontSize: 16,

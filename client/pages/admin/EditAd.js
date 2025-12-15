@@ -9,7 +9,6 @@ import FormikInput from "../../components/form/FormikInput";
 import SubmitBtn from "../../components/form/SubmitBtn";
 import { useAlert } from "../../config/AlertContext";
 import { useUser } from "../../config/UserContext";
-import AppText from "../../config/AppText";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { editAd } from "../../api/ads";
 import { uploadImage } from "../../api/upload";

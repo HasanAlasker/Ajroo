@@ -1,4 +1,3 @@
-import React from "react";
 import { View, StyleSheet } from "react-native";
 import PostComponent from "./post_releated/PostComponent";
 import AppText from "../config/AppText";

@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import AppText from "../../config/AppText";
 import SafeScreen from "../../components/general/SafeScreen";
-import SuggestionCard from "../../components/SuggestionCard";
 import useApi from "../../hooks/useApi";
 import { getSuggestions } from "../../api/suggestion";
 import SuggestionRenderer from "../../components/SuggestionRenderer";
-import LoadingCircle from "../../components/general/LoadingCircle";
 import Navbar from "../../components/general/Navbar";
 import LoadingSkeleton from "../../components/post_releated/LoadingSkeleton";
 

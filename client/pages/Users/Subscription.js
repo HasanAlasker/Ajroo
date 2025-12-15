@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ActivityIndicator, Platform } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import ScrollScreen from "../../components/general/ScrollScreen";
 import SafeScreen from "../../components/general/SafeScreen";
 import Navbar from "../../components/general/Navbar";

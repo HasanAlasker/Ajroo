@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useTheme } from "../../config/ThemeContext";
 import useThemedStyles from "../../hooks/useThemedStyles";

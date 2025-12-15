@@ -6,7 +6,6 @@ import {
   Alert,
   Text,
 } from "react-native";
-import AppText from "../config/AppText";
 import useThemedStyles from "../hooks/useThemedStyles";
 import EditBtn from "./EditBtn";
 import {

@@ -1,5 +1,4 @@
 import { FontAwesome6 } from "@expo/vector-icons";
-import React from "react";
 import { View, StyleSheet } from "react-native";
 import { useTheme } from "../../config/ThemeContext";
 import useThemedStyles from "../../hooks/useThemedStyles";
@@ -23,28 +22,29 @@ function Note({ style, title, text }) {
   );
 }
 
-const getStyles = (theme) => StyleSheet.create({
-  container: {
-    width: "100%",
-  },
-  small: {
-    fontSize: 15,
-    color: theme.darker_gray,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  icon: {
-    alignSelf: "stretch",
-    paddingTop: 4,
-  },
-  iconAndTitle: {
-    width: "90%",
-    marginHorizontal: "auto",
-    marginTop: "40",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 0,
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      width: "100%",
+    },
+    small: {
+      fontSize: 15,
+      color: theme.darker_gray,
+      fontWeight: "bold",
+      textAlign: "center",
+    },
+    icon: {
+      alignSelf: "stretch",
+      paddingTop: 4,
+    },
+    iconAndTitle: {
+      width: "90%",
+      marginHorizontal: "auto",
+      marginTop: "40",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 0,
+    },
+  });
 
 export default Note;

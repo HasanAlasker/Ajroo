@@ -1,5 +1,4 @@
-import { View, StyleSheet } from "react-native";
-
+import { StyleSheet } from "react-native";
 import { useFormikContext } from "formik";
 import DropBox from '../DropBox'
 import ErrorMessage from "./ErrorMessage";

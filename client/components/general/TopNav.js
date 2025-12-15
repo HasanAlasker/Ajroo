@@ -1,7 +1,7 @@
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import AppText from "../../config/AppText";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import { useTheme } from "../../config/ThemeContext";
 
 function TopNav({ activeTab, onTabChange }) {

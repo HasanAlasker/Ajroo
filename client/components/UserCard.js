@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import PostComponent from "./post_releated/PostComponent";
 import TopOfPost from "./post_releated/TopOfPost";
 import AppText from "../config/AppText";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
-import RowLableCont from "./post_releated/RowLableCont";
 import PostMenu from "./post_releated/PostMenu";
 import { formatDate } from "../functions/formatDate";
 

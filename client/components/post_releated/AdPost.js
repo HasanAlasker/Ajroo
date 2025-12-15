@@ -1,17 +1,11 @@
-import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Image,
-  TouchableWithoutFeedback,
-  Pressable,
-} from "react-native";
+import { useState } from "react";
+import { View, StyleSheet, Image, Pressable } from "react-native";
 import PostComponent from "./PostComponent";
 import TopOfPost from "./TopOfPost";
 import { useTheme } from "../../config/ThemeContext";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import AppText from "../../config/AppText";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { openURL } from "../../functions/openURL";
 import { useAlert } from "../../config/AlertContext";
 import { formatDate } from "../../functions/formatDate";
@@ -125,7 +119,7 @@ function AdPost({
         setLoading(true);
         try {
           const res = await deleteAd(adId);
-          console.log(res)
+          console.log(res);
           showAlert({
             title: "Success",
             message: "Ad deleted successfully!",

@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import AppText from "../config/AppText";
 import CardModal from "../components/CardModal";
 import RequestBtn from "../components/RequestBtn";
-import { FontAwesome6 } from "@expo/vector-icons";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 import { usePosts } from "../config/PostContext";

@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, RefreshControl } from "react-native";
+import { useEffect, useState } from "react";
+import { View, StyleSheet } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import Navbar from "../../components/general/Navbar";
 import ScrollScreen from "../../components/general/ScrollScreen";
 import AdminCard from "../../components/AdminCard";
-import LoadingCircle from "../../components/general/LoadingCircle";
 import useApi from "../../hooks/useApi";
 import { getStats } from "../../api/admin"; // New API function
 import LoadingDash from "../../components/general/LoadingDash";

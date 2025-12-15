@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import Navbar from "../../components/general/Navbar";
-import ScrollScreen from "../../components/general/ScrollScreen";
 import SearchBar from "../../components/general/SearchBar";
 import PostRenderer from "../../components/PostRenderer";
 import useApi from "../../hooks/useApi";

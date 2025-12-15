@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import Navbar from "../../components/general/Navbar";
 import ScrollScreen from "../../components/general/ScrollScreen";
@@ -7,11 +7,10 @@ import * as Yup from "yup";
 import FormikDropBox from "../../components/form/FormikDropBox";
 import FormikInput from "../../components/form/FormikInput";
 import SubmitBtn from "../../components/form/SubmitBtn";
-import { active, colors, yesNo } from "../../constants/DropOptions";
+import { colors, yesNo } from "../../constants/DropOptions";
 import { useState } from "react";
 import AppText from "../../config/AppText";
 import useThemedStyles from "../../hooks/useThemedStyles";
-import useApi from "../../hooks/useApi";
 import { createNews } from "../../api/news";
 import { useAlert } from "../../config/AlertContext";
 import { useNavigation } from "@react-navigation/native";

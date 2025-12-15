@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { View, StyleSheet, TextInput } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import AppForm from "../../components/form/AppForm";
@@ -14,7 +14,7 @@ import FormikDropBox from "../../components/form/FormikDropBox";
 import { gender } from "../../constants/DropOptions";
 import KeyboardScrollScreen from "../../components/general/KeyboardScrollScreen";
 import AppText from "../../config/AppText";
-import { verifyOtp, resendOtp } from "../../api/auth";
+import { resendOtp } from "../../api/auth";
 import { registerUser } from "../../api/user";
 import { useUser } from "../../config/UserContext";
 import ErrorMessage from "../../components/form/ErrorMessage";

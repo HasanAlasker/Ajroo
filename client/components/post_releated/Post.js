@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import TopOfPost from "./TopOfPost";
 import ItmeImage from "./ItmeImage";
 import ItemNameAndCat from "./ItemNameAndCat";
@@ -15,15 +15,12 @@ import AcceptRejectBtn from "../AcceptRejectBtn";
 import { useRoute } from "@react-navigation/native";
 import PostMenu from "./PostMenu";
 import { useState } from "react";
-import ItemPricing from "./ItemPricing";
 import EditPostModal from "../EditPostModal";
 import { useUser } from "../../config/UserContext";
 import ItemBill from "./ItemBill";
-import AppText from "../../config/AppText";
 import ErrorBox from "../general/ErrorBox";
 import PhoneNumber from "./PhoneNumber";
 import { formatDate } from "../../functions/formatDate";
-import { usePosts } from "../../config/PostContext";
 import Description from "./Description";
 
 // Capitalize first letter and replace underscores with spaces

@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { View, StyleSheet, Pressable } from "react-native";
+import { StyleSheet, Pressable } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import { useTheme } from "../../config/ThemeContext";

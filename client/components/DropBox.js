@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -14,10 +14,7 @@ import BackContainer from "../components/BackContainer";
 import MenuBackBtn from "../components/MenuBackBtn";
 import MenuOption from "../components/MenuOption";
 import SeparatorComp from "../components/SeparatorComp";
-import useApi from "../hooks/useApi";
-import { getUserById } from "../api/user";
 import { useUser } from "../config/UserContext";
-import LoadingCircle from "./general/LoadingCircle";
 
 function DropBox({
   placeholder,

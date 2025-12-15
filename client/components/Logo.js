@@ -1,5 +1,4 @@
-import React from "react";
-import { View, StyleSheet, Image, Systrace } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import AppText from "../config/AppText";
 import useThemedStyles from "../hooks/useThemedStyles";
 

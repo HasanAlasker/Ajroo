@@ -1,9 +1,7 @@
-import React, { act, useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
-import ScrollScreen from "../../components/general/ScrollScreen";
 import Navbar from "../../components/general/Navbar";
-import TopNav from "../../components/general/TopNav";
 import AdRenderer from "../../components/AdRenderer";
 import useApi from "../../hooks/useApi";
 import { getMyAds } from "../../api/ads";

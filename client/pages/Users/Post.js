@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
-import ScrollScreen from "../../components/general/ScrollScreen";
 import Navbar from "../../components/general/Navbar";
 import AddImageBtn from "../../components/AddImageBtn";
 import FormikDropBox from "../../components/form/FormikDropBox";
@@ -30,7 +29,6 @@ import {
   canUserPost,
   getPostLimit,
 } from "../../constants/subscriptionLimits";
-import { useTheme } from "../../config/ThemeContext";
 import useThemedStyles from "../../hooks/useThemedStyles";
 import RequestBtn from "../../components/RequestBtn";
 import FormikInput from "../../components/form/FormikInput";

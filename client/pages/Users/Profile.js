@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import Navbar from "../../components/general/Navbar";
 import TopChunkProfile from "../../components/TopChunkProfile";
@@ -13,9 +13,7 @@ import { getUserPosts } from "../../api/post";
 import { useEffect } from "react";
 import { useRoute } from "@react-navigation/native";
 import { getUserById } from "../../api/user";
-import LoadingCircle from "../../components/general/LoadingCircle";
 import ErrorBox from "../../components/general/ErrorBox";
-import AppText from "../../config/AppText";
 import ProfileLoadingSkeleton from "../../components/general/ProfileSkeleton";
 import { gotRequests, sentRequests } from "../../api/request";
 

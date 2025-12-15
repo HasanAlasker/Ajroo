@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-
 import { useFormikContext } from 'formik';
 import InputBox from '../InputBox';
 import ErrorMessage from './ErrorMessage';

@@ -1,9 +1,8 @@
-import React from "react";
 import { View, StyleSheet } from "react-native";
 import PostComponent from "./post_releated/PostComponent";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import AppText from "../config/AppText";
 import RequestBtn from "./RequestBtn";
 

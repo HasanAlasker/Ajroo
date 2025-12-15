@@ -1,4 +1,3 @@
-import React from "react";
 import { View, StyleSheet } from "react-native";
 import AppText from "../../config/AppText";
 import CardModal from "../CardModal";

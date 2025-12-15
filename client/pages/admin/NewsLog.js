@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
-import AppText from "../../config/AppText";
 import Navbar from "../../components/general/Navbar";
-import ScrollScreen from "../../components/general/ScrollScreen";
 import useApi from "../../hooks/useApi";
 import { getAllNews } from "../../api/news";
-import NewsCard from "../../components/NewsCard";
 import NewsRenderer from "../../components/NewsRenderer";
 import { useUser } from "../../config/UserContext";
 import AddHoverBtn from "../../components/general/AddHoverBtn";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import LoadingNews from "../../components/general/LoadingNews";
 
 function NewsLog(props) {

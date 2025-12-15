@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { View, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import AppForm from "../../components/form/AppForm";
@@ -15,7 +15,7 @@ import KeyboardScrollScreen from "../../components/general/KeyboardScrollScreen"
 import { useUser } from "../../config/UserContext";
 import ErrorMessage from "../../components/form/ErrorMessage";
 import ErrorBox from "../../components/general/ErrorBox";
-import { verifyOtp, resendOtp } from "../../api/auth";
+import { resendOtp } from "../../api/auth";
 import { loginUser } from "../../api/user";
 import Note from "../../components/general/Note";
 

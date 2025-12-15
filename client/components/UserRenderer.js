@@ -1,6 +1,4 @@
-import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import SuggestionCard from "./SuggestionCard";
+import { View, FlatList } from "react-native";
 import AppText from "../config/AppText";
 import UserCard from "./UserCard";
 

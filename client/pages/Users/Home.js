@@ -1,13 +1,10 @@
 import { View, StyleSheet } from "react-native";
 import AppText from "../../config/AppText";
 import ScrollScreen from "../../components/general/ScrollScreen";
-
 import useThemedStyles from "../../hooks/useThemedStyles";
-import WelcomeCard from "../../components/WelcomeCard";
 import SquareCard from "../../components/SquareCard";
 import Navbar from "../../components/general/Navbar";
 import SafeScreen from "../../components/general/SafeScreen";
-import AdPost from "../../components/post_releated/AdPost";
 
 function Home({ navigation }) {
   const styles = useThemedStyles(getStyles);

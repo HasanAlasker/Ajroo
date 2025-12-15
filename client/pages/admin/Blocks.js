@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
 import SafeScreen from "../../components/general/SafeScreen";
 import TopNav from "../../components/general/TopNav";
 import Navbar from "../../components/general/Navbar";
@@ -7,7 +7,6 @@ import PostRenderer from "../../components/PostRenderer";
 import useApi from "../../hooks/useApi";
 import { getDeletedPosts } from "../../api/post";
 import { useUser } from "../../config/UserContext";
-import UserCard from "../../components/UserCard";
 import { getBlockedUsers } from "../../api/user";
 import UserRenderer from "../../components/UserRenderer";
 import LoadingSkeleton from "../../components/post_releated/LoadingSkeleton";

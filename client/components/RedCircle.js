@@ -1,11 +1,10 @@
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet } from "react-native";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
 
 
 function RedCircle() {
   const styles = useThemedStyles(getStyles);
-  const { theme } = useTheme();
 
   return <View style={styles.container}></View>;
 }

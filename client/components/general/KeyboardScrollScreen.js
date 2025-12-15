@@ -1,5 +1,4 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 function KeyboardScrollScreen({children, ...other}) {

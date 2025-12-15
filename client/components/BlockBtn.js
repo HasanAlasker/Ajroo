@@ -1,9 +1,7 @@
-import { Feather, Octicons } from "@expo/vector-icons";
+import { Octicons } from "@expo/vector-icons";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import useThemedStyles from "../hooks/useThemedStyles";
 import { useTheme } from "../config/ThemeContext";
-import RedCircle from "./RedCircle";
-import { useNavigation } from "@react-navigation/native";
 import { useAlert } from "../config/AlertContext";
 import { blockUser, unBlockUser } from "../api/user";
 

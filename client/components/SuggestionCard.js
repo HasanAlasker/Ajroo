@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { StyleSheet } from "react-native";
 import PostComponent from "./post_releated/PostComponent";
 import TopOfPost from "./post_releated/TopOfPost";

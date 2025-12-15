@@ -19,7 +19,6 @@ import Book from "./pages/Users/Book";
 import Profile from "./pages/Users/Profile";
 import Requests from "./pages/Users/Requests";
 import EditProfile from "./pages/Users/EditProfile";
-import Promo from "./pages/Users/Promo";
 import Subscription from "./pages/Users/Subscription";
 
 import Welcome from "./pages/Welcome/Welcome";
@@ -66,7 +65,6 @@ const AuthenticatedStack = () => {
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Requests" component={Requests} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
-      <Stack.Screen name="Promo" component={Promo} />
       <Stack.Screen name="Subscription" component={Subscription} />
       <Stack.Screen name="Suggestions" component={Suggestions} />
       <Stack.Screen name="NewsLog" component={NewsLog} />
