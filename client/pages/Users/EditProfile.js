@@ -89,6 +89,7 @@ function EditProfile({ rating, sep }) {
 
       // Only upload if it's a new local image (not an HTTP URL)
       let imageUrl = values.image;
+      let imagePublicId = profile?.imagePublicId;
 
       // Only process image if it exists and is a new local image
       if (
@@ -96,7 +97,9 @@ function EditProfile({ rating, sep }) {
         typeof values.image === "string" &&
         !values.image.startsWith("http")
       ) {
-        imageUrl = await uploadImage(values.image);
+        const imageData = await uploadImage(values.image);
+        imageUrl = imageData.url;
+        imagePublicId = imageData.publicId;
       } else if (!values.image) {
         // If no image provided, keep the existing one or set to null
         imageUrl =
@@ -107,7 +110,8 @@ function EditProfile({ rating, sep }) {
       // Pass the imageUrl (not values.image) to updateUser
       const result = await updateUser(user.id, {
         ...values,
-        image: imageUrl, // Use the uploaded URL here!
+        image: imageUrl,
+        imagePublicId: imagePublicId,
       });
 
       if (result.ok) {
@@ -236,9 +240,9 @@ const getStyles = (theme) =>
     container: {
       width: "100%",
     },
-    note:{
-      marginTop:40,
-    }
+    note: {
+      marginTop: 40,
+    },
   });
 
 export default EditProfile;

@@ -344,6 +344,7 @@ router.put("/edit/:id", auth, validate(userUpdateSchema), async (req, res) => {
       "email",
       "phone",
       "image",
+      "imagePublicId"
     ]);
 
     if (data.password) {
