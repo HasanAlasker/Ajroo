@@ -321,12 +321,25 @@ route.put(
         data.expiresAt = expiresAt;
       }
 
+      const oldAd = await AdModel.findById(id);
+      if (!oldAd) return res.status(404).send("Ad not found");
+
+      const oldImagePublicId = oldAd.imagePublicId;
+
       const updatedAd = await AdModel.findByIdAndUpdate(id, data, {
         new: true,
         runValidators: true,
       });
       if (!updatedAd)
         return res.status(400).send("Ad not updated, something wrong");
+
+      if (data.image && oldImagePublicId) {
+        try {
+          await deleteImageFromCloudinary(oldImagePublicId);
+        } catch (error) {
+          console.error("Failed to delete old image from Cloudinary:", error);
+        }
+      }
 
       try {
         const owner = await UserModel.findById(updatedAd.user._id);
@@ -353,7 +366,7 @@ route.put(
 
       return res.status(200).send(updatedAd);
     } catch (error) {
-      return res.status(500).send("Server error", error);
+      return res.status(500).send(error);
     }
   }
 );
@@ -403,7 +416,9 @@ route.delete("/delete/:id", [auth, admin], async (req, res) => {
     return res.status(200).send(deletedAd);
   } catch (error) {
     console.error("Delete ad error:", error); // Log the actual error
-    return res.status(500).send({ message: "Server error", error: error.message });
+    return res
+      .status(500)
+      .send({ message: "Server error", error: error.message });
   }
 });
 
