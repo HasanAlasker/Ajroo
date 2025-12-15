@@ -188,10 +188,20 @@ router.put(
         "description",
       ]);
 
+      const oldImagePublicId = post.imagePublicId;
+
       const updatedPost = await PostModel.findByIdAndUpdate(id, data, {
         new: true,
         runValidators: true,
       });
+
+      if (data.image && oldImagePublicId) {
+        try {
+          await deleteImageFromCloudinary(oldImagePublicId);
+        } catch (error) {
+          console.error("Failed to delete old image from Cloudinary:", error);
+        }
+      }
 
       return res.status(200).send(updatedPost);
     } catch (err) {

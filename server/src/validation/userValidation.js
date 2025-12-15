@@ -6,6 +6,9 @@ export const userValidationSchema = Joi.object({
     "string.uri": "Image must be a valid URL",
     "any.required": "Image is required",
   }),
+
+  imagePublicId: Joi.string().allow(null, ""),
+  
   name: Joi.string()
     .min(2)
     .max(25)
@@ -167,6 +170,9 @@ export const userUpdateSchema = Joi.object({
     "string.uri": "Image must be a valid URL",
     "any.required": "Image is required",
   }),
+
+  imagePublicId: Joi.string().allow(null, ""),
+
   name: Joi.string()
     .min(2)
     .max(25)
