@@ -2,13 +2,13 @@ import Joi from "joi";
 
 // Joi validation schema for User
 export const userValidationSchema = Joi.object({
-  image: Joi.string().uri().required().messages({
+  image: Joi.string().uri().messages({
     "string.uri": "Image must be a valid URL",
     "any.required": "Image is required",
   }),
 
   imagePublicId: Joi.string().allow(null, ""),
-  
+
   name: Joi.string()
     .min(2)
     .max(25)
@@ -178,6 +178,7 @@ export const userUpdateSchema = Joi.object({
     .max(25)
     .pattern(/^[a-zA-Z\s'-]+$/)
     .trim()
+    .required()
     .messages({
       "string.min": "Name must be at least 2 characters long",
       "string.max": "Name can't be longer than 25 characters",
@@ -187,10 +188,11 @@ export const userUpdateSchema = Joi.object({
   phone: Joi.string()
     .pattern(/^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/)
     .trim()
+    .required()
     .messages({
       "string.pattern.base": "Please enter a valid phone number",
     }),
-  email: Joi.string().email().lowercase().trim().messages({
+  email: Joi.string().email().lowercase().trim().required().messages({
     "string.email": "Please enter a valid email address",
   }),
 
@@ -200,6 +202,7 @@ export const userUpdateSchema = Joi.object({
     .pattern(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
     )
+    .required()
     .messages({
       "string.min": "Password must be at least 8 characters long",
       "string.max": "Password can't be longer than 128 characters",
