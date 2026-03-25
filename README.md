@@ -93,3 +93,4 @@ Front-End Engineer | UI/UX Designer | Mobile Developer
 > *Building trust. Sharing smarter. Welcome to Ajroo.*
 >
 > <img src='./client/assets/icon.png' width="120">
+
